@@ -12,7 +12,7 @@ export const Background = styled.section`
   color: #75b587;
   position: fixed;
   font-size: 14px;
-  font-family: GilroySemiBold;
+  font-family: CircularStdBold;
   cursor: pointer;
 `;
 
@@ -24,5 +24,5 @@ export const Content = styled.span`
   position: relative;
   color: #75b587;
   font-size: 14px;
-  font-family: GilroySemiBold;
+  font-family: CircularStdBold;
 `;

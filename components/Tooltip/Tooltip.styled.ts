@@ -11,12 +11,12 @@ export const Background = styled.div`
 export const Header = styled.h1`
   font-size: 16px;
   margin-bottom: 8px;
-  font-family: GilroyMedium;
+  font-family: CircularStdMedium;
   color: red;
 `;
 
 export const Content = styled.div`
-  font-family: GilroyMedium;
+  font-family: CircularStdMedium;
   font-size: 12px;
   color: #7578b5;
   flex-direction: column;

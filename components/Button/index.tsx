@@ -3,23 +3,20 @@ import { StyledButton } from './Button.styled';
 type Props = {
   children: string;
   onClick: () => void;
-  filled?: boolean;
-  rounded?: boolean;
   fullWidth?: boolean;
+  cancel?: boolean;
   disabled?: boolean;
 };
 
 const Button = ({
   children,
   onClick,
-  filled,
-  rounded,
   fullWidth,
+  cancel,
   disabled,
 }: Props): JSX.Element => (
   <StyledButton
-    filled={filled}
-    rounded={rounded}
+    cancel={cancel}
     fullWidth={fullWidth}
     disabled={disabled}
     onClick={onClick}>

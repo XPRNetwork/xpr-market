@@ -56,7 +56,7 @@ export const CloseIconContainer = styled.div`
 `;
 
 export const Title = styled.h1`
-  font-family: GilroySemiBold;
+  font-family: CircularStdBold;
   font-size: 24px;
   line-height: 32px;
   color: #0e103c;

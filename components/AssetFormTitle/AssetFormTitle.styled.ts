@@ -8,7 +8,7 @@ export const NameContainer = styled.div`
 export const Name = styled.h1`
   font-size: 40px;
   line-height: 48px;
-  font-family: GilroySemiBold;
+  font-family: CircularStdBold;
   margin-bottom: 8px;
 `;
 

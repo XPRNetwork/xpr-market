@@ -67,9 +67,7 @@ export const ClaimBalanceModal = (): JSX.Element => {
         </Description>
         <Row>
           <Spacer />
-          <HalfButton rounded filled onClick={withdraw}>
-            Claim Now
-          </HalfButton>
+          <HalfButton onClick={withdraw}>Claim Now</HalfButton>
         </Row>
       </ModalBox>
     </Background>

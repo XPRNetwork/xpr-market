@@ -37,7 +37,7 @@ export const ImageContainer = styled(FadeInImageContainer)`
 `;
 
 export const Text = styled.span`
-  font-family: GilroySemiBold;
+  font-family: CircularStdBold;
   font-size: 18px;
   line-height: 24px;
   color: #0e103c;
@@ -58,7 +58,7 @@ export const Price = styled(Text)`
 `;
 
 export const Tag = styled.div`
-  font-family: GilroySemiBold;
+  font-family: CircularStdBold;
   font-size: 12px;
   line-height: 24px;
   position: absolute;

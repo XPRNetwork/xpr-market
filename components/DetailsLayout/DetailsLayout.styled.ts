@@ -59,7 +59,7 @@ export const ImageContainer = styled(FadeInImageContainer)`
 export const Title = styled.h1`
   font-size: 22px;
   line-height: 32px;
-  font-family: GilroySemiBold;
+  font-family: CircularStdBold;
 `;
 
 export const ContentRow = styled.div`
