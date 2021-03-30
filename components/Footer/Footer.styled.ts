@@ -3,13 +3,8 @@ import { MaxWidth } from '../../styles/MaxWidth.styled';
 import { breakpoint } from '../../styles/Breakpoints';
 import { FadeInImageContainer } from '../../styles/FadeInImageContainer.styled';
 
-export const FooterBackground = styled.footer`
-  width: 100%;
-  background: #f6f7fe;
-  border-bottom: 1px solid #f6f7fe;
-`;
-
-export const StyledFooter = styled(MaxWidth).attrs({ as: 'section' })`
+export const StyledFooter = styled(MaxWidth).attrs({ as: 'footer' })`
+  display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
@@ -35,12 +30,11 @@ export const Section = styled.section`
 `;
 
 export const FooterLink = styled.a`
-  color: #7578b5;
-  font-weight: 500;
+  color: #808080;
   cursor: pointer;
-  margin-right: 40px;
+  margin-left: 40px;
   padding: 20px 0;
-  font-size: 16px;
+  font-size: 14px;
   line-height: 24px;
   text-align: center;
 
