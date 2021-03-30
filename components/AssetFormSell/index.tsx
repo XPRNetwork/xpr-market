@@ -64,9 +64,8 @@ export const AssetFormSell = ({
           ))}
       </DropdownMenu>
       <Button
+        cancel={buttonText.toLowerCase().includes('cancel')}
         fullWidth
-        filled={!buttonText.toLowerCase().includes('cancel')}
-        rounded
         onClick={handleButtonClick}>
         {buttonText}
       </Button>

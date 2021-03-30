@@ -100,7 +100,7 @@ export const AssetFormBuy = ({
             </option>
           ))}
       </DropdownMenu>
-      <Button fullWidth filled rounded onClick={handleButtonClick}>
+      <Button fullWidth onClick={handleButtonClick}>
         {buttonText}
       </Button>
       {purchasingError ? <ErrorMessage>{purchasingError}</ErrorMessage> : null}

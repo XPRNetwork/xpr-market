@@ -141,7 +141,7 @@ export const GradientBackground = styled.div<GradientBackgroundProps>`
 `;
 
 export const Name = styled.span`
-  font-family: GilroySemiBold;
+  font-family: CircularStdBold;
   color: #0e103c;
   font-weight: 600;
   font-size: 16px;

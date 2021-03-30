@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { breakpoint } from './Breakpoints';
 
 export const Title = styled.h1`
-  font-family: GilroySemiBold;
+  font-family: CircularStdBold;
   font-size: 28px;
   line-height: 32px;
   color: #0e103c;

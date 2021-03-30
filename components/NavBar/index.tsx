@@ -201,11 +201,7 @@ const NavBar = (): JSX.Element => {
               toggleNavDropdown={toggleNavDropdown}
             />
           ) : (
-            <Button
-              rounded
-              filled
-              disabled={isLoginDisabled}
-              onClick={connectWallet}>
+            <Button disabled={isLoginDisabled} onClick={connectWallet}>
               Connect Wallet
             </Button>
           )}

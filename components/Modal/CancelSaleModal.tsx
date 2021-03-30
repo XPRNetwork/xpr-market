@@ -53,8 +53,6 @@ const CancelModal = ({
         <Row>
           <Spacer />
           <HalfButton
-            filled
-            rounded
             color="#fb849a"
             hoverColor="#ff778e"
             onClick={onButtonClick}>

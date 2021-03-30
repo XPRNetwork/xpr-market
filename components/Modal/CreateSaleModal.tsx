@@ -68,9 +68,7 @@ const SaleModal = ({
         </InputLabel>
         <Row>
           <Spacer />
-          <HalfButton filled rounded onClick={onButtonClick}>
-            {buttonText}
-          </HalfButton>
+          <HalfButton onClick={onButtonClick}>{buttonText}</HalfButton>
         </Row>
       </ModalBox>
     </Background>

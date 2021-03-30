@@ -1,21 +1,16 @@
 @font-face {
-  font-family: 'GilroyLight';
-  src: url('/fonts/Gilroy-Light.otf') format('woff');
+  font-family: 'CircularStd';
+  src: url('/fonts/CircularStd-Book.woff') format('woff');
 }
 
 @font-face {
-  font-family: 'GilroyExtraBold';
-  src: url('/fonts/Gilroy-ExtraBold.otf') format('woff');
+  font-family: 'CircularStdBold';
+  src: url('/fonts/CircularStd-Bold.woff') format('woff');
 }
 
 @font-face {
-  font-family: 'GilroyMedium';
-  src: url('/fonts/Gilroy-Medium.otf') format('woff');
-}
-
-@font-face {
-  font-family: 'GilroySemiBold';
-  src: url('/fonts/Gilroy-SemiBold.otf') format('woff');
+  font-family: 'CircularStdMedium';
+  src: url('/fonts/CircularStd-Medium.woff') format('woff');
 }
 
 html,
@@ -33,7 +28,7 @@ a {
 
 * {
   box-sizing: border-box;
-  font-family: 'GilroyMedium';
+  font-family: 'CircularStd';
 }
 
 *:focus-visible {
