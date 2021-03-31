@@ -10,6 +10,13 @@ export interface User {
   permission: string;
 }
 
+interface TransferOptions {
+  sender: string;
+  recipient: string;
+  asset_id: string;
+  memo?: string;
+}
+
 interface CreateSaleOptions {
   seller: string;
   asset_id: string;
@@ -42,13 +49,8 @@ interface DepositWithdrawOptions {
   actor: string;
   amount: string;
 }
-interface DepositWithdrawResponse {
-  success: boolean;
-  transactionId?: string;
-  error?: string;
-}
 
-interface SaleResponse {
+interface Response {
   success: boolean;
   transactionId?: string;
   error?: string;
@@ -162,17 +164,75 @@ class ProtonSDK {
   };
 
   /**
+   * Cancel the announcement of an asset sale and its initial offer on atomic market.
+   *
+   * @param {string}   sender       Chain account of the asset's current owner.
+   * @param {string}   recipient    Chain account of recipient of asset to transfer
+   * @param {string}   asset_id     ID of the asset being transferred
+   * @param {string}   memo         Message to send with transfer
+   * @return {Response}             Returns an object indicating the success of the transaction and transaction ID.
+   */
+
+  transfer = async ({
+    sender,
+    recipient,
+    asset_id,
+    memo,
+  }: TransferOptions): Promise<Response> => {
+    const action = [
+      {
+        account: 'atomicassets',
+        name: 'transfer',
+        authorization: [
+          {
+            actor: sender,
+            permission: 'active',
+          },
+        ],
+        data: {
+          from: sender,
+          to: recipient,
+          asset_ids: [asset_id],
+          memo: memo || '',
+        },
+      },
+    ];
+    try {
+      if (!this.session) {
+        throw new Error('Must be logged in to transfer an asset');
+      }
+
+      const result = await this.session.transact(
+        { actions: action },
+        { broadcast: true }
+      );
+
+      return {
+        success: true,
+        transactionId: result.processed.id,
+      };
+    } catch (e) {
+      return {
+        success: false,
+        error:
+          e.message ||
+          'An error has occured while attempting to transfer the asset',
+      };
+    }
+  };
+
+  /**
    * Withdraw tokens from the marketplace back into user's account
    *
    * @param {string}   actor                chainAccount of user
    * @param {string}   amount               amount of FOOBAR (will only be using FOOBAR in this demo, i.e 1.000000 FOOBAR)
-   * @return {DepositWithdrawResponse}      Returns an object indicating the success of the transaction and transaction ID.
+   * @return {Response}      Returns an object indicating the success of the transaction and transaction ID.
    */
 
   withdraw = async ({
     actor,
     amount,
-  }: DepositWithdrawOptions): Promise<DepositWithdrawResponse> => {
+  }: DepositWithdrawOptions): Promise<Response> => {
     const action = [
       {
         account: 'atomicmarket',
@@ -220,7 +280,7 @@ class ProtonSDK {
    * @param {string}   asset_id   ID of the asset to sell.
    * @param {string}   price      Listing price of the sale (i.e. '1.000000').
    * @param {string}   currency   Token precision (number of decimal points) and token symbol that the sale will be paid in (i.e. '6,FOOBAR').
-   * @return {SaleResponse}       Returns an object indicating the success of the transaction and transaction ID.
+   * @return {Response}       Returns an object indicating the success of the transaction and transaction ID.
    */
 
   createSale = async ({
@@ -228,7 +288,7 @@ class ProtonSDK {
     asset_id,
     price,
     currency,
-  }: CreateSaleOptions): Promise<SaleResponse> => {
+  }: CreateSaleOptions): Promise<Response> => {
     const actions = [
       {
         account: 'atomicmarket',
@@ -296,7 +356,7 @@ class ProtonSDK {
    * @param {string[]} assetIds   Array of IDs for the assets to sell.
    * @param {string}   price      Listing price of the sale (i.e. '1.000000').
    * @param {string}   currency   Token precision (number of decimal points) and token symbol that the sale will be paid in (i.e. '6,FOOBAR').
-   * @return {SaleResponse}       Returns an object indicating the success of the transaction and transaction ID.
+   * @return {Response}       Returns an object indicating the success of the transaction and transaction ID.
    */
 
   createMultipleSales = async ({
@@ -304,7 +364,7 @@ class ProtonSDK {
     assetIds,
     price,
     currency,
-  }: CreateMultipleSalesOptions): Promise<SaleResponse> => {
+  }: CreateMultipleSalesOptions): Promise<Response> => {
     const announceSaleActions = assetIds.map((asset_id) => ({
       account: 'atomicmarket',
       name: 'announcesale',
@@ -371,13 +431,10 @@ class ProtonSDK {
    *
    * @param {string}   actor     Chain account of the asset's current owner.
    * @param {string}   sale_id   ID of the sale to cancel.
-   * @return {SaleResponse}      Returns an object indicating the success of the transaction and transaction ID.
+   * @return {Response}      Returns an object indicating the success of the transaction and transaction ID.
    */
 
-  cancelSale = async ({
-    actor,
-    sale_id,
-  }: SaleOptions): Promise<SaleResponse> => {
+  cancelSale = async ({ actor, sale_id }: SaleOptions): Promise<Response> => {
     const actions = [
       {
         account: 'atomicmarket',
@@ -421,13 +478,13 @@ class ProtonSDK {
    *
    * @param {string}   actor      Chain account of the asset's current owner.
    * @param {string[]} saleIds    Array of IDs for the sales to cancel.
-   * @return {SaleResponse}       Returns an object indicating the success of the transaction and transaction ID.
+   * @return {Response}       Returns an object indicating the success of the transaction and transaction ID.
    */
 
   cancelMultipleSales = async ({
     actor,
     saleIds,
-  }: CancelMultipleSalesOptions): Promise<SaleResponse> => {
+  }: CancelMultipleSalesOptions): Promise<Response> => {
     const actions = saleIds.map((sale_id) => ({
       account: 'atomicmarket',
       name: 'cancelsale',
@@ -468,7 +525,7 @@ class ProtonSDK {
     buyer,
     amount,
     sale_id,
-  }: PurchaseSaleOptions): Promise<SaleResponse> => {
+  }: PurchaseSaleOptions): Promise<Response> => {
     const actions = [
       {
         account: 'xtokens',
