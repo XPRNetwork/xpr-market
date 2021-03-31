@@ -21,7 +21,6 @@ export const Card = styled.article<CardProps>`
   padding: 0 24px 24px;
   position: relative;
   transition: 0.3s;
-  margin-bottom: 16px;
 
   :hover,
   :focus-visible {
@@ -98,6 +97,21 @@ export const Text = styled.span`
 export const GreyText = styled(Text)<GreyTextProps>`
   color: #808080;
   margin-bottom: 8px;
+`;
+
+export const Tag = styled.div`
+  font-family: CircularStdBold;
+  font-size: 10px;
+  line-height: 16px;
+  letter-spacing: 1px;
+  position: absolute;
+  bottom: 0;
+  margin: 16px;
+  padding: 8px 16px;
+  opacity: 0.6;
+  border-radius: 4px;
+  background-color: #1a1a1a;
+  color: #ffffff;
 `;
 
 export const PlaceholderIcon = styled(IconContainer).attrs({ as: 'div' })`
