@@ -5,7 +5,6 @@ import Grid from '../components/Grid';
 import PaginationButton from '../components/PaginationButton';
 import ErrorComponent from '../components/Error';
 import LoadingPage from '../components/LoadingPage';
-import { useAuthContext } from '../components/Provider';
 import { Title } from '../styles/Title.styled';
 import {
   Template,
@@ -14,6 +13,8 @@ import {
   getLowestPricesForAllCollectionTemplates,
 } from '../services/templates';
 import { DEFAULT_COLLECTION, PAGINATION_LIMIT } from '../utils/constants';
+import Banner from '../components/Banner';
+import { MODAL_TYPES, useAuthContext } from '../components/Provider';
 
 const MarketPlace = (): JSX.Element => {
   const router = useRouter();
@@ -124,6 +125,7 @@ const MarketPlace = (): JSX.Element => {
 
   return (
     <PageLayout title="MarketPlace">
+      <Banner modalType={MODAL_TYPES.CLAIM} />
       <Title>MarketPlace</Title>
       {getContent()}
     </PageLayout>
