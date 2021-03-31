@@ -9,18 +9,22 @@ import {
   Title,
   Text,
   GreyText,
+  Tag,
   PlaceholderIcon,
   PlaceholderPrice,
 } from './TemplateCard.styled';
+import { capitalize } from '../../utils';
 
 type Props = {
   collectionName: string;
-  collectionImage?: string;
   templateName: string;
-  templateImage?: string;
   editionSize: string;
-  hasMultiple: boolean;
+  isUsersTemplates?: boolean;
   redirectPath?: string;
+  totalAssets?: string;
+  assetsForSale?: string;
+  collectionImage?: string;
+  templateImage?: string;
   price?: string;
 };
 
@@ -38,37 +42,19 @@ const CollectionIcon = ({ name, image }: ImageProps) =>
     <PlaceholderIcon aria-hidden />
   );
 
-const TemplateImage = ({ name, image }: ImageProps) => {
-  const imageSrc = image
-    ? `https://cloudflare-ipfs.com/ipfs/${image}`
-    : '/placeholder-template-image.png';
-
-  return (
-    <ImageContainer>
-      <Image
-        priority
-        layout="responsive"
-        width={213}
-        height={220}
-        alt={name}
-        src={imageSrc}
-      />
-    </ImageContainer>
-  );
-};
-
 const TemplateCard = ({
   collectionName,
-  collectionImage,
   templateName,
-  templateImage,
-  hasMultiple,
   editionSize,
-  price,
   redirectPath,
+  isUsersTemplates,
+  totalAssets,
+  assetsForSale,
+  collectionImage,
+  templateImage,
+  price,
 }: Props): JSX.Element => {
   const router = useRouter();
-
   const openDetailPage = () => router.push(redirectPath);
 
   const handleEnterKey = (e: KeyboardEvent) => {
@@ -76,6 +62,20 @@ const TemplateCard = ({
       openDetailPage();
     }
   };
+
+  const imageSrc = templateImage
+    ? `https://cloudflare-ipfs.com/ipfs/${templateImage}`
+    : '/placeholder-template-image.png';
+
+  const hasMultiple =
+    totalAssets && !isNaN(parseInt(totalAssets)) && parseInt(totalAssets) > 1;
+
+  const priceTag =
+    isUsersTemplates && assetsForSale && totalAssets ? (
+      <Tag>
+        {assetsForSale}/{totalAssets} FOR SALE
+      </Tag>
+    ) : null;
 
   return (
     <Card
@@ -85,9 +85,19 @@ const TemplateCard = ({
       onKeyDown={redirectPath ? handleEnterKey : null}>
       <Row>
         <CollectionIcon name={collectionName} image={collectionImage} />
-        <Text>{collectionName}</Text>
+        <Text>{capitalize(collectionName)}</Text>
       </Row>
-      <TemplateImage name={templateName} image={templateImage} />
+      <ImageContainer>
+        <Image
+          priority
+          layout="responsive"
+          width={213}
+          height={220}
+          alt={templateName}
+          src={imageSrc}
+        />
+        {priceTag}
+      </ImageContainer>
       <Title>{templateName}</Title>
       <GreyText>Edition size: {editionSize}</GreyText>
       {price ? <Text>{price}</Text> : <PlaceholderPrice aria-hidden />}

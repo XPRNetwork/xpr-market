@@ -123,10 +123,7 @@ const Collection = (): JSX.Element => {
 
     return (
       <>
-        <Grid
-          items={renderedTemplates}
-          isUsersTemplates={currentProfile.length === 0}
-        />
+        <Grid items={renderedTemplates} />
         <PaginationButton
           onClick={showNextPage}
           isHidden={renderedTemplates.length < PAGINATION_LIMIT}

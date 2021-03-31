@@ -112,7 +112,7 @@ const MarketPlace = (): JSX.Element => {
 
     return (
       <>
-        <Grid isLoading={isLoading} items={renderedTemplates} />
+        <Grid items={renderedTemplates} />
         <PaginationButton
           onClick={showNextPage}
           isHidden={renderedTemplates.length < PAGINATION_LIMIT}
