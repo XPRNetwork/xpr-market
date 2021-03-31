@@ -56,18 +56,17 @@ export const CloseIconContainer = styled.div`
 `;
 
 export const Title = styled.h1`
-  font-family: CircularStdBold;
-  font-size: 24px;
+  font-size: 21px;
   line-height: 32px;
-  color: #0e103c;
-  margin-bottom: 16px;
+  color: #1a1a1a;
+  margin-bottom: 24px;
 `;
 
 export const Description = styled.p`
   font-size: 14px;
   line-height: 24px;
-  color: #7578b5;
-  margin-bottom: 24px;
+  color: #1a1a1a;
+  margin-bottom: 16px;
 `;
 
 export const InputLabel = styled(Description).attrs({ as: 'label' })`
@@ -124,4 +123,8 @@ export const HalfButton = styled(StyledButton)<HalfButtonProps>`
 
 export const Spacer = styled.div`
   flex: 1;
+
+  ${breakpoint.tablet`
+    flex: 0;
+  `}
 `;
