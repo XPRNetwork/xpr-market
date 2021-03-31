@@ -12,7 +12,7 @@ type Props = {
 const Banner = ({ toolTipContent, modalType }: Props): JSX.Element => {
   const { currentUser, atomicMarketBalance } = useAuthContext();
   const { openModal } = useModalContext();
-  const [isBannerVisible, setIsBannerVisible] = useState<boolean>(true);
+  const [isBannerVisible, setIsBannerVisible] = useState<boolean>(false);
 
   useEffect(() => {
     if (!atomicMarketBalance) return;
