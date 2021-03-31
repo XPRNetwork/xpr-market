@@ -1,24 +1,47 @@
+import { useState } from 'react';
 import PageLayout from '../components/PageLayout';
-import TemplateCard from '../components/TemplateCard';
+import { Title } from '../styles/Title.styled';
+import proton from '../services/proton';
+import { useAuthContext } from '../components/Provider';
 
-const Test = (): JSX.Element => {
+const TestPage = (): JSX.Element => {
+  const { currentUser } = useAuthContext();
+  const [recipient, setRecipient] = useState('');
+  const [assetId, setAssetId] = useState('');
+  const [memo, setMemo] = useState('');
+
+  const transfer = async () => {
+    const { actor } = currentUser;
+    const result = await proton.transfer({
+      sender: actor,
+      recipient: recipient,
+      asset_id: assetId,
+      memo: memo,
+    });
+    console.log('result: ', result);
+  };
+
   return (
-    <PageLayout title="Test">
-      <div
-        style={{
-          marginTop: '50px',
-          display: 'inline-grid',
-          gridColumnGap: '16px',
-          gridRowGap: '48px',
-          gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
-        }}>
-        <TemplateCard hasMultiple />
-        <TemplateCard hasMultiple />
-        <TemplateCard />
-        <TemplateCard />
-      </div>
+    <PageLayout title="TestPage">
+      <Title>Test Page</Title>
+      <input
+        value={recipient}
+        placeholder="recipient"
+        onChange={(e) => setRecipient(e.target.value)}
+      />
+      <input
+        value={assetId}
+        placeholder="assetId"
+        onChange={(e) => setAssetId(e.target.value)}
+      />
+      <input
+        value={memo}
+        placeholder="memo"
+        onChange={(e) => setMemo(e.target.value)}
+      />
+      <button onClick={transfer}>transfer</button>
     </PageLayout>
   );
 };
 
-export default Test;
+export default TestPage;
