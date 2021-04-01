@@ -25,6 +25,7 @@ export const usePrevious = (value: string): string => {
 export const useWindowSize = (): {
   windowWidth: number;
   isMobile: boolean;
+  isTablet: boolean;
 } => {
   const isSSR = typeof window === 'undefined';
   const [windowWidth, setWindowWidth] = useState(
@@ -33,13 +34,19 @@ export const useWindowSize = (): {
   const [isMobile, setIsMobile] = useState(
     isSSR ? false : window.innerWidth < 600
   );
+  const [isTablet, setIsTablet] = useState(
+    isSSR ? false : window.innerWidth < 970
+  );
 
   function changeWindowSize() {
     setWindowWidth(window.innerWidth);
     if (window.innerWidth < 600) {
       setIsMobile(true);
+    } else if (window.innerWidth < 970) {
+      setIsTablet(true);
     } else {
       setIsMobile(false);
+      setIsTablet(false);
     }
   }
 
@@ -51,7 +58,7 @@ export const useWindowSize = (): {
     };
   }, []);
 
-  return { windowWidth, isMobile };
+  return { windowWidth, isMobile, isTablet };
 };
 
 export const useEscapeKeyClose = (close: () => void): void => {
