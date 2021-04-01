@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { formatPrice } from '../../utils';
 import { useAuthContext, useModalContext } from '../Provider';
-import Tooltip from '../Tooltip';
 import { Background, Spacer, Content, Money } from './Banner.styled';
 
 type Props = {
@@ -9,7 +8,7 @@ type Props = {
   modalType: string;
 };
 
-const Banner = ({ toolTipContent, modalType }: Props): JSX.Element => {
+const Banner = ({ modalType }: Props): JSX.Element => {
   const { currentUser, atomicMarketBalance } = useAuthContext();
   const { openModal } = useModalContext();
   const [isBannerVisible, setIsBannerVisible] = useState<boolean>(false);
@@ -26,8 +25,9 @@ const Banner = ({ toolTipContent, modalType }: Props): JSX.Element => {
     }
   }, [currentUser, atomicMarketBalance]);
 
-  const getContent = () => {
-    return (
+  return isBannerVisible ? (
+    <>
+      <Spacer />
       <Background onClick={() => openModal(modalType)}>
         <Content>
           <Money role="img" aria-label="Money" right>
@@ -39,21 +39,8 @@ const Banner = ({ toolTipContent, modalType }: Props): JSX.Element => {
           </Money>
         </Content>
       </Background>
-    );
-  };
-
-  if (!isBannerVisible) return null;
-
-  return (
-    <>
-      <Spacer />
-      {toolTipContent ? (
-        <Tooltip content={toolTipContent}>{getContent()}</Tooltip>
-      ) : (
-        getContent()
-      )}
     </>
-  );
+  ) : null;
 };
 
 export default Banner;
