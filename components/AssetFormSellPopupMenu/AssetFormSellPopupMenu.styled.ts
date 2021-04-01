@@ -1,5 +1,9 @@
 import styled from 'styled-components';
 import { breakpoint } from '../../styles/Breakpoints';
+import {
+  GradientBackgroundProps,
+  GradientBackground,
+} from '../NavBar/NavBar.styled';
 
 type MenuProps = {
   isOpen: boolean;
@@ -63,4 +67,10 @@ export const MenuItem = styled.li`
   :last-of-type {
     margin-bottom: 16px;
   }
+`;
+
+export const TransparentBackground = styled(
+  GradientBackground
+)<GradientBackgroundProps>`
+  background: none;
 `;
