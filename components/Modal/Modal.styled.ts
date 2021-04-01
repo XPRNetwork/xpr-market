@@ -6,6 +6,7 @@ import { StyledButton, ButtonProps } from '../Button/Button.styled';
 interface HalfButtonProps extends ButtonProps {
   color?: string;
   hoverColor?: string;
+  height?: string;
 }
 
 export const Background = styled.div`
@@ -60,6 +61,7 @@ export const Title = styled.h1`
   line-height: 32px;
   color: #1a1a1a;
   margin-bottom: 24px;
+  font-weight: normal;
 `;
 
 export const Description = styled.p`
@@ -103,6 +105,15 @@ export const Row = styled.div`
   display: flex;
 `;
 
+export const Column = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+export const ModalButton = styled(StyledButton)`
+  height: 48px;
+`;
+
 export const HalfButton = styled(StyledButton)<HalfButtonProps>`
   flex: 1;
 
@@ -110,7 +121,7 @@ export const HalfButton = styled(StyledButton)<HalfButtonProps>`
     color &&
     `
     background-color: ${color};
-  `}
+  `};
 
   ${({ hoverColor }) =>
     hoverColor &&
@@ -118,7 +129,7 @@ export const HalfButton = styled(StyledButton)<HalfButtonProps>`
     :hover {
       background-color: ${hoverColor};
     }
-  `}
+  `};
 `;
 
 export const Spacer = styled.div`
@@ -126,5 +137,5 @@ export const Spacer = styled.div`
 
   ${breakpoint.tablet`
     flex: 0;
-  `}
+  `};
 `;

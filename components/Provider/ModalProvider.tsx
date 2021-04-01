@@ -15,6 +15,7 @@ export const MODAL_TYPES = {
   CREATE_MULTIPLE_SALES: 'CREATE_MULTIPLE_SALES',
   CANCEL_SALE: 'CANCEL_SALE',
   CANCEL_MULTIPLE_SALES: 'CANCEL_MULTIPLE_SALES',
+  TRANSFER: 'TRANSFER',
 };
 
 type Props = {
@@ -41,11 +42,17 @@ export interface CreateMultipleSalesModalProps extends SaleModalProps {
   assetIds: string[];
 }
 
+export interface TransferNFTModalProps extends SaleModalProps {
+  assetId: string;
+  templateMint: string;
+}
+
 type ModalProps =
   | CancelSaleModalProps
   | CancelMultipleSalesModalProps
   | CreateSaleModalProps
-  | CreateMultipleSalesModalProps;
+  | CreateMultipleSalesModalProps
+  | TransferNFTModalProps;
 
 type ModalContextValue = {
   modalType: string;

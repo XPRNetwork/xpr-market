@@ -5,29 +5,40 @@ import {
   Menu,
   MenuItem,
   TransparentBackground,
-} from './AssetFormSellPopupMenu.styled';
+} from './AssetFormPopupMenu.styled';
 import { ReactComponent as Ellipsis } from '../../public/ellipsis.svg';
-import {
-  useModalContext,
-  MODAL_TYPES,
-  CreateMultipleSalesModalProps,
-  CancelMultipleSalesModalProps,
-} from '../Provider';
+import { useModalContext, MODAL_TYPES } from '../Provider';
 import { useScrollLock, useEscapeKeyClose } from '../../hooks';
 
-const AssetFormSellPopupMenu = (): JSX.Element => {
-  const { openModal, modalProps } = useModalContext();
+type Props = {
+  transferNFT?: () => void;
+  assetIds?: string[];
+  saleIds?: string[];
+};
+
+const AssetFormPopupMenu = ({
+  transferNFT,
+  assetIds,
+  saleIds,
+}: Props): JSX.Element => {
+  const { openModal } = useModalContext();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const togglePopupMenu = () => setIsOpen(!isOpen);
   const closePopupMenu = () => setIsOpen(false);
-  const { saleIds } = modalProps as CancelMultipleSalesModalProps;
-  const { assetIds } = modalProps as CreateMultipleSalesModalProps;
   useScrollLock(isOpen);
   useEscapeKeyClose(closePopupMenu);
 
   const popupMenuItems = [
     {
-      isHidden: assetIds && assetIds.length === 0,
+      isHidden: false,
+      name: 'Transfer NFT',
+      onClick: () => {
+        setIsOpen(false);
+        transferNFT();
+      },
+    },
+    {
+      isHidden: !assetIds || assetIds.length === 0,
       name: 'Mark all for sale',
       onClick: () => {
         setIsOpen(false);
@@ -35,7 +46,7 @@ const AssetFormSellPopupMenu = (): JSX.Element => {
       },
     },
     {
-      isHidden: saleIds && saleIds.length === 0,
+      isHidden: !saleIds || saleIds.length === 0,
       name: 'Cancel all sales',
       onClick: () => {
         setIsOpen(false);
@@ -65,4 +76,4 @@ const AssetFormSellPopupMenu = (): JSX.Element => {
   );
 };
 
-export default AssetFormSellPopupMenu;
+export default AssetFormPopupMenu;
