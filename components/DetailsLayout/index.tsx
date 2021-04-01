@@ -26,6 +26,9 @@ type Props = {
   sales: Sale[];
   error?: string;
   currentAsset?: Partial<SaleAsset> & Partial<Asset>;
+  transferNFT?: () => void;
+  assetIds?: string[];
+  saleIds?: string[];
 };
 
 const AssetImage = ({ image }: { image: string }): JSX.Element => (
@@ -49,6 +52,9 @@ const DetailsLayout = ({
   sales,
   error,
   currentAsset,
+  transferNFT,
+  assetIds,
+  saleIds,
 }: Props): JSX.Element => {
   const [salesTableActive, setSalesTableActive] = useState(true);
   return (
@@ -60,6 +66,9 @@ const DetailsLayout = ({
             templateName={templateName}
             collectionName={collectionName}
             collectionAuthor={collectionAuthor}
+            transferNFT={transferNFT}
+            saleIds={saleIds}
+            assetIds={assetIds}
           />
           <Divider />
           {children}

@@ -5,6 +5,9 @@ type InputProps = {
   halfWidth?: boolean;
   mr?: string;
   ml?: string;
+  mb?: string;
+  mt?: string;
+  disabled?: boolean;
 };
 
 export const InputContainer = styled.div<InputProps>`
@@ -13,16 +16,21 @@ export const InputContainer = styled.div<InputProps>`
   width: ${({ halfWidth }) => (halfWidth ? '50%' : '100%')};
   margin-right: ${({ mr }) => (mr ? mr : 0)};
   margin-left: ${({ ml }) => (ml ? ml : 0)};
+  margin-top: ${({ mt }) => (mt ? mt : 0)};
+  margin-bottom: ${({ mb }) => (mb ? mb : 0)};
   transition: 0.2s;
   display: flex;
   align-items: center;
   position: relative;
 
-  :hover,
+  ${({ disabled }) =>
+    disabled
+      ? ''
+      : `:hover,
   :focus,
   :focus-visible {
     border: solid 1px ${({ hasError }) => (hasError ? '#f94e6c' : '#752eeb')};
-  }
+  }`}
 `;
 
 export const Input = styled.input`

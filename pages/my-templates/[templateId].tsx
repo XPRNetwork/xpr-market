@@ -52,6 +52,8 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
   const [currentAsset, setCurrentAsset] = useState<Partial<Asset>>({});
+  const [assetIds, setAssetIds] = useState<string[]>([]);
+  const [saleIds, setSaleIds] = useState<string[]>();
 
   const isSelectedAssetBeingSold =
     saleDataByAssetId[currentAsset.asset_id] &&
@@ -90,6 +92,8 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
         fetchPageData,
       });
 
+      setAssetIds(assetIds);
+      setSaleIds(saleIds);
       setTemplateAssets(assets);
       setCurrentAsset(assets[0]);
       setSaleDataByAssetId(saleData);
@@ -117,6 +121,15 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
       fetchPageData();
     }
   }, [templateId]);
+
+  const transferNFT = () => {
+    openModal(MODAL_TYPES.TRANSFER);
+    setModalProps({
+      assetId: currentAsset.asset_id,
+      templateMint: currentAsset.template_mint,
+      fetchPageData,
+    });
+  };
 
   const createSale = () => {
     openModal(MODAL_TYPES.CREATE_SALE);
@@ -162,7 +175,10 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
         sales={sales}
         error={error}
         image={image}
-        currentAsset={currentAsset}>
+        currentAsset={currentAsset}
+        transferNFT={transferNFT}
+        assetIds={assetIds}
+        saleIds={saleIds}>
         <AssetFormSell
           dropdownAssets={templateAssets}
           lowestPrice={lowestPrice}

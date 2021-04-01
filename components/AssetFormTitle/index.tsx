@@ -9,19 +9,25 @@ import {
   Author,
   CollectionIconContainer,
 } from './AssetFormTitle.styled';
-import AssetFormSellPopupMenu from '../AssetFormSellPopupMenu';
+import AssetFormPopupMenu from '../AssetFormPopupMenu';
 import { capitalize } from '../../utils';
 
 type Props = {
   templateName: string;
   collectionName: string;
   collectionAuthor: string;
+  transferNFT?: () => void;
+  assetIds?: string[];
+  saleIds?: string[];
 };
 
 const AssetFormTitle = ({
   templateName,
   collectionName,
   collectionAuthor,
+  transferNFT,
+  assetIds,
+  saleIds,
 }: Props): JSX.Element => {
   const router = useRouter();
   const isMyTemplate = router.pathname.includes('my-templates');
@@ -46,7 +52,13 @@ const AssetFormTitle = ({
       </CollectionIconContainer>
       <NameContainer>
         <Name>{templateName}</Name>
-        {isMyTemplate && <AssetFormSellPopupMenu />}
+        {isMyTemplate && (
+          <AssetFormPopupMenu
+            transferNFT={transferNFT}
+            assetIds={assetIds}
+            saleIds={saleIds}
+          />
+        )}
       </NameContainer>
       <General>
         Created by{' '}

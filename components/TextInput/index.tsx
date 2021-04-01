@@ -13,6 +13,7 @@ type Props = {
   text: string;
   placeholder: string;
   setText: Dispatch<SetStateAction<string>>;
+  setFormError?: Dispatch<SetStateAction<string>>;
   checkIfIsValid: (
     text: string
   ) => {
@@ -25,6 +26,9 @@ type Props = {
   halfWidth?: boolean;
   mr?: string;
   ml?: string;
+  mt?: string;
+  mb?: string;
+  disabled?: boolean;
 };
 
 const TextInput = ({
@@ -32,6 +36,7 @@ const TextInput = ({
   text,
   placeholder,
   setText,
+  setFormError,
   checkIfIsValid,
   submit,
   tooltip,
@@ -39,12 +44,16 @@ const TextInput = ({
   halfWidth,
   mr,
   ml,
+  mt,
+  mb,
+  disabled,
 }: Props): JSX.Element => {
   const [error, setError] = useState<string>('');
 
   const updateText = (e: ChangeEvent<HTMLInputElement>) => {
     const textInput = e.target.value;
     setError('');
+    setFormError('');
     setText(textInput);
 
     const { isValid, errorMessage } = checkIfIsValid(textInput);
@@ -60,7 +69,13 @@ const TextInput = ({
   };
 
   return (
-    <InputContainer halfWidth={halfWidth} mr={mr} ml={ml} hasError={!!error}>
+    <InputContainer
+      halfWidth={halfWidth}
+      mr={mr}
+      ml={ml}
+      mt={mt}
+      mb={mb}
+      hasError={!!error}>
       <Input
         required
         type={inputType}
@@ -68,6 +83,7 @@ const TextInput = ({
         value={text}
         onChange={updateText}
         onKeyDown={submit ? handleKeyDown : null}
+        disabled={disabled}
       />
       {tooltip ? (
         <Tooltip text={tooltip} numberOfLines={numberOfTooltipLines} />

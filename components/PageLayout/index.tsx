@@ -9,6 +9,7 @@ import {
   CreateMultipleSalesModal,
   CancelSaleModal,
   CancelMultipleSalesModal,
+  TransferModal,
 } from '../Modal';
 import { useEscapeKeyClose } from '../../hooks';
 
@@ -37,6 +38,8 @@ const PageLayout = ({ title, children }: Props): JSX.Element => {
         return <CancelSaleModal />;
       case MODAL_TYPES.CANCEL_MULTIPLE_SALES:
         return <CancelMultipleSalesModal />;
+      case MODAL_TYPES.TRANSFER:
+        return <TransferModal />;
       default:
         return null;
     }
