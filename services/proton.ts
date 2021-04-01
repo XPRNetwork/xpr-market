@@ -17,6 +17,11 @@ interface TransferOptions {
   memo?: string;
 }
 
+interface BurnOptions {
+  owner: string;
+  asset_id: string;
+}
+
 interface CreateSaleOptions {
   seller: string;
   asset_id: string;
@@ -164,7 +169,7 @@ class ProtonSDK {
   };
 
   /**
-   * Cancel the announcement of an asset sale and its initial offer on atomic market.
+   * Transfer an asset to another user
    *
    * @param {string}   sender       Chain account of the asset's current owner.
    * @param {string}   recipient    Chain account of recipient of asset to transfer
@@ -217,6 +222,55 @@ class ProtonSDK {
         error:
           e.message ||
           'An error has occured while attempting to transfer the asset',
+      };
+    }
+  };
+
+  /**
+   * Burn an asset (deletes the asset permanently). If there previously were core tokens backed for this asset, these core tokens are transferred to owner.
+   *
+   * @param {string}   owner         Chain account of the asset's current owner.
+   * @param {string}   asset_id     ID of the asset being transferred
+   * @return {Response}             Returns an object indicating the success of the transaction and transaction ID.
+   */
+
+  burn = async ({ owner, asset_id }: BurnOptions): Promise<Response> => {
+    const action = [
+      {
+        account: 'atomicassets',
+        name: 'burnasset',
+        authorization: [
+          {
+            actor: owner,
+            permission: 'active',
+          },
+        ],
+        data: {
+          asset_owner: owner,
+          asset_id,
+        },
+      },
+    ];
+    try {
+      if (!this.session) {
+        throw new Error('Must be logged in to burn an asset');
+      }
+
+      const result = await this.session.transact(
+        { actions: action },
+        { broadcast: true }
+      );
+
+      return {
+        success: true,
+        transactionId: result.processed.id,
+      };
+    } catch (e) {
+      return {
+        success: false,
+        error:
+          e.message ||
+          'An error has occurred while attempting to burn the asset',
       };
     }
   };
