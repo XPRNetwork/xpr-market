@@ -1,40 +1,43 @@
 import styled from 'styled-components';
 
-export const Background = styled.div`
-  position: fixed;
-  left: 0;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-`;
+type TooltipContentProps = {
+  isActive: boolean;
+  numberOfLines: number;
+};
 
-export const Header = styled.h1`
-  font-size: 16px;
-  margin-bottom: 8px;
-  font-family: CircularStdMedium;
-  color: red;
-`;
-
-export const Content = styled.div`
-  font-family: CircularStdMedium;
-  font-size: 12px;
-  color: #7578b5;
-  flex-direction: column;
-  max-width: 350px;
-  padding: 8px;
-  background-color: white;
-  border: 1px solid #7578b5;
-  border-radius: 4px;
-  margin-top: 48px;
+export const TooltipIconContainer = styled.div`
   position: absolute;
+  right: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 100%;
+  margin-right: 18px;
+`;
+
+export const TooltipContent = styled.p<TooltipContentProps>`
+  display: ${({ isActive }) => (isActive ? 'block' : 'none')};
+  z-index: 1;
+  font-size: 12px;
+  line-height: 20px;
+  color: #ffffff;
+  flex-direction: column;
+  padding: 8px;
+  background-color: #1a1a1a;
+  border-radius: 8px;
+  position: absolute;
+  width: 184px;
+  top: ${({ numberOfLines }) =>
+    numberOfLines && numberOfLines > 1 ? numberOfLines * -25 : -30}px;
+  right: -62px;
+  text-align: center;
 
   ::before {
     content: '';
     position: absolute;
-    left: 50%;
-    border: solid transparent;
-    top: -11px;
-    border-width: 5px;
-    border-bottom-color: #7578b5;
+    top: 100%;
+    left: 48%;
+    border-width: 7px;
+    border-style: solid;
+    border-color: #1a1a1a transparent transparent transparent;
   }
 `;

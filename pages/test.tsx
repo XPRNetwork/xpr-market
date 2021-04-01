@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import PageLayout from '../components/PageLayout';
-import { Title } from '../styles/Title.styled';
-import proton from '../services/proton';
 import { useAuthContext } from '../components/Provider';
+import proton from '../services/proton';
+import { Title } from '../styles/Title.styled';
+import TextInput from '../components/TextInput';
 
 const TestPage = (): JSX.Element => {
   const { currentUser } = useAuthContext();
@@ -11,6 +12,9 @@ const TestPage = (): JSX.Element => {
   const [assetIdBurn, setAssetIdBurn] = useState('');
 
   const [memo, setMemo] = useState('');
+  const [text1, setText1] = useState<string>('');
+  const [text2, setText2] = useState<string>('');
+  const [text3, setText3] = useState<string>('');
 
   const transfer = async () => {
     const { actor } = currentUser;
@@ -58,6 +62,57 @@ const TestPage = (): JSX.Element => {
         onChange={(e) => setAssetIdBurn(e.target.value)}
       />
       <button onClick={burn}>burn</button>
+      <br />
+      <div style={{ display: 'flex' }}>
+        <TextInput
+          text={text1}
+          setText={setText1}
+          tooltip="Test one-liner tooltip"
+          numberOfTooltipLines={1}
+          placeholder="Test input"
+          mr="4px"
+          checkIfIsValid={(input) => {
+            const isValid = input.length === 0;
+            const errorMessage = 'Error: this is a test error message.';
+            return {
+              isValid,
+              errorMessage,
+            };
+          }}
+        />
+        <TextInput
+          text={text2}
+          setText={setText2}
+          tooltip="Test two-liner tooltip: test test test test test"
+          numberOfTooltipLines={2}
+          placeholder="Test input"
+          ml="4px"
+          checkIfIsValid={(input) => {
+            const isValid = input.length === 0;
+            const errorMessage = 'Error: this is a test error message.';
+            return {
+              isValid,
+              errorMessage,
+            };
+          }}
+        />
+      </div>
+      <br />
+      <TextInput
+        text={text3}
+        setText={setText3}
+        tooltip="Test three-liner tooltip: test test test test test test test test test test test test test"
+        numberOfTooltipLines={3}
+        placeholder="Test input"
+        checkIfIsValid={(input) => {
+          const isValid = input.length === 0;
+          const errorMessage = 'Error: this is a test error message.';
+          return {
+            isValid,
+            errorMessage,
+          };
+        }}
+      />
     </PageLayout>
   );
 };
