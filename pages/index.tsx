@@ -30,13 +30,10 @@ const MarketPlace = (): JSX.Element => {
   const [prefetchPageNumber, setPrefetchPageNumber] = useState<number>(2);
   const [isLoadingNextPage, setIsLoadingNextPage] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string>('');
-  const [collectionType, setCollectionType] = useState<string>(
-    DEFAULT_COLLECTION
-  );
 
   const prefetchNextPage = async () => {
     const prefetchedResult = await getTemplatesByCollection({
-      type: collectionType,
+      type: DEFAULT_COLLECTION,
       page: prefetchPageNumber,
     });
     setPrefetchedTemplates(prefetchedResult as Template[]);
@@ -64,11 +61,13 @@ const MarketPlace = (): JSX.Element => {
     (async () => {
       try {
         const lowestPricesResult = await getLowestPricesForAllCollectionTemplates(
-          { type: collectionType }
+          { type: DEFAULT_COLLECTION }
         );
         setLowestPrices(lowestPricesResult);
 
-        const result = await getTemplatesByCollection({ type: collectionType });
+        const result = await getTemplatesByCollection({
+          type: DEFAULT_COLLECTION,
+        });
         const templatesWithLowestPrice = formatTemplatesWithPriceData(
           result,
           lowestPricesResult

@@ -1,5 +1,5 @@
 import { Asset } from './assets';
-import { Collection } from './templates';
+import { Collection } from './collections';
 import { getFromApi } from '../utils/browser-fetch';
 import { toQueryString, addPrecisionDecimal } from '../utils';
 import { TOKEN_SYMBOL, PAGINATION_LIMIT } from '../utils/constants';
