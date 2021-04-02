@@ -79,7 +79,7 @@ const SearchInput = ({
   const handleClearTextButtonKeyDown = (e: KeyboardEvent) => {
     const isDownArrow = e.key === 'ArrowDown';
     const isTab = e.key === 'Tab' && !e.shiftKey;
-    if (isDownArrow || isTab) {
+    if (resultsListRef.current && (isDownArrow || isTab)) {
       e.preventDefault();
       const firstResultItem = resultsListRef.current
         .childNodes[1] as HTMLElement;
@@ -113,8 +113,10 @@ const SearchInput = ({
 
   const collections = Object.values(collectionNames)
     .filter(({ name }) => {
-      const isFragment = name.toLowerCase().includes(input.toLowerCase());
-      return isFragment;
+      const caseInsensitiveName = name.toLowerCase();
+      const caseInsensitiveInput = input.toLowerCase();
+      const isFragment = caseInsensitiveName.includes(caseInsensitiveInput);
+      return isFragment && caseInsensitiveName !== caseInsensitiveInput;
     })
     .slice(0, 5);
 
@@ -143,12 +145,13 @@ const SearchInput = ({
         onKeyDown={handleClearTextButtonKeyDown}>
         <CloseIcon />
       </ClearTextButton>
-      {input && (
+      {input && collections.length !== 0 && (
         <SearchInputResultsList
           input={input}
           collections={collections}
           inputRef={inputRef}
           resultsListRef={resultsListRef}
+          clearTextButtonRef={clearTextButtonRef}
           search={search}
           setInput={setInput}
         />

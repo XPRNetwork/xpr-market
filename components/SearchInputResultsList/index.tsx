@@ -20,6 +20,7 @@ type Props = {
   }>;
   inputRef: MutableRefObject<HTMLInputElement>;
   resultsListRef: MutableRefObject<HTMLUListElement>;
+  clearTextButtonRef: MutableRefObject<HTMLButtonElement>;
   search: (type: string) => void;
   setInput: Dispatch<SetStateAction<string>>;
 };
@@ -29,6 +30,7 @@ const SearchInputResultsList = ({
   collections,
   inputRef,
   resultsListRef,
+  clearTextButtonRef,
   search,
   setInput,
 }: Props): JSX.Element => {
@@ -76,11 +78,11 @@ const SearchInputResultsList = ({
         navigateNext(e);
         break;
       case 'Tab':
+        e.preventDefault();
         if (!e.shiftKey && input !== name) {
-          e.preventDefault();
           setInput(name);
         } else {
-          setInput('');
+          clearTextButtonRef.current.focus();
         }
         break;
       default:
