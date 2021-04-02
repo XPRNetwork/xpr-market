@@ -2,6 +2,7 @@ import { useState } from 'react';
 import PageLayout from '../components/PageLayout';
 import { useAuthContext } from '../components/Provider';
 import proton from '../services/proton';
+import { getUserCreatedTemplates } from '../services/templates';
 import { Title } from '../styles/Title.styled';
 import TextInput from '../components/TextInput';
 
@@ -10,7 +11,7 @@ const TestPage = (): JSX.Element => {
   const [recipient, setRecipient] = useState('');
   const [assetIdTransfer, setAssetIdTransfer] = useState('');
   const [assetIdBurn, setAssetIdBurn] = useState('');
-
+  const [ownCreationUser, setOwnCreationUser] = useState('monsters');
   const [memo, setMemo] = useState('');
   const [text1, setText1] = useState<string>('');
   const [text2, setText2] = useState<string>('');
@@ -34,6 +35,11 @@ const TestPage = (): JSX.Element => {
       asset_id: assetIdBurn,
     });
     console.log('result burn: ', result);
+  };
+
+  const getOwnCreations = async () => {
+    const result = await getUserCreatedTemplates(ownCreationUser);
+    console.log('result for your own creations: ', result);
   };
 
   return (
@@ -113,6 +119,13 @@ const TestPage = (): JSX.Element => {
           };
         }}
       />
+      <br />
+      <input
+        value={ownCreationUser}
+        placeholder="account name"
+        onChange={(e) => setOwnCreationUser(e.target.value)}
+      />
+      <button onClick={getOwnCreations}>See own creations (console log)</button>
     </PageLayout>
   );
 };
