@@ -34,11 +34,13 @@ export const ClearTextButton = styled(IconButton)<ClearTextButtonProps>`
   margin-right: 12px;
   border-radius: 100%;
   transition: 0.3s;
+  border: 1px solid white;
 
   :hover,
   :focus-visible {
     transform: scale(1.3);
     background: #f2f2f2;
+    border: 1px solid #752eeb;
   }
 
   ${breakpoint.tablet`
