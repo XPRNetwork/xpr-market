@@ -389,3 +389,31 @@ export const getTemplatesFromTemplateIds = async (
     throw new Error(e);
   }
 };
+
+export const getUserCreatedTemplates = async (
+  account: string,
+  page?: number
+): Promise<Template[]> => {
+  try {
+    const pageParam = page ? page : 1;
+    const queryObject = {
+      authorized_account: account,
+      sort: 'updated',
+      order: 'desc',
+      page: pageParam,
+      limit: PAGINATION_LIMIT,
+    };
+    const queryString = toQueryString(queryObject);
+    const templatesResponse = await getFromApi<Template[]>(
+      `${process.env.NEXT_PUBLIC_NFT_ENDPOINT}/atomicassets/v1/templates?${queryString}`
+    );
+
+    if (!templatesResponse.success) {
+      throw new Error((templatesResponse.message as unknown) as string);
+    }
+
+    return templatesResponse.data;
+  } catch (e) {
+    throw new Error(e);
+  }
+};
