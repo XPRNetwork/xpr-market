@@ -74,13 +74,6 @@ export const ImageContainer = styled(FadeInImageContainer)`
   -moz-transform: translate3d(0, 0, 0);
 `;
 
-export const IconContainer = styled(ImageContainer)`
-  margin: 24px 16px 24px 0;
-  width: 32px;
-  height: 32px;
-  border-radius: 100%;
-`;
-
 export const Title = styled.h1`
   font-size: 21px;
   line-height: 32px;
@@ -112,10 +105,6 @@ export const Tag = styled.div`
   border-radius: 4px;
   background-color: #1a1a1a;
   color: #ffffff;
-`;
-
-export const PlaceholderIcon = styled(IconContainer).attrs({ as: 'div' })`
-  background-color: #e6e6e6;
 `;
 
 export const PlaceholderPrice = styled.div`

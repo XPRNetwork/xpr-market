@@ -5,14 +5,13 @@ import {
   Card,
   Row,
   ImageContainer,
-  IconContainer,
   Title,
   Text,
   GreyText,
   Tag,
-  PlaceholderIcon,
   PlaceholderPrice,
 } from './TemplateCard.styled';
+import CollectionIcon from '../CollectionIcon';
 import { capitalize } from '../../utils';
 
 type Props = {
@@ -27,20 +26,6 @@ type Props = {
   templateImage?: string;
   price?: string;
 };
-
-type ImageProps = {
-  name: string;
-  image?: string;
-};
-
-const CollectionIcon = ({ name, image }: ImageProps) =>
-  image ? (
-    <IconContainer>
-      <Image priority layout="fill" alt={name} src={image} />
-    </IconContainer>
-  ) : (
-    <PlaceholderIcon aria-hidden />
-  );
 
 const TemplateCard = ({
   collectionName,
@@ -84,7 +69,11 @@ const TemplateCard = ({
       onClick={redirectPath ? openDetailPage : null}
       onKeyDown={redirectPath ? handleEnterKey : null}>
       <Row>
-        <CollectionIcon name={collectionName} image={collectionImage} />
+        <CollectionIcon
+          name={collectionName}
+          image={collectionImage}
+          margin="24px 16px 24px 0"
+        />
         <Text>{capitalize(collectionName)}</Text>
       </Row>
       <ImageContainer>

@@ -6,6 +6,7 @@ import {
   DEFAULT_COLLECTION,
   PAGINATION_LIMIT,
 } from '../utils/constants';
+import { Collection } from './collections';
 
 export type SchemaFormat = {
   name: string;
@@ -17,19 +18,6 @@ export type Schema = {
   format: SchemaFormat[];
   created_at_block: string;
   created_at_time: string;
-};
-
-export type Collection = {
-  author: string;
-  collection_name: string;
-  name?: string | null;
-  img?: string | null;
-  allow_notify?: boolean;
-  authorized_accounts?: string[];
-  notify_accounts?: string[] | [];
-  market_fee?: number;
-  created_at_block?: string;
-  created_at_time?: string;
 };
 
 type ImmutableData = {

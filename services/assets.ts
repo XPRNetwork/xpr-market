@@ -1,4 +1,5 @@
-import { Collection, Schema, Template } from './templates';
+import { Schema, Template } from './templates';
+import { Collection } from './collections';
 import { getAssetSale, getAllTemplateSales } from './sales';
 import { addPrecisionDecimal, toQueryString } from '../utils';
 import { getFromApi } from '../utils/browser-fetch';

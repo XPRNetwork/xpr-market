@@ -2,11 +2,12 @@ import styled from 'styled-components';
 import { breakpoint } from '../../styles/Breakpoints';
 
 type InputContainerProps = {
+  isSearchInputActive: boolean;
   isMobileSearchOpen: boolean;
 };
 
-type CloseIconButtonProps = {
-  hasText: boolean;
+type ClearTextButtonProps = {
+  isVisibleOnDesktop: boolean;
 };
 
 const IconButton = styled.button`
@@ -27,9 +28,18 @@ export const MagnifyingIconButton = styled(IconButton)`
   `}
 `;
 
-export const CloseIconButton = styled(IconButton)<CloseIconButtonProps>`
-  display: ${({ hasText }) => (hasText ? 'flex' : 'none')};
+export const ClearTextButton = styled(IconButton)<ClearTextButtonProps>`
+  display: ${({ isVisibleOnDesktop }) =>
+    isVisibleOnDesktop ? 'flex' : 'none'};
   margin-right: 12px;
+  border-radius: 100%;
+  transition: 0.3s;
+
+  :hover,
+  :focus-visible {
+    transform: scale(1.3);
+    background: #f2f2f2;
+  }
 
   ${breakpoint.tablet`
     display: flex;
@@ -38,17 +48,20 @@ export const CloseIconButton = styled(IconButton)<CloseIconButtonProps>`
 
 export const InputContainer = styled.div<InputContainerProps>`
   border-radius: 8px;
-  border: solid 2px #f2f2f2;
-  width: 40%;
+  width: 50%;
   transition: 0.2s;
   display: flex;
   align-items: center;
-  background: #f2f2f2;
+  background: ${({ isSearchInputActive }) =>
+    isSearchInputActive ? 'white' : '#f2f2f2'};
+  border: solid 1px
+    ${({ isSearchInputActive }) =>
+      isSearchInputActive ? '#752eeb' : '#f2f2f2'};
 
-  :hover,
   :focus,
   :focus-visible {
-    border: solid 2px #752eeb;
+    background: white;
+    border: solid 1px #752eeb;
   }
 
   @media (max-width: 1360px) {
