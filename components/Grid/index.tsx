@@ -30,6 +30,14 @@ const Grid = ({ items }: Props): JSX.Element => {
           const redirectPath = isUsersTemplates
             ? `/my-templates/${template_id}`
             : `/${template_id}`;
+          const ownerHasMultiple =
+            totalAssets &&
+            !isNaN(parseInt(totalAssets)) &&
+            parseInt(totalAssets) > 1;
+          const hasMultiple =
+            !totalAssets && !isNaN(parseInt(issued_supply))
+              ? parseInt(issued_supply) > 1
+              : false;
           return (
             <TemplateCard
               key={template_id}
@@ -43,6 +51,7 @@ const Grid = ({ items }: Props): JSX.Element => {
               collectionImage={img}
               templateImage={image}
               price={lowestPrice}
+              hasMultiple={ownerHasMultiple || hasMultiple}
             />
           );
         }
