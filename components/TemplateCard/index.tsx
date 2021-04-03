@@ -25,6 +25,7 @@ type Props = {
   collectionImage?: string;
   templateImage?: string;
   price?: string;
+  hasMultiple?: boolean;
 };
 
 const TemplateCard = ({
@@ -38,6 +39,7 @@ const TemplateCard = ({
   collectionImage,
   templateImage,
   price,
+  hasMultiple,
 }: Props): JSX.Element => {
   const router = useRouter();
   const openDetailPage = () => router.push(redirectPath);
@@ -51,9 +53,6 @@ const TemplateCard = ({
   const imageSrc = templateImage
     ? `https://cloudflare-ipfs.com/ipfs/${templateImage}`
     : '/placeholder-template-image.png';
-
-  const hasMultiple =
-    totalAssets && !isNaN(parseInt(totalAssets)) && parseInt(totalAssets) > 1;
 
   const priceTag =
     isUsersTemplates && assetsForSale && totalAssets ? (

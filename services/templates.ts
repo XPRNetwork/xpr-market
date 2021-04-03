@@ -155,18 +155,17 @@ export const getTemplatesByCollection = async ({
 };
 
 /**
- * Gets the lowest price of assets for sale for a collection's templates
- * Mostly used to display the lowest price of any of the templates with assets for sale in the collection
- * @param  {string} type               Name of collection that templates belong to
- * @return {Template[]}                Returns array of templates with an additional 'lowestPrice' flag
+ * Gets the number of templates a collection has
+ * @param  {string} type    Name of collection that templates belong to
+ * @return {number}         Returns the number of templates of a specific collection
  */
 
-export const getLowestPricesForAllCollectionTemplates = async ({
+export const getNumberOfTemplatesByCollection = async ({
   type,
 }: {
   type: string;
-}): Promise<{ [id: string]: string }> => {
-  const statsResults = await getFromApi<{ templates: number }>(
+}): Promise<number> => {
+  const statsResults = await getFromApi<{ templates: string }>(
     `${process.env.NEXT_PUBLIC_NFT_ENDPOINT}/atomicassets/v1/collections/${type}/stats`
   );
 
@@ -178,8 +177,23 @@ export const getLowestPricesForAllCollectionTemplates = async ({
     throw new Error(errorMessage as string);
   }
 
-  const numberOfTemplates = statsResults.data.templates;
+  const numberOfTemplates = parseInt(statsResults.data.templates);
+  return isNaN(numberOfTemplates) ? 0 : numberOfTemplates;
+};
 
+/**
+ * Gets the lowest price of assets for sale for a collection's templates
+ * Mostly used to display the lowest price of any of the templates with assets for sale in the collection
+ * @param  {string} type               Name of collection that templates belong to
+ * @return {Template[]}                Returns array of templates with an additional 'lowestPrice' flag
+ */
+
+export const getLowestPricesForAllCollectionTemplates = async ({
+  type,
+}: {
+  type: string;
+}): Promise<{ [id: string]: string }> => {
+  const numberOfTemplates = await getNumberOfTemplatesByCollection({ type });
   const salesQueryObject = {
     collection_name: type,
     symbol: TOKEN_SYMBOL,
