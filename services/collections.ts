@@ -11,6 +11,29 @@ export type Collection = {
   market_fee?: number;
   created_at_block?: string;
   created_at_time?: string;
+  data?: {
+    img?: string;
+    name?: string;
+    description?: string;
+  };
+};
+
+export const emptyCollection: Collection = {
+  author: '',
+  collection_name: '',
+  name: '',
+  img: '',
+  allow_notify: false,
+  authorized_accounts: [],
+  notify_accounts: [],
+  market_fee: 0,
+  created_at_block: '',
+  created_at_time: '',
+  data: {
+    img: '',
+    name: '',
+    description: '',
+  },
 };
 
 export type CollectionsByName = {
@@ -59,6 +82,23 @@ export const getAllCollectionNames = async (): Promise<CollectionsByName> => {
     }
 
     return collectionNames;
+  } catch (e) {
+    throw new Error(e);
+  }
+};
+
+export const getCollection = async (
+  collectionName: string
+): Promise<Collection> => {
+  try {
+    const result = await getFromApi<Collection>(
+      `${process.env.NEXT_PUBLIC_NFT_ENDPOINT}/atomicassets/v1/collections/${collectionName}`
+    );
+
+    if (!result.success) {
+      throw new Error((result.message as unknown) as string);
+    }
+    return result.data;
   } catch (e) {
     throw new Error(e);
   }

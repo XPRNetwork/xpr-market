@@ -48,7 +48,7 @@ const PageLayout = ({ title, children }: Props): JSX.Element => {
   return (
     <Main>
       <Head>
-        <title>{`${title} - NFT Demo`}</title>
+        <title>{`${title} - Proton Market`}</title>
         <link rel="shortcut icon" href="/favicon.png" />
       </Head>
       <Container>{children}</Container>

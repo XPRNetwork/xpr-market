@@ -25,6 +25,11 @@ const emptyTemplateDetails = {
   collection: {
     author: '',
     collection_name: '',
+    data: {
+      name: '',
+      img: '',
+      description: '',
+    },
   },
   immutable_data: {
     image: '',
