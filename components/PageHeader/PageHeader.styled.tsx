@@ -15,6 +15,7 @@ export const ImageContainer = styled.div`
   height: 120px;
   border-radius: 100%;
   margin-bottom: 32px;
+  overflow: hidden;
 
   ${breakpoint.mobile`
     width: 112px;
