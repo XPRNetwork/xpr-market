@@ -4,13 +4,16 @@ import PageLayout from '../../components/PageLayout';
 import PaginationButton from '../../components/PaginationButton';
 import ErrorComponent from '../../components/Error';
 import Grid from '../../components/Grid';
-import { useAuthContext } from '../../components/Provider';
+import { MODAL_TYPES, useAuthContext } from '../../components/Provider';
 import { getTemplatesWithUserAssetCount } from '../../services/templates';
 import { Template } from '../../services/templates';
-import { Title } from '../../styles/Title.styled';
 import LoadingPage from '../../components/LoadingPage';
 import { capitalize } from '../../utils';
 import { PAGINATION_LIMIT } from '../../utils/constants';
+import Banner from '../../components/Banner';
+import ProfileTabs from '../../components/ProfileTabs';
+import PageHeader from '../../components/PageHeader';
+import proton from '../../services/proton-rpc';
 
 type RouterQuery = {
   chainAccount: string;
@@ -38,6 +41,11 @@ const getMyTemplates = async ({
 };
 
 const Collection = (): JSX.Element => {
+  const TAB_TYPES = {
+    ITEMS: 'ITEMS',
+    CREATIONS: 'CREATIONS',
+  };
+
   const router = useRouter();
   const { chainAccount } = router.query as RouterQuery;
   const { currentUser } = useAuthContext();
@@ -50,6 +58,21 @@ const Collection = (): JSX.Element => {
   const [isLoadingNextPage, setIsLoadingNextPage] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [currentProfile, setCurrentProfile] = useState<string>('');
+  const [userName, setUserName] = useState<string>('');
+  const [userAvatar, setUserAvatar] = useState<string>('/default-avatar.png');
+  const [isProfileLoading, setIsProfileLoading] = useState<boolean>(true);
+
+  const getTitle = () => {
+    return currentUser && currentUser.actor !== chainAccount && userName
+      ? `${userName.split(' ')[0]}'s Items`
+      : 'My Items';
+  };
+
+  const tabs = [
+    { title: getTitle(), type: TAB_TYPES.ITEMS },
+    { title: 'Creations', type: TAB_TYPES.CREATIONS },
+  ];
+  const [activeTab, setActiveTab] = useState<string>(tabs[0].type);
 
   const prefetchNextPage = async () => {
     const prefetchedResult = await getMyTemplates({
@@ -74,30 +97,42 @@ const Collection = (): JSX.Element => {
     await prefetchNextPage();
   };
 
+  const getUser = async (chainAccount: string): Promise<void> => {
+    setIsProfileLoading(true);
+
+    if (chainAccount) {
+      const user = await proton.getUserByChainAccount({
+        account: chainAccount,
+      });
+      const { name, avatar } = user;
+      setUserName(name);
+      setUserAvatar(avatar);
+      if (!currentUser || chainAccount !== currentUser.actor) {
+        setCurrentProfile(capitalize(chainAccount));
+      } else {
+        setCurrentProfile('');
+      }
+    }
+  };
+
   useEffect(() => {
     (async () => {
       try {
         router.prefetch('/');
         const templates = await getMyTemplates({ chainAccount });
         setRenderedTemplates(templates);
-        setIsLoading(false);
         await prefetchNextPage();
+        await getUser(chainAccount);
       } catch (e) {
         setErrorMessage(e.message);
       }
+      setIsProfileLoading(false);
+      setIsLoading(false);
     })();
-  }, [chainAccount]);
-
-  useEffect(() => {
-    if (!currentUser || chainAccount !== currentUser.actor) {
-      setCurrentProfile(capitalize(chainAccount));
-    } else {
-      setCurrentProfile('');
-    }
   }, [currentUser, chainAccount]);
 
   const getContent = () => {
-    if (isLoading) {
+    if (isLoading || isProfileLoading) {
       return <LoadingPage />;
     }
 
@@ -121,8 +156,20 @@ const Collection = (): JSX.Element => {
       );
     }
 
+    // TODO: pull different data depending on activeTab's state
     return (
       <>
+        <PageHeader
+          image={userAvatar}
+          name={capitalize(chainAccount)}
+          subName={userName}
+          type="user"
+        />
+        <ProfileTabs
+          tabList={tabs}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+        />
         <Grid items={renderedTemplates} />
         <PaginationButton
           onClick={showNextPage}
@@ -136,8 +183,8 @@ const Collection = (): JSX.Element => {
 
   return (
     <>
-      <PageLayout title="My NFTs">
-        <Title>{currentProfile ? `${currentProfile}'s` : 'My'} NFTs</Title>
+      <PageLayout title={getTitle()}>
+        <Banner modalType={MODAL_TYPES.CLAIM} />
         {getContent()}
       </PageLayout>
     </>

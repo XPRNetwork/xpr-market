@@ -31,10 +31,10 @@ const AssetFormTitle = ({
 }: Props): JSX.Element => {
   const router = useRouter();
   const isMyTemplate = router.pathname.includes('my-templates');
-  const redirectToAuthor = () => router.push(`/my-nfts/${collectionAuthor}`);
+  const redirectToAuthor = () => router.push(`/my-items/${collectionAuthor}`);
 
   useEffect(() => {
-    router.prefetch(`/my-nfts/${collectionAuthor}`);
+    router.prefetch(`/my-items/${collectionAuthor}`);
   }, []);
 
   return (

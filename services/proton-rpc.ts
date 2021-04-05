@@ -6,6 +6,12 @@ import {
   EMPTY_BALANCE,
 } from '../utils/constants';
 
+type User = {
+  actor: string;
+  avatar: string;
+  name: string;
+};
+
 class ProtonJs {
   rpc: JsonRpc;
 
@@ -49,7 +55,7 @@ class ProtonJs {
     return formatPrice(balance[0]);
   };
 
-  getProfileImage = async ({ account }): Promise<string> => {
+  getUserByChainAccount = async ({ account }): Promise<User> => {
     const { rows } = await this.rpc.get_table_rows({
       scope: 'eosio.proton',
       code: 'eosio.proton',
@@ -59,7 +65,12 @@ class ProtonJs {
       upper_bound: account,
     });
 
-    return !rows.length ? '' : rows[0].avatar;
+    return !rows.length ? '' : rows[0];
+  };
+
+  getProfileImage = async ({ account }): Promise<string> => {
+    const user = await this.getUserByChainAccount({ account });
+    return user.avatar;
   };
 
   getAtomicMarketBalance = (chainAccount: string) => {
