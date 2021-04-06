@@ -4,7 +4,7 @@ import { useAuthContext } from '../components/Provider';
 import proton from '../services/proton';
 import { getUserCreatedTemplates } from '../services/templates';
 import { Title } from '../styles/Title.styled';
-import TextInput from '../components/TextInput';
+import InputField from '../components/InputField';
 
 const TestPage = (): JSX.Element => {
   const { currentUser } = useAuthContext();
@@ -15,7 +15,14 @@ const TestPage = (): JSX.Element => {
   const [memo, setMemo] = useState('');
   const [text1, setText1] = useState<string>('');
   const [text2, setText2] = useState<string>('');
-  const [text3, setText3] = useState<string>('');
+  const [collectionName, setCollectionName] = useState<string>('');
+  const [collectionMarketFee, setCollectionMarketFee] = useState<number>(15);
+  const [collectionDescription, setCollectionDescription] = useState<string>(
+    ''
+  );
+  const [collectionDisplayName, setCollectionDisplayName] = useState<string>(
+    ''
+  );
 
   const transfer = async () => {
     const { actor } = currentUser;
@@ -35,6 +42,22 @@ const TestPage = (): JSX.Element => {
       asset_id: assetIdBurn,
     });
     console.log('result burn: ', result);
+  };
+
+  const createCollection = async () => {
+    const { actor } = currentUser;
+    const market_fee =
+      typeof collectionMarketFee === 'string'
+        ? (parseInt(collectionMarketFee) / 100).toFixed(6)
+        : (collectionMarketFee / 100).toFixed(6);
+    const result = await proton.createCollection({
+      author: actor,
+      collection_name: collectionName,
+      market_fee,
+      description: collectionDescription,
+      display_name: collectionDisplayName,
+    });
+    console.log('result createCollection: ', result);
   };
 
   const getOwnCreations = async () => {
@@ -69,16 +92,61 @@ const TestPage = (): JSX.Element => {
       />
       <button onClick={burn}>burn</button>
       <br />
+      <InputField
+        value={collectionName}
+        setValue={setCollectionName}
+        placeholder="collection name"
+        checkIfIsValid={(input) => {
+          const hasValidCharacters = !!(input as string).match(/^[a-z1-5]+$/);
+          const isValidLength = (input as string).length === 12;
+          const isValid = hasValidCharacters && isValidLength;
+          const errorMessage =
+            'Collection name should be 12 characters long and only contain the following symbols: 12345abcdefghijklmnopqrstuvwxyz';
+          return {
+            isValid,
+            errorMessage,
+          };
+        }}
+      />
+      <InputField
+        inputType="number"
+        min={0}
+        max={15}
+        step={1}
+        value={collectionMarketFee}
+        setValue={setCollectionMarketFee}
+        placeholder="collection market fee"
+        checkIfIsValid={(input) => {
+          const isValid = input >= 0 && input <= 15;
+          const errorMessage = 'Market fee must be between 0% and 15%';
+          return {
+            isValid,
+            errorMessage,
+          };
+        }}
+      />
+      <input
+        value={collectionDescription}
+        placeholder="collection description"
+        onChange={(e) => setCollectionDescription(e.target.value)}
+      />
+      <input
+        value={collectionDisplayName}
+        placeholder="collection display name"
+        onChange={(e) => setCollectionDisplayName(e.target.value)}
+      />
+      <button onClick={createCollection}>createCollection</button>
+      <br />
       <div style={{ display: 'flex' }}>
-        <TextInput
-          text={text1}
-          setText={setText1}
+        <InputField
+          value={text1}
+          setValue={setText1}
           tooltip="Test one-liner tooltip"
           numberOfTooltipLines={1}
           placeholder="Test input"
           mr="4px"
           checkIfIsValid={(input) => {
-            const isValid = input.length === 0;
+            const isValid = (input as string).length === 0;
             const errorMessage = 'Error: this is a test error message.';
             return {
               isValid,
@@ -86,15 +154,15 @@ const TestPage = (): JSX.Element => {
             };
           }}
         />
-        <TextInput
-          text={text2}
-          setText={setText2}
+        <InputField
+          value={text2}
+          setValue={setText2}
           tooltip="Test two-liner tooltip: test test test test test"
           numberOfTooltipLines={2}
           placeholder="Test input"
           ml="4px"
           checkIfIsValid={(input) => {
-            const isValid = input.length === 0;
+            const isValid = (input as string).length === 0;
             const errorMessage = 'Error: this is a test error message.';
             return {
               isValid,
@@ -103,22 +171,6 @@ const TestPage = (): JSX.Element => {
           }}
         />
       </div>
-      <br />
-      <TextInput
-        text={text3}
-        setText={setText3}
-        tooltip="Test three-liner tooltip: test test test test test test test test test test test test test"
-        numberOfTooltipLines={3}
-        placeholder="Test input"
-        checkIfIsValid={(input) => {
-          const isValid = input.length === 0;
-          const errorMessage = 'Error: this is a test error message.';
-          return {
-            isValid,
-            errorMessage,
-          };
-        }}
-      />
       <br />
       <input
         value={ownCreationUser}

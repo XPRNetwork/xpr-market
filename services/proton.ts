@@ -22,6 +22,15 @@ interface BurnOptions {
   asset_id: string;
 }
 
+interface CreateCollectionOptions {
+  author: string;
+  description: string;
+  display_name: string;
+  market_fee: string;
+  collection_name?: string;
+  collection_image?: string;
+}
+
 interface CreateSaleOptions {
   seller: string;
   asset_id: string;
@@ -323,6 +332,84 @@ class ProtonSDK {
         error:
           e.message ||
           'An error has occured while attempting to withdraw from the market',
+      };
+    }
+  };
+
+  /**
+   * Create a collection on Atomic Assets.
+   *
+   * @param {string}   author             Chain account of the collection's author.
+   * @param {string}   collection_name    Name of the collection on the blockchain.
+   * @param {string}   description        Short description of the collection.
+   * @param {string}   display_name       Display name of the collection.
+   * @param {string}   market_fee         Royalty amount owner receives for each asset transaction within the collection.
+   * @param {string}   collection_image   IPFS CID (image hash generated on IPFS).
+   * @return {Response}                   Returns an object indicating the success of the transaction and transaction ID.
+   */
+
+  createCollection = async ({
+    author,
+    collection_name,
+    description,
+    market_fee,
+    display_name,
+    collection_image,
+  }: CreateCollectionOptions): Promise<Response> => {
+    const actions = [
+      {
+        account: 'atomicassets',
+        name: 'createcol',
+        authorization: [
+          {
+            actor: author,
+            permission: 'active',
+          },
+        ],
+        data: {
+          author,
+          collection_name: collection_name || author,
+          allow_notify: true,
+          authorized_accounts: [author],
+          notify_accounts: [],
+          market_fee,
+          data: [
+            {
+              key: 'description',
+              value: ['string', description],
+            },
+            {
+              key: 'name',
+              value: ['string', display_name],
+            },
+            {
+              key: 'img',
+              value: ['string', collection_image],
+            },
+          ],
+        },
+      },
+    ];
+
+    try {
+      if (!this.session) {
+        throw new Error('Unable to create a collection without logging in.');
+      }
+
+      const result = await this.session.transact(
+        { actions: actions },
+        { broadcast: true }
+      );
+
+      return {
+        success: true,
+        transactionId: result.processed.id,
+      };
+    } catch (e) {
+      return {
+        success: false,
+        error:
+          e.message || 'An error has occurred while creating the collection.',
       };
     }
   };

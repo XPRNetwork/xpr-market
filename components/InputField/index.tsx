@@ -6,16 +6,16 @@ import {
   SetStateAction,
 } from 'react';
 import Tooltip from '../Tooltip';
-import { InputContainer, Input, ErrorMessage } from './TextInput.styled';
+import { InputContainer, Input, ErrorMessage } from './InputField.styled';
 
 type Props = {
   inputType: string;
-  text: string;
+  value: string | number;
   placeholder: string;
-  setText: Dispatch<SetStateAction<string>>;
+  setValue: Dispatch<SetStateAction<string | number>>;
   setFormError?: Dispatch<SetStateAction<string>>;
   checkIfIsValid: (
-    text: string
+    text: string | number
   ) => {
     isValid: boolean;
     errorMessage: string;
@@ -28,14 +28,17 @@ type Props = {
   ml?: string;
   mt?: string;
   mb?: string;
+  min?: number;
+  max?: number;
+  step?: number;
   disabled?: boolean;
 };
 
-const TextInput = ({
+const InputField = ({
   inputType,
-  text,
+  value,
   placeholder,
-  setText,
+  setValue,
   setFormError,
   checkIfIsValid,
   submit,
@@ -46,15 +49,18 @@ const TextInput = ({
   ml,
   mt,
   mb,
+  min,
+  max,
+  step,
   disabled,
 }: Props): JSX.Element => {
   const [error, setError] = useState<string>('');
 
   const updateText = (e: ChangeEvent<HTMLInputElement>) => {
     const textInput = e.target.value;
+    if (setFormError) setFormError('');
     setError('');
-    setFormError('');
-    setText(textInput);
+    setValue(textInput);
 
     const { isValid, errorMessage } = checkIfIsValid(textInput);
     if (!isValid) {
@@ -78,9 +84,12 @@ const TextInput = ({
       hasError={!!error}>
       <Input
         required
+        min={min}
+        max={max}
+        step={step}
         type={inputType}
         placeholder={placeholder}
-        value={text}
+        value={value}
         onChange={updateText}
         onKeyDown={submit ? handleKeyDown : null}
         disabled={disabled}
@@ -93,13 +102,15 @@ const TextInput = ({
   );
 };
 
-TextInput.defaultProps = {
+InputField.defaultProps = {
   halfWidth: false,
   inputType: 'text',
+  placeholder: '',
+  setValue: () => {},
   checkIfIsValid: () => ({
     isValid: true,
     errorMessage: '',
   }),
 };
 
-export default TextInput;
+export default InputField;
