@@ -1,3 +1,4 @@
+import { useState, useRef } from 'react';
 import Image from 'next/image';
 import {
   PageHeaderContainer,
@@ -8,6 +9,8 @@ import {
   Description,
 } from './PageHeader.styled';
 import { ReactComponent as MoreIcon } from '../../public/more.svg';
+import ShareOnSocial from '../ShareOnSocial';
+import { useClickAway } from '../../hooks';
 
 type PageHeaderProps = {
   image?: string;
@@ -24,6 +27,10 @@ const PageHeader = ({
   subName,
   type,
 }: PageHeaderProps): JSX.Element => {
+  const [shareActive, setShareActive] = useState<boolean>(false);
+  const shareRef = useRef(null);
+  useClickAway(shareRef, () => setShareActive(false));
+
   const avatarImg = image
     ? `data:image/jpeg;base64,${image}`
     : '/default-avatar.png';
@@ -50,8 +57,9 @@ const PageHeader = ({
         {subName}
       </SubName>
       <Description>{description}</Description>
-      <IconButton>
+      <IconButton ref={shareRef} onClick={() => setShareActive(!shareActive)}>
         <MoreIcon />
+        <ShareOnSocial top={'50px'} active={shareActive} />
       </IconButton>
     </PageHeaderContainer>
   );
