@@ -40,7 +40,7 @@ const DragDropFileUploadLg = ({
     <Container {...getRootProps()} isDragActive={isDragActive}>
       <input
         {...getInputProps()}
-        accept="image/png,image/jpg,image/webp,image/gif,video/mp4,audio/mp3"
+        accept="image/png,image/jpg,image/jpeg,image/webp,image/gif,video/mp4,audio/mp3,.png,.mp3,.jpg,.jpeg,.webp,.gif,.mp4"
       />
       {isDragActive ? (
         <>
