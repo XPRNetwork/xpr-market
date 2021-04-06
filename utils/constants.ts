@@ -14,6 +14,7 @@ export const FILE_UPLOAD_TYPES = {
   'image/gif': true,
   'image/webp': true,
   'video/mp4': true,
+  'audio/mpeg': true,
   'audio/mp3': true,
 };
 export const LG_FILE_SIZE_UPLOAD_LIMIT = 30 * 1000000; //30 MB
