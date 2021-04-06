@@ -12,7 +12,7 @@ import {
   Column,
   ModalButton,
 } from './Modal.styled';
-import TextInput from '../TextInput';
+import InputField from '../InputField';
 import ProtonSDK from '../../services/proton';
 import { ReactComponent as CloseIcon } from '../../public/close.svg';
 
@@ -70,21 +70,15 @@ export const TransferModal = (): JSX.Element => {
           You can transfer NFTs from your account to another.
         </Description>
         <Column>
-          <TextInput
-            text={'#' + templateMint}
-            setText={() => {}}
-            placeholder=""
-            disabled={true}
-            mb="16px"
-          />
-          <TextInput
-            text={recipient}
-            setText={setRecipient}
+          <InputField value={'#' + templateMint} disabled={true} mb="16px" />
+          <InputField
+            value={recipient}
+            setValue={setRecipient}
             setFormError={setError}
             placeholder="Receiver name"
             mb="12px"
             checkIfIsValid={(input) => {
-              const isValid = input.length < 13;
+              const isValid = (input as string).length < 13;
               const errorMessage =
                 "Error: Recipient's name must be 12 characters or less.";
               return {
