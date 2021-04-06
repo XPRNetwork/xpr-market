@@ -31,6 +31,12 @@ interface CreateCollectionOptions {
   collection_image?: string;
 }
 
+interface SetMarketFeeOptions {
+  author: string;
+  collection_name: string;
+  market_fee: string;
+}
+
 interface CreateSaleOptions {
   seller: string;
   asset_id: string;
@@ -410,6 +416,57 @@ class ProtonSDK {
         success: false,
         error:
           e.message || 'An error has occurred while creating the collection.',
+      };
+    }
+  };
+
+  /**
+   * Set a collection's market fee on Atomic Assets.
+   *
+   * @param {string}   author             Chain account of the collection's author.
+   * @param {string}   collection_name    Name of the collection to update.
+   * @param {string}   market_fee         Royalty amount owner receives for each asset transaction within the collection.
+   * @return {Response}                   Returns an object indicating the success of the transaction and transaction ID.
+   */
+  setMarketFee = async ({
+    author,
+    collection_name,
+    market_fee,
+  }: SetMarketFeeOptions): Promise<Response> => {
+    const actions = [
+      {
+        account: 'atomicassets',
+        name: 'setmarketfee',
+        authorization: [
+          {
+            actor: author,
+            permission: 'active',
+          },
+        ],
+        data: {
+          author,
+          collection_name,
+          market_fee,
+        },
+      },
+    ];
+    try {
+      if (!this.session) {
+        throw new Error('Unable to set a market fee without logging in.');
+      }
+      const result = await this.session.transact(
+        { actions: actions },
+        { broadcast: true }
+      );
+      return {
+        success: true,
+        transactionId: result.processed.id,
+      };
+    } catch (e) {
+      return {
+        success: false,
+        error:
+          e.message || 'An error has occurred while setting the market fee.',
       };
     }
   };
