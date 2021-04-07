@@ -5,7 +5,10 @@ import PaginationButton from '../../components/PaginationButton';
 import ErrorComponent from '../../components/Error';
 import Grid from '../../components/Grid';
 import { MODAL_TYPES, useAuthContext } from '../../components/Provider';
-import { getTemplatesWithUserAssetCount } from '../../services/templates';
+import {
+  getTemplatesWithUserAssetCount,
+  getUserCreatedTemplates,
+} from '../../services/templates';
 import { Template } from '../../services/templates';
 import LoadingPage from '../../components/LoadingPage';
 import { capitalize } from '../../utils';
@@ -21,19 +24,23 @@ type RouterQuery = {
 
 type GetMyTemplatesOptions = {
   chainAccount: string;
+  type: string;
   page?: number;
 };
 
 const getMyTemplates = async ({
   chainAccount,
+  type,
   page,
 }: GetMyTemplatesOptions): Promise<Template[]> => {
   try {
     const pageParam = page ? page : 1;
-    const result = await getTemplatesWithUserAssetCount(
-      chainAccount,
-      pageParam
-    );
+    let result;
+    if (type === 'ITEMS') {
+      result = await getTemplatesWithUserAssetCount(chainAccount, pageParam);
+    } else {
+      result = await getUserCreatedTemplates(chainAccount, pageParam);
+    }
     return result;
   } catch (e) {
     throw new Error(e);
@@ -56,11 +63,12 @@ const Collection = (): JSX.Element => {
   const [prefetchPageNumber, setPrefetchPageNumber] = useState<number>(2);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isLoadingNextPage, setIsLoadingNextPage] = useState<boolean>(true);
+  const [isProfileLoading, setIsProfileLoading] = useState<boolean>(true);
+  const [isTemplatesLoading, setIsTemplatesLoading] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [currentProfile, setCurrentProfile] = useState<string>('');
   const [userName, setUserName] = useState<string>('');
   const [userAvatar, setUserAvatar] = useState<string>('/default-avatar.png');
-  const [isProfileLoading, setIsProfileLoading] = useState<boolean>(true);
 
   const getTitle = () => {
     return currentUser && currentUser.actor !== chainAccount && userName
@@ -78,6 +86,7 @@ const Collection = (): JSX.Element => {
     const prefetchedResult = await getMyTemplates({
       chainAccount,
       page: prefetchPageNumber,
+      type: activeTab,
     });
     setPrefetchedTemplates(prefetchedResult);
 
@@ -115,19 +124,39 @@ const Collection = (): JSX.Element => {
     }
   };
 
+  const resetStates = () => {
+    setRenderedTemplates([]);
+    setPrefetchedTemplates([]);
+    setPrefetchPageNumber(2);
+    setIsTemplatesLoading(true);
+  };
+
   useEffect(() => {
     (async () => {
       try {
         router.prefetch('/');
-        const templates = await getMyTemplates({ chainAccount });
+        const templates = await getMyTemplates({
+          chainAccount,
+          type: activeTab,
+        });
         setRenderedTemplates(templates);
         await prefetchNextPage();
+      } catch (e) {
+        setErrorMessage(e.message);
+      }
+      setIsLoading(false);
+      setIsTemplatesLoading(false);
+    })();
+  }, [activeTab, chainAccount]);
+
+  useEffect(() => {
+    (async () => {
+      try {
         await getUser(chainAccount);
       } catch (e) {
         setErrorMessage(e.message);
       }
       setIsProfileLoading(false);
-      setIsLoading(false);
     })();
   }, [currentUser, chainAccount]);
 
@@ -136,7 +165,11 @@ const Collection = (): JSX.Element => {
       return <LoadingPage />;
     }
 
-    if (!renderedTemplates.length) {
+    if (
+      !isTemplatesLoading &&
+      !renderedTemplates.length &&
+      activeTab === 'ITEMS'
+    ) {
       return (
         <ErrorComponent
           errorMessage={`Looks like ${
@@ -156,21 +189,25 @@ const Collection = (): JSX.Element => {
       );
     }
 
-    // TODO: pull different data depending on activeTab's state
     return (
       <>
         <PageHeader
           image={userAvatar}
-          name={capitalize(chainAccount)}
-          subName={userName}
+          name={capitalize(userName)}
+          subName={chainAccount}
           type="user"
         />
         <ProfileTabs
           tabList={tabs}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
+          resetStates={resetStates}
         />
-        <Grid items={renderedTemplates} />
+        {isTemplatesLoading ? (
+          <LoadingPage margin={'10% 0'} />
+        ) : (
+          <Grid items={renderedTemplates} />
+        )}
         <PaginationButton
           onClick={showNextPage}
           isHidden={renderedTemplates.length < PAGINATION_LIMIT}

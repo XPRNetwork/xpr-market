@@ -10,12 +10,14 @@ type Props = {
   tabList: Tab[];
   activeTab: string;
   setActiveTab: Dispatch<SetStateAction<string>>;
+  resetStates: () => void;
 };
 
 export const ProfileTabs = ({
   tabList,
   activeTab,
   setActiveTab,
+  resetStates,
 }: Props): JSX.Element => {
   return (
     <Row>
@@ -23,7 +25,10 @@ export const ProfileTabs = ({
         return (
           <Tab
             key={type}
-            onClick={() => setActiveTab(type)}
+            onClick={() => {
+              setActiveTab(type);
+              resetStates();
+            }}
             isActive={activeTab === type}>
             {title}
           </Tab>
