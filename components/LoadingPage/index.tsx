@@ -1,12 +1,20 @@
 import { Container } from './LoadingPage.styled';
 import Spinner from '../Spinner';
 
-const LoadingPage = (): JSX.Element => {
+type Props = {
+  margin: string;
+};
+
+const LoadingPage = ({ margin }: Props): JSX.Element => {
   return (
-    <Container>
+    <Container margin={margin}>
       <Spinner />
     </Container>
   );
+};
+
+LoadingPage.defaultProps = {
+  margin: '25vh 0',
 };
 
 export default LoadingPage;

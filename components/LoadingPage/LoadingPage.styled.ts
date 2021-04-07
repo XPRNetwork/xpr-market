@@ -1,8 +1,12 @@
 import styled from 'styled-components';
 
-export const Container = styled.section`
+export interface ContainerProps {
+  margin?: string;
+}
+
+export const Container = styled.section<ContainerProps>`
   width: 100%;
-  margin: 25vh 0;
+  margin: ${({ margin }) => margin};
   display: flex;
   flex-direction: column;
   justify-content: center;

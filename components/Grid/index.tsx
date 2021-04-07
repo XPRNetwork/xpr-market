@@ -60,4 +60,8 @@ const Grid = ({ items }: Props): JSX.Element => {
   );
 };
 
+Grid.defaultProps = {
+  items: [],
+};
+
 export default Grid;
