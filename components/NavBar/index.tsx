@@ -162,6 +162,7 @@ const DesktopNavRoutes = () => {
     {
       name: 'Create',
       path: `/create`,
+      isHidden: !currentUser,
     },
   ];
 
