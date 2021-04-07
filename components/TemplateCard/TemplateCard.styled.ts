@@ -87,6 +87,20 @@ export const Text = styled.span`
   color: #1a1a1a;
 `;
 
+export const CollectionNameButton = styled.button`
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  background-color: transparent;
+  outline: none;
+  border: none;
+  z-index: 1;
+
+  :hover {
+    transform: scale(1.05);
+  }
+`;
+
 export const GreyText = styled(Text)<GreyTextProps>`
   color: #808080;
   margin-bottom: 8px;

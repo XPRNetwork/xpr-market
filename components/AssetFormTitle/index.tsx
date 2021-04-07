@@ -7,7 +7,7 @@ import {
   General,
   Title,
   Author,
-  CollectionIconContainer,
+  CollectionNameButton,
 } from './AssetFormTitle.styled';
 import AssetFormPopupMenu from '../AssetFormPopupMenu';
 import { capitalize } from '../../utils';
@@ -32,6 +32,8 @@ const AssetFormTitle = ({
   const router = useRouter();
   const isMyTemplate = router.pathname.includes('my-templates');
   const redirectToAuthor = () => router.push(`/my-items/${collectionAuthor}`);
+  const redirectToCollection = () =>
+    router.push(`/collection/${collectionName}`);
 
   useEffect(() => {
     router.prefetch(`/my-items/${collectionAuthor}`);
@@ -39,7 +41,7 @@ const AssetFormTitle = ({
 
   return (
     <>
-      <CollectionIconContainer>
+      <CollectionNameButton onClick={redirectToCollection}>
         <Image
           priority
           layout="fixed"
@@ -49,7 +51,7 @@ const AssetFormTitle = ({
           alt="Crypto Monsters icon"
         />
         <Title>Crypto {capitalize(collectionName)}</Title>
-      </CollectionIconContainer>
+      </CollectionNameButton>
       <NameContainer>
         <Name>{templateName}</Name>
         {isMyTemplate && (

@@ -28,8 +28,12 @@ export const Author = styled(General).attrs({ as: 'a' })`
   cursor: pointer;
 `;
 
-export const CollectionIconContainer = styled.div`
+export const CollectionNameButton = styled.button`
   display: flex;
   align-items: center;
   margin-bottom: 24px;
+  border: none;
+  background-color: white;
+  outline: none;
+  cursor: pointer;
 `;

@@ -1,4 +1,4 @@
-import { KeyboardEvent } from 'react';
+import { KeyboardEvent, MouseEvent } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import {
@@ -9,6 +9,7 @@ import {
   Text,
   GreyText,
   Tag,
+  CollectionNameButton,
   PlaceholderPrice,
 } from './TemplateCard.styled';
 import CollectionIcon from '../CollectionIcon';
@@ -43,6 +44,10 @@ const TemplateCard = ({
 }: Props): JSX.Element => {
   const router = useRouter();
   const openDetailPage = () => router.push(redirectPath);
+  const openCollectionPage = (e: MouseEvent) => {
+    e.stopPropagation();
+    router.push(`/collection/${collectionName}`);
+  };
 
   const handleEnterKey = (e: KeyboardEvent) => {
     if (e.key === 'Enter') {
@@ -68,12 +73,14 @@ const TemplateCard = ({
       onClick={redirectPath ? openDetailPage : null}
       onKeyDown={redirectPath ? handleEnterKey : null}>
       <Row>
-        <CollectionIcon
-          name={collectionName}
-          image={collectionImage}
-          margin="24px 16px 24px 0"
-        />
-        <Text>{capitalize(collectionName)}</Text>
+        <CollectionNameButton onClick={openCollectionPage}>
+          <CollectionIcon
+            name={collectionName}
+            image={collectionImage}
+            margin="24px 16px 24px 0"
+          />
+          <Text>{capitalize(collectionName)}</Text>
+        </CollectionNameButton>
       </Row>
       <ImageContainer>
         <Image

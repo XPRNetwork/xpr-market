@@ -27,10 +27,6 @@ const Create = (): JSX.Element => {
     null
   );
 
-  const templatePreviewSrc = templateUploadedFile
-    ? URL.createObjectURL(templateUploadedFile)
-    : '/placeholder-template-image.png';
-
   return (
     <PageLayout title="Create">
       <Container>
@@ -98,7 +94,7 @@ const Create = (): JSX.Element => {
           </LeftColumn>
           <RightColumn>
             <ElementTitle>Preview</ElementTitle>
-            <TemplateCard templateImage={templatePreviewSrc} />
+            <TemplateCard />
           </RightColumn>
         </Row>
       </Container>
