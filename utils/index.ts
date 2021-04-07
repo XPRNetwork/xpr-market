@@ -72,6 +72,7 @@ export const addPrecisionDecimal = (
 };
 
 export const formatPrice = (priceString: string): string => {
+  if (!priceString) return '';
   const [price, currency] = priceString.split(' ');
   const amount = formatThousands(
     parseFloat(price.replace(/[,]/g, '')).toFixed(SHORTENED_TOKEN_PRECISION)

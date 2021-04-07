@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import PageLayout from '../components/PageLayout';
 import Button from '../components/Button';
@@ -22,7 +22,10 @@ import {
 
 const Create = (): JSX.Element => {
   const { openModal, setModalProps } = useModalContext();
-  const [name, setName] = useState<string>('');
+  const [collectionName, setCollectionName] = useState<string>('');
+  const [collectionImage, setCollectionImage] = useState<string>('');
+  const [templateName, setTemplateName] = useState<string>('');
+  const [templateImage, setTemplateImage] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [royalties, setRoyalties] = useState<string>('');
   const [editionSize, setEditionSize] = useState<string>('');
@@ -30,6 +33,29 @@ const Create = (): JSX.Element => {
   const [templateUploadedFile, setTemplateUploadedFile] = useState<File | null>(
     null
   );
+  const [isAudio, setIsAudio] = useState<boolean>(false);
+  const [isVideo, setIsVideo] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (templateUploadedFile && window) {
+      const filetype = templateUploadedFile.type;
+      if (filetype.includes('audio')) {
+        setIsAudio(true);
+        setIsVideo(false);
+      } else if (filetype.includes('video')) {
+        setIsVideo(true);
+        setIsAudio(false);
+      } else {
+        const reader = new window.FileReader();
+        reader.onload = () => {
+          setTemplateImage(reader.result as string);
+          setIsAudio(false);
+          setIsVideo(false);
+        };
+        reader.readAsDataURL(templateUploadedFile);
+      }
+    }
+  }, [templateUploadedFile]);
 
   const getUserCollections = async () => {
     console.log('refetch user collections');
@@ -39,6 +65,8 @@ const Create = (): JSX.Element => {
     openModal(MODAL_TYPES.CREATE_COLLECTION);
     setModalProps({
       fetchPageData: getUserCollections,
+      setCollectionImage: setCollectionImage,
+      setCollectionName: setCollectionName,
     });
   };
 
@@ -59,22 +87,22 @@ const Create = (): JSX.Element => {
             <ElementTitle>Choose Collection</ElementTitle>
             <Row>
               <BoxButton onClick={createCollection}>
-                  <Image
-                    priority
-                    layout="fixed"
-                    width={40}
-                    height={40}
-                    alt="plus icon"
-                    src="/plus-icon.png"
-                  />
-                  <span>Create</span>
-                </BoxButton>
+                <Image
+                  priority
+                  layout="fixed"
+                  width={40}
+                  height={40}
+                  alt="plus icon"
+                  src="/plus-icon.png"
+                />
+                <span>Create</span>
+              </BoxButton>
               <EmptyBox2 />
             </Row>
             <InputField
               mt="16px"
-              value={name}
-              setValue={setName}
+              value={templateName}
+              setValue={setTemplateName}
               placeholder="Name"
             />
             <InputField
@@ -119,7 +147,18 @@ const Create = (): JSX.Element => {
           </LeftColumn>
           <RightColumn>
             <ElementTitle>Preview</ElementTitle>
-            <TemplateCard />
+            <TemplateCard
+              templateImage={templateImage}
+              templateName={templateName}
+              collectionImage={collectionImage}
+              collectionName={collectionName}
+              editionSize={editionSize}
+              noHoverEffect={true}
+              noIpfsConversion={true}
+              isAudio={isAudio}
+              isVideo={isVideo}
+              isStatic={true}
+            />
           </RightColumn>
         </Row>
       </Container>

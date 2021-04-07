@@ -11,9 +11,12 @@ import {
   Tag,
   CollectionNameButton,
   PlaceholderPrice,
+  IconContainer,
 } from './TemplateCard.styled';
 import CollectionIcon from '../CollectionIcon';
 import { capitalize } from '../../utils';
+import { ReactComponent as AudioIcon } from '../../public/audio.svg';
+import { ReactComponent as VideoIcon } from '../../public/video.svg';
 
 type Props = {
   collectionName: string;
@@ -27,6 +30,11 @@ type Props = {
   templateImage?: string;
   price?: string;
   hasMultiple?: boolean;
+  noHoverEffect?: boolean;
+  isStatic?: boolean;
+  noIpfsConversion?: boolean;
+  isVideo?: boolean;
+  isAudio?: boolean;
 };
 
 const TemplateCard = ({
@@ -40,24 +48,36 @@ const TemplateCard = ({
   collectionImage,
   templateImage,
   price,
+  noHoverEffect,
   hasMultiple,
+  noIpfsConversion,
+  isStatic,
+  isVideo,
+  isAudio,
 }: Props): JSX.Element => {
   const router = useRouter();
-  const openDetailPage = () => router.push(redirectPath);
+  const openDetailPage = () => {
+    if (!isStatic) {
+      router.push(redirectPath);
+    }
+  };
   const openCollectionPage = (e: MouseEvent) => {
-    e.stopPropagation();
-    router.push(`/collection/${collectionName}`);
+    if (!isStatic) {
+      e.stopPropagation();
+      router.push(`/collection/${collectionName}`);
+    }
   };
 
   const handleEnterKey = (e: KeyboardEvent) => {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && !isStatic) {
       openDetailPage();
     }
   };
 
-  const imageSrc = templateImage
-    ? `https://cloudflare-ipfs.com/ipfs/${templateImage}`
-    : '/placeholder-template-image.png';
+  const img = noIpfsConversion
+    ? templateImage
+    : `https://cloudflare-ipfs.com/ipfs/${templateImage}`;
+  const imageSrc = templateImage ? img : '/placeholder-template-image.png';
 
   const priceTag =
     isUsersTemplates && assetsForSale && totalAssets ? (
@@ -66,23 +86,21 @@ const TemplateCard = ({
       </Tag>
     ) : null;
 
-  return (
-    <Card
-      tabIndex={0}
-      hasMultiple={hasMultiple}
-      onClick={redirectPath ? openDetailPage : null}
-      onKeyDown={redirectPath ? handleEnterKey : null}>
-      <Row>
-        <CollectionNameButton onClick={openCollectionPage}>
-          <CollectionIcon
-            name={collectionName}
-            image={collectionImage}
-            margin="24px 16px 24px 0"
-          />
-          <Text>{capitalize(collectionName)}</Text>
-        </CollectionNameButton>
-      </Row>
-      <ImageContainer>
+  const getImageContent = () => {
+    if (isAudio) {
+      return (
+        <IconContainer>
+          <AudioIcon />
+        </IconContainer>
+      );
+    } else if (isVideo) {
+      return (
+        <IconContainer>
+          <VideoIcon />
+        </IconContainer>
+      );
+    } else {
+      return (
         <Image
           priority
           layout="responsive"
@@ -91,6 +109,30 @@ const TemplateCard = ({
           alt={templateName}
           src={imageSrc}
         />
+      );
+    }
+  };
+
+  return (
+    <Card
+      tabIndex={0}
+      hasMultiple={hasMultiple}
+      noHoverEffect={noHoverEffect}
+      onClick={redirectPath ? openDetailPage : null}
+      onKeyDown={redirectPath ? handleEnterKey : null}
+      isStatic={isStatic}>
+      <Row>
+        <CollectionNameButton isStatic={isStatic} onClick={openCollectionPage}>
+          <CollectionIcon
+            name={collectionName}
+            image={collectionImage}
+            margin="24px 16px 24px 0"
+          />
+          <Text>{capitalize(collectionName)}</Text>
+        </CollectionNameButton>
+      </Row>
+      <ImageContainer isAudio={isAudio} isVideo={isVideo}>
+        {getImageContent()}
         {priceTag}
       </ImageContainer>
       <Title>{templateName}</Title>
