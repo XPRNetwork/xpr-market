@@ -75,9 +75,13 @@ export const AvatarContainer = styled(FadeInImageContainer)`
 `;
 
 export const ImageLink = styled.a`
-  margin: 16px 0;
+  margin: 28px 0;
   z-index: 3;
   padding-left: 1px;
+
+  ${breakpoint.tablet`
+    margin: 26.5px 0;
+  `}
 `;
 
 export const DropdownList = styled.section<DropdownProps>`
