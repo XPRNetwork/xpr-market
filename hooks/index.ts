@@ -32,18 +32,20 @@ export const useWindowSize = (): {
     isSSR ? 1200 : window.innerWidth
   );
   const [isMobile, setIsMobile] = useState(
-    isSSR ? false : window.innerWidth < 600
+    isSSR ? false : window.innerWidth <= 600
   );
   const [isTablet, setIsTablet] = useState(
-    isSSR ? false : window.innerWidth < 970
+    isSSR ? false : window.innerWidth <= 970
   );
 
   function changeWindowSize() {
     setWindowWidth(window.innerWidth);
-    if (window.innerWidth < 600) {
+    if (window.innerWidth <= 600) {
       setIsMobile(true);
-    } else if (window.innerWidth < 970) {
+      setIsTablet(false);
+    } else if (window.innerWidth <= 970) {
       setIsTablet(true);
+      setIsMobile(false);
     } else {
       setIsMobile(false);
       setIsTablet(false);
