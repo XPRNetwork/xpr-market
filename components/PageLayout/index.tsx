@@ -10,6 +10,7 @@ import {
   CancelSaleModal,
   CancelMultipleSalesModal,
   TransferModal,
+  CreateCollectionModal,
 } from '../Modal';
 import { useEscapeKeyClose } from '../../hooks';
 
@@ -40,6 +41,8 @@ const PageLayout = ({ title, children }: Props): JSX.Element => {
         return <CancelMultipleSalesModal />;
       case MODAL_TYPES.TRANSFER:
         return <TransferModal />;
+      case MODAL_TYPES.CREATE_COLLECTION:
+        return <CreateCollectionModal />;
       default:
         return null;
     }

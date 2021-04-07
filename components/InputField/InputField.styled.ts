@@ -23,14 +23,14 @@ export const InputContainer = styled.div<InputProps>`
   align-items: center;
   position: relative;
 
-  ${({ disabled }) =>
-    disabled
-      ? ''
-      : `:hover,
+  :hover,
   :focus,
   :focus-visible {
-    border: solid 1px ${({ hasError }) => (hasError ? '#f94e6c' : '#752eeb')};
-  }`}
+    border: ${({ hasError, disabled }) => {
+      if (disabled) return 'none';
+      return `solid 1px ${hasError ? '#f94e6c' : '#752eeb'}`;
+    }};
+  }
 `;
 
 export const Input = styled.input`

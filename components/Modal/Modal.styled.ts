@@ -7,6 +7,11 @@ interface HalfButtonProps extends ButtonProps {
   color?: string;
   hoverColor?: string;
   height?: string;
+  disabled?: boolean;
+}
+
+interface DescriptionProps {
+  mb?: string;
 }
 
 export const Background = styled.div`
@@ -64,11 +69,11 @@ export const Title = styled.h1`
   font-weight: normal;
 `;
 
-export const Description = styled.p`
+export const Description = styled.p<DescriptionProps>`
   font-size: 14px;
   line-height: 24px;
   color: #1a1a1a;
-  margin-bottom: 16px;
+  margin-bottom: ${({ mb }) => mb || '16px'};
 `;
 
 export const InputLabel = styled(Description).attrs({ as: 'label' })`
@@ -116,6 +121,7 @@ export const ModalButton = styled(StyledButton)`
 
 export const HalfButton = styled(StyledButton)<HalfButtonProps>`
   flex: 1;
+  padding: 11px 16px 13px;
 
   ${({ color }) =>
     color &&
@@ -130,6 +136,13 @@ export const HalfButton = styled(StyledButton)<HalfButtonProps>`
       background-color: ${hoverColor};
     }
   `};
+
+  ${({ disabled }) =>
+    disabled &&
+    `
+    pointer-events: none;
+    opacity: 0.2;
+  `};
 `;
 
 export const Spacer = styled.div`
@@ -138,4 +151,28 @@ export const Spacer = styled.div`
   ${breakpoint.tablet`
     flex: 0;
   `};
+`;
+
+export const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+`;
+
+export const DragDropButton = styled(StyledButton)`
+  width: 50%;
+  margin: 0;
+  padding: 3px 16px;
+  background: #f2f2f2;
+  color: #752eeb;
+  font-size: 14px;
+  border-radius: 4px;
+
+  :active,
+  :hover,
+  :focus {
+    background: #752eeb;
+    color: #f2f2f2;
+  }
 `;

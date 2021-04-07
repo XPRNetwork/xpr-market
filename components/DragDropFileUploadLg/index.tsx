@@ -7,8 +7,8 @@ import {
   UploadError,
 } from './DragDropFileUploadLg.styled';
 import {
-  FILE_UPLOAD_TYPES_TEXT,
-  FILE_UPLOAD_TYPES,
+  LG_FILE_UPLOAD_TYPES_TEXT,
+  LG_FILE_UPLOAD_TYPES,
   LG_FILE_SIZE_UPLOAD_LIMIT,
 } from '../../utils/constants';
 import { ReactComponent as UploadIcon } from '../../public/upload-icon.svg';
@@ -23,7 +23,7 @@ const DragDropFileUploadLg = ({
   const onDrop = useCallback((acceptedFiles) => {
     setUploadError('');
     const file = acceptedFiles[0];
-    const isAcceptedFileType = FILE_UPLOAD_TYPES[file.type] || false;
+    const isAcceptedFileType = LG_FILE_UPLOAD_TYPES[file.type] || false;
     const isAcceptedFileSize = file.size <= LG_FILE_SIZE_UPLOAD_LIMIT; // 30MB
     if (isAcceptedFileType && isAcceptedFileSize) {
       setTemplateUploadedFile(file);
@@ -45,11 +45,11 @@ const DragDropFileUploadLg = ({
       {isDragActive ? (
         <>
           <UploadIcon />
-          <FileTypeDescription>{FILE_UPLOAD_TYPES_TEXT}</FileTypeDescription>
+          <FileTypeDescription>{LG_FILE_UPLOAD_TYPES_TEXT}</FileTypeDescription>
         </>
       ) : (
         <>
-          <FileTypeDescription>{FILE_UPLOAD_TYPES_TEXT}</FileTypeDescription>
+          <FileTypeDescription>{LG_FILE_UPLOAD_TYPES_TEXT}</FileTypeDescription>
           {uploadError ? <UploadError>{uploadError}</UploadError> : null}
           <UploadButton role="button">Choose file</UploadButton>
         </>

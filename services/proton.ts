@@ -26,7 +26,6 @@ interface CreateCollectionOptions {
   author: string;
   description: string;
   display_name: string;
-  market_fee: string;
   collection_name?: string;
   collection_image?: string;
 }
@@ -349,7 +348,6 @@ class ProtonSDK {
    * @param {string}   collection_name    Name of the collection on the blockchain.
    * @param {string}   description        Short description of the collection.
    * @param {string}   display_name       Display name of the collection.
-   * @param {string}   market_fee         Royalty amount owner receives for each asset transaction within the collection.
    * @param {string}   collection_image   IPFS CID (image hash generated on IPFS).
    * @return {Response}                   Returns an object indicating the success of the transaction and transaction ID.
    */
@@ -358,7 +356,6 @@ class ProtonSDK {
     author,
     collection_name,
     description,
-    market_fee,
     display_name,
     collection_image,
   }: CreateCollectionOptions): Promise<Response> => {
@@ -378,7 +375,7 @@ class ProtonSDK {
           allow_notify: true,
           authorized_accounts: [author],
           notify_accounts: [],
-          market_fee,
+          market_fee: '0.000000',
           data: [
             {
               key: 'description',

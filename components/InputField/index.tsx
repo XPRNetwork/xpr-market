@@ -61,6 +61,7 @@ const InputField = ({
     if (setFormError) setFormError('');
     setError('');
     setValue(textInput);
+    if (!textInput.length) return;
 
     const { isValid, errorMessage } = checkIfIsValid(textInput);
     if (!isValid) {
@@ -83,7 +84,6 @@ const InputField = ({
       mb={mb}
       hasError={!!error}>
       <Input
-        required
         min={min}
         max={max}
         step={step}
