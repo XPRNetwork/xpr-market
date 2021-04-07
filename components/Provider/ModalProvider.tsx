@@ -48,13 +48,19 @@ export interface TransferNFTModalProps extends GeneralModalProps {
   templateMint: string;
 }
 
+export interface CreateCollectionProps extends GeneralModalProps {
+  setCollectionImage: Dispatch<SetStateAction<string>>;
+  setCollectionName: Dispatch<SetStateAction<string>>;
+}
+
 type ModalProps =
   | GeneralModalProps
   | CancelSaleModalProps
   | CancelMultipleSalesModalProps
   | CreateSaleModalProps
   | CreateMultipleSalesModalProps
-  | TransferNFTModalProps;
+  | TransferNFTModalProps
+  | CreateCollectionProps;
 
 type ModalContextValue = {
   modalType: string;

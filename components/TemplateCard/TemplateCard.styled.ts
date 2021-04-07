@@ -1,19 +1,29 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { FadeInImageContainer } from '../../styles/FadeInImageContainer.styled';
 
 type CardProps = {
   hasMultiple: boolean;
+  noHoverEffect: boolean;
+  isStatic?: boolean;
 };
 
 type GreyTextProps = {
   price?: string;
 };
 
+type ImageContainerProps = {
+  isAudio?: boolean;
+  isVideo?: boolean;
+};
+
+type CollectionNameButtonProps = {
+  isStatic?: boolean;
+};
+
 export const Card = styled.article<CardProps>`
   display: flex;
   flex-direction: column;
   width: 100%;
-  cursor: pointer;
   outline: none;
   border-radius: 16px;
   border: solid 1px #e6e6e6;
@@ -22,9 +32,15 @@ export const Card = styled.article<CardProps>`
   position: relative;
   transition: 0.3s;
 
-  :hover,
+  ${({ isStatic }) => (isStatic ? '' : 'cursor: pointer')};
+  :hover {
+    transform: ${({ noHoverEffect }) =>
+      noHoverEffect ? 'none' : 'scale(1.02)'};
+  }
+
   :focus-visible {
-    transform: scale(1.02);
+    transform: ${({ noHoverEffect }) =>
+      noHoverEffect ? 'none' : 'scale(1.02)'};
   }
 
   ${({ hasMultiple }) =>
@@ -61,17 +77,31 @@ export const Row = styled.div`
   align-items: center;
 `;
 
-export const ImageContainer = styled(FadeInImageContainer)`
+export const ImageContainer = styled(FadeInImageContainer)<ImageContainerProps>`
   position: relative;
   border-radius: 8px;
   margin-bottom: 24px;
-  overflow: hidden;
-  backface-visibility: hidden;
-  transform: translate3d(0, 0, 0);
-  -webkit-backface-visibility: hidden;
-  -moz-backface-visibility: hidden;
-  -webkit-transform: translate3d(0, 0, 0);
-  -moz-transform: translate3d(0, 0, 0);
+
+  ${({ isAudio, isVideo }) =>
+    isAudio || isVideo ? `${SquareContainerCSS}` : ''};
+`;
+
+const SquareContainerCSS = css`
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding-bottom: 100%;
+`;
+
+export const IconContainer = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f0e8fd;
+  border-radius: 16px;
 `;
 
 export const Title = styled.h1`
@@ -87,17 +117,17 @@ export const Text = styled.span`
   color: #1a1a1a;
 `;
 
-export const CollectionNameButton = styled.button`
+export const CollectionNameButton = styled.button<CollectionNameButtonProps>`
   display: flex;
   align-items: center;
-  cursor: pointer;
   background-color: transparent;
   outline: none;
   border: none;
   z-index: 1;
+  ${({ isStatic }) => (isStatic ? '' : 'cursor: pointer')};
 
   :hover {
-    transform: scale(1.05);
+    ${({ isStatic }) => (isStatic ? '' : 'transform: scale(1.05)')};
   }
 `;
 

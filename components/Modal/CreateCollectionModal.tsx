@@ -1,9 +1,6 @@
 import { FormEventHandler, MouseEvent, useState, useRef } from 'react';
-import {
-  useAuthContext,
-  useModalContext,
-  GeneralModalProps,
-} from '../Provider';
+import { useAuthContext, useModalContext } from '../Provider';
+import { CreateCollectionProps } from '../Provider/ModalProvider';
 import DragDropFileUploadSm from '../DragDropFileUploadSm';
 import InputField from '../InputField';
 import {
@@ -27,7 +24,11 @@ export const CreateCollectionModal = (): JSX.Element => {
   const { currentUser } = useAuthContext();
   const { closeModal, modalProps } = useModalContext();
   const uploadInputRef = useRef<HTMLInputElement>();
-  const { fetchPageData } = modalProps as GeneralModalProps;
+  const {
+    fetchPageData,
+    setCollectionImage,
+    setCollectionName,
+  } = modalProps as CreateCollectionProps;
   const [name, setName] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [displayName, setDisplayName] = useState<string>('');
@@ -91,11 +92,25 @@ export const CreateCollectionModal = (): JSX.Element => {
       collection_image: ipfsImage,
     });
 
+    if (!result.success) {
+      throw new Error((result.error as unknown) as string);
+    }
+
     await fetchPageData();
+    readImageAsString();
+    setCollectionName(name);
     closeModal();
 
     // TODO: Remove console log after implementing collection fetch in Create page
     console.log('result createCollection: ', result);
+  };
+
+  const readImageAsString = () => {
+    const reader = new window.FileReader();
+    reader.onload = () => {
+      setCollectionImage(reader.result as string);
+    };
+    reader.readAsDataURL(uploadedFile);
   };
 
   const handleBackgroundClick = (e: MouseEvent) => {
