@@ -23,6 +23,7 @@ const TestPage = (): JSX.Element => {
   const [collectionDisplayName, setCollectionDisplayName] = useState<string>(
     ''
   );
+  const [fee, setFee] = useState<number>();
 
   const transfer = async () => {
     const { actor } = currentUser;
@@ -58,6 +59,20 @@ const TestPage = (): JSX.Element => {
       display_name: collectionDisplayName,
     });
     console.log('result createCollection: ', result);
+  };
+
+  const setMarketFee = async () => {
+    const market_fee =
+      typeof fee === 'string'
+        ? (parseFloat(fee) / 100).toFixed(6)
+        : (fee / 100).toFixed(6);
+    const { actor } = currentUser;
+    const result = await proton.setMarketFee({
+      author: actor,
+      collection_name: collectionName,
+      market_fee,
+    });
+    console.log('result burn: ', result);
   };
 
   const getOwnCreations = async () => {
@@ -136,6 +151,30 @@ const TestPage = (): JSX.Element => {
         onChange={(e) => setCollectionDisplayName(e.target.value)}
       />
       <button onClick={createCollection}>createCollection</button>
+      <br />
+      <input
+        value={collectionName}
+        placeholder="Collection Name"
+        onChange={(e) => setCollectionName(e.target.value)}
+      />
+      <InputField
+        placeholder="Market Fee"
+        inputType="number"
+        min={0}
+        max={15}
+        step={1}
+        value={fee}
+        setValue={setFee}
+        checkIfIsValid={(input) => {
+          const isValid = input >= 0 && input <= 15;
+          const errorMessage = 'Market fee must be between 0% and 15%';
+          return {
+            isValid,
+            errorMessage,
+          };
+        }}
+      />
+      <button onClick={setMarketFee}>setMarketFee</button>
       <br />
       <div style={{ display: 'flex' }}>
         <InputField
