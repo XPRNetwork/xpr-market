@@ -3,11 +3,13 @@ import styled from 'styled-components';
 export interface ButtonProps {
   fullWidth?: boolean;
   cancel?: boolean;
+  margin?: boolean;
+  smallSize?: boolean;
 }
 
 export const StyledButton = styled.button<ButtonProps>`
-  padding: 8px 16px;
-  margin: 12px 0;
+  padding: ${({ smallSize }) => (smallSize ? '4px 16px' : '8px 16px')};
+  margin: ${({ margin }) => (margin ? '12px 0' : '')};
   border: none;
   border-radius: 8px;
   background-color: ${({ cancel }) => (cancel ? '#f94e6c' : '#752eeb')};
@@ -15,7 +17,7 @@ export const StyledButton = styled.button<ButtonProps>`
   cursor: pointer;
   transition: 0.2s;
   height: auto;
-  font-size: 16px;
+  font-size: ${({ smallSize }) => (smallSize ? '14px' : '16px')};
   line-height: 24px;
   width: ${({ fullWidth }) => (fullWidth ? '100%' : 'auto')};
 
