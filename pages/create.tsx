@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import Image from 'next/image';
 import PageLayout from '../components/PageLayout';
 import Button from '../components/Button';
 import TemplateCard from '../components/TemplateCard';
 import InputField from '../components/InputField';
 import DragDropFileUploadLg from '../components/DragDropFileUploadLg';
+import { useModalContext, MODAL_TYPES } from '../components/Provider';
 import {
   Container,
   Row,
@@ -15,9 +17,11 @@ import {
   EmptyBox2,
   Terms,
   TermsLink,
+  BoxButton,
 } from '../styles/CreatePage';
 
 const Create = (): JSX.Element => {
+  const { openModal, setModalProps } = useModalContext();
   const [name, setName] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [royalties, setRoyalties] = useState<string>('');
@@ -26,6 +30,17 @@ const Create = (): JSX.Element => {
   const [templateUploadedFile, setTemplateUploadedFile] = useState<File | null>(
     null
   );
+
+  const getUserCollections = async () => {
+    console.log('refetch user collections');
+  };
+
+  const createCollection = () => {
+    openModal(MODAL_TYPES.CREATE_COLLECTION);
+    setModalProps({
+      fetchPageData: getUserCollections,
+    });
+  };
 
   return (
     <PageLayout title="Create">
@@ -43,7 +58,17 @@ const Create = (): JSX.Element => {
             />
             <ElementTitle>Choose Collection</ElementTitle>
             <Row>
-              <EmptyBox2 />
+              <BoxButton onClick={createCollection}>
+                  <Image
+                    priority
+                    layout="fixed"
+                    width={40}
+                    height={40}
+                    alt="plus icon"
+                    src="/plus-icon.png"
+                  />
+                  <span>Create</span>
+                </BoxButton>
               <EmptyBox2 />
             </Row>
             <InputField

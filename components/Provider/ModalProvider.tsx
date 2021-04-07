@@ -16,38 +16,40 @@ export const MODAL_TYPES = {
   CANCEL_SALE: 'CANCEL_SALE',
   CANCEL_MULTIPLE_SALES: 'CANCEL_MULTIPLE_SALES',
   TRANSFER: 'TRANSFER',
+  CREATE_COLLECTION: 'CREATE_COLLECTION',
 };
 
 type Props = {
   children: ReactNode;
 };
 
-interface SaleModalProps {
+export interface GeneralModalProps {
   fetchPageData: () => Promise<void>;
 }
 
-export interface CancelSaleModalProps extends SaleModalProps {
+export interface CancelSaleModalProps extends GeneralModalProps {
   saleId: string;
 }
 
-export interface CancelMultipleSalesModalProps extends SaleModalProps {
+export interface CancelMultipleSalesModalProps extends GeneralModalProps {
   saleIds: string[];
 }
 
-export interface CreateSaleModalProps extends SaleModalProps {
+export interface CreateSaleModalProps extends GeneralModalProps {
   assetId: string;
 }
 
-export interface CreateMultipleSalesModalProps extends SaleModalProps {
+export interface CreateMultipleSalesModalProps extends GeneralModalProps {
   assetIds: string[];
 }
 
-export interface TransferNFTModalProps extends SaleModalProps {
+export interface TransferNFTModalProps extends GeneralModalProps {
   assetId: string;
   templateMint: string;
 }
 
 type ModalProps =
+  | GeneralModalProps
   | CancelSaleModalProps
   | CancelMultipleSalesModalProps
   | CreateSaleModalProps

@@ -16,13 +16,6 @@ const TestPage = (): JSX.Element => {
   const [text1, setText1] = useState<string>('');
   const [text2, setText2] = useState<string>('');
   const [collectionName, setCollectionName] = useState<string>('');
-  const [collectionMarketFee, setCollectionMarketFee] = useState<number>(15);
-  const [collectionDescription, setCollectionDescription] = useState<string>(
-    ''
-  );
-  const [collectionDisplayName, setCollectionDisplayName] = useState<string>(
-    ''
-  );
   const [fee, setFee] = useState<number>();
 
   const transfer = async () => {
@@ -43,22 +36,6 @@ const TestPage = (): JSX.Element => {
       asset_id: assetIdBurn,
     });
     console.log('result burn: ', result);
-  };
-
-  const createCollection = async () => {
-    const { actor } = currentUser;
-    const market_fee =
-      typeof collectionMarketFee === 'string'
-        ? (parseInt(collectionMarketFee) / 100).toFixed(6)
-        : (collectionMarketFee / 100).toFixed(6);
-    const result = await proton.createCollection({
-      author: actor,
-      collection_name: collectionName,
-      market_fee,
-      description: collectionDescription,
-      display_name: collectionDisplayName,
-    });
-    console.log('result createCollection: ', result);
   };
 
   const setMarketFee = async () => {
@@ -106,51 +83,6 @@ const TestPage = (): JSX.Element => {
         onChange={(e) => setAssetIdBurn(e.target.value)}
       />
       <button onClick={burn}>burn</button>
-      <br />
-      <InputField
-        value={collectionName}
-        setValue={setCollectionName}
-        placeholder="collection name"
-        checkIfIsValid={(input) => {
-          const hasValidCharacters = !!(input as string).match(/^[a-z1-5]+$/);
-          const isValidLength = (input as string).length === 12;
-          const isValid = hasValidCharacters && isValidLength;
-          const errorMessage =
-            'Collection name should be 12 characters long and only contain the following symbols: 12345abcdefghijklmnopqrstuvwxyz';
-          return {
-            isValid,
-            errorMessage,
-          };
-        }}
-      />
-      <InputField
-        inputType="number"
-        min={0}
-        max={15}
-        step={1}
-        value={collectionMarketFee}
-        setValue={setCollectionMarketFee}
-        placeholder="collection market fee"
-        checkIfIsValid={(input) => {
-          const isValid = input >= 0 && input <= 15;
-          const errorMessage = 'Market fee must be between 0% and 15%';
-          return {
-            isValid,
-            errorMessage,
-          };
-        }}
-      />
-      <input
-        value={collectionDescription}
-        placeholder="collection description"
-        onChange={(e) => setCollectionDescription(e.target.value)}
-      />
-      <input
-        value={collectionDisplayName}
-        placeholder="collection display name"
-        onChange={(e) => setCollectionDisplayName(e.target.value)}
-      />
-      <button onClick={createCollection}>createCollection</button>
       <br />
       <input
         value={collectionName}
