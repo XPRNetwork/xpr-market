@@ -1,11 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import Image from 'next/image';
 import PageLayout from '../components/PageLayout';
 import Button from '../components/Button';
 import TemplateCard from '../components/TemplateCard';
 import InputField from '../components/InputField';
 import DragDropFileUploadLg from '../components/DragDropFileUploadLg';
-import { useModalContext, MODAL_TYPES } from '../components/Provider';
+import {
+  useAuthContext,
+  useModalContext,
+  MODAL_TYPES,
+} from '../components/Provider';
 import {
   Container,
   Row,
@@ -21,6 +26,8 @@ import {
 } from '../styles/CreatePage';
 
 const Create = (): JSX.Element => {
+  const router = useRouter();
+  const { currentUser } = useAuthContext();
   const { openModal, setModalProps } = useModalContext();
   const [collectionName, setCollectionName] = useState<string>('');
   const [collectionImage, setCollectionImage] = useState<string>('');
@@ -57,6 +64,12 @@ const Create = (): JSX.Element => {
     }
   }, [templateUploadedFile]);
 
+  useEffect(() => {
+    if (!currentUser) {
+      router.push('/');
+    }
+  }, [currentUser]);
+
   const getUserCollections = async () => {
     console.log('refetch user collections');
   };
@@ -69,6 +82,10 @@ const Create = (): JSX.Element => {
       setCollectionName: setCollectionName,
     });
   };
+
+  if (!currentUser) {
+    return null;
+  }
 
   return (
     <PageLayout title="Create">
