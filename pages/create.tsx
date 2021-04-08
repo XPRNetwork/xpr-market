@@ -6,6 +6,7 @@ import Button from '../components/Button';
 import TemplateCard from '../components/TemplateCard';
 import InputField from '../components/InputField';
 import DragDropFileUploadLg from '../components/DragDropFileUploadLg';
+import MobileCreatePagePlaceholder from '../components/MobileCreatePagePlaceholder';
 import {
   useAuthContext,
   useModalContext,
@@ -24,11 +25,13 @@ import {
   TermsLink,
   BoxButton,
 } from '../styles/CreatePage';
+import { useNavigatorUserAgent } from '../hooks';
 
 const Create = (): JSX.Element => {
   const router = useRouter();
-  const { currentUser } = useAuthContext();
+  const { currentUser, isLoadingUser } = useAuthContext();
   const { openModal, setModalProps } = useModalContext();
+  const { isDesktop } = useNavigatorUserAgent();
   const [collectionName, setCollectionName] = useState<string>('');
   const [collectionImage, setCollectionImage] = useState<string>('');
   const [templateName, setTemplateName] = useState<string>('');
@@ -65,10 +68,10 @@ const Create = (): JSX.Element => {
   }, [templateUploadedFile]);
 
   useEffect(() => {
-    if (!currentUser) {
+    if (!currentUser && !isLoadingUser) {
       router.push('/');
     }
-  }, [currentUser]);
+  }, [currentUser, isLoadingUser]);
 
   const getUserCollections = async () => {
     console.log('refetch user collections');
@@ -83,12 +86,16 @@ const Create = (): JSX.Element => {
     });
   };
 
-  if (!currentUser) {
-    return null;
-  }
+  const getContent = () => {
+    if (!currentUser) {
+      return null;
+    }
 
-  return (
-    <PageLayout title="Create">
+    if (!isDesktop) {
+      return <MobileCreatePagePlaceholder />;
+    }
+
+    return (
       <Container>
         <Row>
           <LeftColumn>
@@ -179,8 +186,10 @@ const Create = (): JSX.Element => {
           </RightColumn>
         </Row>
       </Container>
-    </PageLayout>
-  );
+    );
+  };
+
+  return <PageLayout title="Create">{getContent()}</PageLayout>;
 };
 
 export default Create;
