@@ -24,6 +24,7 @@ type ImmutableData = {
   name: string;
   image: string;
   series: number;
+  desc: string;
 };
 
 export interface Template {

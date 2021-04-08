@@ -35,6 +35,7 @@ const emptyTemplateDetails = {
     image: '',
     name: '',
     series: 0,
+    desc: '',
   },
 };
 
@@ -67,7 +68,7 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
     lowestPrice,
     max_supply,
     collection: { author, collection_name },
-    immutable_data: { image, name },
+    immutable_data: { image, name, desc },
   } = template;
 
   const fetchPageData = async () => {
@@ -185,6 +186,7 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
         assetIds={assetIds}
         saleIds={saleIds}>
         <AssetFormSell
+          description={desc}
           dropdownAssets={templateAssets}
           lowestPrice={lowestPrice}
           maxSupply={max_supply}

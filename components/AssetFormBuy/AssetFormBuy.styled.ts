@@ -1,16 +1,16 @@
 import styled from 'styled-components';
 
 export const General = styled.p`
-  color: #7578b5;
-  font-size: 14px;
+  color: #808080;
+  font-size: 12px;
   line-height: 24px;
 `;
 
 export const Amount = styled.h3`
-  font-size: 22px;
-  font-weight: 600;
+  font-size: 28px;
   line-height: 32px;
-  margin-bottom: 28px;
+  margin: 4px 0 32px;
+  color: #1a1a1a;
 `;
 
 export const Row = styled.div`
@@ -28,12 +28,12 @@ export const ErrorMessage = styled.p`
 
 export const DropdownMenu = styled.select`
   font-size: 16px;
-  margin: 4px 0 12px;
+  margin-bottom: 12px;
   padding: 0 16px;
   width: 100%;
   height: 40px;
-  color: #0e103c;
-  border: 1px solid #e8ecfd;
+  color: #808080;
+  border: 1px solid #e6e6e6;
   border-radius: 4px;
   cursor: pointer;
   line-height: 24px;
@@ -46,6 +46,6 @@ export const DropdownMenu = styled.select`
   background-position: top 2px right 15px;
 
   &:hover {
-    border: 1px solid #aab2d5;
+    border: 1px solid #e6e6e6;
   }
 `;

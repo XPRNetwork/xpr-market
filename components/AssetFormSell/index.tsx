@@ -1,5 +1,6 @@
 import { useEffect, Dispatch, SetStateAction } from 'react';
 import Button from '../Button';
+import AssetDescription from '../AssetDescription';
 import {
   DropdownMenu,
   General,
@@ -9,6 +10,7 @@ import {
 import { Asset } from '../../services/assets';
 
 type Props = {
+  description: string;
   dropdownAssets: Asset[];
   lowestPrice: string;
   maxSupply: string;
@@ -19,6 +21,7 @@ type Props = {
 };
 
 export const AssetFormSell = ({
+  description,
   dropdownAssets,
   lowestPrice,
   maxSupply,
@@ -39,7 +42,8 @@ export const AssetFormSell = ({
   };
 
   return (
-    <section>
+    <>
+      {description ? <AssetDescription description={description} /> : ''}
       <Row>
         <General>Lowest Market Price</General>
         <General>Edition Size</General>
@@ -69,7 +73,7 @@ export const AssetFormSell = ({
         onClick={handleButtonClick}>
         {buttonText}
       </Button>
-    </section>
+    </>
   );
 };
 
