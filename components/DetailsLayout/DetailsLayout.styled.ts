@@ -13,10 +13,13 @@ type ToggleContainerProps = {
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
-  margin: 64px 100px 0px;
+  margin: 64px auto 0px;
+  justify-content: center;
+  align-items: center;
+  width: 944px;
 
-  ${breakpoint.tablet`
-    margin: 64px 0 0;
+  ${breakpoint.laptop`
+    width: 100%;
   `};
 
   ${breakpoint.mobile`
@@ -66,7 +69,8 @@ export const ContentRow = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 48px 0 16px;
+  margin: 52px 0 16px;
+  width: 100%;
 `;
 
 export const ArrowContainer = styled.div<ArrowProps>`

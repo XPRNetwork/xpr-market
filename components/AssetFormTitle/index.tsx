@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import {
   NameContainer,
   Name,
-  General,
+  AuthorText,
   Title,
   Author,
   CollectionNameButton,
@@ -62,12 +62,12 @@ const AssetFormTitle = ({
           />
         )}
       </NameContainer>
-      <General>
+      <AuthorText>
         Created by{' '}
         <Author onClick={redirectToAuthor}>
           {capitalize(collectionAuthor)}
         </Author>
-      </General>
+      </AuthorText>
     </>
   );
 };

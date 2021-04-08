@@ -9,7 +9,6 @@ import {
   ContentRow,
   ArrowContainer,
   ToggleContainer,
-  Divider,
 } from './DetailsLayout.styled';
 import SalesHistoryTable from '../SalesHistoryTable';
 import AssetFormTitle from '../AssetFormTitle';
@@ -70,7 +69,6 @@ const DetailsLayout = ({
             saleIds={saleIds}
             assetIds={assetIds}
           />
-          <Divider />
           {children}
         </Column>
       </Row>

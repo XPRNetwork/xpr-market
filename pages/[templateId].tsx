@@ -28,6 +28,7 @@ const emptyTemplateDetails = {
     image: '',
     name: '',
     series: 0,
+    desc: '',
   },
 };
 
@@ -70,7 +71,7 @@ const MarketplaceTemplateDetail = (): JSX.Element => {
     lowestPrice,
     max_supply,
     collection: { author, collection_name },
-    immutable_data: { image, name },
+    immutable_data: { image, name, desc },
   } = template;
 
   useEffect(() => {
@@ -159,7 +160,7 @@ const MarketplaceTemplateDetail = (): JSX.Element => {
   const buttonText = currentUser
     ? isBalanceInsufficient
       ? 'Visit Foobar Faucet'
-      : 'Buy'
+      : 'Buy now'
     : 'Connect wallet to buy';
 
   const getContent = () => {
@@ -188,6 +189,7 @@ const MarketplaceTemplateDetail = (): JSX.Element => {
         image={image}
         currentAsset={currentAsset}>
         <AssetFormBuy
+          description={desc}
           dropdownAssets={templateAssets}
           lowestPrice={lowestPrice}
           maxSupply={max_supply}
