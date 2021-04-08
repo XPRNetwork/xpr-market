@@ -84,7 +84,7 @@ export const CreateCollectionModal = (): JSX.Element => {
     // TODO: Upload image into IPFS
     const ipfsImage = '';
 
-    const result = await ProtonSDK.createCollection({
+    const result = await ProtonSDK.createCollectionAndSchema({
       author,
       collection_name: name,
       description: description,
