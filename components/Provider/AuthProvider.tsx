@@ -8,6 +8,7 @@ interface AuthContext {
   currentUserBalance: string;
   atomicMarketBalance: string;
   authError: string;
+  isLoadingUser: boolean;
   login: () => Promise<void>;
   logout: () => Promise<void>;
   updateCurrentUserBalance: (chainAccount: string) => Promise<void>;
@@ -23,6 +24,7 @@ const AuthContext = createContext<AuthContext>({
   currentUserBalance: '',
   atomicMarketBalance: '',
   authError: '',
+  isLoadingUser: true,
   login: () => Promise.resolve(),
   logout: () => Promise.resolve(),
   updateCurrentUserBalance: () => Promise.resolve(),
@@ -35,6 +37,7 @@ export const useAuthContext = (): AuthContext => {
 };
 
 export const AuthProvider = ({ children }: Props): JSX.Element => {
+  const [isLoadingUser, setIsLoadingUser] = useState<boolean>(true);
   const [currentUser, setCurrentUser] = useState<User>(undefined);
   const [currentUserBalance, setCurrentUserBalance] = useState<string>('');
   const [atomicMarketBalance, setAtomicMarketBalance] = useState<string>('');
@@ -64,6 +67,7 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
 
       const restore = async () => {
         const { user, error } = await ProtonSDK.restoreSession();
+        setIsLoadingUser(false);
 
         if (error || !user) {
           const errorMessage = error
@@ -118,12 +122,19 @@ export const AuthProvider = ({ children }: Props): JSX.Element => {
       currentUserBalance,
       atomicMarketBalance,
       authError,
+      isLoadingUser,
       login,
       logout,
       updateCurrentUserBalance,
       updateAtomicBalance,
     }),
-    [currentUser, authError, currentUserBalance, atomicMarketBalance]
+    [
+      currentUser,
+      authError,
+      currentUserBalance,
+      atomicMarketBalance,
+      isLoadingUser,
+    ]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
