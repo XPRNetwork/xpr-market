@@ -4,7 +4,7 @@ import { breakpoint } from '../../styles/Breakpoints';
 export const ResultsList = styled.ul`
   position: absolute;
   width: inherit;
-  top: 60px;
+  top: 70px;
   background: #ffffff;
   border: 1px solid #f2f2f2;
   border-radius: 8px;

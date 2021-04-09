@@ -13,6 +13,7 @@ import {
 import CollectionIcon from '../CollectionIcon';
 import { capitalize } from '../../utils';
 import TemplateImage from '../TemplateImage';
+import { IPFS_RESOLVER } from '../../utils/constants';
 
 type Props = {
   collectionName: string;
@@ -73,12 +74,12 @@ const TemplateCard = ({
   const templateImgSrc =
     noIpfsConversion || !templateImage
       ? templateImage
-      : `https://cloudflare-ipfs.com/ipfs/${templateImage}`;
+      : `${IPFS_RESOLVER}${templateImage}`;
 
   const collectionImgSrc =
     noIpfsConversion || !collectionImage
       ? collectionImage
-      : `https://cloudflare-ipfs.com/ipfs/${collectionImage}`;
+      : `${IPFS_RESOLVER}${collectionImage}`;
 
   const priceTag =
     isUsersTemplates && assetsForSale && totalAssets ? (

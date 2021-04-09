@@ -11,6 +11,7 @@ import {
 import { ReactComponent as MoreIcon } from '../../public/more.svg';
 import ShareOnSocial from '../ShareOnSocial';
 import { useClickAway } from '../../hooks';
+import { IPFS_RESOLVER } from '../../utils/constants';
 
 type PageHeaderProps = {
   image?: string;
@@ -35,7 +36,7 @@ const PageHeader = ({
     ? `data:image/jpeg;base64,${image}`
     : '/default-avatar.png';
   const collectionImg = image
-    ? `https://cloudflare-ipfs.com/ipfs/${image}`
+    ? `${IPFS_RESOLVER}${image}`
     : '/proton.svg';
   const displayImg = type === 'user' ? avatarImg : collectionImg;
   const subNameIcon = type === 'user' ? '@' : '#';
