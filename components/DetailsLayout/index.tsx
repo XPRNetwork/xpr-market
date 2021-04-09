@@ -1,19 +1,18 @@
-import { ReactNode, useState } from 'react';
+import { Dispatch, SetStateAction, ReactNode } from 'react';
 import Image from 'next/image';
 import {
   Container,
   Row,
   Column,
   ImageContainer,
-  Title,
-  ContentRow,
-  ArrowContainer,
-  ToggleContainer,
+  TabTitle,
+  TabRow,
 } from './DetailsLayout.styled';
 import SalesHistoryTable from '../SalesHistoryTable';
 import AssetFormTitle from '../AssetFormTitle';
 import { Sale, SaleAsset } from '../../services/sales';
 import { Asset } from '../../services/assets';
+import { tabs } from '../../components/SalesHistoryTable';
 
 type Props = {
   children: ReactNode;
@@ -28,6 +27,8 @@ type Props = {
   transferNFT?: () => void;
   assetIds?: string[];
   saleIds?: string[];
+  activeTab: string;
+  setActiveTab: Dispatch<SetStateAction<string>>;
 };
 
 const AssetImage = ({ image }: { image: string }): JSX.Element => (
@@ -45,6 +46,7 @@ const AssetImage = ({ image }: { image: string }): JSX.Element => (
 const DetailsLayout = ({
   children,
   image,
+  templateId,
   templateName,
   collectionName,
   collectionAuthor,
@@ -54,8 +56,9 @@ const DetailsLayout = ({
   transferNFT,
   assetIds,
   saleIds,
+  activeTab,
+  setActiveTab,
 }: Props): JSX.Element => {
-  const [salesTableActive, setSalesTableActive] = useState(true);
   return (
     <Container>
       <Row>
@@ -72,28 +75,25 @@ const DetailsLayout = ({
           {children}
         </Column>
       </Row>
-      <ContentRow>
-        <Title>Recent Sales History</Title>
-        <ArrowContainer
-          isActive={salesTableActive}
-          onClick={() => setSalesTableActive(!salesTableActive)}>
-          <Image
-            priority
-            layout="fixed"
-            width={24}
-            height={24}
-            src="/arrow.svg"
-            alt="Dropdown Arrow"
-          />
-        </ArrowContainer>
-      </ContentRow>
-      <ToggleContainer active={salesTableActive}>
-        <SalesHistoryTable
-          tableData={sales}
-          error={error}
-          asset={currentAsset}
-        />
-      </ToggleContainer>
+      <TabRow>
+        {tabs.map(({ type, title }) => {
+          return (
+            <TabTitle
+              key={type}
+              onClick={() => setActiveTab(type)}
+              isActive={activeTab === type}>
+              {title}
+            </TabTitle>
+          );
+        })}
+      </TabRow>
+      <SalesHistoryTable
+        activeTab={activeTab}
+        tableData={sales}
+        error={error}
+        asset={currentAsset}
+        templateId={templateId}
+      />
     </Container>
   );
 };

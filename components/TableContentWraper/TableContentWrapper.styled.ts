@@ -7,5 +7,5 @@ export const BlankRow = styled.tr`
 export const CenteredCell = styled.td`
   text-align: center;
   vertical-align: middle;
-  color: #7578b5;
+  color: #1a1a1a;
 `;

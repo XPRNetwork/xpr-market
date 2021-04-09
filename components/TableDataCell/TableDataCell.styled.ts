@@ -10,7 +10,7 @@ export const StyledTableDataCell = styled.td`
   font-style: normal;
   line-height: 1.5;
   letter-spacing: normal;
-  color: #0e103c;
+  color: #1a1a1a;
   text-align: 'left';
 
   ${breakpoint.mobile`

@@ -16,8 +16,10 @@ import {
   Asset,
   FullSaleDataByAssetId,
 } from '../../services/assets';
-import { getSalesHistoryForAsset, Sale } from '../../services/sales';
+import { Sale } from '../../services/sales';
 import { DEFAULT_COLLECTION } from '../../utils/constants';
+import { getSalesHistory } from '../../services/sales';
+import { TAB_TYPES } from '../../components/SalesHistoryTable';
 
 const emptyTemplateDetails = {
   lowestPrice: '',
@@ -60,6 +62,7 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
   const [currentAsset, setCurrentAsset] = useState<Partial<Asset>>({});
   const [assetIds, setAssetIds] = useState<string[]>([]);
   const [saleIds, setSaleIds] = useState<string[]>();
+  const [activeTab, setActiveTab] = useState<string>(TAB_TYPES.ITEM);
 
   const isSelectedAssetBeingSold =
     saleDataByAssetId[currentAsset.asset_id] &&
@@ -114,13 +117,15 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
   useEffect(() => {
     try {
       (async () => {
-        const sales = await getSalesHistoryForAsset(currentAsset.asset_id);
+        const historyId =
+          activeTab === TAB_TYPES.ITEM ? currentAsset.asset_id : templateId;
+        const sales = await getSalesHistory({ id: historyId, type: activeTab });
         setSales(sales);
       })();
     } catch (e) {
       setError(e.message);
     }
-  }, [currentAsset]);
+  }, [currentAsset, activeTab]);
 
   useEffect(() => {
     if (templateId) {
@@ -184,7 +189,9 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
         currentAsset={currentAsset}
         transferNFT={transferNFT}
         assetIds={assetIds}
-        saleIds={saleIds}>
+        saleIds={saleIds}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}>
         <AssetFormSell
           description={desc}
           dropdownAssets={templateAssets}
