@@ -7,15 +7,12 @@ import AssetFormBuy from '../components/AssetFormBuy';
 import LoadingPage from '../components/LoadingPage';
 import { useAuthContext } from '../components/Provider';
 import { getTemplateDetails, Template } from '../services/templates';
-import {
-  getAllTemplateSales,
-  getSalesHistoryForAsset,
-  Sale,
-  SaleAsset,
-} from '../services/sales';
+import { getAllTemplateSales, Sale, SaleAsset } from '../services/sales';
 import ProtonSDK from '../services/proton';
 import { DEFAULT_COLLECTION } from '../utils/constants';
 import * as gtag from '../utils/gtag';
+import { getSalesHistory } from '../services/sales';
+import { TAB_TYPES } from '../components/SalesHistoryTable';
 
 const emptyTemplateDetails = {
   lowestPrice: '',
@@ -63,6 +60,7 @@ const MarketplaceTemplateDetail = (): JSX.Element => {
   const [error, setError] = useState<string>('');
   const [saleId, setSaleId] = useState('');
   const [currentAsset, setCurrentAsset] = useState<Partial<SaleAsset>>({});
+  const [activeTab, setActiveTab] = useState<string>(TAB_TYPES.ITEM);
 
   const balanceAmount = parseFloat(
     currentUserBalance.split(' ')[0].replace(/[,]/g, '')
@@ -105,13 +103,15 @@ const MarketplaceTemplateDetail = (): JSX.Element => {
   useEffect(() => {
     try {
       (async () => {
-        const sales = await getSalesHistoryForAsset(currentAsset.assetId);
+        const historyId =
+          activeTab === TAB_TYPES.ITEM ? currentAsset.assetId : templateId;
+        const sales = await getSalesHistory({ id: historyId, type: activeTab });
         setSales(sales);
       })();
     } catch (e) {
       setError(e.message);
     }
-  }, [currentAsset]);
+  }, [currentAsset, activeTab]);
 
   useEffect(() => {
     setPurchasingError('');
@@ -187,7 +187,9 @@ const MarketplaceTemplateDetail = (): JSX.Element => {
         sales={sales}
         error={error}
         image={image}
-        currentAsset={currentAsset}>
+        currentAsset={currentAsset}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}>
         <AssetFormBuy
           description={desc}
           dropdownAssets={templateAssets}
