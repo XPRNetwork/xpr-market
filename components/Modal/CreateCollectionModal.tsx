@@ -21,6 +21,7 @@ import ProtonSDK from '../../services/proton';
 import uploadToIPFS from '../../services/upload';
 import { ReactComponent as CloseIcon } from '../../public/close.svg';
 import { fileReader } from '../../utils';
+import { sendToApi } from '../../utils/browser-fetch';
 
 export const CreateCollectionModal = (): JSX.Element => {
   const { currentUser } = useAuthContext();
@@ -98,6 +99,11 @@ export const CreateCollectionModal = (): JSX.Element => {
     }
 
     await fetchPageData();
+    await sendToApi('POST', '/api/collections', {
+      name,
+      displayName,
+      img: ipfsImage,
+    });
     readImageAsString();
     setCollectionName(name);
     closeModal();
