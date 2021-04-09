@@ -2,10 +2,11 @@ import styled from 'styled-components';
 
 type ContainerProps = {
   isDragActive: boolean;
+  imagePreview: string;
 };
 
 export const Container = styled.div<ContainerProps>`
-  height: 136px;
+  height: ${({ imagePreview }) => (imagePreview ? '424px' : '136px')};
   border-radius: 4px;
   border: dashed 2px;
   border-color: ${({ isDragActive }) => (isDragActive ? '#b28bf4' : '#e6e6e6')};
@@ -58,4 +59,11 @@ export const UploadError = styled.span`
   margin-top: 10px;
   font-size: 13px;
   color: #f94e6c;
+`;
+
+export const RemovePreviewIcon = styled.div`
+  cursor: pointer;
+  position: relative;
+  top: -20px;
+  right: -200px;
 `;

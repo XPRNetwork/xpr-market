@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { ImageContainer } from '../TemplateCard/TemplateCard.styled';
+import { ImageContainer } from '../TemplateImage/TemplateImage.styled';
 
 type IconContainerProps = {
   margin?: string;
@@ -10,6 +10,7 @@ export const IconContainer = styled(ImageContainer)<IconContainerProps>`
   width: 32px;
   height: 32px;
   border-radius: 100%;
+  overflow: hidden;
 `;
 
 export const PlaceholderIcon = styled(IconContainer).attrs({ as: 'div' })`
