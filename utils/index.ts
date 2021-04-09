@@ -86,3 +86,14 @@ const formatThousands = (numberString: string): string => {
   salePrice = decimals ? salePrice + '.' + decimals : salePrice;
   return salePrice;
 };
+
+export const fileReader = (
+  callback: (string) => void,
+  readData: File
+): void => {
+  const reader = new window.FileReader();
+  reader.onload = () => {
+    callback(reader.result as string);
+  };
+  reader.readAsDataURL(readData);
+};

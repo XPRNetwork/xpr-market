@@ -1,22 +1,18 @@
 import { KeyboardEvent, MouseEvent } from 'react';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
 import {
   Card,
   Row,
-  ImageContainer,
   Title,
   Text,
   GreyText,
   Tag,
   CollectionNameButton,
   PlaceholderPrice,
-  IconContainer,
 } from './TemplateCard.styled';
 import CollectionIcon from '../CollectionIcon';
 import { capitalize } from '../../utils';
-import { ReactComponent as AudioIcon } from '../../public/audio.svg';
-import { ReactComponent as VideoIcon } from '../../public/video.svg';
+import TemplateImage from '../TemplateImage';
 
 type Props = {
   collectionName: string;
@@ -74,10 +70,15 @@ const TemplateCard = ({
     }
   };
 
-  const img = noIpfsConversion
-    ? templateImage
-    : `https://cloudflare-ipfs.com/ipfs/${templateImage}`;
-  const imageSrc = templateImage ? img : '/placeholder-template-image.png';
+  const templateImgSrc =
+    noIpfsConversion || !templateImage
+      ? templateImage
+      : `https://cloudflare-ipfs.com/ipfs/${templateImage}`;
+
+  const collectionImgSrc =
+    noIpfsConversion || !collectionImage
+      ? collectionImage
+      : `https://cloudflare-ipfs.com/ipfs/${collectionImage}`;
 
   const priceTag =
     isUsersTemplates && assetsForSale && totalAssets ? (
@@ -85,33 +86,6 @@ const TemplateCard = ({
         {assetsForSale}/{totalAssets} FOR SALE
       </Tag>
     ) : null;
-
-  const getImageContent = () => {
-    if (isAudio) {
-      return (
-        <IconContainer>
-          <AudioIcon />
-        </IconContainer>
-      );
-    } else if (isVideo) {
-      return (
-        <IconContainer>
-          <VideoIcon />
-        </IconContainer>
-      );
-    } else {
-      return (
-        <Image
-          priority
-          layout="responsive"
-          width={213}
-          height={220}
-          alt={templateName}
-          src={imageSrc}
-        />
-      );
-    }
-  };
 
   return (
     <Card
@@ -125,16 +99,19 @@ const TemplateCard = ({
         <CollectionNameButton isStatic={isStatic} onClick={openCollectionPage}>
           <CollectionIcon
             name={collectionName}
-            image={collectionImage}
+            image={collectionImgSrc}
             margin="24px 16px 24px 0"
           />
           <Text>{capitalize(collectionName)}</Text>
         </CollectionNameButton>
       </Row>
-      <ImageContainer isAudio={isAudio} isVideo={isVideo}>
-        {getImageContent()}
-        {priceTag}
-      </ImageContainer>
+      <TemplateImage
+        templateImgSrc={templateImgSrc}
+        templateName={templateName}
+        isAudio={isAudio}
+        isVideo={isVideo}
+        priceTag={priceTag}
+      />
       <Title>{templateName}</Title>
       <GreyText>Edition size: {editionSize}</GreyText>
       {price ? <Text>{price}</Text> : <PlaceholderPrice aria-hidden />}

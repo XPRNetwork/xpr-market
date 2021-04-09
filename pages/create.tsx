@@ -26,6 +26,7 @@ import {
   BoxButton,
 } from '../styles/CreatePage';
 import { useNavigatorUserAgent } from '../hooks';
+import { fileReader } from '../utils';
 
 const Create = (): JSX.Element => {
   const router = useRouter();
@@ -56,13 +57,12 @@ const Create = (): JSX.Element => {
         setIsVideo(true);
         setIsAudio(false);
       } else {
-        const reader = new window.FileReader();
-        reader.onload = () => {
-          setTemplateImage(reader.result as string);
+        const readerSetTemplateImage = (result) => {
+          setTemplateImage(result);
           setIsAudio(false);
           setIsVideo(false);
         };
-        reader.readAsDataURL(templateUploadedFile);
+        fileReader(readerSetTemplateImage, templateUploadedFile);
       }
     }
   }, [templateUploadedFile]);
@@ -107,6 +107,7 @@ const Create = (): JSX.Element => {
             <ElementTitle>Upload file</ElementTitle>
             <DragDropFileUploadLg
               setTemplateUploadedFile={setTemplateUploadedFile}
+              templateUploadedFile={templateUploadedFile}
             />
             <ElementTitle>Choose Collection</ElementTitle>
             <Row>

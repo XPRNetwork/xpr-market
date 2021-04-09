@@ -18,7 +18,9 @@ import {
   ErrorMessage,
 } from './Modal.styled';
 import ProtonSDK from '../../services/proton';
+import uploadToIPFS from '../../services/upload';
 import { ReactComponent as CloseIcon } from '../../public/close.svg';
+import { fileReader } from '../../utils';
 
 export const CreateCollectionModal = (): JSX.Element => {
   const { currentUser } = useAuthContext();
@@ -81,8 +83,7 @@ export const CreateCollectionModal = (): JSX.Element => {
       return;
     }
 
-    // TODO: Upload image into IPFS
-    const ipfsImage = '';
+    const ipfsImage = await uploadToIPFS(uploadedFile);
 
     const result = await ProtonSDK.createCollectionAndSchema({
       author,
@@ -106,11 +107,7 @@ export const CreateCollectionModal = (): JSX.Element => {
   };
 
   const readImageAsString = () => {
-    const reader = new window.FileReader();
-    reader.onload = () => {
-      setCollectionImage(reader.result as string);
-    };
-    reader.readAsDataURL(uploadedFile);
+    fileReader((result) => setCollectionImage(result), uploadedFile);
   };
 
   const handleBackgroundClick = (e: MouseEvent) => {
