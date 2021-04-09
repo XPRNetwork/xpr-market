@@ -17,6 +17,7 @@ import Banner from '../../components/Banner';
 import ProfileTabs from '../../components/ProfileTabs';
 import PageHeader from '../../components/PageHeader';
 import proton from '../../services/proton-rpc';
+import EmptyUserContent from '../../components/EmptyUserContent';
 
 type RouterQuery = {
   chainAccount: string;
@@ -133,16 +134,19 @@ const Collection = (): JSX.Element => {
 
   useEffect(() => {
     (async () => {
-      try {
-        router.prefetch('/');
-        const templates = await getMyTemplates({
-          chainAccount,
-          type: activeTab,
-        });
-        setRenderedTemplates(templates);
-        await prefetchNextPage();
-      } catch (e) {
-        setErrorMessage(e.message);
+      if (chainAccount) {
+        try {
+          setIsTemplatesLoading(true);
+          router.prefetch('/');
+          const templates = await getMyTemplates({
+            chainAccount,
+            type: activeTab,
+          });
+          setRenderedTemplates(templates);
+          await prefetchNextPage();
+        } catch (e) {
+          setErrorMessage(e.message);
+        }
       }
       setIsLoading(false);
       setIsTemplatesLoading(false);
@@ -160,23 +164,45 @@ const Collection = (): JSX.Element => {
     })();
   }, [currentUser, chainAccount]);
 
+  const getContentItems = () => {
+    if (isTemplatesLoading) {
+      return <LoadingPage margin="10% 0" />;
+    }
+
+    if (!renderedTemplates.length && activeTab === 'ITEMS') {
+      return (
+        <EmptyUserContent
+          subtitle={
+            chainAccount !== currentUser.actor
+              ? 'Looks like this user has not bought any NFT’s yet.'
+              : 'Looks like you have not bought any NFT’s yet. Come back when you do!'
+          }
+          buttonTitle="Explore NFTs"
+          link="/"
+        />
+      );
+    }
+
+    if (!renderedTemplates.length && activeTab === 'CREATIONS') {
+      return (
+        <EmptyUserContent
+          subtitle={
+            chainAccount !== currentUser.actor
+              ? 'Looks like this user does not have any creations yet.'
+              : 'Looks like you have not created any NFT’s yet. Come back when you do!'
+          }
+          buttonTitle="Create NFT"
+          link="/create"
+        />
+      );
+    }
+
+    return <Grid items={renderedTemplates} />;
+  };
+
   const getContent = () => {
     if (isLoading || isProfileLoading) {
       return <LoadingPage />;
-    }
-
-    if (
-      !isTemplatesLoading &&
-      !renderedTemplates.length &&
-      activeTab === 'ITEMS'
-    ) {
-      return (
-        <ErrorComponent
-          errorMessage={`Looks like ${
-            currentProfile ? `${currentProfile} doesn't` : `you don't`
-          } own any monsters yet.`}
-        />
-      );
     }
 
     if (errorMessage) {
@@ -203,11 +229,7 @@ const Collection = (): JSX.Element => {
           setActiveTab={setActiveTab}
           resetStates={resetStates}
         />
-        {isTemplatesLoading ? (
-          <LoadingPage margin={'10% 0'} />
-        ) : (
-          <Grid items={renderedTemplates} />
-        )}
+        {getContentItems()}
         <PaginationButton
           onClick={showNextPage}
           isHidden={renderedTemplates.length < PAGINATION_LIMIT}
