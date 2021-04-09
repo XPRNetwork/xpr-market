@@ -23,7 +23,9 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "next.config.js"
+    "next.config.js",
+    "server.js",
+    "utils/cron.js"
   ],
   "exclude": [
     "node_modules"

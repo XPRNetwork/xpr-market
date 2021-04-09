@@ -9,8 +9,8 @@ import {
 } from './SearchInput.styled';
 import { useWindowSize } from '../../hooks';
 import {
-  CollectionsByName,
-  getAllCollectionNames,
+  SearchCollection,
+  getSearchCollections,
 } from '../../services/collections';
 import { DEFAULT_COLLECTION } from '../../utils/constants';
 import { ReactComponent as MagnifyingIcon } from '../../public/icon-light-search-24-px.svg';
@@ -19,6 +19,11 @@ import { ReactComponent as CloseIcon } from '../../public/icon-light-close-16-px
 type Props = {
   isMobileSearchOpen: boolean;
   closeMobileSearch: () => void;
+};
+
+const defaultSearchCollection: SearchCollection = {
+  name: DEFAULT_COLLECTION,
+  img: '',
 };
 
 const SearchInput = ({
@@ -34,12 +39,9 @@ const SearchInput = ({
   const [isSearchInputActive, setIsSearchInputActive] = useState<boolean>(
     false
   );
-  const [collectionNames, setCollectionNames] = useState<CollectionsByName>({
-    [DEFAULT_COLLECTION]: {
-      name: DEFAULT_COLLECTION,
-      img: null,
-    },
-  });
+  const [searchCollections, setSearchCollections] = useState<
+    SearchCollection[]
+  >([defaultSearchCollection]);
 
   useEffect(() => {
     const removeInputFocusStyle = (e: MouseEvent) => {
@@ -55,8 +57,8 @@ const SearchInput = ({
   useEffect(() => {
     (async () => {
       if (isSearchInputActive) {
-        const collections = await getAllCollectionNames();
-        setCollectionNames(collections);
+        const collections = await getSearchCollections();
+        setSearchCollections(collections);
       }
     })();
   }, [isSearchInputActive]);
@@ -111,7 +113,7 @@ const SearchInput = ({
     }
   };
 
-  const collections = Object.values(collectionNames)
+  const collections = searchCollections
     .filter(({ name }) => {
       const caseInsensitiveName = name.toLowerCase();
       const caseInsensitiveInput = input.toLowerCase();
