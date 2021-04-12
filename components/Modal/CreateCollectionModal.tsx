@@ -22,7 +22,7 @@ import uploadToIPFS from '../../services/upload';
 import { ReactComponent as CloseIcon } from '../../public/close.svg';
 import { fileReader } from '../../utils';
 import { sendToApi } from '../../utils/browser-fetch';
-
+import { IPFS_RESOLVER } from '../../utils/constants';
 export const CreateCollectionModal = (): JSX.Element => {
   const { currentUser } = useAuthContext();
   const { closeModal, modalProps } = useModalContext();

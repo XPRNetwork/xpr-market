@@ -13,6 +13,7 @@ import AssetFormTitle from '../AssetFormTitle';
 import { Sale, SaleAsset } from '../../services/sales';
 import { Asset } from '../../services/assets';
 import { tabs } from '../../components/SalesHistoryTable';
+import { IPFS_RESOLVER } from '../../utils/constants';
 
 type Props = {
   children: ReactNode;
@@ -38,7 +39,7 @@ const AssetImage = ({ image }: { image: string }): JSX.Element => (
       layout="responsive"
       width={456}
       height={470}
-      src={`https://cloudflare-ipfs.com/ipfs/${image}`}
+      src={`${IPFS_RESOLVER}${image}`}
     />
   </ImageContainer>
 );
