@@ -22,7 +22,7 @@ import uploadToIPFS from '../../services/upload';
 import { ReactComponent as CloseIcon } from '../../public/close.svg';
 import { fileReader } from '../../utils';
 import { sendToApi } from '../../utils/browser-fetch';
-import { IPFS_RESOLVER } from '../../utils/constants';
+
 export const CreateCollectionModal = (): JSX.Element => {
   const { currentUser } = useAuthContext();
   const { closeModal, modalProps } = useModalContext();
@@ -47,7 +47,7 @@ export const CreateCollectionModal = (): JSX.Element => {
     const errors = [];
 
     if (!uploadedFile || uploadError) {
-      errors.push('upload an image');
+      errors.push('upload a PNG, GIF, JPG, or WEBP image (max 5 MB)');
     }
 
     if (!displayName) {
@@ -84,32 +84,36 @@ export const CreateCollectionModal = (): JSX.Element => {
       return;
     }
 
-    const ipfsImage = await uploadToIPFS(uploadedFile);
+    try {
+      const ipfsImage = await uploadToIPFS(uploadedFile);
 
-    const result = await ProtonSDK.createCollectionAndSchema({
-      author,
-      collection_name: name,
-      description: description,
-      display_name: displayName,
-      collection_image: ipfsImage,
-    });
+      const result = await ProtonSDK.createCollectionAndSchema({
+        author,
+        collection_name: name,
+        description: description,
+        display_name: displayName,
+        collection_image: ipfsImage,
+      });
 
-    if (!result.success) {
-      throw new Error((result.error as unknown) as string);
+      if (!result.success) {
+        throw new Error((result.error as unknown) as string);
+      }
+
+      await fetchPageData();
+      await sendToApi('POST', '/api/collections', {
+        name,
+        displayName,
+        img: ipfsImage,
+      });
+      readImageAsString();
+      setCollectionName(name);
+      closeModal();
+
+      // TODO: Remove console log after implementing collection fetch in Create page
+      console.log('result createCollection: ', result);
+    } catch (err) {
+      setFormError('Unable to create the collection. Please try again.');
     }
-
-    await fetchPageData();
-    await sendToApi('POST', '/api/collections', {
-      name,
-      displayName,
-      img: ipfsImage,
-    });
-    readImageAsString();
-    setCollectionName(name);
-    closeModal();
-
-    // TODO: Remove console log after implementing collection fetch in Create page
-    console.log('result createCollection: ', result);
   };
 
   const readImageAsString = () => {
