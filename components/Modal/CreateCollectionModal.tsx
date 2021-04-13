@@ -31,6 +31,7 @@ export const CreateCollectionModal = (): JSX.Element => {
     fetchPageData,
     setCollectionImage,
     setCollectionName,
+    setActiveCollection,
   } = modalProps as CreateCollectionProps;
   const [name, setName] = useState<string>('');
   const [description, setDescription] = useState<string>('');
@@ -107,6 +108,7 @@ export const CreateCollectionModal = (): JSX.Element => {
       });
       readImageAsString();
       setCollectionName(name);
+      setActiveCollection(name);
       closeModal();
 
       // TODO: Remove console log after implementing collection fetch in Create page

@@ -51,6 +51,7 @@ export interface TransferNFTModalProps extends GeneralModalProps {
 export interface CreateCollectionProps extends GeneralModalProps {
   setCollectionImage: Dispatch<SetStateAction<string>>;
   setCollectionName: Dispatch<SetStateAction<string>>;
+  setActiveCollection: Dispatch<SetStateAction<string>>;
 }
 
 type ModalProps =

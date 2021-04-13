@@ -16,6 +16,7 @@ export const LeftColumn = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+  max-width: 424px;
   margin-right: 20px;
 `;
 
@@ -71,31 +72,4 @@ export const TermsLink = styled.a`
   color: #752eeb;
   cursor: pointer;
   margin-bottom: 24px;
-`;
-
-export const BoxButton = styled.button`
-  border: none;
-  background: none;
-  border-radius: 8px;
-  border: 1px solid #e6e6e6;
-  width: 136px;
-  height: 136px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin-right: 8px;
-  font-size: 16px;
-  color: #1a1a1a;
-  cursor: pointer;
-  outline: none;
-
-  span {
-    margin-top: 8px;
-  }
-
-  :hover,
-  :focus-visible {
-    border: 1px solid #752eeb;
-  }
 `;

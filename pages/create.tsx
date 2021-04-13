@@ -1,17 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import Image from 'next/image';
 import PageLayout from '../components/PageLayout';
 import Button from '../components/Button';
 import TemplateCard from '../components/TemplateCard';
 import InputField from '../components/InputField';
 import DragDropFileUploadLg from '../components/DragDropFileUploadLg';
 import MobileCreatePagePlaceholder from '../components/MobileCreatePagePlaceholder';
-import {
-  useAuthContext,
-  useModalContext,
-  MODAL_TYPES,
-} from '../components/Provider';
+import { useAuthContext } from '../components/Provider';
+import { Collection, getAuthorsCollections } from '../services/collections';
+import CollectionsCarousel from '../components/CollectionsCarousel';
 import {
   Container,
   Row,
@@ -20,10 +17,8 @@ import {
   Title,
   SubTitle,
   ElementTitle,
-  EmptyBox2,
   Terms,
   TermsLink,
-  BoxButton,
 } from '../styles/CreatePage';
 import { useNavigatorUserAgent } from '../hooks';
 import { fileReader } from '../utils';
@@ -31,7 +26,6 @@ import { fileReader } from '../utils';
 const Create = (): JSX.Element => {
   const router = useRouter();
   const { currentUser, isLoadingUser } = useAuthContext();
-  const { openModal, setModalProps } = useModalContext();
   const { isDesktop } = useNavigatorUserAgent();
   const [collectionName, setCollectionName] = useState<string>('');
   const [collectionImage, setCollectionImage] = useState<string>('');
@@ -44,8 +38,13 @@ const Create = (): JSX.Element => {
   const [templateUploadedFile, setTemplateUploadedFile] = useState<File | null>(
     null
   );
+  const [collections, setCollections] = useState<Collection[]>([]);
   const [isAudio, setIsAudio] = useState<boolean>(false);
   const [isVideo, setIsVideo] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
+  const [isLoadingCollections, setIsLoadingCollections] = useState<boolean>(
+    true
+  );
 
   useEffect(() => {
     if (templateUploadedFile && window) {
@@ -71,19 +70,22 @@ const Create = (): JSX.Element => {
     if (!currentUser && !isLoadingUser) {
       router.push('/');
     }
+    getUserCollections();
   }, [currentUser, isLoadingUser]);
 
   const getUserCollections = async () => {
-    console.log('refetch user collections');
-  };
-
-  const createCollection = () => {
-    openModal(MODAL_TYPES.CREATE_COLLECTION);
-    setModalProps({
-      fetchPageData: getUserCollections,
-      setCollectionImage: setCollectionImage,
-      setCollectionName: setCollectionName,
-    });
+    if (currentUser) {
+      try {
+        setIsLoadingCollections(true);
+        const collections = await getAuthorsCollections(currentUser.actor);
+        setCollections(collections);
+        setError('');
+        setIsLoadingCollections(false);
+      } catch (e) {
+        setIsLoadingCollections(false);
+        setError(e.message || e.error);
+      }
+    }
   };
 
   const getContent = () => {
@@ -110,20 +112,14 @@ const Create = (): JSX.Element => {
               templateUploadedFile={templateUploadedFile}
             />
             <ElementTitle>Choose Collection</ElementTitle>
-            <Row>
-              <BoxButton onClick={createCollection}>
-                <Image
-                  priority
-                  layout="fixed"
-                  width={40}
-                  height={40}
-                  alt="plus icon"
-                  src="/plus-icon.png"
-                />
-                <span>Create</span>
-              </BoxButton>
-              <EmptyBox2 />
-            </Row>
+            <CollectionsCarousel
+              collections={collections}
+              getUserCollections={getUserCollections}
+              setCollectionName={setCollectionName}
+              setCollectionImage={setCollectionImage}
+              error={error}
+              isLoading={isLoadingCollections}
+            />
             <InputField
               mt="16px"
               value={templateName}
