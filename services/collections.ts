@@ -80,3 +80,20 @@ export const getCollection = async (
     throw new Error(e);
   }
 };
+
+export const getAuthorsCollections = async (
+  author: string
+): Promise<Collection[]> => {
+  try {
+    const result = await getFromApi<Collection[]>(
+      `${process.env.NEXT_PUBLIC_NFT_ENDPOINT}/atomicassets/v1/collections?author=${author}`
+    );
+
+    if (!result.success) {
+      throw new Error((result.message as unknown) as string);
+    }
+    return result.data;
+  } catch (e) {
+    throw new Error(e);
+  }
+};
