@@ -143,8 +143,8 @@ const Create = (): JSX.Element => {
                 value={royalties}
                 setValue={setRoyalties}
                 placeholder="Royalties"
-                tooltip=" "
-                numberOfTooltipLines={1}
+                tooltip="A percentage of gross revenues derived from the use of an asset sold"
+                numberOfTooltipLines={3}
               />
               <InputField
                 mt="16px"
@@ -152,7 +152,7 @@ const Create = (): JSX.Element => {
                 value={editionSize}
                 setValue={setEditionSize}
                 placeholder="Edition Size"
-                tooltip=" "
+                tooltip="The number of tokens created"
                 numberOfTooltipLines={1}
               />
             </Row>
@@ -161,8 +161,6 @@ const Create = (): JSX.Element => {
               value={mintAmount}
               setValue={setMintAmount}
               placeholder="Mint Amount"
-              tooltip=" "
-              numberOfTooltipLines={1}
             />
             <Terms>By clicking “Create NFT” you agree to our</Terms>
             <TermsLink target="_blank" href="https://www.protonchain.com/terms">
