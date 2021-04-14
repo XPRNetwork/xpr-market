@@ -13,6 +13,7 @@ import {
 import CollectionIcon from '../CollectionIcon';
 import { capitalize } from '../../utils';
 import TemplateImage from '../TemplateImage';
+import TemplateVideo from '../TemplateVideo';
 import { IPFS_RESOLVER } from '../../utils/constants';
 
 type Props = {
@@ -24,14 +25,13 @@ type Props = {
   totalAssets?: string;
   assetsForSale?: string;
   collectionImage?: string;
+  templateVideo?: string;
   templateImage?: string;
   price?: string;
   hasMultiple?: boolean;
   noHoverEffect?: boolean;
   isStatic?: boolean;
   noIpfsConversion?: boolean;
-  isVideo?: boolean;
-  isAudio?: boolean;
 };
 
 const TemplateCard = ({
@@ -43,14 +43,13 @@ const TemplateCard = ({
   totalAssets,
   assetsForSale,
   collectionImage,
+  templateVideo,
   templateImage,
   price,
   noHoverEffect,
   hasMultiple,
   noIpfsConversion,
   isStatic,
-  isVideo,
-  isAudio,
 }: Props): JSX.Element => {
   const router = useRouter();
   const openDetailPage = () => {
@@ -70,6 +69,10 @@ const TemplateCard = ({
       openDetailPage();
     }
   };
+
+  const templateVideoSrc = noIpfsConversion
+    ? templateVideo
+    : `${IPFS_RESOLVER}${templateVideo}`;
 
   const templateImgSrc =
     noIpfsConversion || !templateImage
@@ -106,13 +109,15 @@ const TemplateCard = ({
           <Text>{capitalize(collectionName)}</Text>
         </CollectionNameButton>
       </Row>
-      <TemplateImage
-        templateImgSrc={templateImgSrc}
-        templateName={templateName}
-        isAudio={isAudio}
-        isVideo={isVideo}
-        priceTag={priceTag}
-      />
+      {templateVideo ? (
+        <TemplateVideo src={templateVideoSrc} priceTag={priceTag} />
+      ) : (
+        <TemplateImage
+          templateImgSrc={templateImgSrc}
+          templateName={templateName}
+          priceTag={priceTag}
+        />
+      )}
       <Title>{templateName}</Title>
       <GreyText>Edition size: {editionSize}</GreyText>
       {price ? <Text>{price}</Text> : <PlaceholderPrice aria-hidden />}
