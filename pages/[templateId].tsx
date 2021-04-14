@@ -39,6 +39,7 @@ const MarketplaceTemplateDetail = (): JSX.Element => {
   const {
     updateCurrentUserBalance,
     currentUser,
+    isLoadingUser,
     currentUserBalance,
     login,
   } = useAuthContext();
@@ -174,7 +175,7 @@ const MarketplaceTemplateDetail = (): JSX.Element => {
       );
     }
 
-    if (isLoading) {
+    if (isLoading || isLoadingUser) {
       return <LoadingPage />;
     }
 

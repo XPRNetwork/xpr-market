@@ -6,6 +6,7 @@ import PaginationButton from '../components/PaginationButton';
 import ErrorComponent from '../components/Error';
 import LoadingPage from '../components/LoadingPage';
 import { Title, PurpleSpan } from '../styles/Title.styled';
+import { useAuthContext } from '../components/Provider';
 import {
   Template,
   getTemplatesByCollection,
@@ -17,6 +18,7 @@ import { PAGINATION_LIMIT } from '../utils/constants';
 
 const Search = (): JSX.Element => {
   const router = useRouter();
+  const { isLoadingUser } = useAuthContext();
   const searchTerm = router.query.keywords
     ? (router.query.keywords as string).toLowerCase()
     : '';
@@ -95,7 +97,7 @@ const Search = (): JSX.Element => {
   }, [searchTerm]);
 
   const getContent = () => {
-    if (isLoading) {
+    if (isLoading || isLoadingUser) {
       return <LoadingPage />;
     }
 

@@ -18,7 +18,7 @@ import {
 } from '../../services/collections';
 import { PAGINATION_LIMIT } from '../../utils/constants';
 import Banner from '../../components/Banner';
-import { MODAL_TYPES } from '../../components/Provider';
+import { MODAL_TYPES, useAuthContext } from '../../components/Provider';
 import PageHeader from '../../components/PageHeader';
 import { capitalize } from '../../utils';
 
@@ -28,6 +28,7 @@ type RouterQuery = {
 
 const CollectionPage = (): JSX.Element => {
   const router = useRouter();
+  const { isLoadingUser } = useAuthContext();
   const { collection } = router.query as RouterQuery;
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [lowestPrices, setLowestPrices] = useState<{ [id: string]: string }>(
@@ -100,7 +101,7 @@ const CollectionPage = (): JSX.Element => {
   }, [collection]);
 
   const getContent = () => {
-    if (isLoading) {
+    if (isLoading || isLoadingUser) {
       return <LoadingPage />;
     }
 
