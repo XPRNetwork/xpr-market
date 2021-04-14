@@ -56,7 +56,7 @@ const Collection = (): JSX.Element => {
 
   const router = useRouter();
   const { chainAccount } = router.query as RouterQuery;
-  const { currentUser } = useAuthContext();
+  const { currentUser, isLoadingUser } = useAuthContext();
   const [renderedTemplates, setRenderedTemplates] = useState<Template[]>([]);
   const [prefetchedTemplates, setPrefetchedTemplates] = useState<Template[]>(
     []
@@ -165,7 +165,7 @@ const Collection = (): JSX.Element => {
   }, [currentUser, chainAccount]);
 
   const getContentItems = () => {
-    if (isTemplatesLoading) {
+    if (isTemplatesLoading || isLoadingUser) {
       return <LoadingPage margin="10% 0" />;
     }
 
@@ -201,7 +201,7 @@ const Collection = (): JSX.Element => {
   };
 
   const getContent = () => {
-    if (isLoading || isProfileLoading) {
+    if (isLoading || isProfileLoading || isLoadingUser) {
       return <LoadingPage />;
     }
 

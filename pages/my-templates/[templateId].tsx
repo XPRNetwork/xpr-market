@@ -48,7 +48,7 @@ type Query = {
 const MyNFTsTemplateDetail = (): JSX.Element => {
   const router = useRouter();
   const { templateId } = router.query as Query;
-  const { currentUser } = useAuthContext();
+  const { currentUser, isLoadingUser } = useAuthContext();
   const { openModal, setModalProps } = useModalContext();
   const [sales, setSales] = useState<Sale[]>([]);
   const [templateAssets, setTemplateAssets] = useState<Asset[]>([]);
@@ -173,7 +173,7 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
       );
     }
 
-    if (isLoading) {
+    if (isLoading || isLoadingUser) {
       return <LoadingPage />;
     }
 

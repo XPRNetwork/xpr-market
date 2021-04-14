@@ -19,7 +19,7 @@ import { MODAL_TYPES, useAuthContext } from '../components/Provider';
 
 const MarketPlace = (): JSX.Element => {
   const router = useRouter();
-  const { currentUser } = useAuthContext();
+  const { currentUser, isLoadingUser } = useAuthContext();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [lowestPrices, setLowestPrices] = useState<{ [id: string]: string }>(
     {}
@@ -90,7 +90,7 @@ const MarketPlace = (): JSX.Element => {
   }, []);
 
   const getContent = () => {
-    if (isLoading) {
+    if (isLoading || isLoadingUser) {
       return <LoadingPage />;
     }
 
