@@ -21,7 +21,7 @@ const Grid = ({ items }: Props): JSX.Element => {
           name,
           template_id,
           collection: { collection_name, img },
-          immutable_data: { image },
+          immutable_data: { image, video },
           issued_supply,
           lowestPrice,
           totalAssets,
@@ -49,6 +49,7 @@ const Grid = ({ items }: Props): JSX.Element => {
               totalAssets={totalAssets}
               assetsForSale={assetsForSale}
               collectionImage={img}
+              templateVideo={video}
               templateImage={image}
               price={lowestPrice}
               hasMultiple={ownerHasMultiple || hasMultiple}

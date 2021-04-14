@@ -22,9 +22,10 @@ export type Schema = {
 
 type ImmutableData = {
   name: string;
-  image: string;
+  image?: string;
   series: number;
   desc: string;
+  video?: string;
 };
 
 export interface Template {

@@ -6,7 +6,7 @@ export const SHORTENED_TOKEN_PRECISION = 2;
 export const DEFAULT_COLLECTION = 'monsters';
 export const PAGINATION_LIMIT = 12;
 export const LG_FILE_UPLOAD_TYPES_TEXT =
-  'PNG, GIF, JPG, WEBP, MP4, or MP3. Max 30 MB.';
+  'PNG, GIF, JPG, WEBP, or MP4. Max 30 MB.';
 export const SM_FILE_UPLOAD_TYPES_TEXT = 'PNG, GIF, JPG, or WEBP. Max 5 MB.';
 export const LG_FILE_UPLOAD_TYPES = {
   'image/png': true,
@@ -15,8 +15,8 @@ export const LG_FILE_UPLOAD_TYPES = {
   'image/gif': true,
   'image/webp': true,
   'video/mp4': true,
-  'audio/mpeg': true,
-  'audio/mp3': true,
+  'audio/mpeg': false,
+  'audio/mp3': false,
 };
 export const SM_FILE_UPLOAD_TYPES = {
   'image/png': true,

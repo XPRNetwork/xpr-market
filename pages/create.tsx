@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/media-has-caption */
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import PageLayout from '../components/PageLayout';
@@ -31,6 +32,7 @@ const Create = (): JSX.Element => {
   const [collectionImage, setCollectionImage] = useState<string>('');
   const [templateName, setTemplateName] = useState<string>('');
   const [templateImage, setTemplateImage] = useState<string>('');
+  const [templateVideo, setTemplateVideo] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [royalties, setRoyalties] = useState<string>('');
   const [editionSize, setEditionSize] = useState<string>('');
@@ -39,8 +41,6 @@ const Create = (): JSX.Element => {
     null
   );
   const [collections, setCollections] = useState<Collection[]>([]);
-  const [isAudio, setIsAudio] = useState<boolean>(false);
-  const [isVideo, setIsVideo] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
   const [isLoadingCollections, setIsLoadingCollections] = useState<boolean>(
     true
@@ -49,17 +49,14 @@ const Create = (): JSX.Element => {
   useEffect(() => {
     if (templateUploadedFile && window) {
       const filetype = templateUploadedFile.type;
-      if (filetype.includes('audio')) {
-        setIsAudio(true);
-        setIsVideo(false);
-      } else if (filetype.includes('video')) {
-        setIsVideo(true);
-        setIsAudio(false);
+      if (filetype.includes('video')) {
+        const readerSetTemplateVideo = (result) => {
+          setTemplateVideo(result);
+        };
+        fileReader(readerSetTemplateVideo, templateUploadedFile);
       } else {
         const readerSetTemplateImage = (result) => {
           setTemplateImage(result);
-          setIsAudio(false);
-          setIsVideo(false);
         };
         fileReader(readerSetTemplateImage, templateUploadedFile);
       }
@@ -167,6 +164,7 @@ const Create = (): JSX.Element => {
           <RightColumn>
             <ElementTitle>Preview</ElementTitle>
             <TemplateCard
+              templateVideo={templateVideo}
               templateImage={templateImage}
               templateName={templateName}
               collectionImage={collectionImage}
@@ -174,8 +172,6 @@ const Create = (): JSX.Element => {
               editionSize={editionSize}
               noHoverEffect={true}
               noIpfsConversion={true}
-              isAudio={isAudio}
-              isVideo={isVideo}
               isStatic={true}
             />
           </RightColumn>

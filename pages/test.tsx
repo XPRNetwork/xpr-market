@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/media-has-caption */
 import { useState } from 'react';
 import PageLayout from '../components/PageLayout';
 import { useAuthContext } from '../components/Provider';

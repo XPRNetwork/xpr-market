@@ -51,7 +51,7 @@ const DragDropFileUploadLg = ({
       imagePreview={imagePreview}>
       <input
         {...getInputProps()}
-        accept="image/png,image/jpg,image/jpeg,image/webp,image/gif,video/mp4,audio/mp3,audio/mpeg,.png,.mp3,.jpg,.jpeg,.webp,.mpeg,.gif,.mp4"
+        accept="image/png,image/jpg,image/jpeg,image/webp,image/gif,video/mp4,.png,.jpg,.jpeg,.webp,.mpeg,.gif,.mp4"
       />
       {templateUploadedFile && imagePreview ? (
         <>
