@@ -2,11 +2,10 @@ import styled from 'styled-components';
 
 type ContainerProps = {
   isDragActive: boolean;
-  imagePreview: string;
 };
 
 export const Container = styled.div<ContainerProps>`
-  height: ${({ imagePreview }) => (imagePreview ? '424px' : '136px')};
+  height: 136px;
   border-radius: 4px;
   border: dashed 2px;
   border-color: ${({ isDragActive }) => (isDragActive ? '#b28bf4' : '#e6e6e6')};
@@ -63,7 +62,45 @@ export const UploadError = styled.span`
 
 export const RemovePreviewIcon = styled.div`
   cursor: pointer;
-  position: relative;
-  top: -20px;
-  right: -200px;
+`;
+
+export const Preview = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24px;
+`;
+
+export const ImageInfo = styled.div`
+  display: flex;
+`;
+
+export const FilenameInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-left: 16px;
+  justify-content: center;
+`;
+
+export const PreviewImageContainer = styled.div`
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
+  overflow: hidden;
+`;
+
+export const FileNameText = styled.p`
+  font-size: 14px;
+  line-height: 1.71;
+  max-width: 250px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
+export const FileSize = styled.p`
+  font-size: 12px;
+  color: #808080;
+  line-height: 1.67;
 `;
