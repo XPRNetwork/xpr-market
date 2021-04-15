@@ -7,6 +7,7 @@ import {
   SetStateAction,
 } from 'react';
 import { useScrollLock } from '../../hooks';
+import { CarouselCollection, NewCollection } from '../CollectionsCarousel';
 
 export const MODAL_TYPES = {
   HIDDEN: 'HIDDEN',
@@ -48,10 +49,10 @@ export interface TransferNFTModalProps extends GeneralModalProps {
   templateMint: string;
 }
 
-export interface CreateCollectionProps extends GeneralModalProps {
-  setCollectionImage: Dispatch<SetStateAction<string>>;
-  setCollectionName: Dispatch<SetStateAction<string>>;
-  setActiveCollection: Dispatch<SetStateAction<string>>;
+export interface CreateCollectionProps {
+  setNewCollection: Dispatch<SetStateAction<NewCollection>>;
+  setSelectedCollection: Dispatch<SetStateAction<CarouselCollection>>;
+  setIsUncreatedCollectionSelected: Dispatch<SetStateAction<boolean>>;
 }
 
 type ModalProps =

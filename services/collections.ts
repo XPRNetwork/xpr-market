@@ -1,7 +1,7 @@
 import { getFromApi } from '../utils/browser-fetch';
 import NodeFetch from '../utils/node-fetch';
 
-export type Collection = {
+export interface Collection {
   author: string;
   collection_name: string;
   name?: string | null;
@@ -17,7 +17,7 @@ export type Collection = {
     name?: string;
     description?: string;
   };
-};
+}
 
 export const emptyCollection: Collection = {
   author: '',

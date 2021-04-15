@@ -4,11 +4,11 @@ import {
   CollectionSubName,
 } from './CollectionBox.styled';
 import CollectionIcon from '../CollectionIcon';
-import { Collection } from '../../services/collections';
+import { CarouselCollection } from '../CollectionsCarousel';
 import { capitalize } from '../../utils';
 
 type CollectionBoxProps = {
-  collection: Collection;
+  collection: CarouselCollection;
   active?: boolean;
 };
 

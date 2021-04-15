@@ -35,9 +35,7 @@ const PageHeader = ({
   const avatarImg = image
     ? `data:image/jpeg;base64,${image}`
     : '/default-avatar.png';
-  const collectionImg = image
-    ? `${IPFS_RESOLVER}${image}`
-    : '/proton.svg';
+  const collectionImg = image ? `${IPFS_RESOLVER}${image}` : '/proton.svg';
   const displayImg = type === 'user' ? avatarImg : collectionImg;
   const subNameIcon = type === 'user' ? '@' : '#';
 

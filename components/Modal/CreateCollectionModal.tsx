@@ -17,21 +17,19 @@ import {
   Description,
   ErrorMessage,
 } from './Modal.styled';
-import ProtonSDK from '../../services/proton';
 import uploadToIPFS from '../../services/upload';
 import { ReactComponent as CloseIcon } from '../../public/close.svg';
-import { fileReader } from '../../utils';
 import { sendToApi } from '../../utils/browser-fetch';
+import { fileReader } from '../../utils';
 
 export const CreateCollectionModal = (): JSX.Element => {
   const { currentUser } = useAuthContext();
   const { closeModal, modalProps } = useModalContext();
   const uploadInputRef = useRef<HTMLInputElement>();
   const {
-    fetchPageData,
-    setCollectionImage,
-    setCollectionName,
-    setActiveCollection,
+    setNewCollection,
+    setSelectedCollection,
+    setIsUncreatedCollectionSelected,
   } = modalProps as CreateCollectionProps;
   const [name, setName] = useState<string>('');
   const [description, setDescription] = useState<string>('');
@@ -41,7 +39,7 @@ export const CreateCollectionModal = (): JSX.Element => {
   const [uploadedFile, setUploadedFile] = useState<File | null>();
   const author = currentUser ? currentUser.actor : '';
 
-  const createCollection: FormEventHandler<HTMLFormElement> = async (e) => {
+  const create: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
     setFormError('');
 
@@ -87,39 +85,32 @@ export const CreateCollectionModal = (): JSX.Element => {
 
     try {
       const ipfsImage = await uploadToIPFS(uploadedFile);
-
-      const result = await ProtonSDK.createCollectionAndSchema({
-        author,
-        collection_name: name,
-        description: description,
-        display_name: displayName,
-        collection_image: ipfsImage,
-      });
-
-      if (!result.success) {
-        throw new Error((result.error as unknown) as string);
-      }
-
-      await fetchPageData();
       await sendToApi('POST', '/api/collections', {
         name,
         displayName,
         img: ipfsImage,
       });
-      readImageAsString();
-      setCollectionName(name);
-      setActiveCollection(name);
+
+      setNewCollection({
+        collection_name: name,
+        name: displayName,
+        img: ipfsImage,
+        description: description,
+      });
+
+      fileReader((img) => {
+        setSelectedCollection({
+          collection_name: name,
+          name: displayName,
+          img,
+        });
+      }, uploadedFile);
+
+      setIsUncreatedCollectionSelected(true);
       closeModal();
-
-      // TODO: Remove console log after implementing collection fetch in Create page
-      console.log('result createCollection: ', result);
     } catch (err) {
-      setFormError('Unable to create the collection. Please try again.');
+      setFormError('Unable to upload the collection image. Please try again.');
     }
-  };
-
-  const readImageAsString = () => {
-    fileReader((result) => setCollectionImage(result), uploadedFile);
   };
 
   const handleBackgroundClick = (e: MouseEvent) => {
@@ -161,7 +152,7 @@ export const CreateCollectionModal = (): JSX.Element => {
             <ErrorMessage>{uploadError}</ErrorMessage>
           </Column>
         </Row>
-        <Form onSubmit={createCollection}>
+        <Form onSubmit={create}>
           <InputField
             placeholder="Display Name"
             value={displayName}

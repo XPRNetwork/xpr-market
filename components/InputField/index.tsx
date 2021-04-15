@@ -70,7 +70,32 @@ const InputField = ({
   };
 
   const handleKeyDown = (e: KeyboardEvent) => {
-    if (e.key === 'Enter') {
+    const validChars = [
+      '0',
+      '1',
+      '2',
+      '3',
+      '4',
+      '5',
+      '6',
+      '7',
+      '8',
+      '9',
+      '.',
+      'Enter',
+      'Backspace',
+      'ArrowUp',
+      'ArrowDown',
+      'ArrowLeft',
+      'ArrowRight',
+      'Tab',
+    ];
+
+    if (inputType === 'number' && !validChars.includes(e.key) && !e.metaKey) {
+      e.preventDefault();
+    }
+
+    if (e.key === 'Enter' && submit) {
       submit();
     }
   };
@@ -91,7 +116,7 @@ const InputField = ({
         placeholder={placeholder}
         value={value}
         onChange={updateText}
-        onKeyDown={submit ? handleKeyDown : null}
+        onKeyDown={handleKeyDown}
         disabled={disabled}
       />
       {tooltip ? (
