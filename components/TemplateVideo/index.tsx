@@ -1,16 +1,25 @@
 /* eslint-disable jsx-a11y/media-has-caption */
-import { VideoContainer, Video } from './TemplateVideo.styled';
+import { VideoContainer, Video, CenterContainer } from './TemplateVideo.styled';
 
 type Props = {
   src: string;
+  autoPlay?: boolean;
+  controls?: boolean;
   priceTag?: JSX.Element;
 };
 
-const TemplateVideo = ({ src, priceTag }: Props): JSX.Element => {
+const TemplateVideo = ({
+  src,
+  priceTag,
+  autoPlay = false,
+  controls = true,
+}: Props): JSX.Element => {
   return (
     <VideoContainer>
-      <Video autoPlay loop src={src} width="100%" />
-      {priceTag}
+      <CenterContainer>
+        <Video muted autoPlay={autoPlay} controls={controls} loop src={src} />
+        {priceTag}
+      </CenterContainer>
     </VideoContainer>
   );
 };

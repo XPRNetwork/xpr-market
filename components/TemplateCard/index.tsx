@@ -32,6 +32,7 @@ type Props = {
   noHoverEffect?: boolean;
   isStatic?: boolean;
   noIpfsConversion?: boolean;
+  autoPlay?: boolean;
 };
 
 const TemplateCard = ({
@@ -50,6 +51,7 @@ const TemplateCard = ({
   hasMultiple,
   noIpfsConversion,
   isStatic,
+  autoPlay,
 }: Props): JSX.Element => {
   const router = useRouter();
   const openDetailPage = () => {
@@ -105,7 +107,11 @@ const TemplateCard = ({
         </CollectionNameButton>
       </Row>
       {templateVideo ? (
-        <TemplateVideo src={templateVideoSrc} priceTag={priceTag} />
+        <TemplateVideo
+          src={templateVideoSrc}
+          priceTag={priceTag}
+          autoPlay={autoPlay}
+        />
       ) : (
         <TemplateImage
           templateImgSrc={templateImgSrc}
