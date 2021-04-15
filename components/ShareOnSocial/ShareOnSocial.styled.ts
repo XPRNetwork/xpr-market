@@ -18,7 +18,7 @@ export const Container = styled.div<ShareOnSocialProps>`
   border: 1px solid lightgrey;
   padding: 10px 0px;
   position: absolute;
-  z-index: 1;
+  z-index: 2;
   background-color: white;
   ${({ left }) => (left ? `left: ${left}` : '')};
   ${({ right }) => (right ? `right: ${right}` : '')};
@@ -47,7 +47,7 @@ export const Container = styled.div<ShareOnSocialProps>`
     position: absolute;
     content: '';
     bottom: 100%;
-    left: 44.5%;
+    left: 45%;
     border-left: 7px solid transparent;
     border-right: 7px solid transparent;
     border-bottom: 7px solid white;
