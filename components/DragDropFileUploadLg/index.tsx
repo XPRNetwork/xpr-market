@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/media-has-caption */
 import { useCallback, useState, Dispatch, SetStateAction } from 'react';
 import Image from 'next/image';
 import { useDropzone } from 'react-dropzone';
@@ -7,6 +8,12 @@ import {
   UploadButton,
   UploadError,
   RemovePreviewIcon,
+  Preview,
+  ImageInfo,
+  FilenameInfo,
+  PreviewImageContainer,
+  FileNameText,
+  FileSize,
 } from './DragDropFileUploadLg.styled';
 import {
   LG_FILE_UPLOAD_TYPES_TEXT,
@@ -35,8 +42,9 @@ const DragDropFileUploadLg = ({
     const isAcceptedFileType = LG_FILE_UPLOAD_TYPES[file.type] || false;
     const isAcceptedFileSize = file.size <= LG_FILE_SIZE_UPLOAD_LIMIT; // 30MB
     if (isAcceptedFileType && isAcceptedFileSize) {
+      setUploadPreview(null);
       setTemplateUploadedFile(file);
-      fileReader((result) => setImagePreview(result), file);
+      fileReader((result) => setUploadPreview(result), file);
     } else {
       setUploadError(
         'Unable to upload, please double check your file size or file type.'
@@ -44,38 +52,51 @@ const DragDropFileUploadLg = ({
     }
   }, []);
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
-  const [imagePreview, setImagePreview] = useState<string>('');
+  const [uploadPreview, setUploadPreview] = useState<string>('');
   const [uploadError, setUploadError] = useState<string>('');
 
   return (
-    <Container
-      {...getRootProps()}
-      isDragActive={isDragActive}
-      imagePreview={imagePreview}>
+    <Container {...getRootProps()} isDragActive={isDragActive}>
       <input
         {...getInputProps()}
         accept="image/png,image/jpg,image/jpeg,image/webp,image/gif,video/mp4,.png,.jpg,.jpeg,.webp,.mpeg,.gif,.mp4"
       />
-      {templateUploadedFile && imagePreview ? (
-        <>
+      {templateUploadedFile && uploadPreview ? (
+        <Preview>
+          <ImageInfo>
+            <PreviewImageContainer>
+              {templateUploadedFile.type.includes('mp4') ? (
+                <video width="64" height="64" preload="metadata">
+                  <source src={`${uploadPreview}#t=0.1`} />
+                </video>
+              ) : (
+                <Image
+                  priority
+                  layout="fixed"
+                  width={64}
+                  height={64}
+                  alt={templateUploadedFile.name}
+                  src={uploadPreview}
+                />
+              )}
+            </PreviewImageContainer>
+            <FilenameInfo>
+              <FileNameText>{templateUploadedFile.name}</FileNameText>
+              <FileSize>
+                {(templateUploadedFile.size / 1000).toFixed(2)} kb
+              </FileSize>
+            </FilenameInfo>
+          </ImageInfo>
           <RemovePreviewIcon
             role="button"
             onClick={(e) => {
               e.stopPropagation();
               setTemplateUploadedFile(null);
-              setImagePreview('');
+              setUploadPreview('');
             }}>
             <CloseIcon />
           </RemovePreviewIcon>
-          <Image
-            priority
-            layout="fixed"
-            width={328}
-            height={328}
-            alt={templateUploadedFile.name}
-            src={imagePreview}
-          />
-        </>
+        </Preview>
       ) : isDragActive ? (
         <>
           <UploadIcon />
