@@ -79,11 +79,6 @@ const TemplateCard = ({
       ? templateImage
       : `${IPFS_RESOLVER}${templateImage}`;
 
-  const collectionImgSrc =
-    noIpfsConversion || !collectionImage
-      ? collectionImage
-      : `${IPFS_RESOLVER}${collectionImage}`;
-
   const priceTag =
     isUsersTemplates && assetsForSale && totalAssets ? (
       <Tag>
@@ -103,7 +98,7 @@ const TemplateCard = ({
         <CollectionNameButton isStatic={isStatic} onClick={openCollectionPage}>
           <CollectionIcon
             name={collectionName}
-            image={collectionImgSrc}
+            image={collectionImage}
             margin="24px 16px 24px 0"
           />
           <Text>{capitalize(collectionName)}</Text>
