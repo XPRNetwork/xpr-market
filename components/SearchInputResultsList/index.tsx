@@ -11,7 +11,6 @@ import {
 } from './SearchInputResultsList.styled';
 import CollectionIcon from '../CollectionIcon';
 import { capitalize } from '../../utils';
-import { IPFS_RESOLVER } from '../../utils/constants';
 
 type Props = {
   input: string;
@@ -105,11 +104,7 @@ const SearchInputResultsList = ({
           }}
           tabIndex={0}
           key={name}>
-          <CollectionIcon
-            name={name}
-            image={img ? IPFS_RESOLVER + img : img}
-            margin="0 16px 0 0"
-          />
+          <CollectionIcon name={name} image={img} margin="0 16px 0 0" />
           <span>{capitalize(name)}</span>
         </ResultItem>
       ))}
