@@ -28,6 +28,7 @@ import ProtonSDK from '../services/proton';
 import uploadToIPFS from '../services/upload';
 import { useNavigatorUserAgent } from '../hooks';
 import { fileReader } from '../utils';
+import NftCreateSuccess from '../components/NftCreateSuccess';
 
 const CREATE_PAGE_STATES = {
   CHOOSE_COLLECTION: 'CHOOSE_COLLECTION',
@@ -214,7 +215,13 @@ const Create = (): JSX.Element => {
 
     switch (pageState) {
       case CREATE_PAGE_STATES.SUCCESS:
-        return <>Success!</>;
+        return (
+          <NftCreateSuccess
+            backToChooseCollection={() =>
+              setPageState(CREATE_PAGE_STATES.CHOOSE_COLLECTION)
+            }
+          />
+        );
       default:
         return (
           <Container>
