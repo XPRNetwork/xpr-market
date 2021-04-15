@@ -20,6 +20,7 @@ export const ImageContainer = styled.div`
   ${breakpoint.mobile`
     width: 112px;
     height: 112px;
+    margin-bottom: 24px;
   `}
 `;
 
@@ -27,12 +28,23 @@ export const Name = styled.p`
   font-size: 48px;
   line-height: 1.17;
   color: #1a1a1a;
+  text-align: center;
+
+  ${breakpoint.mobile`
+    font-size: 40px;
+    line-height: 1.4;
+  `}
 `;
 
 export const SubName = styled.p`
   line-height: 1.43;
   font-size: 28px;
   color: #752eeb;
+
+  ${breakpoint.mobile`
+    font-size: 21px;
+    line-height: 1.52;
+  `}
 `;
 
 export const Description = styled.p`
@@ -58,4 +70,8 @@ export const IconButton = styled.button`
   :hover {
     background-color: rgba(230, 230, 230, 0.3);
   }
+
+  ${breakpoint.mobile`
+    margin-top: 5px;
+  `}
 `;
