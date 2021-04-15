@@ -90,6 +90,9 @@ const Create = (): JSX.Element => {
         };
         fileReader(readerSetTemplateImage, templateUploadedFile);
       }
+    } else {
+      setTemplateImage('');
+      setTemplateVideo('');
     }
   }, [templateUploadedFile]);
 
@@ -346,6 +349,7 @@ const Create = (): JSX.Element => {
                   noHoverEffect
                   noIpfsConversion
                   isStatic
+                  autoPlay
                 />
               </RightColumn>
             </Row>

@@ -20,9 +20,18 @@ export const VideoContainer = styled(FadeInImageContainer)<ImageContainerProps>`
   margin-bottom: 24px;
 `;
 
+export const CenterContainer = styled.div`
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+`;
+
 export const Video = styled.video`
   position: absolute;
   width: 100%;
-  height: 100%;
   border-radius: 16px;
+  outline: none;
 `;
