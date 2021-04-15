@@ -56,9 +56,9 @@ export const Description = styled.p`
 
 export const IconButton = styled.button`
   display: flex;
-  position: relative;
   justify-content: center;
   align-items: center;
+  position: relative;
   background-color: transparent;
   height: 40px;
   width: 40px;
@@ -74,4 +74,10 @@ export const IconButton = styled.button`
   ${breakpoint.mobile`
     margin-top: 5px;
   `}
+
+  > svg {
+    position: absolute;
+    left: 7px;
+    top: 6px;
+  }
 `;
