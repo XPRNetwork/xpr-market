@@ -42,3 +42,11 @@ export interface QueryParams {
   page?: number;
   symbol?: string;
 }
+export const DEFAULT_SCHEMA = {
+  series: 'uint16',
+  name: 'string',
+  desc: 'string',
+  image: 'string',
+  audio: 'string',
+  video: 'string',
+};

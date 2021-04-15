@@ -20,13 +20,16 @@ import { fileReader } from '../../utils';
 type Props = {
   setTemplateUploadedFile: Dispatch<SetStateAction<File>>;
   templateUploadedFile: File;
+  setFormError: Dispatch<SetStateAction<string>>;
 };
 
 const DragDropFileUploadLg = ({
   setTemplateUploadedFile,
   templateUploadedFile,
+  setFormError,
 }: Props): JSX.Element => {
   const onDrop = useCallback((acceptedFiles) => {
+    setFormError('');
     setUploadError('');
     const file = acceptedFiles[0];
     const isAcceptedFileType = LG_FILE_UPLOAD_TYPES[file.type] || false;

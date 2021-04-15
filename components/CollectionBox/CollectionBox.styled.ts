@@ -16,6 +16,11 @@ export const BoxContainer = styled.div<BoxContainerProps>`
   cursor: pointer;
   margin-right: 8px;
   padding: 0 10px;
+
+  :hover,
+  :focus-visible {
+    border: 1px solid #752eeb;
+  }
 `;
 
 export const CollectionName = styled.p`

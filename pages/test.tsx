@@ -17,18 +17,9 @@ const TestPage = (): JSX.Element => {
   const [text1, setText1] = useState<string>('');
   const [text2, setText2] = useState<string>('');
   const [collectionName, setCollectionName] = useState<string>('');
-  const [collectionDisplayName, setCollectionDisplayName] = useState<string>(
-    ''
-  );
-  const [collectionDescription, setCollectionDescription] = useState<string>(
-    ''
-  );
   const [fee, setFee] = useState<number>();
-  const [templateName, setTemplateName] = useState<string>();
-  const [templateDescription, setTemplateDescription] = useState<string>();
   const [templateId, setTemplateId] = useState<string>();
   const [mintAmount, setMintAmount] = useState<number>();
-  const [editionSize, setEditionSize] = useState<number>();
 
   const transfer = async () => {
     const { actor } = currentUser;
@@ -62,32 +53,6 @@ const TestPage = (): JSX.Element => {
       market_fee,
     });
     console.log('result setMarketFee: ', result);
-  };
-
-  const createCollectionSchemaTemplate = async () => {
-    const { actor } = currentUser;
-    const result = await proton.createCollectionSchemaTemplate({
-      author: actor,
-      collection_name: collectionName,
-      description: collectionDescription,
-      display_name: collectionDisplayName,
-      template_name: templateName,
-      template_description: templateDescription,
-      edition_size: editionSize,
-    });
-    console.log('result createCollectionSchemaTemplate: ', result);
-  };
-
-  const createTemplate = async () => {
-    const { actor } = currentUser;
-    const result = await proton.createTemplate({
-      author: actor,
-      collection_name: collectionName,
-      template_name: templateName,
-      description: templateDescription,
-      edition_size: editionSize,
-    });
-    console.log('result createTemplate: ', result);
   };
 
   const mintAssets = async () => {
@@ -156,76 +121,6 @@ const TestPage = (): JSX.Element => {
         }}
       />
       <button onClick={setMarketFee}>setMarketFee</button>
-      <br />
-      <input
-        value={collectionName}
-        placeholder="Collection Name"
-        onChange={(e) => setCollectionName(e.target.value)}
-      />
-      <input
-        value={collectionDisplayName}
-        placeholder="Collection Display Name"
-        onChange={(e) => setCollectionDisplayName(e.target.value)}
-      />
-      <input
-        value={collectionDescription}
-        placeholder="Collection Description"
-        onChange={(e) => setCollectionDescription(e.target.value)}
-      />
-      <input
-        value={templateName}
-        placeholder="Template Name"
-        onChange={(e) => setTemplateName(e.target.value)}
-      />
-      <input
-        value={templateDescription}
-        placeholder="Template Description"
-        onChange={(e) => setTemplateDescription(e.target.value)}
-      />
-      <input
-        type="number"
-        min="1"
-        value={editionSize}
-        placeholder="Edition Size"
-        onChange={(e) => {
-          const amount = isNaN(parseInt(e.target.value))
-            ? 1
-            : parseInt(e.target.value);
-          setEditionSize(amount);
-        }}
-      />
-      <button onClick={createCollectionSchemaTemplate}>
-        createCollectionSchemaTemplate
-      </button>
-      <br />
-      <input
-        value={collectionName}
-        placeholder="Collection Name"
-        onChange={(e) => setCollectionName(e.target.value)}
-      />
-      <input
-        value={templateName}
-        placeholder="Template Name"
-        onChange={(e) => setTemplateName(e.target.value)}
-      />
-      <input
-        value={templateDescription}
-        placeholder="Template Description"
-        onChange={(e) => setTemplateDescription(e.target.value)}
-      />
-      <input
-        type="number"
-        min="1"
-        value={editionSize}
-        placeholder="Edition Size"
-        onChange={(e) => {
-          const amount = isNaN(parseInt(e.target.value))
-            ? 1
-            : parseInt(e.target.value);
-          setEditionSize(amount);
-        }}
-      />
-      <button onClick={createTemplate}>createTemplate</button>
       <br />
       <input
         value={collectionName}

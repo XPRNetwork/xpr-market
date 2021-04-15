@@ -15,50 +15,65 @@ import {
 } from './CollectionsCarousel.styled';
 import Spinner from '../Spinner';
 
+export type CarouselCollection = Pick<
+  Collection,
+  'collection_name' | 'name' | 'img'
+>;
+
+export type NewCollection = CarouselCollection & {
+  description: string;
+};
+
 type CollectionsCarouselProps = {
-  collections: Collection[];
+  collectionsList: Collection[];
   error?: string;
   isLoading: boolean;
+  newCollection?: NewCollection;
+  selectedCollection: CarouselCollection;
   getUserCollections: () => Promise<void>;
-  setCollectionName: Dispatch<SetStateAction<string>>;
-  setCollectionImage: Dispatch<SetStateAction<string>>;
+  setSelectedCollection: Dispatch<SetStateAction<CarouselCollection>>;
+  setNewCollection: Dispatch<SetStateAction<NewCollection>>;
+  setIsUncreatedCollectionSelected: Dispatch<SetStateAction<boolean>>;
 };
 
 const CollectionsCarousel = ({
-  collections,
+  collectionsList,
   error,
   isLoading,
+  newCollection,
+  selectedCollection,
   getUserCollections,
-  setCollectionImage,
-  setCollectionName,
+  setSelectedCollection,
+  setNewCollection,
+  setIsUncreatedCollectionSelected,
 }: CollectionsCarouselProps): JSX.Element => {
   const { openModal, setModalProps } = useModalContext();
-  const [activeCollection, setActiveCollection] = useState<string>('');
   const [currentSlide, setCurrentSlide] = useState<number>(0);
   const [slideStep] = useState<number>(3);
   const [totalSlides, setTotalSlides] = useState<number>(
-    collections.length + 1
+    collectionsList.length + 1
   );
 
-  const createCollection = () => {
+  const openCreateCollectionModal = () => {
     openModal(MODAL_TYPES.CREATE_COLLECTION);
     setModalProps({
-      fetchPageData: getUserCollections,
-      setCollectionImage: setCollectionImage,
-      setCollectionName: setCollectionName,
-      setActiveCollection: setActiveCollection,
+      setNewCollection,
+      setSelectedCollection,
+      setIsUncreatedCollectionSelected,
     });
   };
 
-  const selectCollection = (collection: Collection) => {
-    const { collection_name, img } = collection;
-    setActiveCollection(collection_name);
-    setCollectionName(collection_name);
-    setCollectionImage(img);
+  const selectCollection = (collection: CarouselCollection) => {
+    setSelectedCollection(collection);
+    setIsUncreatedCollectionSelected(
+      newCollection &&
+        collection &&
+        collection.collection_name === newCollection.collection_name
+    );
   };
 
   const onClickForward = () => {
-    const totalSlides = collections.length + 1;
+    const totalSlides = collectionsList.length + 1;
     const nextSlide = currentSlide + slideStep;
     const maxSlide = totalSlides - slideStep;
     if (nextSlide > maxSlide) {
@@ -78,8 +93,8 @@ const CollectionsCarousel = ({
   };
 
   useEffect(() => {
-    setTotalSlides(collections.length + 1);
-  }, [collections]);
+    setTotalSlides(collectionsList.length + 1);
+  }, [collectionsList]);
 
   const getContent = () => {
     if (isLoading) {
@@ -109,7 +124,7 @@ const CollectionsCarousel = ({
               naturalSlideWidth={144}>
               <Slider>
                 <Slide index={0} key={0}>
-                  <BoxButton onClick={createCollection}>
+                  <BoxButton onClick={openCreateCollectionModal}>
                     <Image
                       priority
                       layout="fixed"
@@ -121,14 +136,31 @@ const CollectionsCarousel = ({
                     <span>Create</span>
                   </BoxButton>
                 </Slide>
-                {collections.map((collection, i) => (
+                {newCollection && (
                   <Slide
-                    index={i + 1}
-                    key={i + 1}
+                    index={1}
+                    key={1}
+                    onClick={() => selectCollection(newCollection)}>
+                    <CollectionBox
+                      collection={newCollection}
+                      active={
+                        newCollection.collection_name ===
+                        selectedCollection.collection_name
+                      }
+                    />
+                  </Slide>
+                )}
+                {collectionsList.map((collection, i) => (
+                  <Slide
+                    index={newCollection ? i + 2 : i + 1}
+                    key={newCollection ? i + 2 : i + 1}
                     onClick={() => selectCollection(collection)}>
                     <CollectionBox
                       collection={collection}
-                      active={collection.collection_name === activeCollection}
+                      active={
+                        collection.collection_name ===
+                        selectedCollection.collection_name
+                      }
                     />
                   </Slide>
                 ))}

@@ -58,6 +58,8 @@ const PriceInput = ({
       '.',
       'Enter',
       'Backspace',
+      'ArrowUp',
+      'ArrowDown',
       'ArrowLeft',
       'ArrowRight',
       'Tab',

@@ -1,6 +1,8 @@
 import { ConnectWallet } from '@proton/web-sdk';
 import { LinkSession, Link } from '@proton/link';
 import logoUrl from '../public/logo.svg';
+import proton from './proton-rpc';
+import { DEFAULT_SCHEMA } from '../utils/constants';
 
 export interface User {
   actor: string;
@@ -22,33 +24,34 @@ interface BurnOptions {
   asset_id: string;
 }
 
-interface CreateCollectionSchemaTemplateOptions {
+interface CreateNftOptions {
+  requiredAccountRam: number;
+  requiredSpecialMintContractRam: number;
   author: string;
-  description: string;
-  display_name: string;
+  collection_name?: string;
+  collection_description: string;
+  collection_display_name: string;
+  collection_image?: string;
+  collection_market_fee?: string;
   template_name: string;
-  template_description: string;
-  edition_size: number;
-  collection_name?: string;
-  collection_image?: string;
   template_image?: string;
+  template_video?: string;
+  template_description: string;
+  max_supply: number;
+  initial_mint_amount: number;
 }
 
-interface CreateCollectionAndSchemaOptions {
-  author: string;
-  description: string;
-  display_name: string;
-  collection_name?: string;
-  collection_image?: string;
-}
-
-interface CreateTemplateOptions {
+interface CreateTemplateAssetsOptions {
+  requiredAccountRam: number;
+  requiredSpecialMintContractRam: number;
   author: string;
   collection_name: string;
   template_name: string;
-  description: string;
-  edition_size: number;
   template_image?: string;
+  template_video?: string;
+  template_description: string;
+  max_supply: number;
+  initial_mint_amount: number;
 }
 
 interface MintAssetsOptions {
@@ -103,13 +106,25 @@ interface Response {
   error?: string;
 }
 
-interface CreateTemplateResponse extends Response {
-  templateId: string;
-}
-
 interface WalletResponse {
   user: User;
   error: string;
+}
+
+interface GenerateRamActions {
+  author: string;
+  requiredAccountRam: number;
+  requiredSpecialMintContractRam: number;
+}
+
+interface Action {
+  account: string;
+  name: string;
+  authorization: Array<{
+    actor: string;
+    permission: string;
+  }>;
+  data: unknown;
 }
 
 class ProtonSDK {
@@ -374,129 +389,157 @@ class ProtonSDK {
   };
 
   /**
-   * Create a collection on Atomic Assets.
+   * Generate transaction actions for initializing a user's storage in the
+   * specialmint contract, purchasing account ram, and purchasing specialmint
+   * contract ram for special minting assets.
    *
-   * @param {string}   author             Chain account of the collection's author.
-   * @param {string}   collection_name    Name of the collection on the blockchain.
-   * @param {string}   description        Short description of the collection.
-   * @param {string}   display_name       Display name of the collection.
-   * @param {string}   collection_image   IPFS CID (image hash generated on IPFS).
-   * @return {Response}                   Returns an object indicating the success of the transaction and transaction ID.
+   * @param {string}     author                           Chain account of the collection's author.
+   * @param {number}     requiredAccountRam               Amount of ram in order to create a collection, a schema, and a template.
+   * @param {number}     requiredSpecialMintContractRam   Amount of ram required to special mint a certain number of assets.
+   * @return {Action}                                     Returns an array of conditional ram actions.
    */
 
-  createCollectionAndSchema = async ({
+  generateRamActions = async ({
     author,
-    collection_name,
-    description,
-    display_name,
-    collection_image,
-  }: CreateCollectionAndSchemaOptions): Promise<Response> => {
-    const name = collection_name || author;
-    const actions = [
-      {
-        account: 'atomicassets',
-        name: 'createcol',
-        authorization: [
-          {
-            actor: author,
-            permission: 'active',
+    requiredAccountRam,
+    requiredSpecialMintContractRam,
+  }: GenerateRamActions): Promise<Action[]> => {
+    const accountRam = await proton.getAccountRam(author);
+    const contractRam = await proton.getSpecialMintContractRam(author);
+    const conversionRate = await proton.getXPRtoXUSDCConversionRate();
+
+    const hasInitializedStorage = contractRam !== -1;
+    const hasEnoughAccountRam =
+      accountRam.max - accountRam.used >= requiredAccountRam;
+    const hasEnoughSpecialMintContractRam =
+      contractRam >= requiredSpecialMintContractRam;
+
+    // Cost per byte of RAM is 0.0222 XPR
+    const accountRamToBuyInXPR =
+      0.0222 * (requiredAccountRam - (accountRam.max - accountRam.used));
+    const contractRamToBuyInXPR =
+      0.0222 * (requiredSpecialMintContractRam - contractRam);
+
+    return [
+      hasInitializedStorage
+        ? undefined
+        : {
+            account: 'specialmint',
+            name: 'initstorage',
+            authorization: [
+              {
+                actor: author,
+                permission: 'active',
+              },
+            ],
+            data: {
+              account: author,
+            },
           },
-        ],
-        data: {
-          author,
-          collection_name: name,
-          allow_notify: true,
-          authorized_accounts: [author],
-          notify_accounts: [],
-          market_fee: '0.000000',
-          data: [
-            {
-              key: 'description',
-              value: ['string', description],
+      hasEnoughAccountRam
+        ? undefined
+        : {
+            account: 'xtokens',
+            name: 'transfer',
+            authorization: [
+              {
+                actor: author,
+                permission: 'active',
+              },
+            ],
+            data: {
+              from: author,
+              to: 'specialmint',
+              quantity: `${(accountRamToBuyInXPR * conversionRate).toFixed(
+                6
+              )} XUSDC`,
+              memo: 'account',
             },
-            {
-              key: 'name',
-              value: ['string', display_name],
-            },
-            {
-              key: 'img',
-              value: ['string', collection_image],
-            },
-          ],
-        },
-      },
-      {
-        account: 'atomicassets',
-        name: 'createschema',
-        authorization: [
-          {
-            actor: author,
-            permission: 'active',
           },
-        ],
-        data: {
-          authorized_creator: author,
-          collection_name: name,
-          schema_name: name,
-          schema_format: [
-            { name: 'series', type: 'uint16' },
-            { name: 'image', type: 'image' },
-            { name: 'name', type: 'string' },
-            { name: 'desc', type: 'string' },
-          ],
-        },
-      },
-    ];
-
-    try {
-      if (!this.session) {
-        throw new Error(
-          'Unable to create a collection and schema without logging in.'
-        );
-      }
-
-      const result = await this.session.transact(
-        { actions: actions },
-        { broadcast: true }
-      );
-
-      return {
-        success: true,
-        transactionId: result.processed.id,
-      };
-    } catch (e) {
-      return {
-        success: false,
-        error:
-          e.message ||
-          'An error has occurred while creating the collection and schema.',
-      };
-    }
+      hasEnoughSpecialMintContractRam
+        ? undefined
+        : {
+            account: 'xtokens',
+            name: 'transfer',
+            authorization: [
+              {
+                actor: author,
+                permission: 'active',
+              },
+            ],
+            data: {
+              from: author,
+              to: 'specialmint',
+              quantity: `${(contractRamToBuyInXPR * conversionRate).toFixed(
+                6
+              )} XUSDC`,
+              memo: 'contract',
+            },
+          },
+    ].filter((action) => action !== undefined);
   };
 
   /**
-   * Create a collection and a template on Atomic Assets.
+   * Create a collection, a schema, a template, and mint initial assets on Atomic Assets.
    *
-   * @param {string}   author             Chain account of the collection's author.
-   * @param {string}   collection_name    Name of the collection on the blockchain.
-   * @param {string}   description        Short description of the collection.
-   * @param {string}   display_name       Display name of the collection.
-   * @param {string}   collection_image   IPFS CID (image hash generated on IPFS).
-   * @return {Response}                   Returns an object indicating the success of the transaction and transaction ID.
+   * @param {string}     author                   Chain account of the collection's author.
+   * @param {string}     collection_name          Name of the collection on the blockchain.
+   * @param {string}     collection_description   Short description of the collection.
+   * @param {string}     collection_display_name  Display name of the collection.
+   * @param {string}     collection_image         IPFS CID (image hash generated on IPFS).
+   * @param {string}     collection_market_fee    Royalty amount owner receives for each asset transaction within the collection.
+   * @param {string}     template_name            Name of the template to create.
+   * @param {string}     template_image           IPFS CID (image hash generated on IPFS).
+   * @param {string}     template_description     Description of the template.
+   * @param {string}     max_supply               Maximum amount of child assets that this template can mint (0 if there should not be a maximum).
+   * @param {string}     initial_mint_amount      Initial amount of assets to mint.
+   * @return {Response}                           Returns an object indicating the success of the transaction and transaction ID.
    */
 
-  createCollectionSchemaTemplate = async ({
+  createNft = async ({
+    requiredAccountRam,
+    requiredSpecialMintContractRam,
     author,
     collection_name,
-    description,
-    display_name,
+    collection_description,
+    collection_display_name,
     collection_image,
+    collection_market_fee,
     template_name,
     template_image,
+    template_video,
     template_description,
-    edition_size,
-  }: CreateCollectionSchemaTemplateOptions): Promise<CreateTemplateResponse> => {
-    const name = collection_name || author;
+    max_supply,
+    initial_mint_amount,
+  }: CreateNftOptions): Promise<Response> => {
+    const collection_name_or_author = collection_name || author;
+
+    const ramActions = await this.generateRamActions({
+      author,
+      requiredAccountRam,
+      requiredSpecialMintContractRam,
+    });
+
+    const default_template = {
+      series: '1',
+      name: template_name,
+      desc: template_description,
+      image: template_image,
+      video: template_video,
+    };
+
+    const schema_format = Object.entries(DEFAULT_SCHEMA).map(([key, type]) => ({
+      name: key,
+      type,
+    }));
+
+    const immutable_data = Object.entries(DEFAULT_SCHEMA).map(
+      ([key, type]) => ({
+        key,
+        value: [type, default_template[key]],
+      })
+    );
+
     const actions = [
       {
         account: 'atomicassets',
@@ -509,23 +552,23 @@ class ProtonSDK {
         ],
         data: {
           author,
-          collection_name: name,
+          collection_name: collection_name_or_author,
           allow_notify: true,
-          authorized_accounts: [author],
+          authorized_accounts: [author, 'specialmint'],
           notify_accounts: [],
-          market_fee: '0.000000',
+          market_fee: collection_market_fee || '0.000000',
           data: [
             {
               key: 'description',
-              value: ['string', description],
+              value: ['string', collection_description],
             },
             {
               key: 'name',
-              value: ['string', display_name],
+              value: ['string', collection_display_name],
             },
             {
               key: 'img',
-              value: ['string', collection_image],
+              value: ['string', collection_image || ''],
             },
           ],
         },
@@ -541,14 +584,9 @@ class ProtonSDK {
         ],
         data: {
           authorized_creator: author,
-          collection_name: name,
-          schema_name: name,
-          schema_format: [
-            { name: 'series', type: 'uint16' },
-            { name: 'image', type: 'image' },
-            { name: 'name', type: 'string' },
-            { name: 'desc', type: 'string' },
-          ],
+          collection_name: collection_name,
+          schema_name: collection_name,
+          schema_format,
         },
       },
       {
@@ -562,20 +600,45 @@ class ProtonSDK {
         ],
         data: {
           authorized_creator: author,
-          collection_name: name,
-          schema_name: name,
+          collection_name: collection_name,
+          schema_name: collection_name,
           transferable: true,
           burnable: true,
-          max_supply: edition_size,
-          immutable_data: [
-            { key: 'series', value: ['uint16', '1'] },
-            {
-              key: 'image',
-              value: ['string', template_image],
-            },
-            { key: 'name', value: ['string', template_name] },
-            { key: 'desc', value: ['string', template_description] },
-          ],
+          max_supply,
+          immutable_data,
+        },
+      },
+      {
+        account: 'specialmint',
+        name: 'mintlasttemp',
+        authorization: [
+          {
+            actor: author,
+            permission: 'active',
+          },
+        ],
+        data: {
+          count: initial_mint_amount,
+          creator: author,
+          collection_name: collection_name_or_author,
+          schema_name: collection_name_or_author,
+          new_asset_owner: author,
+          immutable_data: [],
+          mutable_data: [],
+        },
+      },
+      {
+        account: 'atomicassets',
+        name: 'remcolauth',
+        authorization: [
+          {
+            actor: author,
+            permission: 'active',
+          },
+        ],
+        data: {
+          collection_name: collection_name_or_author,
+          account_to_remove: 'specialmint',
         },
       },
     ];
@@ -583,38 +646,27 @@ class ProtonSDK {
     try {
       if (!this.session) {
         throw new Error(
-          'Unable to create a collection, schema, and template without logging in.'
+          'Unable to create and mint a collection, schema, template, and assets without logging in.'
         );
       }
 
       const result = await this.session.transact(
-        { actions: actions },
+        {
+          actions: [...ramActions, ...actions],
+        },
         { broadcast: true }
       );
 
-      const templateActionTrace = result.processed.action_traces[2];
-      const [inlineTrace] = templateActionTrace
-        ? templateActionTrace.inline_traces
-        : [];
-
-      if (!templateActionTrace) {
-        throw new Error('An error has occurred while creating the template.');
-      }
-
-      const templateId: string = inlineTrace.act.data.template_id;
-
       return {
         success: true,
-        templateId,
         transactionId: result.processed.id,
       };
     } catch (e) {
       return {
         success: false,
-        templateId: '',
         error:
           e.message ||
-          'An error has occurred while creating the collection, schema, and template.',
+          'An error has occurred while creating and minting the collection, schema, template, and assets.',
       };
     }
   };
@@ -671,25 +723,66 @@ class ProtonSDK {
   };
 
   /**
-   * Create a collection template on Atomic Assets.
+   * Create a schema, create a template, and mint assets on Atomic Assets.
    *
-   * @param {string}   author             Chain account of the collection's author.
-   * @param {string}   collection_name    Name of the collection on the blockchain.
-   * @param {string}   template_name      Name of the template to create.
-   * @param {string}   template_image     IPFS CID (image hash generated on IPFS).
-   * @param {string}   description        Description of the template.
-   * @return {Response}                   Returns an object indicating the success of the transaction and transaction ID.
+   * @param {string}   author               Chain account of the collection's author.
+   * @param {string}   collection_name      Name of the collection on the blockchain.
+   * @param {string}   template_name        Name of the template to create.
+   * @param {string}   template_image       IPFS CID (image hash generated on IPFS).
+   * @param {string}   template_description Description of the template.
+   * @param {string}   max_supply           Maximum amount of child assets that this template can mint (0 if there should not be a maximum.
+   * @param {string}   initial_mint_amount  Initial amount of assets to mint.
+   * @return {Response}                     Returns an object indicating the success of the transaction and transaction ID.
    */
 
-  createTemplate = async ({
+  createTemplateAssets = async ({
+    requiredAccountRam,
+    requiredSpecialMintContractRam,
     author,
     collection_name,
     template_name,
     template_image,
-    description,
-    edition_size,
-  }: CreateTemplateOptions): Promise<CreateTemplateResponse> => {
+    template_video,
+    template_description,
+    max_supply,
+    initial_mint_amount,
+  }: CreateTemplateAssetsOptions): Promise<Response> => {
+    const ramActions = await this.generateRamActions({
+      author,
+      requiredAccountRam,
+      requiredSpecialMintContractRam,
+    });
+
+    const default_template = {
+      series: '1',
+      name: template_name,
+      desc: template_description,
+      image: template_image,
+      video: template_video,
+    };
+
+    const immutable_data = Object.entries(DEFAULT_SCHEMA).map(
+      ([key, type]) => ({
+        key,
+        value: [type, default_template[key]],
+      })
+    );
+
     const actions = [
+      {
+        account: 'atomicassets',
+        name: 'addcolauth',
+        authorization: [
+          {
+            actor: author,
+            permission: 'active',
+          },
+        ],
+        data: {
+          collection_name,
+          account_to_add: 'specialmint',
+        },
+      },
       {
         account: 'atomicassets',
         name: 'createtempl',
@@ -701,51 +794,70 @@ class ProtonSDK {
         ],
         data: {
           authorized_creator: author,
-          collection_name,
+          collection_name: collection_name,
           schema_name: collection_name,
           transferable: true,
           burnable: true,
-          max_supply: edition_size,
-          immutable_data: [
-            { key: 'series', value: ['uint16', '1'] },
-            {
-              key: 'image',
-              value: ['string', template_image],
-            },
-            { key: 'name', value: ['string', template_name] },
-            { key: 'desc', value: ['string', description] },
-          ],
+          max_supply,
+          immutable_data,
+        },
+      },
+      {
+        account: 'specialmint',
+        name: 'mintlasttemp',
+        authorization: [
+          {
+            actor: author,
+            permission: 'active',
+          },
+        ],
+        data: {
+          count: initial_mint_amount,
+          creator: author,
+          collection_name: collection_name,
+          schema_name: collection_name,
+          new_asset_owner: author,
+          immutable_data: [],
+          mutable_data: [],
+        },
+      },
+      {
+        account: 'atomicassets',
+        name: 'remcolauth',
+        authorization: [
+          {
+            actor: author,
+            permission: 'active',
+          },
+        ],
+        data: {
+          collection_name: collection_name,
+          account_to_remove: 'specialmint',
         },
       },
     ];
+
     try {
       if (!this.session) {
-        throw new Error('Unable to create a template without logging in.');
+        throw new Error(
+          'Unable to create a template and mint assets without logging in.'
+        );
       }
       const result = await this.session.transact(
-        { actions: actions },
+        { actions: [...ramActions, ...actions] },
         { broadcast: true }
       );
 
-      const [actionTrace] = result.processed.action_traces;
-      const [inlineTrace] = actionTrace ? actionTrace.inline_traces : [];
-
-      if (!inlineTrace) {
-        throw new Error('An error has occurred while creating the template.');
-      }
-
-      const templateId: string = inlineTrace.act.data.template_id;
       return {
         success: true,
-        templateId,
         transactionId: result.processed.id,
       };
     } catch (e) {
       return {
         success: false,
-        templateId: '',
         error:
-          e.message || 'An error has occurred while creating the template.',
+          e.message ||
+          'An error has occurred while creating the template and minting assets.',
       };
     }
   };

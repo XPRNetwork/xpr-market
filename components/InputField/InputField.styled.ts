@@ -43,6 +43,14 @@ export const Input = styled.input`
   outline: none;
   line-height: 24px;
 
+  ::-webkit-inner-spin-button,
+  ::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0;
+  }
+
   ::placeholder {
     color: #808080;
   }
