@@ -26,11 +26,19 @@ export const InputContainer = styled.div<InputProps>`
   :hover,
   :focus,
   :focus-visible {
-    border: ${({ hasError, disabled }) => {
-      if (disabled) return 'none';
-      return `solid 1px ${hasError ? '#f94e6c' : '#752eeb'}`;
-    }};
+    border: solid 1px ${({ hasError }) => (hasError ? '#f94e6c' : '#752eeb')};
   }
+
+  ${({ disabled }) =>
+    disabled &&
+    `
+    border: none;
+    :hover,
+    :focus,
+    :focus-visible {
+      border: none;
+    }
+  `}
 `;
 
 export const Input = styled.input`

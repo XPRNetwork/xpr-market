@@ -11,14 +11,14 @@ import { useModalContext, MODAL_TYPES, MintAssetModalProps } from '../Provider';
 import { useScrollLock, useEscapeKeyClose } from '../../hooks';
 
 type Props = {
-  transferNFT?: () => void;
+  setCurrentAssetAsModalProps?: () => void;
   assetIds?: string[];
   saleIds?: string[];
   isTemplateCreator?: boolean;
 };
 
 const AssetFormPopupMenu = ({
-  transferNFT,
+  setCurrentAssetAsModalProps,
   assetIds,
   saleIds,
   isTemplateCreator,
@@ -39,14 +39,6 @@ const AssetFormPopupMenu = ({
 
   const popupMenuItems = [
     {
-      isHidden: false,
-      name: 'Transfer NFT',
-      onClick: () => {
-        setIsOpen(false);
-        transferNFT();
-      },
-    },
-    {
       isHidden: !assetIds || assetIds.length === 0,
       name: 'Mark all for sale',
       onClick: () => {
@@ -60,6 +52,24 @@ const AssetFormPopupMenu = ({
       onClick: () => {
         setIsOpen(false);
         openModal(MODAL_TYPES.MINT_ASSET);
+      },
+    },
+    {
+      isHidden: false,
+      name: 'Transfer NFT',
+      onClick: () => {
+        setIsOpen(false);
+        openModal(MODAL_TYPES.TRANSFER);
+        setCurrentAssetAsModalProps();
+      },
+    },
+    {
+      isHidden: false,
+      name: 'Burn NFT',
+      onClick: () => {
+        setIsOpen(false);
+        openModal(MODAL_TYPES.BURN_ASSET);
+        setCurrentAssetAsModalProps();
       },
     },
     {

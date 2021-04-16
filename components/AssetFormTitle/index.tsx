@@ -17,18 +17,18 @@ type Props = {
   templateName: string;
   collectionName: string;
   collectionAuthor: string;
-  transferNFT?: () => void;
   assetIds?: string[];
   saleIds?: string[];
+  setCurrentAssetAsModalProps?: () => void;
 };
 
 const AssetFormTitle = ({
   templateName,
   collectionName,
   collectionAuthor,
-  transferNFT,
   assetIds,
   saleIds,
+  setCurrentAssetAsModalProps,
 }: Props): JSX.Element => {
   const router = useRouter();
   const { currentUser } = useAuthContext();
@@ -57,7 +57,7 @@ const AssetFormTitle = ({
         <Name>{templateName}</Name>
         {isMyTemplate && (
           <AssetFormPopupMenu
-            transferNFT={transferNFT}
+            setCurrentAssetAsModalProps={setCurrentAssetAsModalProps}
             assetIds={assetIds}
             saleIds={saleIds}
             isTemplateCreator={

@@ -12,6 +12,7 @@ import {
   TransferModal,
   CreateCollectionModal,
   MintAssetModal,
+  BurnAssetModal,
 } from '../Modal';
 import { useEscapeKeyClose } from '../../hooks';
 
@@ -46,6 +47,8 @@ const PageLayout = ({ title, children }: Props): JSX.Element => {
         return <CreateCollectionModal />;
       case MODAL_TYPES.MINT_ASSET:
         return <MintAssetModal />;
+      case MODAL_TYPES.BURN_ASSET:
+        return <BurnAssetModal />;
       default:
         return null;
     }
