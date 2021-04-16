@@ -22,6 +22,7 @@ export type CarouselCollection = Pick<
 
 export type NewCollection = CarouselCollection & {
   description: string;
+  royalties: string;
 };
 
 type CollectionsCarouselProps = {

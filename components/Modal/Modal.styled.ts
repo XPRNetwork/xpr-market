@@ -37,7 +37,7 @@ export const ModalBox = styled(MaxWidth)`
   display: flex;
   flex-direction: column;
   margin-top: 232px;
-  padding: 24px 24px 12px;
+  padding: 24px 24px 24px;
   border-radius: 8px;
   box-shadow: 0 8px 8px -4px rgba(0, 0, 0, 0.1), 0 0 4px 0 rgba(0, 0, 0, 0.08);
   background-color: #ffffff;
@@ -103,7 +103,7 @@ export const AvailableBalance = styled.span`
 export const ErrorMessage = styled(Description).attrs({ as: 'span' })`
   font-size: 12px;
   color: red;
-  margin-bottom: 0;
+  margin-bottom: 20px;
 `;
 
 export const Row = styled.div`

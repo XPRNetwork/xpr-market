@@ -35,6 +35,7 @@ export const CreateCollectionModal = (): JSX.Element => {
   const [description, setDescription] = useState<string>('');
   const [displayName, setDisplayName] = useState<string>('');
   const [uploadError, setUploadError] = useState<string>('');
+  const [royalties, setRoyalties] = useState<string>('');
   const [formError, setFormError] = useState<string>('');
   const [uploadedFile, setUploadedFile] = useState<File | null>();
   const author = currentUser ? currentUser.actor : '';
@@ -57,6 +58,10 @@ export const CreateCollectionModal = (): JSX.Element => {
       errors.push('set a description');
     }
 
+    if (!royalties) {
+      errors.push('set royalties');
+    }
+
     if (errors.length === 1) {
       setFormError(`Please ${errors[0]}.`);
       return;
@@ -67,7 +72,7 @@ export const CreateCollectionModal = (): JSX.Element => {
       return;
     }
 
-    if (errors.length > 1) {
+    if (errors.length > 2) {
       const lastErrorIndex = errors.length - 1;
       let errorMessage = `Please ${errors[0]}`;
 
@@ -96,6 +101,7 @@ export const CreateCollectionModal = (): JSX.Element => {
         name: displayName,
         img: ipfsImage,
         description: description,
+        royalties,
       });
 
       fileReader((img) => {
@@ -184,7 +190,29 @@ export const CreateCollectionModal = (): JSX.Element => {
             value={description}
             setFormError={setFormError}
             setValue={setDescription}
-            mb="18px"
+          />
+          <InputField
+            mt="16px"
+            mb="24px"
+            inputType="number"
+            min={0}
+            max={15}
+            step={1}
+            value={royalties}
+            setValue={setRoyalties}
+            placeholder="Royalties"
+            tooltip="A percentage of gross revenues derived from the use of an asset sold"
+            numberOfTooltipLines={3}
+            checkIfIsValid={(input) => {
+              const numberInput = parseFloat(input as string);
+              const isValid =
+                !isNaN(numberInput) && numberInput >= 0 && numberInput <= 15;
+              const errorMessage = 'Royalties must be between 0% and 15%';
+              return {
+                isValid,
+                errorMessage,
+              };
+            }}
           />
           <ErrorMessage>{formError}</ErrorMessage>
           <HalfButton type="submit" disabled={formError.length > 0}>

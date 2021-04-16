@@ -32,7 +32,7 @@ export const BoxButton = styled.button`
 export const CarouselContainer = styled.div`
   width: 100%;
   overflow: hidden;
-
+  margin-bottom: 30px;
   .carousel {
     overflow: hidden;
     outline: none;
@@ -70,7 +70,7 @@ export const ChooseCollectionContainer = styled.div`
 export const ButtonNext = styled.button`
   position: absolute;
   left: calc(100% - 16px);
-  top: calc(50% - 16px);
+  top: calc(50% - 30px);
   width: 32px;
   height: 32px;
   background-color: white;
@@ -94,7 +94,7 @@ export const ButtonNext = styled.button`
 export const ButtonBack = styled.button`
   position: absolute;
   right: calc(100% - 16px);
-  top: calc(50% - 16px);
+  top: calc(50% - 30px);
   width: 32px;
   height: 32px;
   background-color: white;

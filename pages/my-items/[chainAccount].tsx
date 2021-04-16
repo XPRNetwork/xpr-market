@@ -67,7 +67,6 @@ const Collection = (): JSX.Element => {
   const [isProfileLoading, setIsProfileLoading] = useState<boolean>(true);
   const [isTemplatesLoading, setIsTemplatesLoading] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string>('');
-  const [currentProfile, setCurrentProfile] = useState<string>('');
   const [userName, setUserName] = useState<string>('');
   const [userAvatar, setUserAvatar] = useState<string>('/default-avatar.png');
 
@@ -117,11 +116,6 @@ const Collection = (): JSX.Element => {
       const { name, avatar } = user;
       setUserName(name);
       setUserAvatar(avatar);
-      if (!currentUser || chainAccount !== currentUser.actor) {
-        setCurrentProfile(capitalize(chainAccount));
-      } else {
-        setCurrentProfile('');
-      }
     }
   };
 
