@@ -31,7 +31,7 @@ const ExploreCard = (): JSX.Element => {
         <ButtonWrapper>
           <Button
             fullWidth={isFullWidth}
-            margin={false}
+            margin="0"
             smallSize={isMobile}
             onClick={() => router.push('/')}>
             Get Started

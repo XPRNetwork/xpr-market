@@ -1,12 +1,12 @@
 import styled from 'styled-components';
 
 export const Input = styled.input`
-  font-size: 14px;
+  font-size: 16px;
   line-height: 24px;
-  color: #7578b5;
-  border-radius: 4px;
-  padding: 8px;
-  border: solid 1px #e8ecfd;
+  color: #1a1a1a;
+  border-radius: 8px;
+  padding: 12px 16px;
+  border: solid 1px #e6e6e6;
   margin-bottom: 12px;
   width: 100%;
 
@@ -19,6 +19,6 @@ export const Input = styled.input`
   }
 
   ::placeholder {
-    color: #7578b5;
+    color: #808080;
   }
 `;

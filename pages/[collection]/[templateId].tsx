@@ -1,18 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import DetailsLayout from '../components/DetailsLayout';
-import ErrorComponent from '../components/Error';
-import PageLayout from '../components/PageLayout';
-import AssetFormBuy from '../components/AssetFormBuy';
-import LoadingPage from '../components/LoadingPage';
-import { useAuthContext } from '../components/Provider';
-import { getTemplateDetails, Template } from '../services/templates';
-import { getAllTemplateSales, Sale, SaleAsset } from '../services/sales';
-import ProtonSDK from '../services/proton';
-import { DEFAULT_COLLECTION } from '../utils/constants';
-import * as gtag from '../utils/gtag';
-import { getSalesHistory } from '../services/sales';
-import { TAB_TYPES } from '../components/SalesHistoryTable';
+import DetailsLayout from '../../components/DetailsLayout';
+import ErrorComponent from '../../components/Error';
+import PageLayout from '../../components/PageLayout';
+import AssetFormBuy from '../../components/AssetFormBuy';
+import LoadingPage from '../../components/LoadingPage';
+import { useAuthContext } from '../../components/Provider';
+import { getTemplateDetails, Template } from '../../services/templates';
+import { getAllTemplateSales, Sale, SaleAsset } from '../../services/sales';
+import ProtonSDK from '../../services/proton';
+import * as gtag from '../../utils/gtag';
+import { getSalesHistory } from '../../services/sales';
+import { TAB_TYPES } from '../../components/SalesHistoryTable';
 
 const emptyTemplateDetails = {
   lowestPrice: '',
@@ -35,7 +34,7 @@ type Query = {
 
 const MarketplaceTemplateDetail = (): JSX.Element => {
   const router = useRouter();
-  const { templateId } = router.query as Query;
+  const { collection, templateId } = router.query as Query;
   const {
     updateCurrentUserBalance,
     currentUser,
@@ -79,7 +78,7 @@ const MarketplaceTemplateDetail = (): JSX.Element => {
         (async () => {
           setIsLoading(true);
           const templateDetails = await getTemplateDetails(
-            DEFAULT_COLLECTION,
+            collection,
             templateId
           );
           const {

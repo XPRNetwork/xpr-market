@@ -1,25 +1,24 @@
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
-import DetailsLayout from '../../components/DetailsLayout';
-import ErrorComponent from '../../components/Error';
-import PageLayout from '../../components/PageLayout';
-import AssetFormSell from '../../components/AssetFormSell';
-import LoadingPage from '../../components/LoadingPage';
+import DetailsLayout from '../../../components/DetailsLayout';
+import ErrorComponent from '../../../components/Error';
+import PageLayout from '../../../components/PageLayout';
+import AssetFormSell from '../../../components/AssetFormSell';
+import LoadingPage from '../../../components/LoadingPage';
 import {
   useAuthContext,
   useModalContext,
   MODAL_TYPES,
-} from '../../components/Provider';
-import { getTemplateDetails, Template } from '../../services/templates';
+} from '../../../components/Provider';
+import { getTemplateDetails, Template } from '../../../services/templates';
 import {
   getUserTemplateAssets,
   Asset,
   FullSaleDataByAssetId,
-} from '../../services/assets';
-import { Sale } from '../../services/sales';
-import { DEFAULT_COLLECTION } from '../../utils/constants';
-import { getSalesHistory } from '../../services/sales';
-import { TAB_TYPES } from '../../components/SalesHistoryTable';
+} from '../../../services/assets';
+import { Sale } from '../../../services/sales';
+import { getSalesHistory } from '../../../services/sales';
+import { TAB_TYPES } from '../../../components/SalesHistoryTable';
 
 const emptyTemplateDetails = {
   lowestPrice: '',
@@ -47,7 +46,7 @@ type Query = {
 
 const MyNFTsTemplateDetail = (): JSX.Element => {
   const router = useRouter();
-  const { templateId } = router.query as Query;
+  const { collection, templateId } = router.query as Query;
   const { currentUser, isLoadingUser } = useAuthContext();
   const { openModal, setModalProps } = useModalContext();
   const [sales, setSales] = useState<Sale[]>([]);
@@ -79,10 +78,7 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
       const owner = currentUser ? currentUser.actor : '';
       setIsLoading(true);
 
-      const templateDetails = await getTemplateDetails(
-        DEFAULT_COLLECTION,
-        templateId
-      );
+      const templateDetails = await getTemplateDetails(collection, templateId);
 
       const { assets, saleData } = await getUserTemplateAssets(
         owner,
@@ -99,6 +95,14 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
         saleIds,
         assetIds,
         fetchPageData,
+        collectionName: templateDetails.collection.collection_name,
+        templateId: templateDetails.template_id,
+        maxEditionSize: isNaN(parseInt(templateDetails.max_supply))
+          ? 0
+          : parseInt(templateDetails.max_supply),
+        editionSize: isNaN(parseInt(templateDetails.issued_supply))
+          ? 0
+          : parseInt(templateDetails.issued_supply),
       });
 
       setAssetIds(assetIds);
@@ -135,27 +139,27 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
 
   const transferNFT = () => {
     openModal(MODAL_TYPES.TRANSFER);
-    setModalProps({
+    setModalProps((previousModalProps) => ({
+      ...previousModalProps,
       assetId: currentAsset.asset_id,
       templateMint: currentAsset.template_mint,
-      fetchPageData,
-    });
+    }));
   };
 
   const createSale = () => {
     openModal(MODAL_TYPES.CREATE_SALE);
-    setModalProps({
+    setModalProps((previousModalProps) => ({
+      ...previousModalProps,
       assetId: currentAsset.asset_id,
-      fetchPageData,
-    });
+    }));
   };
 
   const cancelSale = () => {
     openModal(MODAL_TYPES.CANCEL_SALE);
-    setModalProps({
+    setModalProps((previousModalProps) => ({
+      ...previousModalProps,
       saleId: saleDataByAssetId[currentAsset.asset_id].saleId,
-      fetchPageData,
-    });
+    }));
   };
 
   const handleButtonClick = isSelectedAssetBeingSold ? cancelSale : createSale;

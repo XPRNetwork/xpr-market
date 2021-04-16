@@ -62,7 +62,7 @@ const TemplateCard = ({
   const openCollectionPage = (e: MouseEvent) => {
     if (!isStatic) {
       e.stopPropagation();
-      router.push(`/collection/${collectionName}`);
+      router.push(`/${collectionName}`);
     }
   };
 

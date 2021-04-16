@@ -6,4 +6,5 @@ export type {
   CancelMultipleSalesModalProps,
   CreateSaleModalProps,
   CreateMultipleSalesModalProps,
+  MintAssetModalProps,
 } from './ModalProvider';

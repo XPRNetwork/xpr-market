@@ -13,9 +13,6 @@ import {
   CloseIconContainer,
   Title,
   Description,
-  InputLabel,
-  Row,
-  Spacer,
   HalfButton,
 } from './Modal.styled';
 import { ReactComponent as CloseIcon } from '../../public/close.svg';
@@ -57,19 +54,15 @@ const SaleModal = ({
           </CloseIconContainer>
         </Section>
         <Description>{description}</Description>
-        <InputLabel>
-          NFT Price
-          <PriceInput
-            amount={amount}
-            setAmount={setAmount}
-            submit={onButtonClick}
-            placeholder={`Enter amount (${TOKEN_SYMBOL})`}
-          />
-        </InputLabel>
-        <Row>
-          <Spacer />
-          <HalfButton onClick={onButtonClick}>{buttonText}</HalfButton>
-        </Row>
+        <PriceInput
+          amount={amount}
+          setAmount={setAmount}
+          submit={onButtonClick}
+          placeholder="Enter amount"
+        />
+        <HalfButton margin="20px 0" onClick={onButtonClick}>
+          {buttonText}
+        </HalfButton>
       </ModalBox>
     </Background>
   );

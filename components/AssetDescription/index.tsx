@@ -12,6 +12,10 @@ export const AssetDescription = ({ description }: Props): JSX.Element => {
   const [isDescriptionActive, setIsDescriptionActive] = useState(false);
 
   const getDescriptionSnippet = () => {
+    if (description.length <= MAX_DESCRIPTION_LENGTH) {
+      return description;
+    }
+
     let maxCharacters = MAX_DESCRIPTION_LENGTH;
     for (let index = 0; index < words.length; index++) {
       const word = words[index];

@@ -18,8 +18,6 @@ const TestPage = (): JSX.Element => {
   const [text2, setText2] = useState<string>('');
   const [collectionName, setCollectionName] = useState<string>('');
   const [fee, setFee] = useState<number>();
-  const [templateId, setTemplateId] = useState<string>();
-  const [mintAmount, setMintAmount] = useState<number>();
 
   const transfer = async () => {
     const { actor } = currentUser;
@@ -53,17 +51,6 @@ const TestPage = (): JSX.Element => {
       market_fee,
     });
     console.log('result setMarketFee: ', result);
-  };
-
-  const mintAssets = async () => {
-    const { actor } = currentUser;
-    const result = await proton.mintAssets({
-      author: actor,
-      collection_name: collectionName,
-      template_id: templateId,
-      mint_amount: mintAmount,
-    });
-    console.log('result mintAssets: ', result);
   };
 
   const getOwnCreations = async () => {
@@ -121,30 +108,6 @@ const TestPage = (): JSX.Element => {
         }}
       />
       <button onClick={setMarketFee}>setMarketFee</button>
-      <br />
-      <input
-        value={collectionName}
-        placeholder="Collection Name"
-        onChange={(e) => setCollectionName(e.target.value)}
-      />
-      <input
-        value={templateId}
-        placeholder="Template ID"
-        onChange={(e) => setTemplateId(e.target.value)}
-      />
-      <input
-        type="number"
-        min="1"
-        value={mintAmount}
-        placeholder="Mint Amount"
-        onChange={(e) => {
-          const amount = isNaN(parseInt(e.target.value))
-            ? 1
-            : parseInt(e.target.value);
-          setMintAmount(amount);
-        }}
-      />
-      <button onClick={mintAssets}>mintAssets</button>
       <br />
       <div style={{ display: 'flex' }}>
         <InputField

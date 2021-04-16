@@ -5,7 +5,7 @@ type Props = {
   onClick: () => void;
   fullWidth?: boolean;
   cancel?: boolean;
-  margin?: boolean;
+  margin?: string;
   smallSize?: boolean;
   disabled?: boolean;
 };
@@ -31,7 +31,7 @@ const Button = ({
 );
 
 Button.defaultProps = {
-  margin: true,
+  margin: '12px 0',
 };
 
 export default Button;

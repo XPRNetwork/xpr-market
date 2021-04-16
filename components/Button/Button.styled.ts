@@ -3,13 +3,14 @@ import styled from 'styled-components';
 export interface ButtonProps {
   fullWidth?: boolean;
   cancel?: boolean;
-  margin?: boolean;
+  margin?: string;
   smallSize?: boolean;
+  disabled?: boolean;
 }
 
 export const StyledButton = styled.button<ButtonProps>`
   padding: ${({ smallSize }) => (smallSize ? '4px 16px' : '8px 16px')};
-  margin: ${({ margin }) => (margin ? '12px 0' : '')};
+  margin: ${({ margin }) => margin};
   border: none;
   border-radius: 8px;
   background-color: ${({ cancel }) => (cancel ? '#f94e6c' : '#752eeb')};
@@ -32,4 +33,11 @@ export const StyledButton = styled.button<ButtonProps>`
     box-shadow: 0 8px 12px -4px rgba(130, 136, 148, 0.24),
       0 0 4px 0 rgba(141, 141, 148, 0.16), 0 0 2px 0 rgba(141, 141, 148, 0.12);
   }
+
+  ${({ disabled }) =>
+    disabled &&
+    `
+    pointer-events: none;
+    opacity: 0.2;
+  `};
 `;

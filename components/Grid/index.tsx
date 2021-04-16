@@ -28,8 +28,8 @@ const Grid = ({ items }: Props): JSX.Element => {
           assetsForSale,
         }) => {
           const redirectPath = isUsersTemplates
-            ? `/my-templates/${template_id}`
-            : `/${template_id}`;
+            ? `/my-templates/${collection_name}/${template_id}`
+            : `/${collection_name}/${template_id}`;
           const ownerHasMultiple =
             totalAssets &&
             !isNaN(parseInt(totalAssets)) &&

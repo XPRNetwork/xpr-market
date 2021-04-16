@@ -20,7 +20,7 @@ const EmptyUserContent = ({
     <EmptyContent>
       <Title>No items found</Title>
       <Subtitle>{subtitle}</Subtitle>
-      <Button margin={false} onClick={() => router.push(link)}>
+      <Button margin="0" onClick={() => router.push(link)}>
         {buttonTitle}
       </Button>
     </EmptyContent>
