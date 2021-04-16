@@ -7,26 +7,35 @@ import {
   TransparentBackground,
 } from './AssetFormPopupMenu.styled';
 import { ReactComponent as Ellipsis } from '../../public/ellipsis.svg';
-import { useModalContext, MODAL_TYPES } from '../Provider';
+import { useModalContext, MODAL_TYPES, MintAssetModalProps } from '../Provider';
 import { useScrollLock, useEscapeKeyClose } from '../../hooks';
 
 type Props = {
   transferNFT?: () => void;
   assetIds?: string[];
   saleIds?: string[];
+  isTemplateCreator?: boolean;
 };
 
 const AssetFormPopupMenu = ({
   transferNFT,
   assetIds,
   saleIds,
+  isTemplateCreator,
 }: Props): JSX.Element => {
-  const { openModal } = useModalContext();
+  const { openModal, modalProps } = useModalContext();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const togglePopupMenu = () => setIsOpen(!isOpen);
   const closePopupMenu = () => setIsOpen(false);
   useScrollLock(isOpen);
   useEscapeKeyClose(closePopupMenu);
+
+  const isMintAssetModalHidden = (): boolean => {
+    const { maxEditionSize, editionSize } = modalProps as MintAssetModalProps;
+    const hasMintedMaxSupply =
+      maxEditionSize && editionSize && maxEditionSize === editionSize;
+    return !isTemplateCreator || hasMintedMaxSupply;
+  };
 
   const popupMenuItems = [
     {
@@ -43,6 +52,14 @@ const AssetFormPopupMenu = ({
       onClick: () => {
         setIsOpen(false);
         openModal(MODAL_TYPES.CREATE_MULTIPLE_SALES);
+      },
+    },
+    {
+      isHidden: isMintAssetModalHidden(),
+      name: 'Mint more assets',
+      onClick: () => {
+        setIsOpen(false);
+        openModal(MODAL_TYPES.MINT_ASSET);
       },
     },
     {

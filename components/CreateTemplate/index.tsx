@@ -36,46 +36,55 @@ const CreateTemplate = ({
   const [formError, setFormError] = useState<string>('');
 
   const validateAndProceed = () => {
-    if (
-      !templateName ||
-      !templateUploadedFile ||
-      !templateDescription ||
-      !editionSize
-    ) {
-      const errors = [];
-      if (!templateUploadedFile) {
-        errors.push(
-          'upload a PNG, GIF, JPG, or WEBP image or MP4 video (max 30 MB)'
-        );
-      }
-
-      if (!templateName) {
-        errors.push('set a name');
-      }
-
-      if (!templateDescription) {
-        errors.push('set a description');
-      }
-
-      if (typeof editionSize === 'undefined' || isNaN(parseInt(editionSize))) {
-        errors.push(
-          "set the template's maximum edition size (0 for no maximum edition size)"
-        );
-      }
-
-      if (errors.length === 1) {
-        setFormError(`Please ${errors[0]}.`);
-        return;
-      }
-
-      if (errors.length === 2) {
-        setFormError(`Please ${errors[0]} and ${errors[1]}.`);
-        return;
-      }
-    } else {
-      setFormError('');
-      goToMint();
+    const errors = [];
+    if (!templateUploadedFile) {
+      errors.push(
+        'upload a PNG, GIF, JPG, or WEBP image or MP4 video (max 30 MB)'
+      );
     }
+
+    if (!templateName) {
+      errors.push('set a name');
+    }
+
+    if (!templateDescription) {
+      errors.push('set a description');
+    }
+
+    if (typeof editionSize === 'undefined' || isNaN(parseInt(editionSize))) {
+      errors.push(
+        "set the template's maximum edition size (0 for no maximum edition size)"
+      );
+    }
+
+    if (errors.length === 1) {
+      setFormError(`Please ${errors[0]}.`);
+      return;
+    }
+
+    if (errors.length === 2) {
+      setFormError(`Please ${errors[0]} and ${errors[1]}.`);
+      return;
+    }
+
+    if (errors.length > 2) {
+      const lastErrorIndex = errors.length - 1;
+      let errorMessage = `Please ${errors[0]}`;
+
+      for (let i = 1; i < errors.length; i++) {
+        if (i === lastErrorIndex) {
+          errorMessage += `, and ${errors[i]}.`;
+          break;
+        }
+        errorMessage += `, ${errors[i]}`;
+      }
+
+      setFormError(errorMessage);
+      return;
+    }
+
+    setFormError('');
+    goToMint();
   };
 
   return (

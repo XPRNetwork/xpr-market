@@ -104,7 +104,6 @@ class ProtonJs {
       const [amount] = balance.quantities;
       return amount;
     } catch (err) {
-      console.warn(err);
       return EMPTY_BALANCE;
     }
   };

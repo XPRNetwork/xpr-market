@@ -85,7 +85,7 @@ const MarketPlace = (): JSX.Element => {
 
   useEffect(() => {
     if (currentUser) {
-      router.prefetch(`/collection/${currentUser.actor}`);
+      router.prefetch(`/my-items/${currentUser.actor}`);
     }
   }, []);
 

@@ -58,15 +58,18 @@ const InitialMint = ({
       <InputField
         inputType="number"
         min={1}
+        max={50}
         step={1}
+        mt="8px"
         value={mintAmount}
         setValue={setMintAmount}
-        placeholder="Mint Amount"
-        submit={createNft}
+        placeholder="Enter amount"
+        submit={parseInt(mintAmount) > 50 ? null : createNft}
         checkIfIsValid={(input) => {
-          const numberInput = parseFloat(input as string);
-          const isValid = !isNaN(numberInput) && numberInput >= 1;
-          const errorMessage = 'Initial mint must be at least 1';
+          const numberInput = parseInt(input as string);
+          const isValid =
+            !isNaN(numberInput) && numberInput >= 1 && numberInput <= 50;
+          const errorMessage = 'You can mint 1-50 assets at a time';
           return {
             isValid,
             errorMessage,
@@ -78,7 +81,9 @@ const InitialMint = ({
         Terms of Service &amp; Privacy Policy
       </TermsLink>
       {mintError ? <ErrorMessage>{mintError}</ErrorMessage> : null}
-      <Button onClick={validateAndProceed}>Create NFT</Button>
+      <Button onClick={validateAndProceed} disabled={parseInt(mintAmount) > 50}>
+        Create NFT
+      </Button>
     </>
   );
 };

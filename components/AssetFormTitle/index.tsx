@@ -10,6 +10,7 @@ import {
   CollectionNameButton,
 } from './AssetFormTitle.styled';
 import AssetFormPopupMenu from '../AssetFormPopupMenu';
+import { useAuthContext } from '../Provider';
 import { capitalize } from '../../utils';
 
 type Props = {
@@ -30,10 +31,10 @@ const AssetFormTitle = ({
   saleIds,
 }: Props): JSX.Element => {
   const router = useRouter();
+  const { currentUser } = useAuthContext();
   const isMyTemplate = router.pathname.includes('my-templates');
   const redirectToAuthor = () => router.push(`/my-items/${collectionAuthor}`);
-  const redirectToCollection = () =>
-    router.push(`/collection/${collectionName}`);
+  const redirectToCollection = () => router.push(`/${collectionName}`);
 
   useEffect(() => {
     router.prefetch(`/my-items/${collectionAuthor}`);
@@ -50,7 +51,7 @@ const AssetFormTitle = ({
           src="/icon-monsters.png"
           alt="Crypto Monsters icon"
         />
-        <Title>Crypto {capitalize(collectionName)}</Title>
+        <Title>{capitalize(collectionName)}</Title>
       </CollectionNameButton>
       <NameContainer>
         <Name>{templateName}</Name>
@@ -59,6 +60,9 @@ const AssetFormTitle = ({
             transferNFT={transferNFT}
             assetIds={assetIds}
             saleIds={saleIds}
+            isTemplateCreator={
+              currentUser && collectionAuthor === currentUser.actor
+            }
           />
         )}
       </NameContainer>

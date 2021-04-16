@@ -10,7 +10,7 @@ import {
   Description,
   ErrorMessage,
   Column,
-  ModalButton,
+  HalfButton,
 } from './Modal.styled';
 import InputField from '../InputField';
 import ProtonSDK from '../../services/proton';
@@ -87,7 +87,9 @@ export const TransferModal = (): JSX.Element => {
               };
             }}
           />
-          <ModalButton onClick={transfer}>Transfer</ModalButton>
+          <HalfButton onClick={transfer} margin="12px 0">
+            Transfer
+          </HalfButton>
           <ErrorMessage>{error}</ErrorMessage>
         </Column>
       </ModalBox>

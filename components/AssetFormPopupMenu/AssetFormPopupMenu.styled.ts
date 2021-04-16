@@ -54,10 +54,11 @@ export const MenuItem = styled.li`
   transition: 0.2s;
   color: #0e103c;
   font-size: 16px;
+  outline-color: #752eeb;
 
   :hover,
   :focus-visible {
-    color: #8a9ef5;
+    color: #752eeb;
   }
 
   :first-of-type {

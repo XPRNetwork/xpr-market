@@ -2,7 +2,7 @@ import { ConnectWallet } from '@proton/web-sdk';
 import { LinkSession, Link } from '@proton/link';
 import logoUrl from '../public/logo.svg';
 import proton from './proton-rpc';
-import { DEFAULT_SCHEMA } from '../utils/constants';
+import { DEFAULT_SCHEMA, PRICE_OF_RAM_IN_XPR } from '../utils/constants';
 
 export interface User {
   actor: string;
@@ -59,6 +59,7 @@ interface MintAssetsOptions {
   collection_name: string;
   template_id: string;
   mint_amount: number;
+  mint_fee: number;
 }
 
 interface SetMarketFeeOptions {
@@ -414,11 +415,11 @@ class ProtonSDK {
     const hasEnoughSpecialMintContractRam =
       contractRam >= requiredSpecialMintContractRam;
 
-    // Cost per byte of RAM is 0.0222 XPR
     const accountRamToBuyInXPR =
-      0.0222 * (requiredAccountRam - (accountRam.max - accountRam.used));
+      PRICE_OF_RAM_IN_XPR *
+      (requiredAccountRam - (accountRam.max - accountRam.used));
     const contractRamToBuyInXPR =
-      0.0222 * (requiredSpecialMintContractRam - contractRam);
+      PRICE_OF_RAM_IN_XPR * (requiredSpecialMintContractRam - contractRam);
 
     return [
       hasInitializedStorage
@@ -877,8 +878,9 @@ class ProtonSDK {
     collection_name,
     template_id,
     mint_amount,
+    mint_fee,
   }: MintAssetsOptions): Promise<Response> => {
-    const generateMintAssetAction = () => ({
+    const generateMintAssetAction = (): Action => ({
       account: 'atomicassets',
       name: 'mintasset',
       authorization: [
@@ -903,12 +905,31 @@ class ProtonSDK {
       generateMintAssetAction()
     );
 
+    if (mint_fee > 0) {
+      actions.unshift({
+        account: 'xtokens',
+        name: 'transfer',
+        authorization: [
+          {
+            actor: author,
+            permission: 'active',
+          },
+        ],
+        data: {
+          from: author,
+          to: 'specialmint',
+          quantity: `${mint_fee.toFixed(6)} XUSDC`,
+          memo: 'account',
+        },
+      });
+    }
+
     try {
       if (!this.session) {
         throw new Error('Unable to mint assets without logging in.');
       }
       const result = await this.session.transact(
-        { actions: actions },
+        { actions },
         { broadcast: true }
       );
       return {

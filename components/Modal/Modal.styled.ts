@@ -43,7 +43,7 @@ export const ModalBox = styled(MaxWidth)`
   background-color: #ffffff;
 
   @media (min-width: 600px) {
-    max-width: 408px;
+    width: 416px;
   }
 
   ${breakpoint.tablet`
@@ -73,7 +73,7 @@ export const Description = styled.p<DescriptionProps>`
   font-size: 14px;
   line-height: 24px;
   color: #1a1a1a;
-  margin-bottom: ${({ mb }) => mb || '16px'};
+  margin-bottom: ${({ mb }) => mb || '24px'};
 `;
 
 export const InputLabel = styled(Description).attrs({ as: 'label' })`
@@ -90,9 +90,13 @@ export const LinkDescription = styled(Description)`
   font-size: 12px;
 `;
 
-export const WithdrawInputLabel = styled.p`
+export const MintFeeLabel = styled.p`
   display: flex;
   justify-content: space-between;
+  font-size: 14px;
+  line-height: 24px;
+  color: #333333;
+  margin: 16px 0 24px;
 `;
 
 export const AvailableBalance = styled.span`
@@ -120,7 +124,8 @@ export const ModalButton = styled(StyledButton)`
 `;
 
 export const HalfButton = styled(StyledButton)<HalfButtonProps>`
-  flex: 1;
+  min-width: 144px;
+  align-self: flex-end;
   padding: 11px 16px 13px;
 
   ${({ color }) =>
@@ -142,14 +147,6 @@ export const HalfButton = styled(StyledButton)<HalfButtonProps>`
     `
     pointer-events: none;
     opacity: 0.2;
-  `};
-`;
-
-export const Spacer = styled.div`
-  flex: 1;
-
-  ${breakpoint.tablet`
-    flex: 0;
   `};
 `;
 
