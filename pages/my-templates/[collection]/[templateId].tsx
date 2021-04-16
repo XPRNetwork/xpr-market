@@ -129,6 +129,25 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
   };
 
   useEffect(() => {
+    if (
+      !isLoading &&
+      !isLoadingUser &&
+      collection_name &&
+      templateId &&
+      (!currentUser || !assetIds.length)
+    ) {
+      router.push(`/${collection_name}/${templateId}`);
+    }
+  }, [
+    isLoading,
+    isLoadingUser,
+    collection_name,
+    templateId,
+    currentUser,
+    assetIds,
+  ]);
+
+  useEffect(() => {
     try {
       (async () => {
         const historyId =
