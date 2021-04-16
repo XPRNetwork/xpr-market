@@ -107,7 +107,8 @@ const InputField = ({
       ml={ml}
       mt={mt}
       mb={mb}
-      hasError={!!error}>
+      hasError={!!error}
+      disabled={disabled}>
       <Input
         min={min}
         max={max}

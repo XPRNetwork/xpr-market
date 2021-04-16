@@ -1,6 +1,9 @@
 import { MouseEvent, useState } from 'react';
-import { useAuthContext, useModalContext } from '../Provider';
-import { TransferNFTModalProps } from '../Provider/ModalProvider';
+import {
+  useAuthContext,
+  useModalContext,
+  TransferOrBurnNFTModalProps,
+} from '../Provider';
 import {
   Background,
   ModalBox,
@@ -23,7 +26,7 @@ export const TransferModal = (): JSX.Element => {
     assetId,
     templateMint,
     fetchPageData,
-  } = modalProps as TransferNFTModalProps;
+  } = modalProps as TransferOrBurnNFTModalProps;
   const [recipient, setRecipient] = useState<string>('');
   const [error, setError] = useState<string>('');
 
@@ -70,7 +73,7 @@ export const TransferModal = (): JSX.Element => {
           You can transfer NFTs from your account to another.
         </Description>
         <Column>
-          <InputField value={'#' + templateMint} disabled={true} mb="16px" />
+          <InputField value={'#' + templateMint} disabled mb="16px" />
           <InputField
             value={recipient}
             setValue={setRecipient}

@@ -105,10 +105,20 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
           : parseInt(templateDetails.issued_supply),
       });
 
+      if (assets[0]) {
+        const { asset_id, template_mint } = assets[0];
+        setCurrentAsset(assets[0]);
+        setModalProps((previousModalProps) => ({
+          ...previousModalProps,
+          assetId: asset_id,
+          templateMint: template_mint,
+          saleId: saleData[asset_id] ? saleData[asset_id].saleId : '',
+        }));
+      }
+
       setAssetIds(assetIds);
       setSaleIds(saleIds);
       setTemplateAssets(assets);
-      setCurrentAsset(assets[0]);
       setSaleDataByAssetId(saleData);
       setIsLoading(false);
       setTemplate(templateDetails);
@@ -137,31 +147,26 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
     }
   }, [templateId]);
 
-  const transferNFT = () => {
-    openModal(MODAL_TYPES.TRANSFER);
+  const setCurrentAssetAsModalProps = () => {
     setModalProps((previousModalProps) => ({
       ...previousModalProps,
       assetId: currentAsset.asset_id,
       templateMint: currentAsset.template_mint,
+      saleId: saleDataByAssetId[currentAsset.asset_id]
+        ? saleDataByAssetId[currentAsset.asset_id].saleId
+        : '',
     }));
   };
 
   const createSale = () => {
     openModal(MODAL_TYPES.CREATE_SALE);
-    setModalProps((previousModalProps) => ({
-      ...previousModalProps,
-      assetId: currentAsset.asset_id,
-    }));
+    setCurrentAssetAsModalProps();
   };
 
   const cancelSale = () => {
     openModal(MODAL_TYPES.CANCEL_SALE);
-    setModalProps((previousModalProps) => ({
-      ...previousModalProps,
-      saleId: saleDataByAssetId[currentAsset.asset_id].saleId,
-    }));
+    setCurrentAssetAsModalProps();
   };
-
   const handleButtonClick = isSelectedAssetBeingSold ? cancelSale : createSale;
 
   const buttonText = isSelectedAssetBeingSold ? 'Cancel Sale' : 'Mark for sale';
@@ -191,11 +196,11 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
         error={error}
         image={image}
         currentAsset={currentAsset}
-        transferNFT={transferNFT}
         assetIds={assetIds}
         saleIds={saleIds}
         activeTab={activeTab}
-        setActiveTab={setActiveTab}>
+        setActiveTab={setActiveTab}
+        setCurrentAssetAsModalProps={setCurrentAssetAsModalProps}>
         <AssetFormSell
           description={desc}
           dropdownAssets={templateAssets}

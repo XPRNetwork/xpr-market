@@ -19,6 +19,7 @@ export const MODAL_TYPES = {
   TRANSFER: 'TRANSFER',
   CREATE_COLLECTION: 'CREATE_COLLECTION',
   MINT_ASSET: 'MINT_ASSET',
+  BURN_ASSET: 'BURN_ASSET',
 };
 
 type Props = {
@@ -45,7 +46,7 @@ export interface CreateMultipleSalesModalProps extends GeneralModalProps {
   assetIds: string[];
 }
 
-export interface TransferNFTModalProps extends GeneralModalProps {
+export interface TransferOrBurnNFTModalProps extends GeneralModalProps {
   assetId: string;
   templateMint: string;
 }
@@ -69,7 +70,7 @@ type ModalProps =
   | CancelMultipleSalesModalProps
   | CreateSaleModalProps
   | CreateMultipleSalesModalProps
-  | TransferNFTModalProps
+  | TransferOrBurnNFTModalProps
   | CreateCollectionProps
   | MintAssetModalProps;
 

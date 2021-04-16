@@ -4,3 +4,4 @@ export { CreateSaleModal, CreateMultipleSalesModal } from './CreateSaleModal';
 export { MintAssetModal } from './MintAssetModal';
 export { TransferModal } from './TransferModal';
 export { CreateCollectionModal } from './CreateCollectionModal';
+export { BurnAssetModal } from './BurnAssetModal';

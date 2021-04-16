@@ -7,4 +7,5 @@ export type {
   CreateSaleModalProps,
   CreateMultipleSalesModalProps,
   MintAssetModalProps,
+  TransferOrBurnNFTModalProps,
 } from './ModalProvider';

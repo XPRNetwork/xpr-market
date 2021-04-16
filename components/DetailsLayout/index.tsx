@@ -25,11 +25,11 @@ type Props = {
   sales: Sale[];
   error?: string;
   currentAsset?: Partial<SaleAsset> & Partial<Asset>;
-  transferNFT?: () => void;
   assetIds?: string[];
   saleIds?: string[];
   activeTab: string;
   setActiveTab: Dispatch<SetStateAction<string>>;
+  setCurrentAssetAsModalProps?: () => void;
 };
 
 const AssetImage = ({ image }: { image: string }): JSX.Element => (
@@ -54,11 +54,11 @@ const DetailsLayout = ({
   sales,
   error,
   currentAsset,
-  transferNFT,
   assetIds,
   saleIds,
   activeTab,
   setActiveTab,
+  setCurrentAssetAsModalProps,
 }: Props): JSX.Element => {
   return (
     <Container>
@@ -69,9 +69,9 @@ const DetailsLayout = ({
             templateName={templateName}
             collectionName={collectionName}
             collectionAuthor={collectionAuthor}
-            transferNFT={transferNFT}
             saleIds={saleIds}
             assetIds={assetIds}
+            setCurrentAssetAsModalProps={setCurrentAssetAsModalProps}
           />
           {children}
         </Column>
