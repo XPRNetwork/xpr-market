@@ -82,6 +82,11 @@ export const Text = styled.span`
   font-size: 16px;
   line-height: 24px;
   color: #1a1a1a;
+  text-align: left;
+  max-width: 190px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 export const CollectionNameButton = styled.button<CollectionNameButtonProps>`

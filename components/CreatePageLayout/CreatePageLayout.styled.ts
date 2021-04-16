@@ -2,9 +2,10 @@ import styled from 'styled-components';
 
 export const Container = styled.section`
   max-width: 60%;
-  min-width: 784px;
+  min-width: 864px;
   width: 100%;
   margin: 0 auto;
+  margin-top: 40px;
 `;
 
 export const Row = styled.div`
@@ -25,14 +26,30 @@ export const RightColumn = styled.div`
   flex-direction: column;
   width: 100%;
   max-width: 320px;
-  margin: 138px 0 0 20px;
+  margin-left: 120px;
+`;
+
+export const ElementTitle = styled.h2`
+  font-family: CircularStdBold;
+  font-size: 16px;
+  line-height: 24px;
+  color: #1a1a1a;
+  margin-bottom: 16px;
+`;
+
+export const Step = styled.h4`
+  font-family: CircularStdBold;
+  font-size: 10px;
+  line-height: 1.6;
+  color: #752eeb;
+  text-transform: uppercase;
 `;
 
 export const Title = styled.h1`
   font-size: 28px;
   line-height: 40px;
   color: #1a1a1a;
-  margin-top: 40px;
+  margin-top: 8px;
 `;
 
 export const SubTitle = styled.p`
@@ -41,22 +58,7 @@ export const SubTitle = styled.p`
   color: #333333;
   margin-top: 8px;
   max-width: 424px;
-`;
-
-export const ElementTitle = styled.h2`
-  font-size: 18px;
-  line-height: 24px;
-  color: #1a1a1a;
-  margin-top: 32px;
-  margin-bottom: 16px;
-`;
-
-export const EmptyBox2 = styled.div`
-  width: 136px;
-  height: 136px;
-  background-color: #e6e6e6;
-  margin-right: 8px;
-  border-radius: 8px;
+  margin-bottom: 24px;
 `;
 
 export const Terms = styled.p`
@@ -72,4 +74,10 @@ export const TermsLink = styled.a`
   color: #752eeb;
   cursor: pointer;
   margin-bottom: 24px;
+`;
+
+export const ErrorMessage = styled.p`
+  font-size: 14px;
+  color: #f94e6c;
+  margin: 10px 0;
 `;
