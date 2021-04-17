@@ -31,8 +31,10 @@ export const AssetFormSell = ({
   setCurrentAsset,
 }: Props): JSX.Element => {
   useEffect(() => {
-    handleDropdownSelect(dropdownAssets[0].asset_id);
-  }, []);
+    if (dropdownAssets[0]) {
+      handleDropdownSelect(dropdownAssets[0].asset_id);
+    }
+  }, [dropdownAssets]);
 
   const handleDropdownSelect = (id: string) => {
     const dropdownAsset = dropdownAssets.find((asset) => {
