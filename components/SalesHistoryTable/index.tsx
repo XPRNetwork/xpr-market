@@ -95,9 +95,9 @@ const SalesHistoryTable = ({
   const { isMobile } = useWindowSize();
 
   useEffect(() => {
+    setIsLoading(true);
     setRenderedData(tableData);
     setPrefetchPageNumber(2);
-    setIsLoading(true);
   }, [tableData]);
 
   useEffect(() => {
@@ -186,6 +186,14 @@ const SalesHistoryTable = ({
     await prefetchNextPage();
   };
 
+  const noDataMessage =
+    activeTab === TAB_TYPES.GLOBAL ||
+    !(asset.templateMint || asset.template_mint)
+      ? 'No Recent Sales'
+      : `No Recent Sales for Serial #${
+          asset.templateMint || asset.template_mint
+        }`;
+
   return (
     <>
       <StyledTable aria-label="sales-history-table" role="table">
@@ -207,9 +215,7 @@ const SalesHistoryTable = ({
             }
             loading={isLoading}
             noData={!renderedData.length}
-            noDataMessage={`No Recent Sales for Serial #${
-              asset.templateMint || asset.template_mint
-            }`}
+            noDataMessage={noDataMessage}
             columns={tableHeaders.length}>
             {getTableContent()}
           </TableContentWrapper>
