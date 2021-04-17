@@ -31,6 +31,7 @@ const AssetFormPopupMenu = ({
   useEscapeKeyClose(closePopupMenu);
 
   const isMintAssetModalHidden = (): boolean => {
+    if (!modalProps) return true;
     const { maxEditionSize, editionSize } = modalProps as MintAssetModalProps;
     const hasMintedMaxSupply =
       maxEditionSize && editionSize && maxEditionSize === editionSize;

@@ -167,7 +167,7 @@ const Collection = (): JSX.Element => {
       return (
         <EmptyUserContent
           subtitle={
-            chainAccount !== currentUser.actor
+            currentUser && chainAccount !== currentUser.actor
               ? 'Looks like this user has not bought any NFT’s yet.'
               : 'Looks like you have not bought any NFT’s yet. Come back when you do!'
           }

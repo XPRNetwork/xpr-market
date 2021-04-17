@@ -57,6 +57,7 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
   ] = useState<FullSaleDataByAssetId>({});
   const [template, setTemplate] = useState<Template>(emptyTemplateDetails);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoadingSales, setIsLoadingSales] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
   const [currentAsset, setCurrentAsset] = useState<Partial<Asset>>({});
   const [assetIds, setAssetIds] = useState<string[]>([]);
@@ -120,7 +121,6 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
       setSaleIds(saleIds);
       setTemplateAssets(assets);
       setSaleDataByAssetId(saleData);
-      setIsLoading(false);
       setTemplate(templateDetails);
       setIsLoading(false);
     } catch (e) {
@@ -129,8 +129,30 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
   };
 
   useEffect(() => {
+    (async () => {
+      setIsLoadingSales(true);
+      try {
+        const historyId =
+          activeTab === TAB_TYPES.ITEM ? currentAsset.asset_id : templateId;
+        const sales = await getSalesHistory({ id: historyId, type: activeTab });
+        setSales(sales);
+      } catch (e) {
+        setError(e.message);
+      }
+      setIsLoadingSales(false);
+    })();
+  }, [currentAsset, activeTab]);
+
+  useEffect(() => {
+    if (templateId) {
+      fetchPageData();
+    }
+  }, [templateId]);
+
+  useEffect(() => {
     if (
       !isLoading &&
+      !isLoadingSales &&
       !isLoadingUser &&
       collection_name &&
       templateId &&
@@ -140,31 +162,13 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
     }
   }, [
     isLoading,
+    isLoadingSales,
     isLoadingUser,
     collection_name,
     templateId,
     currentUser,
     assetIds,
   ]);
-
-  useEffect(() => {
-    try {
-      (async () => {
-        const historyId =
-          activeTab === TAB_TYPES.ITEM ? currentAsset.asset_id : templateId;
-        const sales = await getSalesHistory({ id: historyId, type: activeTab });
-        setSales(sales);
-      })();
-    } catch (e) {
-      setError(e.message);
-    }
-  }, [currentAsset, activeTab]);
-
-  useEffect(() => {
-    if (templateId) {
-      fetchPageData();
-    }
-  }, [templateId]);
 
   const setCurrentAssetAsModalProps = () => {
     setModalProps((previousModalProps) => ({
@@ -201,7 +205,7 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
       );
     }
 
-    if (isLoading || isLoadingUser) {
+    if (isLoading || isLoadingSales || isLoadingUser) {
       return <LoadingPage />;
     }
 
