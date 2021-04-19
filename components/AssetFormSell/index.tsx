@@ -1,4 +1,4 @@
-import { useEffect, Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction } from 'react';
 import Button from '../Button';
 import AssetDescription from '../AssetDescription';
 import {
@@ -30,12 +30,6 @@ export const AssetFormSell = ({
   handleButtonClick,
   setCurrentAsset,
 }: Props): JSX.Element => {
-  useEffect(() => {
-    if (dropdownAssets[0]) {
-      handleDropdownSelect(dropdownAssets[0].asset_id);
-    }
-  }, [dropdownAssets]);
-
   const handleDropdownSelect = (id: string) => {
     const dropdownAsset = dropdownAssets.find((asset) => {
       return asset.asset_id === id;

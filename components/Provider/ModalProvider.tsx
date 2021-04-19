@@ -40,10 +40,17 @@ export interface CancelMultipleSalesModalProps extends GeneralModalProps {
 
 export interface CreateSaleModalProps extends GeneralModalProps {
   assetId: string;
+  accountRam: number;
+  conversionRate: number;
+  setIsModalWithFeeOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 export interface CreateMultipleSalesModalProps extends GeneralModalProps {
   assetIds: string[];
+  accountRam: number;
+  conversionRate: number;
+  collection: string;
+  setIsModalWithFeeOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 export interface TransferOrBurnNFTModalProps extends GeneralModalProps {
@@ -62,6 +69,9 @@ export interface MintAssetModalProps extends GeneralModalProps {
   templateId: string;
   maxEditionSize: number;
   editionSize: number;
+  accountRam: number;
+  conversionRate: number;
+  setIsModalWithFeeOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 type ModalProps =

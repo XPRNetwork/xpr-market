@@ -51,3 +51,8 @@ export const DEFAULT_SCHEMA = {
   audio: 'string',
   video: 'string',
 };
+export const RAM_COSTS = {
+  CREATE_COLLECTION_SCHEMA_TEMPLATE: 2000,
+  MINT_ASSET: 151,
+  LIST_SALE: 768,
+};

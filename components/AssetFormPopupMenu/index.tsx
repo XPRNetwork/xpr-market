@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   MenuContainer,
   PopupMenuButton,
@@ -7,8 +7,14 @@ import {
   TransparentBackground,
 } from './AssetFormPopupMenu.styled';
 import { ReactComponent as Ellipsis } from '../../public/ellipsis.svg';
-import { useModalContext, MODAL_TYPES, MintAssetModalProps } from '../Provider';
+import {
+  useModalContext,
+  useAuthContext,
+  MODAL_TYPES,
+  MintAssetModalProps,
+} from '../Provider';
 import { useScrollLock, useEscapeKeyClose } from '../../hooks';
+import proton from '../../services/proton-rpc';
 
 type Props = {
   setCurrentAssetAsModalProps?: () => void;
@@ -23,12 +29,27 @@ const AssetFormPopupMenu = ({
   saleIds,
   isTemplateCreator,
 }: Props): JSX.Element => {
-  const { openModal, modalProps } = useModalContext();
+  const {
+    currentUser: { actor },
+  } = useAuthContext();
+  const { openModal, modalProps, setModalProps } = useModalContext();
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isModalWithFeeOpen, setIsModalWithFeeOpen] = useState<boolean>(false);
   const togglePopupMenu = () => setIsOpen(!isOpen);
   const closePopupMenu = () => setIsOpen(false);
+  const [accountRam, setAccountRam] = useState<number>(0);
+  const [conversionRate, setConversionRate] = useState<number>(0);
   useScrollLock(isOpen);
   useEscapeKeyClose(closePopupMenu);
+
+  useEffect(() => {
+    (async () => {
+      const { max, used } = await proton.getAccountRam(actor);
+      const rate = await proton.getXPRtoXUSDCConversionRate();
+      setAccountRam(max - used);
+      setConversionRate(rate);
+    })();
+  }, [actor, isModalWithFeeOpen]);
 
   const isMintAssetModalHidden = (): boolean => {
     if (!modalProps) return true;
@@ -44,7 +65,14 @@ const AssetFormPopupMenu = ({
       name: 'Mark all for sale',
       onClick: () => {
         setIsOpen(false);
+        setIsModalWithFeeOpen(true);
         openModal(MODAL_TYPES.CREATE_MULTIPLE_SALES);
+        setModalProps((previousModalProps) => ({
+          ...previousModalProps,
+          accountRam,
+          conversionRate,
+          setIsModalWithFeeOpen,
+        }));
       },
     },
     {
@@ -52,7 +80,14 @@ const AssetFormPopupMenu = ({
       name: 'Mint more assets',
       onClick: () => {
         setIsOpen(false);
+        setIsModalWithFeeOpen(true);
         openModal(MODAL_TYPES.MINT_ASSET);
+        setModalProps((previousModalProps) => ({
+          ...previousModalProps,
+          accountRam,
+          conversionRate,
+          setIsModalWithFeeOpen,
+        }));
       },
     },
     {

@@ -13,11 +13,11 @@ import {
   Title,
   Description,
   HalfButton,
-  MintFeeLabel,
+  FeeLabel,
 } from './Modal.styled';
-import { PRICE_OF_RAM_IN_XPR } from '../../utils/constants';
+import { RAM_COSTS } from '../../utils/constants';
+import { calculateFee } from '../../utils';
 import ProtonSDK from '../../services/proton';
-import proton from '../../services/proton-rpc';
 import { ReactComponent as CloseIcon } from '../../public/close.svg';
 
 export const MintAssetModal = (): JSX.Element => {
@@ -30,12 +30,13 @@ export const MintAssetModal = (): JSX.Element => {
     maxEditionSize,
     editionSize,
     collectionName,
+    accountRam,
+    conversionRate,
     fetchPageData,
+    setIsModalWithFeeOpen,
   } = modalProps as MintAssetModalProps;
   const [amount, setAmount] = useState<string>('');
-  const [mintFee, setMintFee] = useState<string>('');
-  const [accountRam, setAccountRam] = useState<number>(0);
-  const [conversionRate, setConversionRate] = useState<number>(0);
+  const [mintFee, setMintFee] = useState<number>(0);
   const possibleMintAmount = maxEditionSize - editionSize;
   const maxMintAmountForSession =
     possibleMintAmount < 50 ? possibleMintAmount : 50;
@@ -44,47 +45,35 @@ export const MintAssetModal = (): JSX.Element => {
   }`;
 
   useEffect(() => {
-    (async () => {
-      const { max, used } = await proton.getAccountRam(actor);
-      const rate = await proton.getXPRtoXUSDCConversionRate();
-      setAccountRam(max - used);
-      setConversionRate(rate);
-    })();
-  }, []);
-
-  useEffect(() => {
-    (async () => {
-      const requiredRam = parseInt(amount) * 151 - accountRam;
-      if (requiredRam <= 0) {
-        setMintFee('0.00 XUSDC');
-      } else {
-        const calculatedFee =
-          PRICE_OF_RAM_IN_XPR * requiredRam * conversionRate;
-        const mintFee = isNaN(calculatedFee)
-          ? '0.00'
-          : Math.ceil(calculatedFee * 100) / 100;
-        setMintFee(`${mintFee} XUSDC`);
-      }
-    })();
-  }, [amount]);
+    const numAssets = parseInt(amount);
+    const fee = calculateFee({
+      numAssets: isNaN(numAssets) ? 0 : numAssets,
+      accountRam,
+      ramCost: RAM_COSTS.MINT_ASSET,
+      conversionRate,
+    });
+    setMintFee(isNaN(fee) ? 0 : fee);
+  }, [amount, accountRam, conversionRate]);
 
   const mintNfts = async () => {
-    const fee = mintFee.split(' ')[0];
-    const mint_fee = isNaN(parseFloat(fee)) ? 0 : parseFloat(fee);
+    try {
+      const result = await ProtonSDK.mintAssets({
+        author: actor,
+        collection_name: collectionName,
+        template_id: templateId,
+        mint_amount: parseInt(amount),
+        mint_fee: mintFee,
+      });
 
-    const result = await ProtonSDK.mintAssets({
-      author: actor,
-      collection_name: collectionName,
-      template_id: templateId,
-      mint_amount: parseInt(amount),
-      mint_fee,
-    });
-
-    if (result.success) {
-      closeModal();
-      setTimeout(() => {
-        fetchPageData();
-      }, 1000);
+      if (result.success) {
+        closeModal();
+        setIsModalWithFeeOpen(false);
+        setTimeout(() => {
+          fetchPageData();
+        }, 1000);
+      }
+    } catch (err) {
+      console.warn(err);
     }
   };
 
@@ -93,6 +82,14 @@ export const MintAssetModal = (): JSX.Element => {
       closeModal();
     }
   };
+
+  const getFee = () =>
+    mintFee && mintFee !== 0 ? (
+      <FeeLabel>
+        <span>Mint Fee</span>
+        <span>{mintFee.toFixed(2)} XUSDC</span>
+      </FeeLabel>
+    ) : null;
 
   return (
     <Background onClick={handleBackgroundClick}>
@@ -112,17 +109,19 @@ export const MintAssetModal = (): JSX.Element => {
         <InputField
           inputType="number"
           min={1}
-          max={50}
+          max={maxMintAmountForSession}
           step={1}
           mt="8px"
           value={amount}
           setValue={setAmount}
           placeholder="Enter amount"
-          submit={parseInt(amount) > 50 ? null : mintNfts}
+          submit={parseInt(amount) > maxMintAmountForSession ? null : mintNfts}
           checkIfIsValid={(input) => {
             const numberInput = parseInt(input as string);
             const isValid =
-              !isNaN(numberInput) && numberInput >= 1 && numberInput <= 50;
+              !isNaN(numberInput) &&
+              numberInput >= 1 &&
+              numberInput <= maxMintAmountForSession;
             const errorMessage = `You can mint 1-${maxMintAmountForSession} assets in this mint session`;
             return {
               isValid,
@@ -130,13 +129,10 @@ export const MintAssetModal = (): JSX.Element => {
             };
           }}
         />
-        <MintFeeLabel>
-          <span>Mint Fee</span>
-          <span>{mintFee}</span>
-        </MintFeeLabel>
+        {getFee()}
         <HalfButton
           onClick={mintNfts}
-          margin="0 0 20px"
+          margin={mintFee !== 0 ? '0 0 20px' : '24px 0 20px'}
           disabled={
             isNaN(parseInt(amount)) ||
             parseInt(amount) > maxMintAmountForSession
