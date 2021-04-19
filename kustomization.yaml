@@ -1,7 +1,0 @@
-commonLabels:
-  app: nft-demo
-resources:
-- deployment.yaml
-- certificate-storage.yaml
-- ingress-tls.yaml
-- letsencrypt-ssl-cert-issuer.yaml
