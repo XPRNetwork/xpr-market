@@ -1,5 +1,6 @@
-import { useEffect, Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction } from 'react';
 import Button from '../Button';
+import AssetDescription from '../AssetDescription';
 import {
   DropdownMenu,
   General,
@@ -9,6 +10,7 @@ import {
 import { Asset } from '../../services/assets';
 
 type Props = {
+  description: string;
   dropdownAssets: Asset[];
   lowestPrice: string;
   maxSupply: string;
@@ -19,6 +21,7 @@ type Props = {
 };
 
 export const AssetFormSell = ({
+  description,
   dropdownAssets,
   lowestPrice,
   maxSupply,
@@ -27,10 +30,6 @@ export const AssetFormSell = ({
   handleButtonClick,
   setCurrentAsset,
 }: Props): JSX.Element => {
-  useEffect(() => {
-    handleDropdownSelect(dropdownAssets[0].asset_id);
-  }, []);
-
   const handleDropdownSelect = (id: string) => {
     const dropdownAsset = dropdownAssets.find((asset) => {
       return asset.asset_id === id;
@@ -39,7 +38,8 @@ export const AssetFormSell = ({
   };
 
   return (
-    <section>
+    <>
+      {description ? <AssetDescription description={description} /> : ''}
       <Row>
         <General>Lowest Market Price</General>
         <General>Edition Size</General>
@@ -64,13 +64,12 @@ export const AssetFormSell = ({
           ))}
       </DropdownMenu>
       <Button
+        cancel={buttonText.toLowerCase().includes('cancel')}
         fullWidth
-        filled={!buttonText.toLowerCase().includes('cancel')}
-        rounded
         onClick={handleButtonClick}>
         {buttonText}
       </Button>
-    </section>
+    </>
   );
 };
 

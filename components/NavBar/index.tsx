@@ -3,12 +3,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Button from '../Button';
+import SearchInput from '../SearchInput';
 import {
   Background,
   Nav,
   Section,
-  UserMenuButton,
-  UserMenuText,
   AvatarContainer,
   ImageLink,
   DropdownLink,
@@ -21,9 +20,15 @@ import {
   Name,
   Subtitle,
   Balance,
+  OpenSearchButton,
+  UserMenuButton,
+  UserMenuText,
+  CloseIconButton,
 } from './NavBar.styled';
 import { useScrollLock, useEscapeKeyClose } from '../../hooks';
 import { useAuthContext } from '../Provider';
+import { ReactComponent as MagnifyingIcon } from '../../public/icon-light-search-24-px.svg';
+import { ReactComponent as CloseIcon } from '../../public/icon-light-close-16-px.svg';
 
 type DropdownProps = {
   isOpen: boolean;
@@ -31,7 +36,6 @@ type DropdownProps = {
 };
 
 const Logo = (): JSX.Element => {
-  const { currentUser } = useAuthContext();
   return (
     <Link href="/" passHref>
       <ImageLink>
@@ -42,17 +46,17 @@ const Logo = (): JSX.Element => {
             width={143}
             height={32}
             alt="logo"
-            src="/logo@3x.png"
+            src="/logo-colored@3x.png"
           />
         </DesktopIcon>
         <MobileIcon>
           <Image
             priority
             layout="fixed"
-            width={currentUser ? 143 : 32}
-            height={32}
+            width={30}
+            height={33}
             alt="logo"
-            src={currentUser ? '/logo@3x.png' : '/logo.svg'}
+            src="/logo.svg"
           />
         </MobileIcon>
       </ImageLink>
@@ -73,9 +77,9 @@ const UserAvatar = ({ isOpen, avatar, toggleNavDropdown }) => {
   );
 
   const mobileNavbarIcon = isOpen ? (
-    <AvatarContainer>
-      <Image priority layout="fill" alt="close" src="/x.svg" />
-    </AvatarContainer>
+    <CloseIconButton>
+      <CloseIcon />
+    </CloseIconButton>
   ) : (
     currentUserAvatar
   );
@@ -99,13 +103,13 @@ const Dropdown = ({ isOpen, closeNavDropdown }: DropdownProps): JSX.Element => {
 
   const routes = [
     {
-      name: 'My NFTs',
-      path: `/my-nfts/${currentUser ? currentUser.actor : ''}`,
+      name: 'Explore',
+      path: '/',
       onClick: closeNavDropdown,
     },
     {
-      name: 'Marketplace',
-      path: '/',
+      name: 'My items',
+      path: `/my-items/${currentUser ? currentUser.actor : ''}`,
       onClick: closeNavDropdown,
     },
     {
@@ -141,18 +145,23 @@ const Dropdown = ({ isOpen, closeNavDropdown }: DropdownProps): JSX.Element => {
 };
 
 const DesktopNavRoutes = () => {
-  const router = useRouter();
   const { currentUser } = useAuthContext();
+  const router = useRouter();
 
   const routes = [
     {
-      name: 'Marketplace',
+      name: 'Explore',
       path: '/',
       isHidden: false,
     },
     {
-      name: "My NFT's",
-      path: `/my-nfts/${currentUser ? currentUser.actor : ''}`,
+      name: 'My items',
+      path: `/my-items/${currentUser ? currentUser.actor : ''}`,
+      isHidden: !currentUser,
+    },
+    {
+      name: 'Create',
+      path: `/create`,
       isHidden: !currentUser,
     },
   ];
@@ -175,6 +184,7 @@ const NavBar = (): JSX.Element => {
   const { currentUser, login } = useAuthContext();
   const [isOpen, setIsOpen] = useState(false);
   const [isLoginDisabled, setIsLoginDisabled] = useState<boolean>(false);
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState<boolean>(false);
   useScrollLock(isOpen);
 
   const toggleNavDropdown = () => setIsOpen(!isOpen);
@@ -188,27 +198,36 @@ const NavBar = (): JSX.Element => {
     setIsLoginDisabled(false);
   };
 
+  const mobileSearchHiddenNavItems = isMobileSearchOpen ? null : (
+    <>
+      <OpenSearchButton onClick={() => setIsMobileSearchOpen(true)}>
+        <MagnifyingIcon />
+      </OpenSearchButton>
+      {currentUser && currentUser.avatar ? (
+        <UserAvatar
+          isOpen={isOpen}
+          avatar={currentUser.avatar}
+          toggleNavDropdown={toggleNavDropdown}
+        />
+      ) : (
+        <Button disabled={isLoginDisabled} onClick={connectWallet}>
+          Connect Wallet
+        </Button>
+      )}
+    </>
+  );
+
   return (
     <Background>
       <Nav>
         <Logo />
+        <SearchInput
+          isMobileSearchOpen={isMobileSearchOpen}
+          closeMobileSearch={() => setIsMobileSearchOpen(false)}
+        />
         <Section>
           <DesktopNavRoutes />
-          {currentUser && currentUser.avatar ? (
-            <UserAvatar
-              isOpen={isOpen}
-              avatar={currentUser.avatar}
-              toggleNavDropdown={toggleNavDropdown}
-            />
-          ) : (
-            <Button
-              rounded
-              filled
-              disabled={isLoginDisabled}
-              onClick={connectWallet}>
-              Connect Wallet
-            </Button>
-          )}
+          {mobileSearchHiddenNavItems}
         </Section>
         <Dropdown isOpen={isOpen} closeNavDropdown={closeNavDropdown} />
         <GradientBackground isOpen={isOpen} onClick={closeNavDropdown} />

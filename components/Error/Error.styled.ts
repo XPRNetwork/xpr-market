@@ -10,7 +10,7 @@ export const Container = styled.section`
 `;
 
 export const QuestionIcon = styled.div`
-  font-family: GilroySemiBold;
+  font-family: CircularStdBold;
   font-size: 50px;
   width: 94px;
   height: 94px;
@@ -27,7 +27,7 @@ export const QuestionIcon = styled.div`
 `;
 
 export const Text = styled.p`
-  font-family: GilroySemiBold;
+  font-family: CircularStdBold;
   font-size: 18px;
   line-height: 24px;
   color: #0e103c;

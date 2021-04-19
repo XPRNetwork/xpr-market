@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import Button from '../Button';
+import AssetDescription from '../AssetDescription';
 import { useAuthContext } from '../Provider';
 import {
   ErrorMessage,
@@ -11,6 +12,7 @@ import {
 import { SaleAsset } from '../../services/sales';
 
 type Props = {
+  description: string;
   dropdownAssets: SaleAsset[];
   lowestPrice: string;
   maxSupply: string;
@@ -28,6 +30,7 @@ type Props = {
 };
 
 export const AssetFormBuy = ({
+  description,
   dropdownAssets,
   lowestPrice,
   maxSupply,
@@ -76,7 +79,8 @@ export const AssetFormBuy = ({
   };
 
   return (
-    <section>
+    <>
+      {description ? <AssetDescription description={description} /> : ''}
       <Row>
         <General>Lowest Market Price</General>
         <General>Edition Size</General>
@@ -85,7 +89,6 @@ export const AssetFormBuy = ({
         <Amount>{lowestPrice || 'None'}</Amount>
         <Amount>{maxSupply}</Amount>
       </Row>
-      <General>Serial number</General>
       <DropdownMenu
         name="Available Assets For Sale"
         value={saleId}
@@ -100,11 +103,11 @@ export const AssetFormBuy = ({
             </option>
           ))}
       </DropdownMenu>
-      <Button fullWidth filled rounded onClick={handleButtonClick}>
+      <Button fullWidth onClick={handleButtonClick}>
         {buttonText}
       </Button>
       {purchasingError ? <ErrorMessage>{purchasingError}</ErrorMessage> : null}
-    </section>
+    </>
   );
 };
 

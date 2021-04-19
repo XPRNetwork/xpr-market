@@ -5,7 +5,7 @@ import Grid from '../components/Grid';
 import PaginationButton from '../components/PaginationButton';
 import ErrorComponent from '../components/Error';
 import LoadingPage from '../components/LoadingPage';
-import { useAuthContext } from '../components/Provider';
+import ExploreCard from '../components/ExploreCard';
 import { Title } from '../styles/Title.styled';
 import {
   Template,
@@ -14,10 +14,12 @@ import {
   getLowestPricesForAllCollectionTemplates,
 } from '../services/templates';
 import { DEFAULT_COLLECTION, PAGINATION_LIMIT } from '../utils/constants';
+import Banner from '../components/Banner';
+import { MODAL_TYPES, useAuthContext } from '../components/Provider';
 
 const MarketPlace = (): JSX.Element => {
   const router = useRouter();
-  const { currentUser } = useAuthContext();
+  const { currentUser, isLoadingUser } = useAuthContext();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [lowestPrices, setLowestPrices] = useState<{ [id: string]: string }>(
     {}
@@ -29,13 +31,10 @@ const MarketPlace = (): JSX.Element => {
   const [prefetchPageNumber, setPrefetchPageNumber] = useState<number>(2);
   const [isLoadingNextPage, setIsLoadingNextPage] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string>('');
-  const [collectionType, setCollectionType] = useState<string>(
-    DEFAULT_COLLECTION
-  );
 
   const prefetchNextPage = async () => {
     const prefetchedResult = await getTemplatesByCollection({
-      type: collectionType,
+      type: DEFAULT_COLLECTION,
       page: prefetchPageNumber,
     });
     setPrefetchedTemplates(prefetchedResult as Template[]);
@@ -63,11 +62,13 @@ const MarketPlace = (): JSX.Element => {
     (async () => {
       try {
         const lowestPricesResult = await getLowestPricesForAllCollectionTemplates(
-          { type: collectionType }
+          { type: DEFAULT_COLLECTION }
         );
         setLowestPrices(lowestPricesResult);
 
-        const result = await getTemplatesByCollection({ type: collectionType });
+        const result = await getTemplatesByCollection({
+          type: DEFAULT_COLLECTION,
+        });
         const templatesWithLowestPrice = formatTemplatesWithPriceData(
           result,
           lowestPricesResult
@@ -84,12 +85,12 @@ const MarketPlace = (): JSX.Element => {
 
   useEffect(() => {
     if (currentUser) {
-      router.prefetch(`/collection/${currentUser.actor}`);
+      router.prefetch(`/my-items/${currentUser.actor}`);
     }
   }, []);
 
   const getContent = () => {
-    if (isLoading) {
+    if (isLoading || isLoadingUser) {
       return <LoadingPage />;
     }
 
@@ -111,7 +112,7 @@ const MarketPlace = (): JSX.Element => {
 
     return (
       <>
-        <Grid isLoading={isLoading} items={renderedTemplates} />
+        <Grid items={renderedTemplates} />
         <PaginationButton
           onClick={showNextPage}
           isHidden={renderedTemplates.length < PAGINATION_LIMIT}
@@ -124,6 +125,8 @@ const MarketPlace = (): JSX.Element => {
 
   return (
     <PageLayout title="MarketPlace">
+      <Banner modalType={MODAL_TYPES.CLAIM} />
+      <ExploreCard />
       <Title>MarketPlace</Title>
       {getContent()}
     </PageLayout>

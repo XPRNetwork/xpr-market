@@ -7,8 +7,6 @@ import {
   CloseIconContainer,
   Title,
   Description,
-  Row,
-  Spacer,
   HalfButton,
 } from './Modal.styled';
 import ProtonSDK from '../../services/proton';
@@ -65,12 +63,7 @@ export const ClaimBalanceModal = (): JSX.Element => {
           Congratulations, You sold {formatPrice(atomicMarketBalance)} of NFTs.
           Claim them now!
         </Description>
-        <Row>
-          <Spacer />
-          <HalfButton rounded filled onClick={withdraw}>
-            Claim Now
-          </HalfButton>
-        </Row>
+        <HalfButton onClick={withdraw}>Claim Now</HalfButton>
       </ModalBox>
     </Background>
   );

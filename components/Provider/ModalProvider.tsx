@@ -7,6 +7,7 @@ import {
   SetStateAction,
 } from 'react';
 import { useScrollLock } from '../../hooks';
+import { CarouselCollection, NewCollection } from '../CollectionsCarousel';
 
 export const MODAL_TYPES = {
   HIDDEN: 'HIDDEN',
@@ -15,37 +16,73 @@ export const MODAL_TYPES = {
   CREATE_MULTIPLE_SALES: 'CREATE_MULTIPLE_SALES',
   CANCEL_SALE: 'CANCEL_SALE',
   CANCEL_MULTIPLE_SALES: 'CANCEL_MULTIPLE_SALES',
+  TRANSFER: 'TRANSFER',
+  CREATE_COLLECTION: 'CREATE_COLLECTION',
+  MINT_ASSET: 'MINT_ASSET',
+  BURN_ASSET: 'BURN_ASSET',
 };
 
 type Props = {
   children: ReactNode;
 };
 
-interface SaleModalProps {
+export interface GeneralModalProps {
   fetchPageData: () => Promise<void>;
 }
 
-export interface CancelSaleModalProps extends SaleModalProps {
+export interface CancelSaleModalProps extends GeneralModalProps {
   saleId: string;
 }
 
-export interface CancelMultipleSalesModalProps extends SaleModalProps {
+export interface CancelMultipleSalesModalProps extends GeneralModalProps {
   saleIds: string[];
 }
 
-export interface CreateSaleModalProps extends SaleModalProps {
+export interface CreateSaleModalProps extends GeneralModalProps {
   assetId: string;
+  accountRam: number;
+  conversionRate: number;
+  setIsModalWithFeeOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-export interface CreateMultipleSalesModalProps extends SaleModalProps {
+export interface CreateMultipleSalesModalProps extends GeneralModalProps {
   assetIds: string[];
+  accountRam: number;
+  conversionRate: number;
+  collection: string;
+  setIsModalWithFeeOpen: Dispatch<SetStateAction<boolean>>;
+}
+
+export interface TransferOrBurnNFTModalProps extends GeneralModalProps {
+  assetId: string;
+  templateMint: string;
+}
+
+export interface CreateCollectionProps {
+  setNewCollection: Dispatch<SetStateAction<NewCollection>>;
+  setSelectedCollection: Dispatch<SetStateAction<CarouselCollection>>;
+  setIsUncreatedCollectionSelected: Dispatch<SetStateAction<boolean>>;
+}
+
+export interface MintAssetModalProps extends GeneralModalProps {
+  collectionName: string;
+  templateId: string;
+  maxEditionSize: number;
+  editionSize: number;
+  accountRam: number;
+  conversionRate: number;
+  setIsModalWithFeeOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 type ModalProps =
+  | GeneralModalProps
   | CancelSaleModalProps
   | CancelMultipleSalesModalProps
   | CreateSaleModalProps
-  | CreateMultipleSalesModalProps;
+  | CreateMultipleSalesModalProps
+  | TransferOrBurnNFTModalProps
+  | CreateCollectionProps
+  | MintAssetModalProps;
 
 type ModalContextValue = {
   modalType: string;

@@ -7,29 +7,41 @@ export const NameContainer = styled.div`
 
 export const Name = styled.h1`
   font-size: 40px;
-  line-height: 48px;
-  font-family: GilroySemiBold;
-  margin-bottom: 8px;
+  line-height: 56px;
 `;
 
 export const General = styled.p`
-  color: #7578b5;
-  font-size: 14px;
+  color: #808080;
+  font-size: 12px;
   line-height: 24px;
 `;
 
 export const Title = styled(General)`
   margin-left: 8px;
-  color: #0e103c;
+  color: #1a1a1a;
+  font-size: 16px;
+`;
+
+export const AuthorText = styled(General)`
+  margin: 8px 0 28px;
 `;
 
 export const Author = styled(General).attrs({ as: 'a' })`
-  color: #8a9ef5;
+  color: #752eeb;
   cursor: pointer;
 `;
 
-export const CollectionIconContainer = styled.div`
+export const CollectionNameButton = styled.button`
   display: flex;
   align-items: center;
-  margin-bottom: 24px;
+  border: none;
+  background-color: white;
+  outline: none;
+  cursor: pointer;
+  margin-bottom: 8px;
+  padding: 0;
+
+  img {
+    border-radius: 100%;
+  }
 `;

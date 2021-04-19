@@ -6,6 +6,12 @@ import { StyledButton, ButtonProps } from '../Button/Button.styled';
 interface HalfButtonProps extends ButtonProps {
   color?: string;
   hoverColor?: string;
+  height?: string;
+  disabled?: boolean;
+}
+
+interface DescriptionProps {
+  mb?: string;
 }
 
 export const Background = styled.div`
@@ -30,19 +36,15 @@ export const Background = styled.div`
 export const ModalBox = styled(MaxWidth)`
   display: flex;
   flex-direction: column;
-  margin-top: 232px;
-  padding: 24px 24px 12px;
+  margin-top: 18vh;
+  padding: 24px;
   border-radius: 8px;
   box-shadow: 0 8px 8px -4px rgba(0, 0, 0, 0.1), 0 0 4px 0 rgba(0, 0, 0, 0.08);
   background-color: #ffffff;
 
   @media (min-width: 600px) {
-    max-width: 408px;
+    width: 416px;
   }
-
-  ${breakpoint.tablet`
-    margin-top: 200px;
-  `}
 `;
 
 export const Section = styled.section`
@@ -56,18 +58,18 @@ export const CloseIconContainer = styled.div`
 `;
 
 export const Title = styled.h1`
-  font-family: GilroySemiBold;
-  font-size: 24px;
+  font-size: 21px;
   line-height: 32px;
-  color: #0e103c;
-  margin-bottom: 16px;
+  color: #1a1a1a;
+  margin-bottom: 24px;
+  font-weight: normal;
 `;
 
-export const Description = styled.p`
+export const Description = styled.p<DescriptionProps>`
   font-size: 14px;
   line-height: 24px;
-  color: #7578b5;
-  margin-bottom: 24px;
+  color: #1a1a1a;
+  margin-bottom: ${({ mb }) => mb || '24px'};
 `;
 
 export const InputLabel = styled(Description).attrs({ as: 'label' })`
@@ -84,9 +86,13 @@ export const LinkDescription = styled(Description)`
   font-size: 12px;
 `;
 
-export const WithdrawInputLabel = styled.p`
+export const FeeLabel = styled.p`
   display: flex;
   justify-content: space-between;
+  font-size: 14px;
+  line-height: 24px;
+  color: #333333;
+  margin: 16px 0 24px;
 `;
 
 export const AvailableBalance = styled.span`
@@ -97,21 +103,32 @@ export const AvailableBalance = styled.span`
 export const ErrorMessage = styled(Description).attrs({ as: 'span' })`
   font-size: 12px;
   color: red;
-  margin-bottom: 0;
+  margin-bottom: 20px;
 `;
 
 export const Row = styled.div`
   display: flex;
 `;
 
+export const Column = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+export const ModalButton = styled(StyledButton)`
+  height: 48px;
+`;
+
 export const HalfButton = styled(StyledButton)<HalfButtonProps>`
-  flex: 1;
+  min-width: 144px;
+  align-self: flex-end;
+  padding: 11px 16px 13px;
 
   ${({ color }) =>
     color &&
     `
     background-color: ${color};
-  `}
+  `};
 
   ${({ hoverColor }) =>
     hoverColor &&
@@ -119,9 +136,36 @@ export const HalfButton = styled(StyledButton)<HalfButtonProps>`
     :hover {
       background-color: ${hoverColor};
     }
-  `}
+  `};
+
+  ${({ disabled }) =>
+    disabled &&
+    `
+    pointer-events: none;
+    opacity: 0.2;
+  `};
 `;
 
-export const Spacer = styled.div`
-  flex: 1;
+export const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+`;
+
+export const DragDropButton = styled(StyledButton)`
+  width: 50%;
+  margin: 0;
+  padding: 3px 16px;
+  background: #f2f2f2;
+  color: #752eeb;
+  font-size: 14px;
+  border-radius: 4px;
+
+  :active,
+  :hover,
+  :focus {
+    background: #752eeb;
+    color: #f2f2f2;
+  }
 `;

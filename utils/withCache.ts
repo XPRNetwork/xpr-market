@@ -1,12 +1,24 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import { CronJob } from 'cron';
 import proton from '../services/proton-rpc';
-import cache, { Cache } from '../services/cache';
+import { SearchCollection } from '../services/collections';
+import { Cache, profileCache, collectionSearchCache } from '../services/cache';
+
+const cron = new CronJob(
+  '00 00 00 * * *',
+  // '* * * * * *', // Cron job every second for testing purposes
+  async () => collectionSearchCache.clear(),
+  null,
+  false,
+  'America/Los_Angeles'
+);
 
 export interface MyAssetRequest extends NextApiRequest {
   query: {
     accounts: string[];
   };
-  cache: Cache;
+  profileCache: Cache;
+  collectionSearchCache: Cache<SearchCollection>;
 }
 
 type Handler = (req: MyAssetRequest, res: NextApiResponse) => Promise<void>;
@@ -28,7 +40,9 @@ export const conditionallyUpdateCache = (
 
 const withCache = (handler: Handler): Handler => {
   return async (req, res) => {
-    req.cache = cache;
+    cron.start();
+    req.profileCache = profileCache;
+    req.collectionSearchCache = collectionSearchCache;
     return handler(req, res);
   };
 };

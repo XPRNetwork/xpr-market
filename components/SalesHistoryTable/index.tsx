@@ -10,14 +10,17 @@ import { StyledTable } from './SalesHistoryTable.styled';
 import { useWindowSize } from '../../hooks';
 import { getFromApi } from '../../utils/browser-fetch';
 import { useAuthContext } from '../Provider';
-import { getSalesHistoryForAsset, SaleAsset, Sale } from '../../services/sales';
+import { SaleAsset, Sale } from '../../services/sales';
 import { Asset } from '../../services/assets';
 import { PAGINATION_LIMIT } from '../../utils/constants';
+import { getSalesHistory } from '../../services/sales';
 
 type Props = {
   tableData: Sale[];
   error?: string;
   asset?: Partial<SaleAsset> & Partial<Asset>;
+  activeTab: string;
+  templateId: string;
 };
 
 type TableHeader = {
@@ -25,10 +28,15 @@ type TableHeader = {
   id: string;
 };
 
-type GetSalesOptions = {
-  assetId: string;
-  page?: number;
+export const TAB_TYPES = {
+  ITEM: 'ITEM',
+  GLOBAL: 'GLOBAL',
 };
+
+export const tabs = [
+  { title: 'Item History', type: TAB_TYPES.ITEM },
+  { title: 'Global History', type: TAB_TYPES.GLOBAL },
+];
 
 const salesHistoryTableHeaders = [
   { title: '', id: 'img' },
@@ -68,34 +76,28 @@ const getAvatars = async (
   }
 };
 
-const getMySalesHistory = async ({
-  assetId,
-  page,
-}: GetSalesOptions): Promise<Sale[]> => {
-  try {
-    const pageParam = page ? page : 1;
-    const result = await getSalesHistoryForAsset(assetId, pageParam);
-
-    return result;
-  } catch (e) {
-    throw new Error(e);
-  }
-};
-
-const SalesHistoryTable = ({ tableData, error, asset }: Props): JSX.Element => {
+const SalesHistoryTable = ({
+  tableData,
+  error,
+  asset,
+  activeTab,
+  templateId,
+}: Props): JSX.Element => {
   const { currentUser } = useAuthContext();
   const [avatars, setAvatars] = useState({});
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isLoadingNextPage, setIsLoadingNextPage] = useState<boolean>(true);
   const [renderedData, setRenderedData] = useState<Sale[]>([]);
   const [prefetchedData, setPrefetchedData] = useState<Sale[]>([]);
-  const [prefetchPageNumber, setPrefetchPageNumber] = useState<number>(2);
+  const [prefetchPageNumber, setPrefetchPageNumber] = useState<number>();
   const [errorMessage, setErrorMessage] = useState<string>(error);
   const [tableHeaders, setTableHeaders] = useState<TableHeader[]>([]);
   const { isMobile } = useWindowSize();
 
   useEffect(() => {
+    setIsLoading(true);
     setRenderedData(tableData);
+    setPrefetchPageNumber(2);
   }, [tableData]);
 
   useEffect(() => {
@@ -114,15 +116,29 @@ const SalesHistoryTable = ({ tableData, error, asset }: Props): JSX.Element => {
           const res = await getAvatars(chainAccounts);
           setAvatars(res);
         }
-        if (renderedData.length % PAGINATION_LIMIT == 0) {
-          await prefetchNextPage();
-        }
       } catch (e) {
         setErrorMessage(e.message);
       }
       setIsLoading(false);
     })();
-  }, [renderedData]);
+  }, [renderedData, activeTab]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        if (
+          !isLoading &&
+          renderedData.length &&
+          renderedData.length % PAGINATION_LIMIT == 0 &&
+          asset
+        ) {
+          await prefetchNextPage();
+        }
+      } catch (e) {
+        setErrorMessage(e.message);
+      }
+    })();
+  }, [isLoading, renderedData, asset]);
 
   useEffect(() => {
     if (currentUser) {
@@ -147,8 +163,9 @@ const SalesHistoryTable = ({ tableData, error, asset }: Props): JSX.Element => {
   };
 
   const prefetchNextPage = async () => {
-    const prefetchedResult = await getMySalesHistory({
-      assetId: asset.assetId || asset.asset_id,
+    const prefetchedResult = await getSalesHistory({
+      id: activeTab === TAB_TYPES.ITEM ? asset.assetId : templateId,
+      type: activeTab,
       page: prefetchPageNumber,
     });
 
@@ -164,12 +181,18 @@ const SalesHistoryTable = ({ tableData, error, asset }: Props): JSX.Element => {
   };
 
   const showNextPage = async () => {
-    const allFetchedData = renderedData.concat(prefetchedData);
-    setRenderedData(allFetchedData);
-    setIsLoading(true);
+    setRenderedData(renderedData.concat(prefetchedData));
     setIsLoadingNextPage(true);
     await prefetchNextPage();
   };
+
+  const noDataMessage =
+    activeTab === TAB_TYPES.GLOBAL ||
+    !(asset.templateMint || asset.template_mint)
+      ? 'No Recent Sales'
+      : `No Recent Sales for Serial #${
+          asset.templateMint || asset.template_mint
+        }`;
 
   return (
     <>
@@ -192,9 +215,7 @@ const SalesHistoryTable = ({ tableData, error, asset }: Props): JSX.Element => {
             }
             loading={isLoading}
             noData={!renderedData.length}
-            noDataMessage={`No Recent Sales for Serial #${
-              asset.templateMint || asset.template_mint
-            }`}
+            noDataMessage={noDataMessage}
             columns={tableHeaders.length}>
             {getTableContent()}
           </TableContentWrapper>

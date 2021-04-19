@@ -25,11 +25,11 @@ const handler = async (
           typeof accounts === 'string' ? [accounts] : [...new Set(accounts)];
 
         const promises = chainAccounts.map((account) =>
-          conditionallyUpdateCache(account, req.cache)
+          conditionallyUpdateCache(account, req.profileCache)
         );
         await Promise.all(promises);
 
-        const avatarsByChainAccount = req.cache.getValues(chainAccounts);
+        const avatarsByChainAccount = req.profileCache.getValues(chainAccounts);
         res.status(200).send({ success: true, message: avatarsByChainAccount });
       } catch (e) {
         res.status(500).send({

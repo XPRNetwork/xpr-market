@@ -1,7 +1,11 @@
 import dayjs from 'dayjs';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc'; // dependent on utc plugin
-import { QueryParams, SHORTENED_TOKEN_PRECISION } from './constants';
+import {
+  QueryParams,
+  SHORTENED_TOKEN_PRECISION,
+  PRICE_OF_RAM_IN_XPR,
+} from './constants';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
@@ -72,6 +76,7 @@ export const addPrecisionDecimal = (
 };
 
 export const formatPrice = (priceString: string): string => {
+  if (!priceString) return '';
   const [price, currency] = priceString.split(' ');
   const amount = formatThousands(
     parseFloat(price.replace(/[,]/g, '')).toFixed(SHORTENED_TOKEN_PRECISION)
@@ -84,4 +89,39 @@ const formatThousands = (numberString: string): string => {
   let salePrice = parseFloat(integers.replace(/[,]/g, '')).toLocaleString();
   salePrice = decimals ? salePrice + '.' + decimals : salePrice;
   return salePrice;
+};
+
+export const fileReader = (
+  callback: (string) => void,
+  readData: File
+): void => {
+  const reader = new window.FileReader();
+  reader.onload = () => {
+    callback(reader.result as string);
+  };
+  reader.readAsDataURL(readData);
+};
+
+export const delay = (ms: number): Promise<void> =>
+  new Promise((resolve) => setTimeout(resolve, ms));
+
+export const calculateFee = ({
+  numAssets,
+  accountRam,
+  ramCost,
+  conversionRate,
+}: {
+  numAssets: number;
+  accountRam: number;
+  ramCost: number;
+  conversionRate: number;
+}): number => {
+  const requiredRam = numAssets * ramCost - accountRam;
+  if (requiredRam > 0) {
+    const calculatedFee = PRICE_OF_RAM_IN_XPR * requiredRam * conversionRate;
+    const listingFee = isNaN(calculatedFee)
+      ? 0
+      : Math.ceil(calculatedFee * 100) / 100;
+    return listingFee;
+  }
 };

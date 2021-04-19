@@ -2,21 +2,20 @@ import styled from 'styled-components';
 import { breakpoint } from '../../styles/Breakpoints';
 import { FadeInImageContainer } from '../../styles/FadeInImageContainer.styled';
 
-type ArrowProps = {
+export interface TabTitleProps {
   isActive: boolean;
-};
-
-type ToggleContainerProps = {
-  active: boolean;
-};
+}
 
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
-  margin: 64px 100px 0px;
+  margin: 64px auto 0px;
+  justify-content: center;
+  align-items: center;
+  width: 944px;
 
-  ${breakpoint.tablet`
-    margin: 64px 0 0;
+  ${breakpoint.laptop`
+    width: 100%;
   `};
 
   ${breakpoint.mobile`
@@ -56,30 +55,25 @@ export const ImageContainer = styled(FadeInImageContainer)`
   `};
 `;
 
-export const Title = styled.h1`
-  font-size: 22px;
-  line-height: 32px;
-  font-family: GilroySemiBold;
-`;
-
-export const ContentRow = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 48px 0 16px;
-`;
-
-export const ArrowContainer = styled.div<ArrowProps>`
-  transform: ${({ isActive }) =>
-    isActive ? 'rotate(0deg)' : 'rotate(-180deg)'};
-  -webkit-transform: ${({ isActive }) =>
-    isActive ? 'rotate(0deg)' : 'rotate(-180deg)'};
+export const TabTitle = styled.h1<TabTitleProps>`
+  font-size: 16px;
+  line-height: 24px;
+  font-family: CircularStdBold;
+  padding: 0 16px 8px;
+  color: ${({ isActive }) => (isActive ? '#1a1a1a' : '#808080')};
+  border-bottom: ${({ isActive }) => (isActive ? '2px solid #752eeb' : '')};
   cursor: pointer;
 `;
 
-export const ToggleContainer = styled.div<ToggleContainerProps>`
-  display: ${({ active }) => (active ? 'block' : 'none')};
+export const TabRow = styled.div`
+  display: flex;
   width: 100%;
+  margin: 48px 0 22px;
+  border-bottom: 1px solid #e6e6e6;
+
+  ${breakpoint.tablet`
+    justify-content: center;
+  `};
 `;
 
 export const Divider = styled.div`

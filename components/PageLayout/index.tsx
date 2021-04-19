@@ -9,6 +9,10 @@ import {
   CreateMultipleSalesModal,
   CancelSaleModal,
   CancelMultipleSalesModal,
+  TransferModal,
+  CreateCollectionModal,
+  MintAssetModal,
+  BurnAssetModal,
 } from '../Modal';
 import { useEscapeKeyClose } from '../../hooks';
 
@@ -37,6 +41,14 @@ const PageLayout = ({ title, children }: Props): JSX.Element => {
         return <CancelSaleModal />;
       case MODAL_TYPES.CANCEL_MULTIPLE_SALES:
         return <CancelMultipleSalesModal />;
+      case MODAL_TYPES.TRANSFER:
+        return <TransferModal />;
+      case MODAL_TYPES.CREATE_COLLECTION:
+        return <CreateCollectionModal />;
+      case MODAL_TYPES.MINT_ASSET:
+        return <MintAssetModal />;
+      case MODAL_TYPES.BURN_ASSET:
+        return <BurnAssetModal />;
       default:
         return null;
     }
@@ -45,7 +57,7 @@ const PageLayout = ({ title, children }: Props): JSX.Element => {
   return (
     <Main>
       <Head>
-        <title>{`${title} - NFT Demo`}</title>
+        <title>{`${title} - Proton Market`}</title>
         <link rel="shortcut icon" href="/favicon.png" />
       </Head>
       <Container>{children}</Container>

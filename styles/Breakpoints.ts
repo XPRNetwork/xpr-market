@@ -13,6 +13,7 @@ const breakpoints: MediaQueryProps = {
   mobile: '600px',
   tablet: '970px',
   laptop: '1224px',
+  largeLaptop: '1500px',
 };
 
 export const breakpointValues: MediaQueryValues = {
@@ -20,6 +21,7 @@ export const breakpointValues: MediaQueryValues = {
   mobile: 600,
   tablet: 970,
   laptop: 1224,
+  largeLaptop: 1500,
 };
 
 export const breakpoint = Object.keys(breakpoints).reduce(
@@ -38,6 +40,7 @@ export const breakpoint = Object.keys(breakpoints).reduce(
     mobile: undefined,
     tablet: undefined,
     laptop: undefined,
+    largeLaptop: undefined,
   }
 );
 

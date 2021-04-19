@@ -4,12 +4,12 @@ import { breakpoint } from '../../styles/Breakpoints';
 
 export const Main = styled.main`
   position: relative;
-  min-height: calc(100vh - 83px);
-  padding-top: 64px;
+  min-height: calc(100vh - 88px);
+  padding-top: 88px;
   overflow: auto;
 
   ${breakpoint.tablet`
-    min-height: calc(100vh - 83px);
+    min-height: calc(100vh - 88px);
   `}
 `;
 

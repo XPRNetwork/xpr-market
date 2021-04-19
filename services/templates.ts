@@ -6,6 +6,7 @@ import {
   DEFAULT_COLLECTION,
   PAGINATION_LIMIT,
 } from '../utils/constants';
+import { Collection } from './collections';
 
 export type SchemaFormat = {
   name: string;
@@ -19,23 +20,12 @@ export type Schema = {
   created_at_time: string;
 };
 
-export type Collection = {
-  author: string;
-  collection_name: string;
-  name?: string | null;
-  img?: string | null;
-  allow_notify?: boolean;
-  authorized_accounts?: string[];
-  notify_accounts?: string[] | [];
-  market_fee?: number;
-  created_at_block?: string;
-  created_at_time?: string;
-};
-
 type ImmutableData = {
   name: string;
-  image: string;
+  image?: string;
   series: number;
+  desc: string;
+  video?: string;
 };
 
 export interface Template {
@@ -167,18 +157,17 @@ export const getTemplatesByCollection = async ({
 };
 
 /**
- * Gets the lowest price of assets for sale for a collection's templates
- * Mostly used to display the lowest price of any of the templates with assets for sale in the collection
- * @param  {string} type               Name of collection that templates belong to
- * @return {Template[]}                Returns array of templates with an additional 'lowestPrice' flag
+ * Gets the number of templates a collection has
+ * @param  {string} type    Name of collection that templates belong to
+ * @return {number}         Returns the number of templates of a specific collection
  */
 
-export const getLowestPricesForAllCollectionTemplates = async ({
+export const getNumberOfTemplatesByCollection = async ({
   type,
 }: {
   type: string;
-}): Promise<{ [id: string]: string }> => {
-  const statsResults = await getFromApi<{ templates: number }>(
+}): Promise<number> => {
+  const statsResults = await getFromApi<{ templates: string }>(
     `${process.env.NEXT_PUBLIC_NFT_ENDPOINT}/atomicassets/v1/collections/${type}/stats`
   );
 
@@ -190,8 +179,23 @@ export const getLowestPricesForAllCollectionTemplates = async ({
     throw new Error(errorMessage as string);
   }
 
-  const numberOfTemplates = statsResults.data.templates;
+  const numberOfTemplates = parseInt(statsResults.data.templates);
+  return isNaN(numberOfTemplates) ? 0 : numberOfTemplates;
+};
 
+/**
+ * Gets the lowest price of assets for sale for a collection's templates
+ * Mostly used to display the lowest price of any of the templates with assets for sale in the collection
+ * @param  {string} type               Name of collection that templates belong to
+ * @return {Template[]}                Returns array of templates with an additional 'lowestPrice' flag
+ */
+
+export const getLowestPricesForAllCollectionTemplates = async ({
+  type,
+}: {
+  type: string;
+}): Promise<{ [id: string]: string }> => {
+  const numberOfTemplates = await getNumberOfTemplatesByCollection({ type });
   const salesQueryObject = {
     collection_name: type,
     symbol: TOKEN_SYMBOL,
@@ -371,13 +375,40 @@ export const getTemplatesFromTemplateIds = async (
   try {
     const templatesQueryObject = {
       symbol: TOKEN_SYMBOL,
-      collection_name: DEFAULT_COLLECTION,
       ids: templateIds.join(','),
     };
 
     const templatesQueryParams = toQueryString(templatesQueryObject);
     const templatesResponse = await getFromApi<Template[]>(
       `${process.env.NEXT_PUBLIC_NFT_ENDPOINT}/atomicassets/v1/templates?${templatesQueryParams}`
+    );
+
+    if (!templatesResponse.success) {
+      throw new Error((templatesResponse.message as unknown) as string);
+    }
+
+    return templatesResponse.data;
+  } catch (e) {
+    throw new Error(e);
+  }
+};
+
+export const getUserCreatedTemplates = async (
+  account: string,
+  page?: number
+): Promise<Template[]> => {
+  try {
+    const pageParam = page ? page : 1;
+    const queryObject = {
+      authorized_account: account,
+      sort: 'updated',
+      order: 'desc',
+      page: pageParam,
+      limit: PAGINATION_LIMIT,
+    };
+    const queryString = toQueryString(queryObject);
+    const templatesResponse = await getFromApi<Template[]>(
+      `${process.env.NEXT_PUBLIC_NFT_ENDPOINT}/atomicassets/v1/templates?${queryString}`
     );
 
     if (!templatesResponse.success) {

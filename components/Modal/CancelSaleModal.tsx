@@ -12,8 +12,6 @@ import {
   CloseIconContainer,
   Title,
   Description,
-  Row,
-  Spacer,
   HalfButton,
 } from './Modal.styled';
 import { ReactComponent as CloseIcon } from '../../public/close.svg';
@@ -50,17 +48,13 @@ const CancelModal = ({
           </CloseIconContainer>
         </Section>
         <Description>{description}</Description>
-        <Row>
-          <Spacer />
-          <HalfButton
-            filled
-            rounded
-            color="#fb849a"
-            hoverColor="#ff778e"
-            onClick={onButtonClick}>
-            {buttonText}
-          </HalfButton>
-        </Row>
+        <HalfButton
+          color="#f94e6c"
+          hoverColor="#ff778e"
+          margin="0 0 12px"
+          onClick={onButtonClick}>
+          {buttonText}
+        </HalfButton>
       </ModalBox>
     </Background>
   );

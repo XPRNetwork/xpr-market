@@ -1,10 +1,12 @@
-interface CacheValue {
-  value: string;
+import { SearchCollection } from '../services/collections';
+
+interface CacheValue<T> {
+  value: T;
   updatedAt: number;
 }
 
-export class Cache {
-  cache: Map<string, CacheValue>;
+export class Cache<T = string> {
+  cache: Map<string, CacheValue<T>>;
   maxLength: number;
   length: number;
 
@@ -18,7 +20,7 @@ export class Cache {
     return this.cache.has(key);
   }
 
-  set(key: string, value: string): number {
+  set(key: string, value: T): number {
     if (this.length >= this.maxLength) {
       const leastUsedKey = this.leastRecentlyUsed();
       this.delete(leastUsedKey);
@@ -33,7 +35,16 @@ export class Cache {
     return this.length;
   }
 
-  getValue(key: string): string {
+  getAllValues(): Array<T> {
+    let values: Array<T> = [];
+    for (const key of Array.from(this.cache.keys())) {
+      const { value } = this.cache.get(key);
+      values = [...values, value];
+    }
+    return values;
+  }
+
+  getValue(key: string): T {
     const { value } = this.cache.get(key);
     this.set(key, value);
     return value;
@@ -69,4 +80,5 @@ export class Cache {
   }
 }
 
-export default new Cache();
+export const profileCache = new Cache();
+export const collectionSearchCache = new Cache<SearchCollection>();

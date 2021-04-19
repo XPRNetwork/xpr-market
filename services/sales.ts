@@ -1,8 +1,9 @@
 import { Asset } from './assets';
-import { Collection } from './templates';
+import { Collection } from './collections';
 import { getFromApi } from '../utils/browser-fetch';
 import { toQueryString, addPrecisionDecimal } from '../utils';
 import { TOKEN_SYMBOL, PAGINATION_LIMIT } from '../utils/constants';
+import { TAB_TYPES } from '../components/SalesHistoryTable';
 
 type Price = {
   token_contract: string;
@@ -51,6 +52,44 @@ export type SaleAssetRecord = {
     [templateMint: string]: string;
   };
   assets: SaleAsset[];
+};
+
+export type GetSalesHistoryOptions = {
+  id: string;
+  type: string;
+  page?: number;
+};
+
+/**
+ * Get the fulfilled sales for a specific template or asset
+ * Mostly used in viewing sales history
+ * @param {string} id         The id of the history you want to look up
+ * @param {string} type       The type of the the identify you are searching for (see TAB_TYPES in SalesHistoryTable)
+ * @param {number} page       The page to look up from atomicassets api if number of assets returned is greater than given limit (API defaults to a limit of 100)
+ * @return {Sales[]}          Returns an array of Sales for that specific id
+ */
+
+export const getSalesHistory = async ({
+  id,
+  type,
+  page,
+}: GetSalesHistoryOptions): Promise<Sale[]> => {
+  if (id) {
+    try {
+      const pageParam = page ? page : 1;
+      let result;
+      if (type === TAB_TYPES.ITEM) {
+        result = await getSalesHistoryForAsset(id, pageParam);
+      } else {
+        result = await getSalesHistoryForTemplate(id, pageParam);
+      }
+
+      return result;
+    } catch (e) {
+      throw new Error(e);
+    }
+  }
+  return [];
 };
 
 /**

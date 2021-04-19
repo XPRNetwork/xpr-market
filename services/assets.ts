@@ -1,6 +1,7 @@
-import { Collection, Schema, Template } from './templates';
+import { Schema, Template } from './templates';
+import { Collection } from './collections';
 import { getAssetSale, getAllTemplateSales } from './sales';
-import { addPrecisionDecimal, toQueryString } from '../utils';
+import { addPrecisionDecimal, toQueryString, delay } from '../utils';
 import { getFromApi } from '../utils/browser-fetch';
 import { getUserOffers } from './offers';
 
@@ -149,7 +150,20 @@ export const getUserTemplateAssets = async (
   templateId: string
 ): Promise<UserTemplateAssetDetails> => {
   try {
-    const assets = await getAllUserAssetsByTemplate(owner, templateId);
+    let assets = await getAllUserAssetsByTemplate(owner, templateId);
+    let lastAssetTemplateMint = assets[assets.length - 1].template_mint;
+
+    while (lastAssetTemplateMint === '0') {
+      await delay(1000);
+      const refetchedAssets = await getAllUserAssetsByTemplate(
+        owner,
+        templateId
+      );
+      lastAssetTemplateMint =
+        refetchedAssets[refetchedAssets.length - 1].template_mint;
+      assets = refetchedAssets;
+    }
+
     const userOffers = await getUserOffers(owner);
 
     if (!userOffers || !userOffers.length) {
