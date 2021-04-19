@@ -7,7 +7,6 @@ export const Input = styled.input`
   border-radius: 8px;
   padding: 12px 16px;
   border: solid 1px #e6e6e6;
-  margin-bottom: 12px;
   width: 100%;
 
   ::-webkit-inner-spin-button,

@@ -73,6 +73,7 @@ interface CreateSaleOptions {
   asset_id: string;
   price: string;
   currency: string;
+  listing_fee: number;
 }
 
 interface CreateMultipleSalesOptions
@@ -387,6 +388,43 @@ class ProtonSDK {
           'An error has occured while attempting to withdraw from the market',
       };
     }
+  };
+
+  /**
+   * Generate transaction actions for purchasing ram in order to list assets for sale
+   *
+   * @param {number}     seller       Chain account of the asset's owner.
+   * @param {number}     listing_fee  Cost of ram to list a number of assets for sale.
+   * @return {Action}                 Returns an array of conditional ram actions.
+   */
+
+  generateSaleRamActions = ({
+    listing_fee,
+    seller,
+  }: {
+    listing_fee: number;
+    seller: string;
+  }): Action[] => {
+    return listing_fee === 0
+      ? []
+      : [
+          {
+            account: 'xtokens',
+            name: 'transfer',
+            authorization: [
+              {
+                actor: seller,
+                permission: 'active',
+              },
+            ],
+            data: {
+              from: seller,
+              to: 'specialmint',
+              quantity: `${listing_fee.toFixed(6)} XUSDC`,
+              memo: 'account',
+            },
+          },
+        ];
   };
 
   /**
@@ -947,11 +985,12 @@ class ProtonSDK {
   /**
    * Announce an asset sale and create an initial offer for the asset on atomic market.
    *
-   * @param {string}   seller     Chain account of the asset's current owner.
-   * @param {string}   asset_id   ID of the asset to sell.
-   * @param {string}   price      Listing price of the sale (i.e. '1.000000').
-   * @param {string}   currency   Token precision (number of decimal points) and token symbol that the sale will be paid in (i.e. '6,FOOBAR').
-   * @return {Response}       Returns an object indicating the success of the transaction and transaction ID.
+   * @param {string}   seller       Chain account of the asset's current owner.
+   * @param {string}   asset_id     ID of the asset to sell.
+   * @param {string}   price        Listing price of the sale (i.e. '1.000000').
+   * @param {string}   currency     Token precision (number of decimal points) and token symbol that the sale will be paid in (i.e. '6,FOOBAR').
+   * @param {string}   listing_fee  Ram payment when a user does not have enough ram to transact.
+   * @return {Response}             Returns an object indicating the success of the transaction and transaction ID.
    */
 
   createSale = async ({
@@ -959,8 +998,15 @@ class ProtonSDK {
     asset_id,
     price,
     currency,
+    listing_fee,
   }: CreateSaleOptions): Promise<Response> => {
+    const ramActions = this.generateSaleRamActions({
+      listing_fee,
+      seller,
+    });
+
     const actions = [
+      ...ramActions,
       {
         account: 'atomicmarket',
         name: 'announcesale',
@@ -1023,11 +1069,13 @@ class ProtonSDK {
   /**
    * Announce multiple asset sales and create initial offers for the assets on atomic market.
    *
-   * @param {string}   seller     Chain account of the asset's current owner.
-   * @param {string[]} assetIds   Array of IDs for the assets to sell.
-   * @param {string}   price      Listing price of the sale (i.e. '1.000000').
-   * @param {string}   currency   Token precision (number of decimal points) and token symbol that the sale will be paid in (i.e. '6,FOOBAR').
-   * @return {Response}       Returns an object indicating the success of the transaction and transaction ID.
+   * @param {string}   seller       Chain account of the asset's current owner.
+   * @param {string[]} assetIds     Array of IDs for the assets to sell.
+   * @param {string}   price        Listing price of the sale (i.e. '1.000000').
+   * @param {string}   currency     Token precision (number of decimal points) and token symbol that the sale will be paid in (i.e. '6,FOOBAR').
+   * @param {string}   listing_fee  Ram payment when a user does not have enough ram to transact.
+   * @param {string}   collection   Collection name of the asset to sell.
+   * @return {Response}             Returns an object indicating the success of the transaction and transaction ID.
    */
 
   createMultipleSales = async ({
@@ -1035,7 +1083,13 @@ class ProtonSDK {
     assetIds,
     price,
     currency,
+    listing_fee,
   }: CreateMultipleSalesOptions): Promise<Response> => {
+    const ramActions = this.generateSaleRamActions({
+      listing_fee,
+      seller,
+    });
+
     const announceSaleActions = assetIds.map((asset_id) => ({
       account: 'atomicmarket',
       name: 'announcesale',
@@ -1072,7 +1126,11 @@ class ProtonSDK {
       },
     }));
 
-    const actions = [...announceSaleActions, ...createOfferActions];
+    const actions = [
+      ...ramActions,
+      ...announceSaleActions,
+      ...createOfferActions,
+    ];
 
     try {
       if (!this.session) {

@@ -37,7 +37,7 @@ export const ModalBox = styled(MaxWidth)`
   display: flex;
   flex-direction: column;
   margin-top: 18vh;
-  padding: 24px 24px 24px;
+  padding: 24px;
   border-radius: 8px;
   box-shadow: 0 8px 8px -4px rgba(0, 0, 0, 0.1), 0 0 4px 0 rgba(0, 0, 0, 0.08);
   background-color: #ffffff;
@@ -86,7 +86,7 @@ export const LinkDescription = styled(Description)`
   font-size: 12px;
 `;
 
-export const MintFeeLabel = styled.p`
+export const FeeLabel = styled.p`
   display: flex;
   justify-content: space-between;
   font-size: 14px;

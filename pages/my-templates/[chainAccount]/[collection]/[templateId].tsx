@@ -1,24 +1,24 @@
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
-import DetailsLayout from '../../../components/DetailsLayout';
-import ErrorComponent from '../../../components/Error';
-import PageLayout from '../../../components/PageLayout';
-import AssetFormSell from '../../../components/AssetFormSell';
-import LoadingPage from '../../../components/LoadingPage';
+import DetailsLayout from '../../../../components/DetailsLayout';
+import ErrorComponent from '../../../../components/Error';
+import PageLayout from '../../../../components/PageLayout';
+import AssetFormSell from '../../../../components/AssetFormSell';
+import LoadingPage from '../../../../components/LoadingPage';
 import {
   useAuthContext,
   useModalContext,
   MODAL_TYPES,
-} from '../../../components/Provider';
-import { getTemplateDetails, Template } from '../../../services/templates';
+} from '../../../../components/Provider';
+import { getTemplateDetails, Template } from '../../../../services/templates';
 import {
   getUserTemplateAssets,
   Asset,
   FullSaleDataByAssetId,
-} from '../../../services/assets';
-import { Sale } from '../../../services/sales';
-import { getSalesHistory } from '../../../services/sales';
-import { TAB_TYPES } from '../../../components/SalesHistoryTable';
+} from '../../../../services/assets';
+import { Sale } from '../../../../services/sales';
+import { getSalesHistory } from '../../../../services/sales';
+import { TAB_TYPES } from '../../../../components/SalesHistoryTable';
 
 const emptyTemplateDetails = {
   lowestPrice: '',
@@ -47,7 +47,7 @@ type Query = {
 
 const MyNFTsTemplateDetail = (): JSX.Element => {
   const router = useRouter();
-  const { collection, templateId } = router.query as Query;
+  const { chainAccount, collection, templateId } = router.query as Query;
   const { currentUser, isLoadingUser } = useAuthContext();
   const { openModal, setModalProps } = useModalContext();
   const [sales, setSales] = useState<Sale[]>([]);
@@ -58,7 +58,6 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
   ] = useState<FullSaleDataByAssetId>({});
   const [template, setTemplate] = useState<Template>(emptyTemplateDetails);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [isLoadingSales, setIsLoadingSales] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
   const [currentAsset, setCurrentAsset] = useState<Partial<Asset>>({});
   const [assetIds, setAssetIds] = useState<string[]>([]);
@@ -131,7 +130,6 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
 
   useEffect(() => {
     (async () => {
-      setIsLoadingSales(true);
       try {
         const historyId =
           activeTab === TAB_TYPES.ITEM ? currentAsset.asset_id : templateId;
@@ -140,36 +138,25 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
       } catch (e) {
         setError(e.message);
       }
-      setIsLoadingSales(false);
     })();
   }, [currentAsset, activeTab]);
 
   useEffect(() => {
-    if (templateId) {
+    if (collection && templateId) {
       fetchPageData();
     }
-  }, [templateId]);
+  }, [collection, templateId]);
 
   useEffect(() => {
     if (
-      !isLoading &&
-      !isLoadingSales &&
-      !isLoadingUser &&
-      collection_name &&
+      chainAccount &&
+      collection &&
       templateId &&
-      (!currentUser || !assetIds.length)
+      (!currentUser || currentUser.actor !== chainAccount)
     ) {
-      router.push(`/${collection_name}/${templateId}`);
+      router.push(`/${collection}/${templateId}`);
     }
-  }, [
-    isLoading,
-    isLoadingSales,
-    isLoadingUser,
-    collection_name,
-    templateId,
-    currentUser,
-    assetIds,
-  ]);
+  }, [chainAccount, collection, templateId, currentUser]);
 
   const setCurrentAssetAsModalProps = () => {
     setModalProps((previousModalProps) => ({
@@ -206,7 +193,7 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
       );
     }
 
-    if (isLoading || isLoadingSales || isLoadingUser) {
+    if (isLoading || isLoadingUser) {
       return <LoadingPage />;
     }
 

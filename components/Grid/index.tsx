@@ -28,7 +28,7 @@ const Grid = ({ items }: Props): JSX.Element => {
           assetsForSale,
         }) => {
           const redirectPath = isUsersTemplates
-            ? `/my-templates/${collection_name}/${template_id}`
+            ? `/my-templates/${currentUser.actor}/${collection_name}/${template_id}`
             : `/${collection_name}/${template_id}`;
           const ownerHasMultiple =
             totalAssets &&

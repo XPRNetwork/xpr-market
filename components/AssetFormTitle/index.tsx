@@ -35,7 +35,8 @@ const AssetFormTitle = ({
 }: Props): JSX.Element => {
   const router = useRouter();
   const { currentUser } = useAuthContext();
-  const isMyTemplate = router.pathname.includes('my-templates');
+  const isMyTemplate =
+    currentUser && router.query.chainAccount === currentUser.actor;
   const redirectToAuthor = () => router.push(`/my-items/${collectionAuthor}`);
   const redirectToCollection = () => router.push(`/${collectionName}`);
 
