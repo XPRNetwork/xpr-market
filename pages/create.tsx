@@ -66,11 +66,13 @@ const Create = (): JSX.Element => {
       const filetype = templateUploadedFile.type;
       if (filetype.includes('video')) {
         const readerSetTemplateVideo = (result) => {
+          setTemplateImage('');
           setTemplateVideo(result);
         };
         fileReader(readerSetTemplateVideo, templateUploadedFile);
       } else {
         const readerSetTemplateImage = (result) => {
+          setTemplateVideo('');
           setTemplateImage(result);
         };
         fileReader(readerSetTemplateImage, templateUploadedFile);

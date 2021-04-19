@@ -30,7 +30,6 @@ export const CenterContainer = styled.div`
 `;
 
 export const Video = styled.video`
-  position: absolute;
   width: 100%;
   border-radius: 16px;
   outline: none;
