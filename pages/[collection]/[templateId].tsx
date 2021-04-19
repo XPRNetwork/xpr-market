@@ -17,6 +17,7 @@ const emptyTemplateDetails = {
   lowestPrice: '',
   max_supply: '',
   collection: {
+    img: '',
     author: '',
     collection_name: '',
   },
@@ -68,7 +69,7 @@ const MarketplaceTemplateDetail = (): JSX.Element => {
   const {
     lowestPrice,
     max_supply,
-    collection: { author, collection_name },
+    collection: { author, collection_name, img: collectionImage },
     immutable_data: { image, name, desc },
   } = template;
 
@@ -184,6 +185,7 @@ const MarketplaceTemplateDetail = (): JSX.Element => {
         templateName={name}
         collectionName={collection_name}
         collectionAuthor={author}
+        collectionImage={collectionImage}
         sales={sales}
         error={error}
         image={image}

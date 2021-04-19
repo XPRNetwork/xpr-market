@@ -12,11 +12,13 @@ import {
 import AssetFormPopupMenu from '../AssetFormPopupMenu';
 import { useAuthContext } from '../Provider';
 import { capitalize } from '../../utils';
+import { IPFS_RESOLVER } from '../../utils/constants';
 
 type Props = {
   templateName: string;
   collectionName: string;
   collectionAuthor: string;
+  collectionImage: string;
   assetIds?: string[];
   saleIds?: string[];
   setCurrentAssetAsModalProps?: () => void;
@@ -26,6 +28,7 @@ const AssetFormTitle = ({
   templateName,
   collectionName,
   collectionAuthor,
+  collectionImage,
   assetIds,
   saleIds,
   setCurrentAssetAsModalProps,
@@ -46,10 +49,14 @@ const AssetFormTitle = ({
         <Image
           priority
           layout="fixed"
-          width={24}
-          height={24}
-          src="/icon-monsters.png"
-          alt="Crypto Monsters icon"
+          width={32}
+          height={32}
+          src={
+            collectionImage
+              ? `${IPFS_RESOLVER}${collectionImage}`
+              : '/icon-monsters.png'
+          }
+          alt={`${collectionName} icon`}
         />
         <Title>{capitalize(collectionName)}</Title>
       </CollectionNameButton>

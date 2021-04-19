@@ -9,6 +9,7 @@ import {
 } from '../CreatePageLayout/CreatePageLayout.styled';
 import InputField from '../InputField';
 import Button from '../Button';
+import Spinner from '../Spinner';
 
 type Props = {
   mintAmount: string;
@@ -24,6 +25,7 @@ const InitialMint = ({
   createNftError,
 }: Props): JSX.Element => {
   const [mintError, setMintError] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (createNftError) {
@@ -38,11 +40,13 @@ const InitialMint = ({
       setMintError('Please fill in an initial mint amount (minimum 1).');
     } else {
       setMintError('');
+      setIsLoading(true);
       try {
         await createNft();
       } catch (e) {
         setMintError(e);
       }
+      setIsLoading(false);
     }
   };
 
@@ -81,8 +85,11 @@ const InitialMint = ({
         Terms of Service &amp; Privacy Policy
       </TermsLink>
       {mintError ? <ErrorMessage>{mintError}</ErrorMessage> : null}
-      <Button onClick={validateAndProceed} disabled={parseInt(mintAmount) > 50}>
-        Create NFT
+      <Button
+        onClick={isLoading ? null : validateAndProceed}
+        disabled={parseInt(mintAmount) > 50 || isLoading}
+        padding={isLoading ? '0' : '12px 0'}>
+        {isLoading ? <Spinner radius="10" hasBackground /> : 'Create NFT'}
       </Button>
     </>
   );

@@ -25,6 +25,7 @@ const CreatePageLayout = ({
   selectedCollection,
   editionSize,
 }: Props): JSX.Element => {
+  console.log('selectedCollection', selectedCollection)
   return (
     <Container>
       <Row>
@@ -44,6 +45,7 @@ const CreatePageLayout = ({
             noIpfsConversion
             isStatic
             autoPlay
+            hasPlaceholderIcon={!selectedCollection.name}
           />
         </RightColumn>
       </Row>

@@ -22,6 +22,7 @@ type Props = {
   templateName: string;
   collectionName: string;
   collectionAuthor: string;
+  collectionImage: string;
   sales: Sale[];
   error?: string;
   currentAsset?: Partial<SaleAsset> & Partial<Asset>;
@@ -51,6 +52,7 @@ const DetailsLayout = ({
   templateName,
   collectionName,
   collectionAuthor,
+  collectionImage,
   sales,
   error,
   currentAsset,
@@ -69,6 +71,7 @@ const DetailsLayout = ({
             templateName={templateName}
             collectionName={collectionName}
             collectionAuthor={collectionAuthor}
+            collectionImage={collectionImage}
             saleIds={saleIds}
             assetIds={assetIds}
             setCurrentAssetAsModalProps={setCurrentAssetAsModalProps}
