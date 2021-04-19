@@ -33,7 +33,7 @@ const ExploreCard = (): JSX.Element => {
             fullWidth={isFullWidth}
             margin="0"
             smallSize={isMobile}
-            onClick={() => router.push('/')}>
+            onClick={() => router.push('/create')}>
             Get Started
           </Button>
         </ButtonWrapper>

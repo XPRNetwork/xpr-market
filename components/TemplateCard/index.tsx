@@ -9,8 +9,9 @@ import {
   Tag,
   CollectionNameButton,
   PlaceholderPrice,
+  PlaceholderIcon,
 } from './TemplateCard.styled';
-import CollectionIcon from '../CollectionIcon';
+import CollectionIcon, { IconContainer } from '../CollectionIcon';
 import { capitalize } from '../../utils';
 import TemplateImage from '../TemplateImage';
 import TemplateVideo from '../TemplateVideo';
@@ -33,6 +34,7 @@ type Props = {
   isStatic?: boolean;
   noIpfsConversion?: boolean;
   autoPlay?: boolean;
+  hasPlaceholderIcon?: boolean;
 };
 
 const TemplateCard = ({
@@ -52,6 +54,7 @@ const TemplateCard = ({
   noIpfsConversion,
   isStatic,
   autoPlay,
+  hasPlaceholderIcon,
 }: Props): JSX.Element => {
   const router = useRouter();
   const openDetailPage = () => {
@@ -88,6 +91,18 @@ const TemplateCard = ({
       </Tag>
     ) : null;
 
+  const collectionIcon = hasPlaceholderIcon ? (
+    <IconContainer margin="24px 16px 24px 0">
+      <PlaceholderIcon />
+    </IconContainer>
+  ) : (
+    <CollectionIcon
+      name={collectionName}
+      image={collectionImage}
+      margin="24px 16px 24px 0"
+    />
+  );
+
   return (
     <Card
       tabIndex={0}
@@ -98,11 +113,7 @@ const TemplateCard = ({
       isStatic={isStatic}>
       <Row>
         <CollectionNameButton isStatic={isStatic} onClick={openCollectionPage}>
-          <CollectionIcon
-            name={collectionName}
-            image={collectionImage}
-            margin="24px 16px 24px 0"
-          />
+          {collectionIcon}
           <Text>{capitalize(collectionName)}</Text>
         </CollectionNameButton>
       </Row>

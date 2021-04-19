@@ -4,12 +4,13 @@ export interface ButtonProps {
   fullWidth?: boolean;
   cancel?: boolean;
   margin?: string;
+  padding?: string;
   smallSize?: boolean;
   disabled?: boolean;
 }
 
 export const StyledButton = styled.button<ButtonProps>`
-  padding: ${({ smallSize }) => (smallSize ? '4px 16px' : '8px 16px')};
+  padding: ${({ smallSize, padding }) => (smallSize ? '4px 16px' : padding)};
   margin: ${({ margin }) => margin};
   border: none;
   border-radius: 8px;

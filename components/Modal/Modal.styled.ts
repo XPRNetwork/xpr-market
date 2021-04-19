@@ -36,7 +36,7 @@ export const Background = styled.div`
 export const ModalBox = styled(MaxWidth)`
   display: flex;
   flex-direction: column;
-  margin-top: 232px;
+  margin-top: 18vh;
   padding: 24px 24px 24px;
   border-radius: 8px;
   box-shadow: 0 8px 8px -4px rgba(0, 0, 0, 0.1), 0 0 4px 0 rgba(0, 0, 0, 0.08);
@@ -45,10 +45,6 @@ export const ModalBox = styled(MaxWidth)`
   @media (min-width: 600px) {
     width: 416px;
   }
-
-  ${breakpoint.tablet`
-    margin-top: 200px;
-  `}
 `;
 
 export const Section = styled.section`

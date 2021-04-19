@@ -13,9 +13,3 @@ export const IconContainer = styled(ImageContainer)<IconContainerProps>`
   border-radius: 100%;
   overflow: hidden;
 `;
-
-export const PlaceholderIcon = styled(IconContainer).attrs({ as: 'div' })`
-  background-color: #e6e6e6;
-  width: ${({ width }) => width || '32px'};
-  height: ${({ width }) => width || '32px'};
-`;

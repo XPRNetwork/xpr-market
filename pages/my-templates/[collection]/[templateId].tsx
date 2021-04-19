@@ -25,6 +25,7 @@ const emptyTemplateDetails = {
   max_supply: '',
   collection: {
     author: '',
+    img: '',
     collection_name: '',
     data: {
       name: '',
@@ -70,7 +71,7 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
   const {
     lowestPrice,
     max_supply,
-    collection: { author, collection_name },
+    collection: { author, collection_name, img: collectionImage },
     immutable_data: { image, name, desc },
   } = template;
 
@@ -215,6 +216,7 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
         templateName={name}
         collectionName={collection_name}
         collectionAuthor={author}
+        collectionImage={collectionImage}
         sales={sales}
         error={error}
         image={image}

@@ -23,6 +23,9 @@ export const PopupMenuButton = styled.button`
   text-align: center;
   cursor: pointer;
   transition: 0.2s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   :hover,
   :focus-visible {

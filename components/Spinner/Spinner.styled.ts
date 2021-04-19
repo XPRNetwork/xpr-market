@@ -1,5 +1,9 @@
 import styled, { keyframes } from 'styled-components';
 
+type StyledSpinnerProps = {
+  hasBackground: boolean;
+};
+
 const rotate = keyframes`
   100% {
         transform: rotate(360deg);
@@ -21,16 +25,15 @@ const dash = keyframes`
   }
 `;
 
-const StyledSpinner = styled.svg`
+export const StyledSpinner = styled.svg<StyledSpinnerProps>`
   animation: ${rotate} 2s linear infinite;
   width: 50px;
   height: 50px;
 
   & .path {
-    stroke: rgba(117, 120, 181, 0.2);
+    stroke: ${({ hasBackground }) =>
+      hasBackground ? 'rgba(255, 255, 255, 1)' : 'rgba(117, 120, 181, 0.2)'};
     stroke-linecap: round;
     animation: ${dash} 1.5s ease-in-out infinite;
   }
 `;
-
-export default StyledSpinner;

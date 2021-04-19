@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { IconContainer } from '../CollectionIcon/CollectionIcon.styled';
 
 type CardProps = {
   hasMultiple: boolean;
@@ -125,4 +126,10 @@ export const Tag = styled.div`
 
 export const PlaceholderPrice = styled.div`
   height: 8px;
+`;
+
+export const PlaceholderIcon = styled(IconContainer).attrs({ as: 'div' })`
+  background-color: #e6e6e6;
+  width: ${({ width }) => width || '32px'};
+  height: ${({ width }) => width || '32px'};
 `;

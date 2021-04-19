@@ -88,7 +88,7 @@ export const DropdownList = styled.section<DropdownProps>`
   display: ${({ isOpen }) => (isOpen ? 'flex' : 'none')};
   flex-direction: column;
   position: absolute;
-  top: 58px;
+  top: 75px;
   right: 0;
   background: #ffffff;
   border-radius: 8px;

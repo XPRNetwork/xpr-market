@@ -39,4 +39,9 @@ export const CollectionNameButton = styled.button`
   outline: none;
   cursor: pointer;
   margin-bottom: 8px;
+  padding: 0;
+
+  img {
+    border-radius: 100%;
+  }
 `;

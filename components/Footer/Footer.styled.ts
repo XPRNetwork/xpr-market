@@ -37,6 +37,12 @@ export const FooterLink = styled.a`
   font-size: 14px;
   line-height: 24px;
   text-align: center;
+  transition: 0.2s;
+
+  :hover,
+  :focus-visible {
+    color: #1a1a1a;
+  }
 
   ${breakpoint.tablet`
     padding: 0;
