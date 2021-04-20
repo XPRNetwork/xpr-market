@@ -102,6 +102,10 @@ const SearchInputResultsList = ({
             setInput(name);
             search(name);
           }}
+          onTouchStart={() => {
+            setInput(name);
+            search(name);
+          }}
           tabIndex={0}
           key={name}>
           <CollectionIcon name={name} image={img} margin="0 16px 0 0" />
