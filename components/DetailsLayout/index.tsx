@@ -7,6 +7,7 @@ import {
   ImageContainer,
   TabTitle,
   TabRow,
+  Video,
 } from './DetailsLayout.styled';
 import SalesHistoryTable from '../SalesHistoryTable';
 import AssetFormTitle from '../AssetFormTitle';
@@ -17,7 +18,8 @@ import { IPFS_RESOLVER } from '../../utils/constants';
 
 type Props = {
   children: ReactNode;
-  image: string;
+  image?: string;
+  video?: string;
   templateId: string;
   templateName: string;
   collectionName: string;
@@ -46,9 +48,16 @@ const AssetImage = ({ image }: { image: string }): JSX.Element => (
   </ImageContainer>
 );
 
+const AssetVideo = ({ video }: { video: string }): JSX.Element => (
+  <ImageContainer>
+    <Video controls muted src={`${IPFS_RESOLVER}${video}`} />
+  </ImageContainer>
+);
+
 const DetailsLayout = ({
   children,
   image,
+  video,
   templateId,
   templateName,
   collectionName,
@@ -66,7 +75,7 @@ const DetailsLayout = ({
   return (
     <Container>
       <Row>
-        <AssetImage image={image} />
+        {video ? <AssetVideo video={video} /> : <AssetImage image={image} />}
         <Column>
           <AssetFormTitle
             templateName={templateName}
