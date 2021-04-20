@@ -38,6 +38,7 @@ const AssetImage = ({ image }: { image: string }): JSX.Element => (
     <Image
       priority
       layout="responsive"
+      objectFit="contain"
       width={456}
       height={470}
       src={`${IPFS_RESOLVER}${image}`}
