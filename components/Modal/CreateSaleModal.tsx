@@ -98,7 +98,7 @@ const SaleModal = ({
           amount={amount}
           setAmount={setAmount}
           submit={onButtonClick}
-          placeholder="Enter amount"
+          placeholder={`Enter amount in ${TOKEN_SYMBOL}`}
         />
         {getFee()}
         <HalfButton

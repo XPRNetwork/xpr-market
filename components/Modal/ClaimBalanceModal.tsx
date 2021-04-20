@@ -60,8 +60,8 @@ export const ClaimBalanceModal = (): JSX.Element => {
           </CloseIconContainer>
         </Section>
         <Description>
-          Congratulations, You sold {formatPrice(atomicMarketBalance)} of NFTs.
-          Claim them now!
+          Congratulations, your NFTs have earned you{' '}
+          {formatPrice(atomicMarketBalance)} in royalties. Claim them now!
         </Description>
         <HalfButton onClick={withdraw}>Claim Now</HalfButton>
       </ModalBox>

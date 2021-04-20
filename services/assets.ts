@@ -151,8 +151,10 @@ export const getUserTemplateAssets = async (
 ): Promise<UserTemplateAssetDetails> => {
   try {
     let assets = await getAllUserAssetsByTemplate(owner, templateId);
-    let lastAssetTemplateMint = assets[assets.length - 1].template_mint;
+    let lastAssetTemplateMint =
+      assets.length > 0 ? assets[assets.length - 1].template_mint : '1';
 
+    //while the blockchain is loading a newly minted asset it fetches 0 as the template_mint
     while (lastAssetTemplateMint === '0') {
       await delay(1000);
       const refetchedAssets = await getAllUserAssetsByTemplate(
