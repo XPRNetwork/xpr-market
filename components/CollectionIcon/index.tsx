@@ -11,10 +11,11 @@ type Props = {
 };
 
 const CollectionIcon = ({ name, image, margin, width }: Props): JSX.Element => {
-  const imageSrc =
-    image && image.slice(0, 4).toLowerCase() !== 'data'
+  const imageSrc = image
+    ? image.slice(0, 4).toLowerCase() !== 'data'
       ? `${IPFS_RESOLVER}${image}`
-      : '/icon-monsters.png';
+      : image
+    : '/icon-monsters.png';
   return (
     <IconContainer margin={margin} width={width}>
       <Image priority layout="fill" alt={name} src={imageSrc} />

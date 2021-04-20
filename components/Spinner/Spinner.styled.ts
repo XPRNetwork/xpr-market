@@ -1,6 +1,7 @@
 import styled, { keyframes } from 'styled-components';
 
 type StyledSpinnerProps = {
+  size: string;
   hasBackground: boolean;
 };
 
@@ -27,8 +28,8 @@ const dash = keyframes`
 
 export const StyledSpinner = styled.svg<StyledSpinnerProps>`
   animation: ${rotate} 2s linear infinite;
-  width: 50px;
-  height: 50px;
+  width: ${({ size }) => size};
+  height: ${({ size }) => size};
 
   & .path {
     stroke: ${({ hasBackground }) =>

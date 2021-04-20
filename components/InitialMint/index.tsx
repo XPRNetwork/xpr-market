@@ -107,7 +107,11 @@ const InitialMint = ({
         onClick={isLoading ? null : validateAndProceed}
         disabled={parseInt(mintAmount) > 50 || isLoading}
         padding={isLoading ? '0' : '12px 0'}>
-        {isLoading ? <Spinner radius="10" hasBackground /> : 'Create NFT'}
+        {isLoading ? (
+          <Spinner size="42px" radius="10" hasBackground />
+        ) : (
+          'Create NFT'
+        )}
       </Button>
       <BackButton
         onClick={() => setPageState(CREATE_PAGE_STATES.CREATE_TEMPLATE)}>
