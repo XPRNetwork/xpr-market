@@ -12,7 +12,7 @@ import {
 import { Template } from '../../services/templates';
 import LoadingPage from '../../components/LoadingPage';
 import { capitalize } from '../../utils';
-import { PAGINATION_LIMIT } from '../../utils/constants';
+import { PAGINATION_LIMIT, TAB_TYPES } from '../../utils/constants';
 import Banner from '../../components/Banner';
 import ProfileTabs from '../../components/ProfileTabs';
 import PageHeader from '../../components/PageHeader';
@@ -49,13 +49,13 @@ const getMyTemplates = async ({
 };
 
 const Collection = (): JSX.Element => {
-  const TAB_TYPES = {
-    ITEMS: 'ITEMS',
-    CREATIONS: 'CREATIONS',
-  };
-
   const router = useRouter();
-  const { chainAccount } = router.query as RouterQuery;
+  const {
+    chainAccount: caseSensitiveChainAccount,
+  } = router.query as RouterQuery;
+  const chainAccount = caseSensitiveChainAccount
+    ? caseSensitiveChainAccount.toLowerCase()
+    : '';
   const { currentUser, isLoadingUser } = useAuthContext();
   const [renderedTemplates, setRenderedTemplates] = useState<Template[]>([]);
   const [prefetchedTemplates, setPrefetchedTemplates] = useState<Template[]>(

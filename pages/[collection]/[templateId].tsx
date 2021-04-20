@@ -11,7 +11,7 @@ import { getAllTemplateSales, Sale, SaleAsset } from '../../services/sales';
 import ProtonSDK from '../../services/proton';
 import * as gtag from '../../utils/gtag';
 import { getSalesHistory } from '../../services/sales';
-import { TAB_TYPES } from '../../components/SalesHistoryTable';
+import { TAB_TYPES, RouterQuery } from '../../utils/constants';
 
 const emptyTemplateDetails = {
   lowestPrice: '',
@@ -29,13 +29,15 @@ const emptyTemplateDetails = {
   },
 };
 
-type Query = {
-  [query: string]: string;
-};
-
 const MarketplaceTemplateDetail = (): JSX.Element => {
   const router = useRouter();
-  const { collection, templateId } = router.query as Query;
+  const {
+    collection: caseSensitiveCollection,
+    templateId,
+  } = router.query as RouterQuery;
+  const collection = caseSensitiveCollection
+    ? caseSensitiveCollection.toLowerCase()
+    : '';
   const {
     updateCurrentUserBalance,
     currentUser,
