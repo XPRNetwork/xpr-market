@@ -33,7 +33,7 @@ const Banner = ({ modalType }: Props): JSX.Element => {
           <Money role="img" aria-label="Money" right>
             💸
           </Money>
-          Claim {formatPrice(atomicMarketBalance)} from sales
+          Claim {formatPrice(atomicMarketBalance)} from royalties
           <Money role="img" aria-label="Money">
             💸
           </Money>
