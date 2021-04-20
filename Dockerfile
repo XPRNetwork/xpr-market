@@ -17,6 +17,7 @@ COPY next-env.d.ts .
 COPY babel.config.json .
 COPY .prettierrc.js .
 COPY .eslintrc.json .
+COPY server.js .
 RUN npm i && npm run build
 
 EXPOSE 3000
