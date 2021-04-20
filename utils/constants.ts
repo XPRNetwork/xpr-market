@@ -28,7 +28,7 @@ export const SM_FILE_UPLOAD_TYPES = {
 };
 export const LG_FILE_SIZE_UPLOAD_LIMIT = 30 * 1000000; // 30 MB
 export const SM_FILE_SIZE_UPLOAD_LIMIT = 5 * 1000000; // 5 MB
-export const IPFS_RESOLVER = 'https://cloudflare-ipfs.com/ipfs/';
+export const IPFS_RESOLVER = 'https://gateway.pinata.cloud/ipfs/';
 export const DEFAULT_SCHEMA = {
   series: 'uint16',
   name: 'string',
