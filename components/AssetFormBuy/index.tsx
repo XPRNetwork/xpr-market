@@ -22,6 +22,7 @@ type Props = {
   formattedPricesBySaleId: {
     [templateMint: string]: string;
   };
+  isBalanceInsufficient: boolean;
   handleButtonClick: () => void;
   setPurchasingError: Dispatch<SetStateAction<string>>;
   setIsBalanceInsufficient: Dispatch<SetStateAction<boolean>>;
@@ -38,6 +39,7 @@ export const AssetFormBuy = ({
   saleId,
   purchasingError,
   formattedPricesBySaleId,
+  isBalanceInsufficient,
   handleButtonClick,
   setPurchasingError,
   setIsBalanceInsufficient,
@@ -73,7 +75,7 @@ export const AssetFormBuy = ({
     if (amount > balanceAmount) {
       setIsBalanceInsufficient(true);
       setPurchasingError(
-        `Insufficient funds: this NFT is listed for ${priceString} and your account balance is ${currentUserBalance}. Please visit Foobar Faucet for more funds to continue this transaction.`
+        `Insufficient funds: this NFT is listed for ${priceString} and your account balance is ${currentUserBalance}. Please add more funds to continue this transaction.`
       );
     }
   };
@@ -103,7 +105,10 @@ export const AssetFormBuy = ({
             </option>
           ))}
       </DropdownMenu>
-      <Button fullWidth onClick={handleButtonClick}>
+      <Button
+        fullWidth
+        onClick={handleButtonClick}
+        disabled={isBalanceInsufficient}>
         {buttonText}
       </Button>
       {purchasingError ? <ErrorMessage>{purchasingError}</ErrorMessage> : null}

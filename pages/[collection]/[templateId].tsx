@@ -152,17 +152,9 @@ const MarketplaceTemplateDetail = (): JSX.Element => {
     }
   };
 
-  const handleButtonClick = currentUser
-    ? isBalanceInsufficient
-      ? () => window.open('https://foobar.protonchain.com/')
-      : buyAsset
-    : login;
+  const handleButtonClick = currentUser ? buyAsset : login;
 
-  const buttonText = currentUser
-    ? isBalanceInsufficient
-      ? 'Visit Foobar Faucet'
-      : 'Buy now'
-    : 'Connect wallet to buy';
+  const buttonText = currentUser ? 'Buy now' : 'Connect wallet to buy';
 
   const getContent = () => {
     if (error) {
@@ -201,6 +193,7 @@ const MarketplaceTemplateDetail = (): JSX.Element => {
           saleId={saleId}
           purchasingError={purchasingError}
           formattedPricesBySaleId={formattedPricesBySaleId}
+          isBalanceInsufficient={isBalanceInsufficient}
           handleButtonClick={handleButtonClick}
           setPurchasingError={setPurchasingError}
           setIsBalanceInsufficient={setIsBalanceInsufficient}

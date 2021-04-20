@@ -342,7 +342,7 @@ class ProtonSDK {
    * Withdraw tokens from the marketplace back into user's account
    *
    * @param {string}   actor                chainAccount of user
-   * @param {string}   amount               amount of FOOBAR (will only be using FOOBAR in this demo, i.e 1.000000 FOOBAR)
+   * @param {string}   amount               amount of tokens to withdraw (i.e 1.000000 XUSDC)
    * @return {Response}      Returns an object indicating the success of the transaction and transaction ID.
    */
 
@@ -988,7 +988,7 @@ class ProtonSDK {
    * @param {string}   seller       Chain account of the asset's current owner.
    * @param {string}   asset_id     ID of the asset to sell.
    * @param {string}   price        Listing price of the sale (i.e. '1.000000').
-   * @param {string}   currency     Token precision (number of decimal points) and token symbol that the sale will be paid in (i.e. '6,FOOBAR').
+   * @param {string}   currency     Token precision (number of decimal points) and token symbol that the sale will be paid in (i.e. '6,XUSDC').
    * @param {string}   listing_fee  Ram payment when a user does not have enough ram to transact.
    * @return {Response}             Returns an object indicating the success of the transaction and transaction ID.
    */
@@ -1072,7 +1072,7 @@ class ProtonSDK {
    * @param {string}   seller       Chain account of the asset's current owner.
    * @param {string[]} assetIds     Array of IDs for the assets to sell.
    * @param {string}   price        Listing price of the sale (i.e. '1.000000').
-   * @param {string}   currency     Token precision (number of decimal points) and token symbol that the sale will be paid in (i.e. '6,FOOBAR').
+   * @param {string}   currency     Token precision (number of decimal points) and token symbol that the sale will be paid in (i.e. '6,XUSDC').
    * @param {string}   listing_fee  Ram payment when a user does not have enough ram to transact.
    * @param {string}   collection   Collection name of the asset to sell.
    * @return {Response}             Returns an object indicating the success of the transaction and transaction ID.
