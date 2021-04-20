@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import { MaxWidth } from '../../styles/MaxWidth.styled';
-import { breakpoint } from '../../styles/Breakpoints';
 import { StyledButton, ButtonProps } from '../Button/Button.styled';
 
 interface HalfButtonProps extends ButtonProps {
