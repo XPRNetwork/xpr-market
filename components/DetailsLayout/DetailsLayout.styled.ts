@@ -51,7 +51,8 @@ export const ImageContainer = styled(FadeInImageContainer)`
   `};
 
   ${breakpoint.mobile`
-    margin: 32px auto;
+    max-width: 100%;
+    margin: 0px auto 32px;
   `};
 `;
 
