@@ -14,7 +14,7 @@ type Props = {
   templateImage: string;
   templateName: string;
   selectedCollection: CarouselCollection;
-  editionSize: string;
+  maxSupply: string;
 };
 
 const CreatePageLayout = ({
@@ -23,7 +23,7 @@ const CreatePageLayout = ({
   templateImage,
   templateName,
   selectedCollection,
-  editionSize,
+  maxSupply,
 }: Props): JSX.Element => {
   console.log('selectedCollection', selectedCollection)
   return (
@@ -40,7 +40,7 @@ const CreatePageLayout = ({
             collectionName={
               selectedCollection.name || selectedCollection.collection_name
             }
-            editionSize={editionSize}
+            maxSupply={maxSupply}
             noHoverEffect
             noIpfsConversion
             isStatic

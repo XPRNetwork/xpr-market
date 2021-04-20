@@ -27,8 +27,8 @@ export const MintAssetModal = (): JSX.Element => {
   const { closeModal, modalProps } = useModalContext();
   const {
     templateId,
-    maxEditionSize,
-    editionSize,
+    maxSupply,
+    issuedSupply,
     collectionName,
     accountRam,
     conversionRate,
@@ -37,7 +37,7 @@ export const MintAssetModal = (): JSX.Element => {
   } = modalProps as MintAssetModalProps;
   const [amount, setAmount] = useState<string>('');
   const [mintFee, setMintFee] = useState<number>(0);
-  const possibleMintAmount = maxEditionSize - editionSize;
+  const possibleMintAmount = maxSupply - issuedSupply;
   const maxMintAmountForSession =
     possibleMintAmount < 50 ? possibleMintAmount : 50;
   const maxMintMessage = `${maxMintAmountForSession} max${
@@ -101,8 +101,8 @@ export const MintAssetModal = (): JSX.Element => {
           </CloseIconContainer>
         </Section>
         <Description>
-          You have minted {editionSize} out of a total edition size of{' '}
-          {maxEditionSize}.
+          You have minted {issuedSupply} out of a total edition size of{' '}
+          {maxSupply}.
           <br />
           Enter an amount to mint ({maxMintMessage}).
         </Description>

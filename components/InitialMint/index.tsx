@@ -10,12 +10,16 @@ import {
 import InputField from '../InputField';
 import Button from '../Button';
 import Spinner from '../Spinner';
+import { BackButton } from '../CreatePageLayout/CreatePageLayout.styled';
+import { CREATE_PAGE_STATES } from '../../pages/create';
 
 type Props = {
   mintAmount: string;
   setMintAmount: Dispatch<SetStateAction<string>>;
   createNft: () => Promise<void>;
   createNftError: string;
+  setPageState: Dispatch<SetStateAction<string>>;
+  maxSupply: string;
 };
 
 const InitialMint = ({
@@ -23,9 +27,12 @@ const InitialMint = ({
   setMintAmount,
   mintAmount,
   createNftError,
+  setPageState,
+  maxSupply,
 }: Props): JSX.Element => {
   const [mintError, setMintError] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isValid, setIsValid] = useState<boolean>(false);
 
   useEffect(() => {
     if (createNftError) {
@@ -50,6 +57,14 @@ const InitialMint = ({
     }
   };
 
+  const checkMintAmountValidity = (amount) => {
+    const number = parseInt(amount);
+    if (number >= 1 && number <= 50 && number <= parseInt(maxSupply)) {
+      return true;
+    }
+    return false;
+  };
+
   return (
     <>
       <Step>Step 3 of 3</Step>
@@ -68,14 +83,17 @@ const InitialMint = ({
         value={mintAmount}
         setValue={setMintAmount}
         placeholder="Enter amount"
-        submit={parseInt(mintAmount) > 50 ? null : createNft}
+        submit={isValid ? null : createNft}
         checkIfIsValid={(input) => {
           const numberInput = parseInt(input as string);
-          const isValid =
-            !isNaN(numberInput) && numberInput >= 1 && numberInput <= 50;
-          const errorMessage = 'You can mint 1-50 assets at a time';
+          const valid = checkMintAmountValidity(numberInput);
+          setIsValid(valid);
+          const errorMessage =
+            numberInput < parseInt(maxSupply)
+              ? 'You can mint 1-50 assets at a time'
+              : 'You cannot mint more than the set edition size';
           return {
-            isValid,
+            isValid: valid,
             errorMessage,
           };
         }}
@@ -91,6 +109,10 @@ const InitialMint = ({
         padding={isLoading ? '0' : '12px 0'}>
         {isLoading ? <Spinner radius="10" hasBackground /> : 'Create NFT'}
       </Button>
+      <BackButton
+        onClick={() => setPageState(CREATE_PAGE_STATES.CREATE_TEMPLATE)}>
+        Back
+      </BackButton>
     </>
   );
 };

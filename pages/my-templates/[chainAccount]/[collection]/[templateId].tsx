@@ -98,10 +98,10 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
         fetchPageData,
         collectionName: templateDetails.collection.collection_name,
         templateId: templateDetails.template_id,
-        maxEditionSize: isNaN(parseInt(templateDetails.max_supply))
+        maxSupply: isNaN(parseInt(templateDetails.max_supply))
           ? 0
           : parseInt(templateDetails.max_supply),
-        editionSize: isNaN(parseInt(templateDetails.issued_supply))
+        issuedSupply: isNaN(parseInt(templateDetails.issued_supply))
           ? 0
           : parseInt(templateDetails.issued_supply),
       });
