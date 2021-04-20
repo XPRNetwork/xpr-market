@@ -18,7 +18,7 @@ import {
 } from '../../../../services/assets';
 import { Sale } from '../../../../services/sales';
 import { getSalesHistory } from '../../../../services/sales';
-import { TAB_TYPES } from '../../../../components/SalesHistoryTable';
+import { TAB_TYPES, RouterQuery } from '../../../../utils/constants';
 
 const emptyTemplateDetails = {
   lowestPrice: '',
@@ -41,15 +41,22 @@ const emptyTemplateDetails = {
   },
 };
 
-type Query = {
-  [query: string]: string;
-};
-
 const MyNFTsTemplateDetail = (): JSX.Element => {
   const router = useRouter();
-  const { chainAccount, collection, templateId } = router.query as Query;
+  const {
+    templateId,
+    chainAccount: caseSensitiveChainAccount,
+    collection: caseSensitiveCollection,
+  } = router.query as RouterQuery;
+  const chainAccount = caseSensitiveChainAccount
+    ? caseSensitiveChainAccount.toLowerCase()
+    : '';
+  const collection = caseSensitiveCollection
+    ? caseSensitiveCollection.toLowerCase()
+    : '';
   const { currentUser, isLoadingUser } = useAuthContext();
   const { openModal, setModalProps } = useModalContext();
+
   const [sales, setSales] = useState<Sale[]>([]);
   const [templateAssets, setTemplateAssets] = useState<Asset[]>([]);
   const [

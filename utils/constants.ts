@@ -29,6 +29,28 @@ export const SM_FILE_UPLOAD_TYPES = {
 export const LG_FILE_SIZE_UPLOAD_LIMIT = 30 * 1000000; // 30 MB
 export const SM_FILE_SIZE_UPLOAD_LIMIT = 5 * 1000000; // 5 MB
 export const IPFS_RESOLVER = 'https://cloudflare-ipfs.com/ipfs/';
+export const DEFAULT_SCHEMA = {
+  series: 'uint16',
+  name: 'string',
+  desc: 'string',
+  image: 'string',
+  audio: 'string',
+  video: 'string',
+};
+export const RAM_COSTS = {
+  CREATE_COLLECTION_SCHEMA_TEMPLATE: 2000,
+  MINT_ASSET: 151,
+  LIST_SALE: 768,
+};
+export const TAB_TYPES = {
+  ITEM: 'ITEM',
+  GLOBAL: 'GLOBAL',
+  ITEMS: 'ITEMS',
+  CREATIONS: 'CREATIONS',
+};
+export interface RouterQuery {
+  [query: string]: string;
+}
 export interface QueryParams {
   collection_name?: string;
   owner?: string;
@@ -43,16 +65,3 @@ export interface QueryParams {
   page?: number;
   symbol?: string;
 }
-export const DEFAULT_SCHEMA = {
-  series: 'uint16',
-  name: 'string',
-  desc: 'string',
-  image: 'string',
-  audio: 'string',
-  video: 'string',
-};
-export const RAM_COSTS = {
-  CREATE_COLLECTION_SCHEMA_TEMPLATE: 2000,
-  MINT_ASSET: 151,
-  LIST_SALE: 768,
-};
