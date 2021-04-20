@@ -72,7 +72,7 @@ const MarketplaceTemplateDetail = (): JSX.Element => {
     lowestPrice,
     max_supply,
     collection: { author, collection_name, img: collectionImage },
-    immutable_data: { image, name, desc },
+    immutable_data: { image, name, desc, video },
   } = template;
 
   useEffect(() => {
@@ -183,6 +183,7 @@ const MarketplaceTemplateDetail = (): JSX.Element => {
         sales={sales}
         error={error}
         image={image}
+        video={video}
         currentAsset={currentAsset}
         activeTab={activeTab}
         setActiveTab={setActiveTab}>
