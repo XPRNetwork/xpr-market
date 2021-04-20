@@ -1,4 +1,4 @@
-image: nikolaik/python-nodejs
+image: docker:18
 
 variables:
   GIT_SSL_NO_VERIFY: 1
