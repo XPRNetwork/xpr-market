@@ -25,7 +25,6 @@ const CreatePageLayout = ({
   selectedCollection,
   maxSupply,
 }: Props): JSX.Element => {
-  console.log('selectedCollection', selectedCollection)
   return (
     <Container>
       <Row>
