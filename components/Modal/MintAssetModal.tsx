@@ -15,7 +15,7 @@ import {
   HalfButton,
   FeeLabel,
 } from './Modal.styled';
-import { RAM_COSTS } from '../../utils/constants';
+import { RAM_COSTS, SHORTENED_TOKEN_PRECISION } from '../../utils/constants';
 import { calculateFee } from '../../utils';
 import ProtonSDK from '../../services/proton';
 import { ReactComponent as CloseIcon } from '../../public/close.svg';
@@ -87,7 +87,7 @@ export const MintAssetModal = (): JSX.Element => {
     mintFee && mintFee !== 0 ? (
       <FeeLabel>
         <span>Mint Fee</span>
-        <span>{mintFee.toFixed(2)} XUSDC</span>
+        <span>{mintFee.toFixed(SHORTENED_TOKEN_PRECISION)} XUSDC</span>
       </FeeLabel>
     ) : null;
 

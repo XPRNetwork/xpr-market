@@ -28,6 +28,7 @@ import {
   TOKEN_SYMBOL,
   TOKEN_PRECISION,
   RAM_COSTS,
+  SHORTENED_TOKEN_PRECISION,
 } from '../../utils/constants';
 import ProtonSDK from '../../services/proton';
 
@@ -66,7 +67,7 @@ const SaleModal = ({
       ramCost: RAM_COSTS.LIST_SALE,
       conversionRate,
     });
-    setListingFee(fee);
+    setListingFee(isNaN(fee) ? 0 : fee);
   }, [numSales, accountRam, conversionRate]);
 
   const handleBackgroundClick = (e: MouseEvent) => {
@@ -79,7 +80,7 @@ const SaleModal = ({
     listingFee && listingFee !== 0 ? (
       <FeeLabel>
         <span>Listing Fee</span>
-        <span>{listingFee.toFixed(2)} XUSDC</span>
+        <span>{listingFee.toFixed(SHORTENED_TOKEN_PRECISION)} XUSDC</span>
       </FeeLabel>
     ) : null;
 
@@ -126,6 +127,7 @@ export const CreateSaleModal = (): JSX.Element => {
             ? 0
             : parseFloat(listingFee)
           : listingFee;
+
       const res = await ProtonSDK.createSale({
         seller: currentUser ? currentUser.actor : '',
         asset_id: assetId,
