@@ -94,6 +94,10 @@ const Create = (): JSX.Element => {
 
     try {
       const templateIpfsImage = await uploadToIPFS(templateUploadedFile);
+      let isVideo = false;
+      if (templateUploadedFile.type.includes('mp4')) {
+        isVideo = true;
+      }
 
       const result = isUncreatedCollectionSelected
         ? await ProtonSDK.createNft({
@@ -110,8 +114,8 @@ const Create = (): JSX.Element => {
             ).toFixed(6),
             template_name: templateName,
             template_description: templateDescription,
-            template_image: templateIpfsImage,
-            template_video: templateVideo,
+            template_image: isVideo ? null : templateIpfsImage,
+            template_video: isVideo ? templateIpfsImage : null,
             max_supply: parseInt(maxSupply),
             initial_mint_amount: parseInt(mintAmount),
           })
@@ -122,8 +126,8 @@ const Create = (): JSX.Element => {
             author: currentUser.actor,
             collection_name: selectedCollection.collection_name,
             template_name: templateName,
-            template_image: templateIpfsImage,
-            template_video: templateVideo,
+            template_image: isVideo ? null : templateIpfsImage,
+            template_video: isVideo ? templateIpfsImage : null,
             template_description: templateDescription,
             max_supply: parseInt(maxSupply),
             initial_mint_amount: parseInt(mintAmount),

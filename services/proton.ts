@@ -563,8 +563,8 @@ class ProtonSDK {
       series: '1',
       name: template_name,
       desc: template_description,
-      image: template_image,
-      video: template_video,
+      video: template_video || '',
+      image: template_image || '',
     };
 
     const schema_format = Object.entries(DEFAULT_SCHEMA).map(([key, type]) => ({
@@ -575,7 +575,7 @@ class ProtonSDK {
     const immutable_data = Object.entries(DEFAULT_SCHEMA).map(
       ([key, type]) => ({
         key,
-        value: [type, default_template[key]],
+        value: [type, default_template[key] || ''],
       })
     );
 
@@ -796,14 +796,14 @@ class ProtonSDK {
       series: '1',
       name: template_name,
       desc: template_description,
-      image: template_image,
-      video: template_video,
+      video: template_video || '',
+      image: template_image || '',
     };
 
     const immutable_data = Object.entries(DEFAULT_SCHEMA).map(
       ([key, type]) => ({
         key,
-        value: [type, default_template[key]],
+        value: [type, default_template[key] || ''],
       })
     );
 
