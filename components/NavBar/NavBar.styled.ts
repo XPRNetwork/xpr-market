@@ -265,6 +265,12 @@ export const CloseIconButton = styled.button`
   width: 40px;
   height: 40px;
   background: #f2f2f2;
+  outline: none;
+
+  :focus,
+  :focus-visible {
+    border: 1px solid #752eeb;
+  }
 
   * {
     z-index: 3;
