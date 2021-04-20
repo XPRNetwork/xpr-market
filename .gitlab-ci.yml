@@ -8,19 +8,8 @@ variables:
   SERVICE_NAME: proton-market
 
 stages:
-  - test
-
-test:
-  image: nikolaik/python-nodejs
-  stage: test
-  only:
-    - merge_requests
-  script:
-    - yarn
-    - yarn format
-    - yarn typecheck
-    - yarn lint
-    - yarn build
+  - build
+  - release
 
 build development:
   stage: build
