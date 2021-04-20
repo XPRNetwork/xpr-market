@@ -53,9 +53,9 @@ const AssetFormPopupMenu = ({
 
   const isMintAssetModalHidden = (): boolean => {
     if (!modalProps) return true;
-    const { maxEditionSize, editionSize } = modalProps as MintAssetModalProps;
+    const { maxSupply, issuedSupply } = modalProps as MintAssetModalProps;
     const hasMintedMaxSupply =
-      maxEditionSize && editionSize && maxEditionSize === editionSize;
+      maxSupply && issuedSupply && maxSupply === issuedSupply;
     return !isTemplateCreator || hasMintedMaxSupply;
   };
 

@@ -20,7 +20,7 @@ import CreateTemplate from '../components/CreateTemplate';
 import InitialMint from '../components/InitialMint';
 import { RAM_COSTS } from '../utils/constants';
 
-const CREATE_PAGE_STATES = {
+export const CREATE_PAGE_STATES = {
   CHOOSE_COLLECTION: 'CHOOSE_COLLECTION',
   CREATE_TEMPLATE: 'CREATE_TEMPLATE',
   MINT_ASSETS: 'MINT_ASSETS',
@@ -46,7 +46,7 @@ const Create = (): JSX.Element => {
   const [templateDescription, setTemplateDescription] = useState<string>('');
   const [templateImage, setTemplateImage] = useState<string>('');
   const [templateVideo, setTemplateVideo] = useState<string>('');
-  const [editionSize, setEditionSize] = useState<string>();
+  const [maxSupply, setMaxSupply] = useState<string>();
   const [mintAmount, setMintAmount] = useState<string>();
   const [templateUploadedFile, setTemplateUploadedFile] = useState<File | null>(
     null
@@ -112,7 +112,7 @@ const Create = (): JSX.Element => {
             template_description: templateDescription,
             template_image: templateIpfsImage,
             template_video: templateVideo,
-            max_supply: parseInt(editionSize),
+            max_supply: parseInt(maxSupply),
             initial_mint_amount: parseInt(mintAmount),
           })
         : await ProtonSDK.createTemplateAssets({
@@ -125,7 +125,7 @@ const Create = (): JSX.Element => {
             template_image: templateIpfsImage,
             template_video: templateVideo,
             template_description: templateDescription,
-            max_supply: parseInt(editionSize),
+            max_supply: parseInt(maxSupply),
             initial_mint_amount: parseInt(mintAmount),
           });
 
@@ -151,7 +151,7 @@ const Create = (): JSX.Element => {
     setTemplateDescription('');
     setTemplateImage('');
     setTemplateVideo('');
-    setEditionSize('');
+    setMaxSupply('');
     setMintAmount('');
     setSelectedCollection(placeholderCollection);
   };
@@ -181,7 +181,7 @@ const Create = (): JSX.Element => {
             templateImage={templateImage}
             templateName={templateName}
             selectedCollection={selectedCollection}
-            editionSize={editionSize}>
+            maxSupply={maxSupply}>
             <CreateTemplate
               setTemplateUploadedFile={setTemplateUploadedFile}
               templateUploadedFile={templateUploadedFile}
@@ -190,8 +190,9 @@ const Create = (): JSX.Element => {
               setTemplateName={setTemplateName}
               templateDescription={templateDescription}
               setTemplateDescription={setTemplateDescription}
-              editionSize={editionSize}
-              setEditionSize={setEditionSize}
+              maxSupply={maxSupply}
+              setMaxSupply={setMaxSupply}
+              setPageState={setPageState}
             />
           </CreatePageLayout>
         );
@@ -202,12 +203,14 @@ const Create = (): JSX.Element => {
             templateImage={templateImage}
             templateName={templateName}
             selectedCollection={selectedCollection}
-            editionSize={editionSize}>
+            maxSupply={maxSupply}>
             <InitialMint
               mintAmount={mintAmount}
               setMintAmount={setMintAmount}
               createNft={createNft}
               createNftError={createNftError}
+              setPageState={setPageState}
+              maxSupply={maxSupply}
             />
           </CreatePageLayout>
         );
@@ -218,7 +221,7 @@ const Create = (): JSX.Element => {
             templateImage={templateImage}
             templateName={templateName}
             selectedCollection={selectedCollection}
-            editionSize={editionSize}>
+            maxSupply={maxSupply}>
             <ChooseCollection
               collectionsList={collectionsList}
               selectedCollection={selectedCollection}
