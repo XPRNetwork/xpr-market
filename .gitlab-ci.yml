@@ -34,7 +34,7 @@ update development helm chart:
   image: 830055101690.dkr.ecr.us-west-2.amazonaws.com/metal/ci:latest
   stage: release
   only:
-    - develop@proton/market
+    - develop@proton/proton-market
   script:
     - export IMAGE=devel-$CI_COMMIT_SHA
     - git clone -b develop git@ci.metalpay.network:metalpay/metal-devops.git
