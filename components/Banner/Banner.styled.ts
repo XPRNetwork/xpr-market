@@ -9,7 +9,7 @@ export const Background = styled.section`
   width: 100%;
   height: 40px;
   background: #f0e8fd;
-  z-index: 100;
+  z-index: 5;
   display: flex;
   justify-content: center;
   align-items: center;
