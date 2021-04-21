@@ -32,6 +32,7 @@ export const RightColumn = styled.div`
 
 export const ElementTitle = styled.h2`
   font-family: CircularStdBold;
+  font-weight: normal;
   font-size: 16px;
   line-height: 24px;
   color: #1a1a1a;

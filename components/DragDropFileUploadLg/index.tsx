@@ -63,9 +63,13 @@ const DragDropFileUploadLg = ({
           <ImageInfo>
             <PreviewImageContainer>
               {templateUploadedFile.type.includes('mp4') ? (
-                <video width="64" height="64" preload="metadata">
-                  <source src={`${uploadPreview}#t=0.1`} />
-                </video>
+                <video
+                  width="64"
+                  height="64"
+                  muted
+                  playsInline
+                  src={`${uploadPreview}`}
+                />
               ) : (
                 <Image
                   priority
