@@ -19,6 +19,7 @@ import ChooseCollection from '../components/ChooseCollection';
 import CreateTemplate from '../components/CreateTemplate';
 import InitialMint from '../components/InitialMint';
 import { RAM_COSTS } from '../utils/constants';
+import proton from '../services/proton-rpc';
 
 export const CREATE_PAGE_STATES = {
   CHOOSE_COLLECTION: 'CHOOSE_COLLECTION',
@@ -60,6 +61,9 @@ const Create = (): JSX.Element => {
   const [pageState, setPageState] = useState<string>(
     CREATE_PAGE_STATES.CHOOSE_COLLECTION
   );
+  const [accountRam, setAccountRam] = useState<number>(0);
+  const [contractRam, setContractRam] = useState<number>(0);
+  const [conversionRate, setConversionRate] = useState<number>(0);
 
   useEffect(() => {
     if (templateUploadedFile && window) {
@@ -88,6 +92,21 @@ const Create = (): JSX.Element => {
       router.push('/');
     }
   }, [currentUser, isLoadingUser]);
+
+  useEffect(() => {
+    (async () => {
+      if (currentUser) {
+        const { max, used } = await proton.getAccountRam(currentUser.actor);
+        const specialMintRam = await proton.getSpecialMintContractRam(
+          currentUser.actor
+        );
+        const rate = await proton.getXPRtoXUSDCConversionRate();
+        setAccountRam(max - used);
+        setContractRam(specialMintRam);
+        setConversionRate(rate);
+      }
+    })();
+  }, [currentUser]);
 
   const createNft = async () => {
     setCreateNftError('');
@@ -209,6 +228,9 @@ const Create = (): JSX.Element => {
             selectedCollection={selectedCollection}
             maxSupply={maxSupply}>
             <InitialMint
+              accountRam={accountRam}
+              contractRam={contractRam}
+              conversionRate={conversionRate}
               mintAmount={mintAmount}
               setMintAmount={setMintAmount}
               createNft={createNft}
