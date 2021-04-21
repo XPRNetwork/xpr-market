@@ -14,7 +14,7 @@ interface DescriptionProps {
 }
 
 export const Background = styled.div`
-  z-index: 3;
+  z-index: 100;
   position: fixed;
   top: 0;
   left: 0;
@@ -35,7 +35,7 @@ export const Background = styled.div`
 export const ModalBox = styled(MaxWidth)`
   display: flex;
   flex-direction: column;
-  margin-top: 18vh;
+  margin-top: 18vh !important;
   padding: 24px;
   border-radius: 8px;
   box-shadow: 0 8px 8px -4px rgba(0, 0, 0, 0.1), 0 0 4px 0 rgba(0, 0, 0, 0.08);
