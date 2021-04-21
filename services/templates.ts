@@ -273,6 +273,8 @@ export const getTemplatesWithUserAssetCount = async (
   page: number
 ): Promise<Template[]> => {
   try {
+    if (page === -1) return [];
+
     const accountResponse = await getFromApi<Account>(
       `${process.env.NEXT_PUBLIC_NFT_ENDPOINT}/atomicassets/v1/accounts/${owner}`
     );
@@ -302,7 +304,6 @@ export const getTemplatesWithUserAssetCount = async (
     const templateIds = accountResponse.data.templates
       .map(({ template_id }) => template_id)
       .splice((page - 1) * PAGINATION_LIMIT, PAGINATION_LIMIT);
-
     if (!templateIds.length) return [];
 
     const templates = await getTemplatesFromTemplateIds(templateIds);
