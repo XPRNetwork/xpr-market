@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { StyledButton } from '../Button/Button.styled';
 
 export const Container = styled.section`
   max-width: 60%;
@@ -80,4 +81,24 @@ export const ErrorMessage = styled.p`
   font-size: 14px;
   color: #f94e6c;
   margin: 10px 0;
+`;
+
+export const BackButton = styled(StyledButton)`
+  background-color: transparent;
+  color: rgb(117, 46, 235);
+
+  :hover {
+    color: rgba(117, 46, 235, 0.55);
+    background-color: transparent;
+    box-shadow: none;
+  }
+`;
+
+export const FeeLabel = styled.p`
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  line-height: 24px;
+  color: #333333;
+  margin: 8px 0 0;
 `;

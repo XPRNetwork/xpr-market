@@ -45,14 +45,29 @@ export const Column = styled.div`
 
 export const ImageContainer = styled(FadeInImageContainer)`
   width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  > div {
+    width: 100%;
+  }
 
   ${breakpoint.tablet`
     max-width: 294px;
   `};
 
   ${breakpoint.mobile`
-    margin: 32px auto;
+    max-width: 100%;
+    margin: 0px auto 32px;
   `};
+`;
+
+export const Video = styled.video`
+  width: 100%;
+  max-height: 100%;
+  border-radius: 16px;
+  outline: none;
 `;
 
 export const TabTitle = styled.h1<TabTitleProps>`

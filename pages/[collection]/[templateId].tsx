@@ -11,7 +11,7 @@ import { getAllTemplateSales, Sale, SaleAsset } from '../../services/sales';
 import ProtonSDK from '../../services/proton';
 import * as gtag from '../../utils/gtag';
 import { getSalesHistory } from '../../services/sales';
-import { TAB_TYPES } from '../../components/SalesHistoryTable';
+import { TAB_TYPES, RouterQuery } from '../../utils/constants';
 
 const emptyTemplateDetails = {
   lowestPrice: '',
@@ -29,13 +29,15 @@ const emptyTemplateDetails = {
   },
 };
 
-type Query = {
-  [query: string]: string;
-};
-
 const MarketplaceTemplateDetail = (): JSX.Element => {
   const router = useRouter();
-  const { collection, templateId } = router.query as Query;
+  const {
+    collection: caseSensitiveCollection,
+    templateId,
+  } = router.query as RouterQuery;
+  const collection = caseSensitiveCollection
+    ? caseSensitiveCollection.toLowerCase()
+    : '';
   const {
     updateCurrentUserBalance,
     currentUser,
@@ -70,7 +72,7 @@ const MarketplaceTemplateDetail = (): JSX.Element => {
     lowestPrice,
     max_supply,
     collection: { author, collection_name, img: collectionImage },
-    immutable_data: { image, name, desc },
+    immutable_data: { image, name, desc, video },
   } = template;
 
   useEffect(() => {
@@ -152,17 +154,9 @@ const MarketplaceTemplateDetail = (): JSX.Element => {
     }
   };
 
-  const handleButtonClick = currentUser
-    ? isBalanceInsufficient
-      ? () => window.open('https://foobar.protonchain.com/')
-      : buyAsset
-    : login;
+  const handleButtonClick = currentUser ? buyAsset : login;
 
-  const buttonText = currentUser
-    ? isBalanceInsufficient
-      ? 'Visit Foobar Faucet'
-      : 'Buy now'
-    : 'Connect wallet to buy';
+  const buttonText = currentUser ? 'Buy now' : 'Connect wallet to buy';
 
   const getContent = () => {
     if (error) {
@@ -189,6 +183,7 @@ const MarketplaceTemplateDetail = (): JSX.Element => {
         sales={sales}
         error={error}
         image={image}
+        video={video}
         currentAsset={currentAsset}
         activeTab={activeTab}
         setActiveTab={setActiveTab}>
@@ -201,6 +196,7 @@ const MarketplaceTemplateDetail = (): JSX.Element => {
           saleId={saleId}
           purchasingError={purchasingError}
           formattedPricesBySaleId={formattedPricesBySaleId}
+          isBalanceInsufficient={isBalanceInsufficient}
           handleButtonClick={handleButtonClick}
           setPurchasingError={setPurchasingError}
           setIsBalanceInsufficient={setIsBalanceInsufficient}

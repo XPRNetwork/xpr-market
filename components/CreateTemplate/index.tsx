@@ -9,6 +9,8 @@ import {
 import DragDropFileUploadLg from '../DragDropFileUploadLg';
 import InputField from '../InputField';
 import Button from '../Button';
+import { BackButton } from '../CreatePageLayout/CreatePageLayout.styled';
+import { CREATE_PAGE_STATES } from '../../pages/create';
 
 type Props = {
   goToMint: () => void;
@@ -18,8 +20,9 @@ type Props = {
   setTemplateName: Dispatch<SetStateAction<string>>;
   templateDescription: string;
   setTemplateDescription: Dispatch<SetStateAction<string>>;
-  editionSize: string;
-  setEditionSize: Dispatch<SetStateAction<string>>;
+  maxSupply: string;
+  setMaxSupply: Dispatch<SetStateAction<string>>;
+  setPageState: Dispatch<SetStateAction<string>>;
 };
 
 const CreateTemplate = ({
@@ -30,8 +33,9 @@ const CreateTemplate = ({
   setTemplateName,
   templateDescription,
   setTemplateDescription,
-  editionSize,
-  setEditionSize,
+  maxSupply,
+  setMaxSupply,
+  setPageState,
 }: Props): JSX.Element => {
   const [formError, setFormError] = useState<string>('');
 
@@ -51,7 +55,7 @@ const CreateTemplate = ({
       errors.push('set a description');
     }
 
-    if (typeof editionSize === 'undefined' || isNaN(parseInt(editionSize))) {
+    if (typeof maxSupply === 'undefined' || isNaN(parseInt(maxSupply))) {
       errors.push(
         "set the template's maximum edition size (0 for no maximum edition size)"
       );
@@ -119,14 +123,18 @@ const CreateTemplate = ({
         inputType="number"
         min={0}
         step={1}
-        value={editionSize}
-        setValue={setEditionSize}
+        value={maxSupply}
+        setValue={setMaxSupply}
         placeholder="Edition Size"
         tooltip="The number of tokens created"
         numberOfTooltipLines={1}
       />
       {formError ? <ErrorMessage>{formError}</ErrorMessage> : null}
       <Button onClick={validateAndProceed}>Continue</Button>
+      <BackButton
+        onClick={() => setPageState(CREATE_PAGE_STATES.CHOOSE_COLLECTION)}>
+        Back
+      </BackButton>
     </>
   );
 };

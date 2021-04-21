@@ -15,7 +15,11 @@ import {
   HalfButton,
   FeeLabel,
 } from './Modal.styled';
-import { RAM_COSTS } from '../../utils/constants';
+import {
+  RAM_COSTS,
+  SHORTENED_TOKEN_PRECISION,
+  TOKEN_SYMBOL,
+} from '../../utils/constants';
 import { calculateFee } from '../../utils';
 import ProtonSDK from '../../services/proton';
 import { ReactComponent as CloseIcon } from '../../public/close.svg';
@@ -27,8 +31,8 @@ export const MintAssetModal = (): JSX.Element => {
   const { closeModal, modalProps } = useModalContext();
   const {
     templateId,
-    maxEditionSize,
-    editionSize,
+    maxSupply,
+    issuedSupply,
     collectionName,
     accountRam,
     conversionRate,
@@ -37,7 +41,7 @@ export const MintAssetModal = (): JSX.Element => {
   } = modalProps as MintAssetModalProps;
   const [amount, setAmount] = useState<string>('');
   const [mintFee, setMintFee] = useState<number>(0);
-  const possibleMintAmount = maxEditionSize - editionSize;
+  const possibleMintAmount = maxSupply - issuedSupply;
   const maxMintAmountForSession =
     possibleMintAmount < 50 ? possibleMintAmount : 50;
   const maxMintMessage = `${maxMintAmountForSession} max${
@@ -48,7 +52,7 @@ export const MintAssetModal = (): JSX.Element => {
     const numAssets = parseInt(amount);
     const fee = calculateFee({
       numAssets: isNaN(numAssets) ? 0 : numAssets,
-      accountRam,
+      currentRamAmount: accountRam,
       ramCost: RAM_COSTS.MINT_ASSET,
       conversionRate,
     });
@@ -87,7 +91,7 @@ export const MintAssetModal = (): JSX.Element => {
     mintFee && mintFee !== 0 ? (
       <FeeLabel>
         <span>Mint Fee</span>
-        <span>{mintFee.toFixed(2)} XUSDC</span>
+        <span>{mintFee.toFixed(SHORTENED_TOKEN_PRECISION)} XUSDC</span>
       </FeeLabel>
     ) : null;
 
@@ -101,8 +105,8 @@ export const MintAssetModal = (): JSX.Element => {
           </CloseIconContainer>
         </Section>
         <Description>
-          You have minted {editionSize} out of a total edition size of{' '}
-          {maxEditionSize}.
+          You have minted {issuedSupply} out of a total edition size of{' '}
+          {maxSupply}.
           <br />
           Enter an amount to mint ({maxMintMessage}).
         </Description>
@@ -114,7 +118,7 @@ export const MintAssetModal = (): JSX.Element => {
           mt="8px"
           value={amount}
           setValue={setAmount}
-          placeholder="Enter amount"
+          placeholder={`Enter amount in ${TOKEN_SYMBOL}`}
           submit={parseInt(amount) > maxMintAmountForSession ? null : mintNfts}
           checkIfIsValid={(input) => {
             const numberInput = parseInt(input as string);

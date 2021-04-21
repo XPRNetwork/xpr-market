@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import Button from '../Button';
 import { useWindowSize } from '../../hooks';
+import { useAuthContext } from '../Provider';
 import {
   Container,
   Content,
@@ -15,11 +16,16 @@ import {
 const ExploreCard = (): JSX.Element => {
   const router = useRouter();
   const { isMobile } = useWindowSize();
+  const { currentUser, login } = useAuthContext();
   const [isFullWidth, setIsFullWidth] = useState<boolean>(true);
 
   useEffect(() => {
     setIsFullWidth(isMobile);
   }, [isMobile]);
+
+  const handleGetStartedClick = currentUser
+    ? () => router.push('/create')
+    : login;
 
   return (
     <Container>
@@ -33,7 +39,7 @@ const ExploreCard = (): JSX.Element => {
             fullWidth={isFullWidth}
             margin="0"
             smallSize={isMobile}
-            onClick={() => router.push('/create')}>
+            onClick={handleGetStartedClick}>
             Get Started
           </Button>
         </ButtonWrapper>

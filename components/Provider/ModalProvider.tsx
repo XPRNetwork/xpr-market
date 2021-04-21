@@ -67,11 +67,11 @@ export interface CreateCollectionProps {
 export interface MintAssetModalProps extends GeneralModalProps {
   collectionName: string;
   templateId: string;
-  maxEditionSize: number;
-  editionSize: number;
+  maxSupply: number;
   accountRam: number;
   conversionRate: number;
   setIsModalWithFeeOpen: Dispatch<SetStateAction<boolean>>;
+  issuedSupply: number;
 }
 
 type ModalProps =

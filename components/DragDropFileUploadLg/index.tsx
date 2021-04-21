@@ -69,9 +69,10 @@ const DragDropFileUploadLg = ({
               ) : (
                 <Image
                   priority
-                  layout="fixed"
+                  layout="responsive"
                   width={64}
                   height={64}
+                  objectFit="contain"
                   alt={templateUploadedFile.name}
                   src={uploadPreview}
                 />

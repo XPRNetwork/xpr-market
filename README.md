@@ -1,8 +1,7 @@
 
-# Monsters NFT Demo
+# Proton Marketplace
 
-This demo shows the basic functionality of NFTs on the Proton chain. Through the use of the [Proton Web SDK](https://www.npmjs.com/package/@proton/web-sdk), this demo allows for purchasing and 
-selling of `monsters` NFT. You may view the live version of this demo (which uses Protonchain mainnet) [here](https://nft.protonchain.com).
+This application shows the basic functionality of NFTs on the Proton chain through the use of the [Proton Web SDK](https://www.npmjs.com/package/@proton/web-sdk).
 
 This is built off of atomicassets NFT framework.
 
@@ -10,9 +9,6 @@ This is built off of atomicassets NFT framework.
 - [API Documentation for atomicmarket (mainnet)](https://proton.api.atomicassets.io/atomicmarket/docs/swagger/)
 - [API Documentation for atomicassets (testnet)](https://test.proton.api.atomicassets.io/atomicassets/docs/swagger/)
 - [API Documentation for atomicmarket (testnet)](https://test.proton.api.atomicassets.io/atomicmarket/docs/swagger/)
-
-The demo uses FOOBAR as a currency to buy and sell the monster NFTs. To get some FOOBAR tokens, 
-use the [FOOBAR Faucet](https://foobar.protonchain.com).
 
 ## To build and run locally
 

@@ -19,8 +19,9 @@ import ChooseCollection from '../components/ChooseCollection';
 import CreateTemplate from '../components/CreateTemplate';
 import InitialMint from '../components/InitialMint';
 import { RAM_COSTS } from '../utils/constants';
+import proton from '../services/proton-rpc';
 
-const CREATE_PAGE_STATES = {
+export const CREATE_PAGE_STATES = {
   CHOOSE_COLLECTION: 'CHOOSE_COLLECTION',
   CREATE_TEMPLATE: 'CREATE_TEMPLATE',
   MINT_ASSETS: 'MINT_ASSETS',
@@ -46,7 +47,7 @@ const Create = (): JSX.Element => {
   const [templateDescription, setTemplateDescription] = useState<string>('');
   const [templateImage, setTemplateImage] = useState<string>('');
   const [templateVideo, setTemplateVideo] = useState<string>('');
-  const [editionSize, setEditionSize] = useState<string>();
+  const [maxSupply, setMaxSupply] = useState<string>();
   const [mintAmount, setMintAmount] = useState<string>();
   const [templateUploadedFile, setTemplateUploadedFile] = useState<File | null>(
     null
@@ -60,17 +61,22 @@ const Create = (): JSX.Element => {
   const [pageState, setPageState] = useState<string>(
     CREATE_PAGE_STATES.CHOOSE_COLLECTION
   );
+  const [accountRam, setAccountRam] = useState<number>(0);
+  const [contractRam, setContractRam] = useState<number>(0);
+  const [conversionRate, setConversionRate] = useState<number>(0);
 
   useEffect(() => {
     if (templateUploadedFile && window) {
       const filetype = templateUploadedFile.type;
       if (filetype.includes('video')) {
         const readerSetTemplateVideo = (result) => {
+          setTemplateImage('');
           setTemplateVideo(result);
         };
         fileReader(readerSetTemplateVideo, templateUploadedFile);
       } else {
         const readerSetTemplateImage = (result) => {
+          setTemplateVideo('');
           setTemplateImage(result);
         };
         fileReader(readerSetTemplateImage, templateUploadedFile);
@@ -87,11 +93,30 @@ const Create = (): JSX.Element => {
     }
   }, [currentUser, isLoadingUser]);
 
+  useEffect(() => {
+    (async () => {
+      if (currentUser) {
+        const { max, used } = await proton.getAccountRam(currentUser.actor);
+        const specialMintRam = await proton.getSpecialMintContractRam(
+          currentUser.actor
+        );
+        const rate = await proton.getXPRtoXUSDCConversionRate();
+        setAccountRam(max - used);
+        setContractRam(specialMintRam);
+        setConversionRate(rate);
+      }
+    })();
+  }, [currentUser]);
+
   const createNft = async () => {
     setCreateNftError('');
 
     try {
       const templateIpfsImage = await uploadToIPFS(templateUploadedFile);
+      let isVideo = false;
+      if (templateUploadedFile.type.includes('mp4')) {
+        isVideo = true;
+      }
 
       const result = isUncreatedCollectionSelected
         ? await ProtonSDK.createNft({
@@ -108,9 +133,9 @@ const Create = (): JSX.Element => {
             ).toFixed(6),
             template_name: templateName,
             template_description: templateDescription,
-            template_image: templateIpfsImage,
-            template_video: templateVideo,
-            max_supply: parseInt(editionSize),
+            template_image: isVideo ? null : templateIpfsImage,
+            template_video: isVideo ? templateIpfsImage : null,
+            max_supply: parseInt(maxSupply),
             initial_mint_amount: parseInt(mintAmount),
           })
         : await ProtonSDK.createTemplateAssets({
@@ -120,10 +145,10 @@ const Create = (): JSX.Element => {
             author: currentUser.actor,
             collection_name: selectedCollection.collection_name,
             template_name: templateName,
-            template_image: templateIpfsImage,
-            template_video: templateVideo,
+            template_image: isVideo ? null : templateIpfsImage,
+            template_video: isVideo ? templateIpfsImage : null,
             template_description: templateDescription,
-            max_supply: parseInt(editionSize),
+            max_supply: parseInt(maxSupply),
             initial_mint_amount: parseInt(mintAmount),
           });
 
@@ -149,7 +174,7 @@ const Create = (): JSX.Element => {
     setTemplateDescription('');
     setTemplateImage('');
     setTemplateVideo('');
-    setEditionSize('');
+    setMaxSupply('');
     setMintAmount('');
     setSelectedCollection(placeholderCollection);
   };
@@ -179,7 +204,7 @@ const Create = (): JSX.Element => {
             templateImage={templateImage}
             templateName={templateName}
             selectedCollection={selectedCollection}
-            editionSize={editionSize}>
+            maxSupply={maxSupply}>
             <CreateTemplate
               setTemplateUploadedFile={setTemplateUploadedFile}
               templateUploadedFile={templateUploadedFile}
@@ -188,8 +213,9 @@ const Create = (): JSX.Element => {
               setTemplateName={setTemplateName}
               templateDescription={templateDescription}
               setTemplateDescription={setTemplateDescription}
-              editionSize={editionSize}
-              setEditionSize={setEditionSize}
+              maxSupply={maxSupply}
+              setMaxSupply={setMaxSupply}
+              setPageState={setPageState}
             />
           </CreatePageLayout>
         );
@@ -200,12 +226,17 @@ const Create = (): JSX.Element => {
             templateImage={templateImage}
             templateName={templateName}
             selectedCollection={selectedCollection}
-            editionSize={editionSize}>
+            maxSupply={maxSupply}>
             <InitialMint
+              accountRam={accountRam}
+              contractRam={contractRam}
+              conversionRate={conversionRate}
               mintAmount={mintAmount}
               setMintAmount={setMintAmount}
               createNft={createNft}
               createNftError={createNftError}
+              setPageState={setPageState}
+              maxSupply={maxSupply}
             />
           </CreatePageLayout>
         );
@@ -216,7 +247,7 @@ const Create = (): JSX.Element => {
             templateImage={templateImage}
             templateName={templateName}
             selectedCollection={selectedCollection}
-            editionSize={editionSize}>
+            maxSupply={maxSupply}>
             <ChooseCollection
               collectionsList={collectionsList}
               selectedCollection={selectedCollection}

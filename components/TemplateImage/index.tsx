@@ -17,8 +17,9 @@ const TemplateImage = ({
       <Image
         priority
         layout="responsive"
-        width={213}
+        width={220}
         height={220}
+        objectFit="contain"
         alt={templateName}
         src={templateImgSrc || '/placeholder-template-image.png'}
       />

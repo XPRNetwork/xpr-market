@@ -54,6 +54,7 @@ export const InputContainer = styled.div<InputContainerProps>`
   transition: 0.2s;
   display: flex;
   align-items: center;
+  outline: none;
   background: ${({ isSearchInputActive }) =>
     isSearchInputActive ? 'white' : '#f2f2f2'};
   border: solid 1px

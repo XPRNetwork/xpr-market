@@ -1,5 +1,5 @@
-export const EMPTY_BALANCE = '0 FOOBAR';
-export const TOKEN_SYMBOL = 'FOOBAR';
+export const EMPTY_BALANCE = '0.00 XUSDC';
+export const TOKEN_SYMBOL = 'XUSDC';
 export const TOKEN_CONTRACT = 'xtokens';
 export const TOKEN_PRECISION = 6;
 export const SHORTENED_TOKEN_PRECISION = 2;
@@ -28,7 +28,29 @@ export const SM_FILE_UPLOAD_TYPES = {
 };
 export const LG_FILE_SIZE_UPLOAD_LIMIT = 30 * 1000000; // 30 MB
 export const SM_FILE_SIZE_UPLOAD_LIMIT = 5 * 1000000; // 5 MB
-export const IPFS_RESOLVER = 'https://cloudflare-ipfs.com/ipfs/';
+export const IPFS_RESOLVER = 'https://gateway.pinata.cloud/ipfs/';
+export const DEFAULT_SCHEMA = {
+  series: 'uint16',
+  name: 'string',
+  desc: 'string',
+  image: 'string',
+  audio: 'string',
+  video: 'string',
+};
+export const RAM_COSTS = {
+  CREATE_COLLECTION_SCHEMA_TEMPLATE: 2000,
+  MINT_ASSET: 151,
+  LIST_SALE: 768,
+};
+export const TAB_TYPES = {
+  ITEM: 'ITEM',
+  GLOBAL: 'GLOBAL',
+  ITEMS: 'ITEMS',
+  CREATIONS: 'CREATIONS',
+};
+export interface RouterQuery {
+  [query: string]: string;
+}
 export interface QueryParams {
   collection_name?: string;
   owner?: string;
@@ -43,16 +65,3 @@ export interface QueryParams {
   page?: number;
   symbol?: string;
 }
-export const DEFAULT_SCHEMA = {
-  series: 'uint16',
-  name: 'string',
-  desc: 'string',
-  image: 'string',
-  audio: 'string',
-  video: 'string',
-};
-export const RAM_COSTS = {
-  CREATE_COLLECTION_SCHEMA_TEMPLATE: 2000,
-  MINT_ASSET: 151,
-  LIST_SALE: 768,
-};

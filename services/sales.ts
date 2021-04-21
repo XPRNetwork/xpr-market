@@ -2,8 +2,7 @@ import { Asset } from './assets';
 import { Collection } from './collections';
 import { getFromApi } from '../utils/browser-fetch';
 import { toQueryString, addPrecisionDecimal } from '../utils';
-import { TOKEN_SYMBOL, PAGINATION_LIMIT } from '../utils/constants';
-import { TAB_TYPES } from '../components/SalesHistoryTable';
+import { TOKEN_SYMBOL, PAGINATION_LIMIT, TAB_TYPES } from '../utils/constants';
 
 type Price = {
   token_contract: string;

@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { breakpoint } from '../../styles/Breakpoints';
 
 export const NameContainer = styled.div`
   display: flex;
@@ -8,6 +9,12 @@ export const NameContainer = styled.div`
 export const Name = styled.h1`
   font-size: 40px;
   line-height: 56px;
+
+  ${breakpoint.mobile`
+    font-weight: normal;
+    font-size: 28px;
+    line-height: 1.43;
+  `}
 `;
 
 export const General = styled.p`

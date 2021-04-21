@@ -23,6 +23,7 @@ const Grid = ({ items }: Props): JSX.Element => {
           collection: { collection_name, img },
           immutable_data: { image, video },
           issued_supply,
+          max_supply,
           lowestPrice,
           totalAssets,
           assetsForSale,
@@ -43,7 +44,7 @@ const Grid = ({ items }: Props): JSX.Element => {
               key={template_id}
               collectionName={collection_name}
               templateName={name}
-              editionSize={issued_supply}
+              maxSupply={max_supply}
               redirectPath={redirectPath}
               isUsersTemplates={isUsersTemplates}
               totalAssets={totalAssets}

@@ -23,7 +23,7 @@ export const Background = styled.section`
   width: 100%;
   background: white;
   border-bottom: 1px solid #e8ecfd;
-  z-index: 2;
+  z-index: 10;
   position: fixed;
   top: 0;
 `;
@@ -265,6 +265,12 @@ export const CloseIconButton = styled.button`
   width: 40px;
   height: 40px;
   background: #f2f2f2;
+  outline: none;
+
+  :focus,
+  :focus-visible {
+    border: 1px solid #752eeb;
+  }
 
   * {
     z-index: 3;

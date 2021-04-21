@@ -18,7 +18,7 @@ import {
 } from '../../../../services/assets';
 import { Sale } from '../../../../services/sales';
 import { getSalesHistory } from '../../../../services/sales';
-import { TAB_TYPES } from '../../../../components/SalesHistoryTable';
+import { TAB_TYPES, RouterQuery } from '../../../../utils/constants';
 
 const emptyTemplateDetails = {
   lowestPrice: '',
@@ -41,15 +41,22 @@ const emptyTemplateDetails = {
   },
 };
 
-type Query = {
-  [query: string]: string;
-};
-
 const MyNFTsTemplateDetail = (): JSX.Element => {
   const router = useRouter();
-  const { chainAccount, collection, templateId } = router.query as Query;
+  const {
+    templateId,
+    chainAccount: caseSensitiveChainAccount,
+    collection: caseSensitiveCollection,
+  } = router.query as RouterQuery;
+  const chainAccount = caseSensitiveChainAccount
+    ? caseSensitiveChainAccount.toLowerCase()
+    : '';
+  const collection = caseSensitiveCollection
+    ? caseSensitiveCollection.toLowerCase()
+    : '';
   const { currentUser, isLoadingUser } = useAuthContext();
   const { openModal, setModalProps } = useModalContext();
+
   const [sales, setSales] = useState<Sale[]>([]);
   const [templateAssets, setTemplateAssets] = useState<Asset[]>([]);
   const [
@@ -71,7 +78,7 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
     lowestPrice,
     max_supply,
     collection: { author, collection_name, img: collectionImage },
-    immutable_data: { image, name, desc },
+    immutable_data: { image, name, desc, video },
   } = template;
 
   const fetchPageData = async () => {
@@ -98,10 +105,10 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
         fetchPageData,
         collectionName: templateDetails.collection.collection_name,
         templateId: templateDetails.template_id,
-        maxEditionSize: isNaN(parseInt(templateDetails.max_supply))
+        maxSupply: isNaN(parseInt(templateDetails.max_supply))
           ? 0
           : parseInt(templateDetails.max_supply),
-        editionSize: isNaN(parseInt(templateDetails.issued_supply))
+        issuedSupply: isNaN(parseInt(templateDetails.issued_supply))
           ? 0
           : parseInt(templateDetails.issued_supply),
       });
@@ -207,6 +214,7 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
         sales={sales}
         error={error}
         image={image}
+        video={video}
         currentAsset={currentAsset}
         assetIds={assetIds}
         saleIds={saleIds}
