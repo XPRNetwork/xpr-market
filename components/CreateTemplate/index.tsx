@@ -126,8 +126,17 @@ const CreateTemplate = ({
         value={maxSupply}
         setValue={setMaxSupply}
         placeholder="Edition Size"
-        tooltip="The number of tokens created"
-        numberOfTooltipLines={1}
+        tooltip="The total number of assets you can mint for this template. Put 0 for an unlimited amount."
+        checkIfIsValid={(input) => {
+          const numberInput = parseFloat(input as string);
+          const isValid = !isNaN(numberInput) && numberInput >= 0;
+          const errorMessage = 'Edition size must be 0 or greater.';
+          return {
+            isValid,
+            errorMessage,
+          };
+        }}
+        numberOfTooltipLines={3}
       />
       {formError ? <ErrorMessage>{formError}</ErrorMessage> : null}
       <Button onClick={validateAndProceed}>Continue</Button>
