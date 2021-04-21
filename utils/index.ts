@@ -107,21 +107,19 @@ export const delay = (ms: number): Promise<void> =>
 
 export const calculateFee = ({
   numAssets,
-  accountRam,
+  currentRamAmount,
   ramCost,
   conversionRate,
 }: {
   numAssets: number;
-  accountRam: number;
+  currentRamAmount: number;
   ramCost: number;
   conversionRate: number;
 }): number => {
-  const requiredRam = numAssets * ramCost - accountRam;
+  const requiredRam = numAssets * ramCost - currentRamAmount;
   if (requiredRam > 0) {
     const calculatedFee = PRICE_OF_RAM_IN_XPR * requiredRam * conversionRate;
-    const listingFee = isNaN(calculatedFee)
-      ? 0
-      : Math.ceil(calculatedFee * 100) / 100;
-    return listingFee;
+    const fee = isNaN(calculatedFee) ? 0 : Math.ceil(calculatedFee * 100) / 100;
+    return fee;
   }
 };

@@ -12,7 +12,7 @@ import { getFromApi } from '../../utils/browser-fetch';
 import { useAuthContext } from '../Provider';
 import { SaleAsset, Sale } from '../../services/sales';
 import { Asset } from '../../services/assets';
-import { PAGINATION_LIMIT } from '../../utils/constants';
+import { PAGINATION_LIMIT, TAB_TYPES } from '../../utils/constants';
 import { getSalesHistory } from '../../services/sales';
 
 type Props = {
@@ -26,11 +26,6 @@ type Props = {
 type TableHeader = {
   title: string;
   id: string;
-};
-
-export const TAB_TYPES = {
-  ITEM: 'ITEM',
-  GLOBAL: 'GLOBAL',
 };
 
 export const tabs = [

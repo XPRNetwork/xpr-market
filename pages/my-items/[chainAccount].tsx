@@ -12,56 +12,40 @@ import {
 import { Template } from '../../services/templates';
 import LoadingPage from '../../components/LoadingPage';
 import { capitalize } from '../../utils';
-import { PAGINATION_LIMIT } from '../../utils/constants';
+import {
+  PAGINATION_LIMIT,
+  TAB_TYPES,
+  RouterQuery,
+} from '../../utils/constants';
 import Banner from '../../components/Banner';
 import ProfileTabs from '../../components/ProfileTabs';
 import PageHeader from '../../components/PageHeader';
 import proton from '../../services/proton-rpc';
 import EmptyUserContent from '../../components/EmptyUserContent';
 
-type RouterQuery = {
-  chainAccount: string;
-};
-
-type GetMyTemplatesOptions = {
-  chainAccount: string;
-  type: string;
-  page?: number;
-};
-
-const getMyTemplates = async ({
-  chainAccount,
-  type,
-  page,
-}: GetMyTemplatesOptions): Promise<Template[]> => {
-  try {
-    const pageParam = page ? page : 1;
-    let result;
-    if (type === 'ITEMS') {
-      result = await getTemplatesWithUserAssetCount(chainAccount, pageParam);
-    } else {
-      result = await getUserCreatedTemplates(chainAccount, pageParam);
-    }
-    return result;
-  } catch (e) {
-    throw new Error(e);
-  }
-};
-
 const Collection = (): JSX.Element => {
-  const TAB_TYPES = {
-    ITEMS: 'ITEMS',
-    CREATIONS: 'CREATIONS',
-  };
-
   const router = useRouter();
-  const { chainAccount } = router.query as RouterQuery;
+  const {
+    chainAccount: caseSensitiveChainAccount,
+  } = router.query as RouterQuery;
+  const chainAccount = caseSensitiveChainAccount
+    ? caseSensitiveChainAccount.toLowerCase()
+    : '';
   const { currentUser, isLoadingUser } = useAuthContext();
-  const [renderedTemplates, setRenderedTemplates] = useState<Template[]>([]);
-  const [prefetchedTemplates, setPrefetchedTemplates] = useState<Template[]>(
+  const [renderedItems, setRenderedItems] = useState<Template[]>([]);
+  const [prefetchedItems, setPrefetchedItems] = useState<Template[]>([]);
+  const [
+    prefetchItemsPageNumber,
+    setPrefetchItemsPageNumber,
+  ] = useState<number>(2);
+  const [renderedCreations, setRenderedCreations] = useState<Template[]>([]);
+  const [prefetchedCreations, setPrefetchedCreations] = useState<Template[]>(
     []
   );
-  const [prefetchPageNumber, setPrefetchPageNumber] = useState<number>(2);
+  const [
+    prefetchCreationsPageNumber,
+    setPrefetchCreationsPageNumber,
+  ] = useState<number>(2);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isLoadingNextPage, setIsLoadingNextPage] = useState<boolean>(true);
   const [isProfileLoading, setIsProfileLoading] = useState<boolean>(true);
@@ -83,25 +67,37 @@ const Collection = (): JSX.Element => {
   const [activeTab, setActiveTab] = useState<string>(tabs[0].type);
 
   const prefetchNextPage = async () => {
-    const prefetchedResult = await getMyTemplates({
-      chainAccount,
-      page: prefetchPageNumber,
-      type: activeTab,
-    });
-    setPrefetchedTemplates(prefetchedResult);
-
-    if (!prefetchedResult.length) {
-      setPrefetchPageNumber(-1);
+    if (activeTab === TAB_TYPES.ITEMS) {
+      const items = await getTemplatesWithUserAssetCount(
+        chainAccount,
+        prefetchItemsPageNumber
+      );
+      setPrefetchedItems(items);
+      setPrefetchItemsPageNumber((prevPageNumber) =>
+        items.length < PAGINATION_LIMIT ? -1 : prevPageNumber + 1
+      );
     } else {
-      setPrefetchPageNumber(prefetchPageNumber + 1);
+      const creations = await getUserCreatedTemplates(
+        chainAccount,
+        prefetchCreationsPageNumber
+      );
+      setPrefetchedCreations(creations);
+      setPrefetchCreationsPageNumber((prevPageNumber) =>
+        creations.length < PAGINATION_LIMIT ? -1 : prevPageNumber + 1
+      );
     }
 
     setIsLoadingNextPage(false);
   };
 
   const showNextPage = async () => {
-    const allFetchedTemplates = renderedTemplates.concat(prefetchedTemplates);
-    setRenderedTemplates(allFetchedTemplates);
+    if (activeTab === TAB_TYPES.ITEMS) {
+      const allItems = renderedItems.concat(prefetchedItems);
+      setRenderedItems(allItems);
+    } else {
+      const allCreations = renderedCreations.concat(prefetchedCreations);
+      setRenderedCreations(allCreations);
+    }
     setIsLoadingNextPage(true);
     await prefetchNextPage();
   };
@@ -119,24 +115,22 @@ const Collection = (): JSX.Element => {
     }
   };
 
-  const resetStates = () => {
-    setRenderedTemplates([]);
-    setPrefetchedTemplates([]);
-    setPrefetchPageNumber(2);
-    setIsTemplatesLoading(true);
-  };
-
   useEffect(() => {
     (async () => {
       if (chainAccount) {
         try {
           setIsTemplatesLoading(true);
           router.prefetch('/');
-          const templates = await getMyTemplates({
+          const initialItems = await getTemplatesWithUserAssetCount(
             chainAccount,
-            type: activeTab,
-          });
-          setRenderedTemplates(templates);
+            1
+          );
+          const initialCreations = await getUserCreatedTemplates(
+            chainAccount,
+            1
+          );
+          setRenderedItems(initialItems);
+          setRenderedCreations(initialCreations);
           await prefetchNextPage();
         } catch (e) {
           setErrorMessage(e.message);
@@ -145,7 +139,7 @@ const Collection = (): JSX.Element => {
       setIsLoading(false);
       setIsTemplatesLoading(false);
     })();
-  }, [activeTab, chainAccount]);
+  }, [chainAccount]);
 
   useEffect(() => {
     (async () => {
@@ -163,7 +157,7 @@ const Collection = (): JSX.Element => {
       return <LoadingPage margin="10% 0" />;
     }
 
-    if (!renderedTemplates.length && activeTab === 'ITEMS') {
+    if (!renderedItems.length && activeTab === TAB_TYPES.ITEMS) {
       return (
         <EmptyUserContent
           subtitle={
@@ -177,7 +171,7 @@ const Collection = (): JSX.Element => {
       );
     }
 
-    if (!renderedTemplates.length && activeTab === 'CREATIONS') {
+    if (!renderedItems.length && activeTab === TAB_TYPES.CREATIONS) {
       return (
         <EmptyUserContent
           subtitle={
@@ -191,7 +185,13 @@ const Collection = (): JSX.Element => {
       );
     }
 
-    return <Grid items={renderedTemplates} />;
+    return (
+      <Grid
+        items={
+          activeTab === TAB_TYPES.ITEMS ? renderedItems : renderedCreations
+        }
+      />
+    );
   };
 
   const getContent = () => {
@@ -209,6 +209,16 @@ const Collection = (): JSX.Element => {
       );
     }
 
+    const isPaginationButtonHidden =
+      !isLoading && activeTab === TAB_TYPES.ITEMS
+        ? renderedItems.length < PAGINATION_LIMIT
+        : renderedCreations.length < PAGINATION_LIMIT;
+
+    const isPaginationButtonDisabled =
+      !isLoading && activeTab === TAB_TYPES.ITEMS
+        ? prefetchItemsPageNumber === -1
+        : prefetchCreationsPageNumber === -1;
+
     return (
       <>
         <PageHeader
@@ -221,14 +231,13 @@ const Collection = (): JSX.Element => {
           tabList={tabs}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
-          resetStates={resetStates}
         />
         {getContentItems()}
         <PaginationButton
           onClick={showNextPage}
-          isHidden={renderedTemplates.length < PAGINATION_LIMIT}
+          isHidden={isPaginationButtonHidden}
           isLoading={isLoadingNextPage}
-          disabled={prefetchPageNumber === -1}
+          disabled={isPaginationButtonDisabled}
         />
       </>
     );

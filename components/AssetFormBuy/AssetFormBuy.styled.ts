@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { breakpoint } from '../../styles/Breakpoints';
 
 export const General = styled.p`
   color: #808080;
@@ -11,6 +12,10 @@ export const Amount = styled.h3`
   line-height: 32px;
   margin: 4px 0 32px;
   color: #1a1a1a;
+
+  ${breakpoint.mobile`
+    font-weight: normal;
+  `}
 `;
 
 export const Row = styled.div`

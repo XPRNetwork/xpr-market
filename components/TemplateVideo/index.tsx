@@ -17,7 +17,14 @@ const TemplateVideo = ({
   return (
     <VideoContainer>
       <CenterContainer>
-        <Video muted autoPlay={autoPlay} controls={controls} loop src={src} />
+        <Video
+          muted
+          autoPlay={autoPlay}
+          controls={controls}
+          loop
+          src={src}
+          onClick={(e) => e.stopPropagation()}
+        />
         {priceTag}
       </CenterContainer>
     </VideoContainer>

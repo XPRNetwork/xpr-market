@@ -6,16 +6,26 @@ import {
   Terms,
   TermsLink,
   ErrorMessage,
+  FeeLabel,
 } from '../CreatePageLayout/CreatePageLayout.styled';
 import InputField from '../InputField';
 import Button from '../Button';
 import Spinner from '../Spinner';
+import { BackButton } from '../CreatePageLayout/CreatePageLayout.styled';
+import { CREATE_PAGE_STATES } from '../../pages/create';
+import { calculateFee } from '../../utils';
+import { RAM_COSTS, SHORTENED_TOKEN_PRECISION } from '../../utils/constants';
 
 type Props = {
   mintAmount: string;
   setMintAmount: Dispatch<SetStateAction<string>>;
   createNft: () => Promise<void>;
   createNftError: string;
+  setPageState: Dispatch<SetStateAction<string>>;
+  maxSupply: string;
+  accountRam: number;
+  contractRam: number;
+  conversionRate: number;
 };
 
 const InitialMint = ({
@@ -23,9 +33,23 @@ const InitialMint = ({
   setMintAmount,
   mintAmount,
   createNftError,
+  setPageState,
+  maxSupply,
+  accountRam,
+  contractRam,
+  conversionRate,
 }: Props): JSX.Element => {
   const [mintError, setMintError] = useState<string>('');
+  const [mintFee, setMintFee] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isValid, setIsValid] = useState<boolean>(false);
+
+  useEffect(() => {
+    return () => {
+      setMintAmount('');
+      setMintFee(0);
+    };
+  }, []);
 
   useEffect(() => {
     if (createNftError) {
@@ -34,6 +58,21 @@ const InitialMint = ({
       setMintError('');
     }
   }, [createNftError]);
+
+  useEffect(() => {
+    const numAssets = parseInt(mintAmount);
+    const mintFee = calculateFee({
+      numAssets: isNaN(numAssets) ? 0 : numAssets,
+      currentRamAmount: contractRam,
+      ramCost: RAM_COSTS.MINT_ASSET,
+      conversionRate,
+    });
+    const accountRamCosts =
+      RAM_COSTS.CREATE_COLLECTION_SCHEMA_TEMPLATE - accountRam;
+    const ramFee = accountRamCosts > 0 ? accountRamCosts : 0;
+    const fee = mintFee + ramFee;
+    setMintFee(isNaN(fee) ? 0 : fee);
+  }, [mintAmount, isLoading]);
 
   const validateAndProceed = async () => {
     if (!mintAmount) {
@@ -49,6 +88,22 @@ const InitialMint = ({
       setIsLoading(false);
     }
   };
+
+  const checkMintAmountValidity = (amount) => {
+    const number = parseInt(amount);
+    if (number >= 1 && number <= 50 && number <= parseInt(maxSupply)) {
+      return true;
+    }
+    return false;
+  };
+
+  const getFee = () =>
+    mintFee && mintFee !== 0 ? (
+      <FeeLabel>
+        <span>Mint Fee</span>
+        <span>{mintFee.toFixed(SHORTENED_TOKEN_PRECISION)} XUSDC</span>
+      </FeeLabel>
+    ) : null;
 
   return (
     <>
@@ -68,18 +123,22 @@ const InitialMint = ({
         value={mintAmount}
         setValue={setMintAmount}
         placeholder="Enter amount"
-        submit={parseInt(mintAmount) > 50 ? null : createNft}
+        submit={isValid ? null : createNft}
         checkIfIsValid={(input) => {
           const numberInput = parseInt(input as string);
-          const isValid =
-            !isNaN(numberInput) && numberInput >= 1 && numberInput <= 50;
-          const errorMessage = 'You can mint 1-50 assets at a time';
+          const valid = checkMintAmountValidity(numberInput);
+          setIsValid(valid);
+          const errorMessage =
+            numberInput < parseInt(maxSupply)
+              ? 'You can mint 1-50 assets at a time'
+              : 'You cannot mint more than the set edition size';
           return {
-            isValid,
+            isValid: valid,
             errorMessage,
           };
         }}
       />
+      {getFee()}
       <Terms>By clicking “Create NFT” you agree to our</Terms>
       <TermsLink target="_blank" href="https://www.protonchain.com/terms">
         Terms of Service &amp; Privacy Policy
@@ -89,8 +148,16 @@ const InitialMint = ({
         onClick={isLoading ? null : validateAndProceed}
         disabled={parseInt(mintAmount) > 50 || isLoading}
         padding={isLoading ? '0' : '12px 0'}>
-        {isLoading ? <Spinner radius="10" hasBackground /> : 'Create NFT'}
+        {isLoading ? (
+          <Spinner size="42px" radius="10" hasBackground />
+        ) : (
+          'Create NFT'
+        )}
       </Button>
+      <BackButton
+        onClick={() => setPageState(CREATE_PAGE_STATES.CREATE_TEMPLATE)}>
+        Back
+      </BackButton>
     </>
   );
 };

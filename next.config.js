@@ -1,6 +1,6 @@
 module.exports = {
   images: {
-    domains: ['cloudflare-ipfs.com'],
+    domains: ['cloudflare-ipfs.com', 'gateway.pinata.cloud'],
   },
   webpack(config) {
     config.module.rules.push({

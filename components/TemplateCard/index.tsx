@@ -20,7 +20,7 @@ import { IPFS_RESOLVER } from '../../utils/constants';
 type Props = {
   collectionName: string;
   templateName: string;
-  editionSize: string;
+  maxSupply: string;
   isUsersTemplates?: boolean;
   redirectPath?: string;
   totalAssets?: string;
@@ -40,7 +40,7 @@ type Props = {
 const TemplateCard = ({
   collectionName,
   templateName,
-  editionSize,
+  maxSupply,
   redirectPath,
   isUsersTemplates,
   totalAssets,
@@ -131,7 +131,7 @@ const TemplateCard = ({
         />
       )}
       <Title>{templateName}</Title>
-      <GreyText>Edition size: {editionSize}</GreyText>
+      <GreyText>Edition size: {maxSupply}</GreyText>
       {price ? <Text>{price}</Text> : <PlaceholderPrice aria-hidden />}
     </Card>
   );
@@ -140,7 +140,7 @@ const TemplateCard = ({
 TemplateCard.defaultProps = {
   collectionName: 'Collection',
   templateName: 'Name',
-  editionSize: 0,
+  maxSupply: 0,
   hasMultiple: false,
 };
 

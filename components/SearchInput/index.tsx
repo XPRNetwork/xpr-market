@@ -7,7 +7,6 @@ import {
   MagnifyingIconButton,
   ClearTextButton,
 } from './SearchInput.styled';
-import { useWindowSize } from '../../hooks';
 import {
   SearchCollection,
   getSearchCollections,
@@ -31,7 +30,6 @@ const SearchInput = ({
   closeMobileSearch,
 }: Props): JSX.Element => {
   const router = useRouter();
-  const { isTablet } = useWindowSize();
   const inputRef = useRef<HTMLInputElement>();
   const clearTextButtonRef = useRef<HTMLButtonElement>();
   const resultsListRef = useRef<HTMLUListElement>();
@@ -45,13 +43,22 @@ const SearchInput = ({
 
   useEffect(() => {
     const removeInputFocusStyle = (e: MouseEvent) => {
-      if ((e.target as HTMLInputElement).nodeName !== 'INPUT') {
+      if (
+        !['INPUT', 'BUTTON', 'svg', 'path'].includes(
+          (e.target as HTMLInputElement).nodeName
+        )
+      ) {
         setInput('');
         setIsSearchInputActive(false);
+        closeMobileSearch();
       }
     };
     window.addEventListener('click', removeInputFocusStyle);
-    return () => window.removeEventListener('click', removeInputFocusStyle);
+    window.addEventListener('touchstart', removeInputFocusStyle);
+    return () => {
+      window.removeEventListener('click', removeInputFocusStyle);
+      window.removeEventListener('touchstart', removeInputFocusStyle);
+    };
   }, []);
 
   useEffect(() => {
@@ -67,8 +74,11 @@ const SearchInput = ({
     setInput(e.target.value);
 
   const clearText = () => {
-    setInput('');
-    isTablet ? closeMobileSearch() : inputRef.current.focus();
+    if (input) {
+      setInput('');
+    } else {
+      closeMobileSearch();
+    }
   };
 
   const search = (type: string) => {
@@ -115,10 +125,8 @@ const SearchInput = ({
 
   const collections = searchCollections
     .filter(({ name }) => {
-      const caseInsensitiveName = name.toLowerCase();
-      const caseInsensitiveInput = input.toLowerCase();
-      const isFragment = caseInsensitiveName.includes(caseInsensitiveInput);
-      return isFragment && caseInsensitiveName !== caseInsensitiveInput;
+      const isFragment = name.toLowerCase().includes(input.toLowerCase());
+      return isFragment;
     })
     .slice(0, 5);
 

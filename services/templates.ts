@@ -301,7 +301,7 @@ export const getTemplatesWithUserAssetCount = async (
 
     const templateIds = accountResponse.data.templates
       .map(({ template_id }) => template_id)
-      .splice((page - 1) * 10, 10);
+      .splice((page - 1) * PAGINATION_LIMIT, PAGINATION_LIMIT);
 
     if (!templateIds.length) return [];
 

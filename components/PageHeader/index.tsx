@@ -55,7 +55,7 @@ const PageHeader = ({
         {subNameIcon}
         {subName}
       </SubName>
-      <Description>{description}</Description>
+      {description ? <Description>{description}</Description> : null}
       <IconButton ref={shareRef} onClick={() => setShareActive(!shareActive)}>
         <MoreIcon />
         <ShareOnSocial top={'50px'} active={shareActive} />

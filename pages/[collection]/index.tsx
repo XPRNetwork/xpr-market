@@ -16,20 +16,19 @@ import {
   Collection,
   emptyCollection,
 } from '../../services/collections';
-import { PAGINATION_LIMIT } from '../../utils/constants';
+import { PAGINATION_LIMIT, RouterQuery } from '../../utils/constants';
 import Banner from '../../components/Banner';
 import { MODAL_TYPES, useAuthContext } from '../../components/Provider';
 import PageHeader from '../../components/PageHeader';
 import { capitalize } from '../../utils';
 
-type RouterQuery = {
-  collection: string;
-};
-
 const CollectionPage = (): JSX.Element => {
   const router = useRouter();
   const { isLoadingUser } = useAuthContext();
-  const { collection } = router.query as RouterQuery;
+  const { collection: caseSensitiveCollection } = router.query as RouterQuery;
+  const collection = caseSensitiveCollection
+    ? caseSensitiveCollection.toLowerCase()
+    : '';
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [lowestPrices, setLowestPrices] = useState<{ [id: string]: string }>(
     {}
