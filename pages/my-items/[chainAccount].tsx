@@ -73,18 +73,12 @@ const Collection = (): JSX.Element => {
         prefetchItemsPageNumber
       );
       setPrefetchedItems(items);
-      setPrefetchItemsPageNumber((prevPageNumber) =>
-        items.length < PAGINATION_LIMIT ? -1 : prevPageNumber + 1
-      );
     } else {
       const creations = await getUserCreatedTemplates(
         chainAccount,
         prefetchCreationsPageNumber
       );
       setPrefetchedCreations(creations);
-      setPrefetchCreationsPageNumber((prevPageNumber) =>
-        creations.length < PAGINATION_LIMIT ? -1 : prevPageNumber + 1
-      );
     }
 
     setIsLoadingNextPage(false);
@@ -92,11 +86,18 @@ const Collection = (): JSX.Element => {
 
   const showNextPage = async () => {
     if (activeTab === TAB_TYPES.ITEMS) {
-      const allItems = renderedItems.concat(prefetchedItems);
-      setRenderedItems(allItems);
+      setRenderedItems((prevItems) => [...prevItems, ...prefetchedItems]);
+      setPrefetchItemsPageNumber((prevPageNumber) =>
+        prefetchedItems.length < PAGINATION_LIMIT ? -1 : prevPageNumber + 1
+      );
     } else {
-      const allCreations = renderedCreations.concat(prefetchedCreations);
-      setRenderedCreations(allCreations);
+      setRenderedCreations((prevCreations) => [
+        ...prevCreations,
+        ...prefetchedCreations,
+      ]);
+      setPrefetchCreationsPageNumber((prevPageNumber) =>
+        prefetchedCreations.length < PAGINATION_LIMIT ? -1 : prevPageNumber + 1
+      );
     }
     setIsLoadingNextPage(true);
     await prefetchNextPage();
@@ -194,6 +195,27 @@ const Collection = (): JSX.Element => {
     );
   };
 
+  const getPaginationButton = () => {
+    const isHidden =
+      isLoading || (!isLoading && activeTab === TAB_TYPES.ITEMS)
+        ? prefetchItemsPageNumber === -1
+        : prefetchCreationsPageNumber === -1;
+
+    const isDisabled =
+      isLoading || (!isLoading && activeTab === TAB_TYPES.ITEMS)
+        ? renderedItems.length < PAGINATION_LIMIT
+        : renderedCreations.length < PAGINATION_LIMIT;
+
+    return (
+      <PaginationButton
+        onClick={showNextPage}
+        isHidden={isHidden}
+        isLoading={isLoadingNextPage}
+        disabled={isDisabled}
+      />
+    );
+  };
+
   const getContent = () => {
     if (isLoading || isProfileLoading || isLoadingUser) {
       return <LoadingPage />;
@@ -209,16 +231,6 @@ const Collection = (): JSX.Element => {
       );
     }
 
-    const isPaginationButtonHidden =
-      !isLoading && activeTab === TAB_TYPES.ITEMS
-        ? renderedItems.length < PAGINATION_LIMIT
-        : renderedCreations.length < PAGINATION_LIMIT;
-
-    const isPaginationButtonDisabled =
-      !isLoading && activeTab === TAB_TYPES.ITEMS
-        ? prefetchItemsPageNumber === -1
-        : prefetchCreationsPageNumber === -1;
-
     return (
       <>
         <PageHeader
@@ -233,12 +245,7 @@ const Collection = (): JSX.Element => {
           setActiveTab={setActiveTab}
         />
         {getContentItems()}
-        <PaginationButton
-          onClick={showNextPage}
-          isHidden={isPaginationButtonHidden}
-          isLoading={isLoadingNextPage}
-          disabled={isPaginationButtonDisabled}
-        />
+        {getPaginationButton()}
       </>
     );
   };
