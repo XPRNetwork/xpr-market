@@ -40,6 +40,7 @@ export const SubName = styled.p`
   line-height: 1.43;
   font-size: 28px;
   color: #752eeb;
+  margin-bottom: 16px;
 
   ${breakpoint.mobile`
     font-size: 21px;
@@ -51,7 +52,7 @@ export const Description = styled.p`
   font-size: 14px;
   line-height: 1.71;
   color: #1a1a1a;
-  margin-top: 16px;
+  margin-bottom: 8px;
 `;
 
 export const IconButton = styled.button`
