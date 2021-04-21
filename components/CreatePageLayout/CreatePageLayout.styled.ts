@@ -93,3 +93,12 @@ export const BackButton = styled(StyledButton)`
     box-shadow: none;
   }
 `;
+
+export const FeeLabel = styled.p`
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  line-height: 24px;
+  color: #333333;
+  margin: 8px 0 0;
+`;

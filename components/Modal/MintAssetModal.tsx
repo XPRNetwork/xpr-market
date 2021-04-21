@@ -52,7 +52,7 @@ export const MintAssetModal = (): JSX.Element => {
     const numAssets = parseInt(amount);
     const fee = calculateFee({
       numAssets: isNaN(numAssets) ? 0 : numAssets,
-      accountRam,
+      currentRamAmount: accountRam,
       ramCost: RAM_COSTS.MINT_ASSET,
       conversionRate,
     });

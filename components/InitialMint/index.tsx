@@ -6,12 +6,15 @@ import {
   Terms,
   TermsLink,
   ErrorMessage,
+  FeeLabel,
 } from '../CreatePageLayout/CreatePageLayout.styled';
 import InputField from '../InputField';
 import Button from '../Button';
 import Spinner from '../Spinner';
 import { BackButton } from '../CreatePageLayout/CreatePageLayout.styled';
 import { CREATE_PAGE_STATES } from '../../pages/create';
+import { calculateFee } from '../../utils';
+import { RAM_COSTS, SHORTENED_TOKEN_PRECISION } from '../../utils/constants';
 
 type Props = {
   mintAmount: string;
@@ -20,6 +23,9 @@ type Props = {
   createNftError: string;
   setPageState: Dispatch<SetStateAction<string>>;
   maxSupply: string;
+  accountRam: number;
+  contractRam: number;
+  conversionRate: number;
 };
 
 const InitialMint = ({
@@ -29,10 +35,21 @@ const InitialMint = ({
   createNftError,
   setPageState,
   maxSupply,
+  accountRam,
+  contractRam,
+  conversionRate,
 }: Props): JSX.Element => {
   const [mintError, setMintError] = useState<string>('');
+  const [mintFee, setMintFee] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isValid, setIsValid] = useState<boolean>(false);
+
+  useEffect(() => {
+    return () => {
+      setMintAmount('');
+      setMintFee(0);
+    };
+  }, []);
 
   useEffect(() => {
     if (createNftError) {
@@ -41,6 +58,21 @@ const InitialMint = ({
       setMintError('');
     }
   }, [createNftError]);
+
+  useEffect(() => {
+    const numAssets = parseInt(mintAmount);
+    const mintFee = calculateFee({
+      numAssets: isNaN(numAssets) ? 0 : numAssets,
+      currentRamAmount: contractRam,
+      ramCost: RAM_COSTS.MINT_ASSET,
+      conversionRate,
+    });
+    const accountRamCosts =
+      RAM_COSTS.CREATE_COLLECTION_SCHEMA_TEMPLATE - accountRam;
+    const ramFee = accountRamCosts > 0 ? accountRamCosts : 0;
+    const fee = mintFee + ramFee;
+    setMintFee(isNaN(fee) ? 0 : fee);
+  }, [mintAmount, isLoading]);
 
   const validateAndProceed = async () => {
     if (!mintAmount) {
@@ -64,6 +96,14 @@ const InitialMint = ({
     }
     return false;
   };
+
+  const getFee = () =>
+    mintFee && mintFee !== 0 ? (
+      <FeeLabel>
+        <span>Mint Fee</span>
+        <span>{mintFee.toFixed(SHORTENED_TOKEN_PRECISION)} XUSDC</span>
+      </FeeLabel>
+    ) : null;
 
   return (
     <>
@@ -98,6 +138,7 @@ const InitialMint = ({
           };
         }}
       />
+      {getFee()}
       <Terms>By clicking “Create NFT” you agree to our</Terms>
       <TermsLink target="_blank" href="https://www.protonchain.com/terms">
         Terms of Service &amp; Privacy Policy

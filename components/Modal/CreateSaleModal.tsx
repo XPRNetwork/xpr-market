@@ -63,7 +63,7 @@ const SaleModal = ({
   useEffect(() => {
     const fee = calculateFee({
       numAssets: numSales,
-      accountRam,
+      currentRamAmount: accountRam,
       ramCost: RAM_COSTS.LIST_SALE,
       conversionRate,
     });
