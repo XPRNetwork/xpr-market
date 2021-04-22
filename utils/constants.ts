@@ -37,10 +37,11 @@ export const DEFAULT_SCHEMA = {
   audio: 'string',
   video: 'string',
 };
-export const RAM_COSTS = {
+export const RAM_AMOUNTS = {
   CREATE_COLLECTION_SCHEMA_TEMPLATE: 2000,
   MINT_ASSET: 151,
   LIST_SALE: 768,
+  FREE_INITIAL_SPECIAL_MINT_CONTRACT_RAM: 1510,
 };
 export const TAB_TYPES = {
   ITEM: 'ITEM',

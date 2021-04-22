@@ -27,7 +27,7 @@ import { calculateFee } from '../../utils';
 import {
   TOKEN_SYMBOL,
   TOKEN_PRECISION,
-  RAM_COSTS,
+  RAM_AMOUNTS,
   SHORTENED_TOKEN_PRECISION,
 } from '../../utils/constants';
 import ProtonSDK from '../../services/proton';
@@ -64,7 +64,7 @@ const SaleModal = ({
     const fee = calculateFee({
       numAssets: numSales,
       currentRamAmount: accountRam,
-      ramCost: RAM_COSTS.LIST_SALE,
+      ramCost: RAM_AMOUNTS.LIST_SALE,
       conversionRate,
     });
     setListingFee(isNaN(fee) ? 0 : fee);

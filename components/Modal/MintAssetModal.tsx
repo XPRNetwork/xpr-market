@@ -16,7 +16,7 @@ import {
   FeeLabel,
 } from './Modal.styled';
 import {
-  RAM_COSTS,
+  RAM_AMOUNTS,
   SHORTENED_TOKEN_PRECISION,
   TOKEN_SYMBOL,
 } from '../../utils/constants';
@@ -53,7 +53,7 @@ export const MintAssetModal = (): JSX.Element => {
     const fee = calculateFee({
       numAssets: isNaN(numAssets) ? 0 : numAssets,
       currentRamAmount: accountRam,
-      ramCost: RAM_COSTS.MINT_ASSET,
+      ramCost: RAM_AMOUNTS.MINT_ASSET,
       conversionRate,
     });
     setMintFee(isNaN(fee) ? 0 : fee);
