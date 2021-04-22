@@ -3,12 +3,27 @@ import { StyledTableDataCell } from './TableDataCell.styled';
 
 type Props = {
   children: ReactNode;
+  color?: string;
   onClick?: () => void;
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
 };
 
-const TableDataCell = ({ children, onClick }: Props): JSX.Element => {
+const TableDataCell = ({
+  children,
+  color,
+  onClick,
+  onMouseEnter,
+  onMouseLeave,
+}: Props): JSX.Element => {
   return (
-    <StyledTableDataCell onClick={onClick}>{children}</StyledTableDataCell>
+    <StyledTableDataCell
+      color={color}
+      onClick={onClick}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}>
+      {children}
+    </StyledTableDataCell>
   );
 };
 
