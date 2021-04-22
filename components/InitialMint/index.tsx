@@ -14,7 +14,11 @@ import Spinner from '../Spinner';
 import { BackButton } from '../CreatePageLayout/CreatePageLayout.styled';
 import { CREATE_PAGE_STATES } from '../../pages/create';
 import { calculateFee } from '../../utils';
-import { RAM_COSTS, SHORTENED_TOKEN_PRECISION } from '../../utils/constants';
+import {
+  RAM_COSTS,
+  SHORTENED_TOKEN_PRECISION,
+  PRICE_OF_RAM_IN_XPR,
+} from '../../utils/constants';
 
 type Props = {
   mintAmount: string;
@@ -68,7 +72,9 @@ const InitialMint = ({
       conversionRate,
     });
     const accountRamCosts =
-      RAM_COSTS.CREATE_COLLECTION_SCHEMA_TEMPLATE - accountRam;
+      (RAM_COSTS.CREATE_COLLECTION_SCHEMA_TEMPLATE - accountRam) *
+      PRICE_OF_RAM_IN_XPR *
+      conversionRate;
     const ramFee = accountRamCosts > 0 ? accountRamCosts : 0;
     const fee = mintFee + ramFee;
     setMintFee(isNaN(fee) ? 0 : fee);
