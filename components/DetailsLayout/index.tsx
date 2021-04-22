@@ -11,7 +11,7 @@ import {
 } from './DetailsLayout.styled';
 import SalesHistoryTable from '../SalesHistoryTable';
 import AssetFormTitle from '../AssetFormTitle';
-import { Sale, SaleAsset } from '../../services/sales';
+import { SaleAsset } from '../../services/sales';
 import { Asset } from '../../services/assets';
 import { tabs } from '../../components/SalesHistoryTable';
 import { IPFS_RESOLVER } from '../../utils/constants';
@@ -22,10 +22,10 @@ type Props = {
   video?: string;
   templateId: string;
   templateName: string;
+  collectionDisplayName?: string;
   collectionName: string;
   collectionAuthor: string;
   collectionImage: string;
-  sales: Sale[];
   error?: string;
   currentAsset?: Partial<SaleAsset> & Partial<Asset>;
   assetIds?: string[];
@@ -61,9 +61,9 @@ const DetailsLayout = ({
   templateId,
   templateName,
   collectionName,
+  collectionDisplayName,
   collectionAuthor,
   collectionImage,
-  sales,
   error,
   currentAsset,
   assetIds,
@@ -79,6 +79,7 @@ const DetailsLayout = ({
         <Column>
           <AssetFormTitle
             templateName={templateName}
+            collectionDisplayName={collectionDisplayName}
             collectionName={collectionName}
             collectionAuthor={collectionAuthor}
             collectionImage={collectionImage}
@@ -103,7 +104,6 @@ const DetailsLayout = ({
       </TabRow>
       <SalesHistoryTable
         activeTab={activeTab}
-        tableData={sales}
         error={error}
         asset={currentAsset}
         templateId={templateId}

@@ -91,19 +91,29 @@ const InitialMint = ({
 
   const checkMintAmountValidity = (amount) => {
     const number = parseInt(amount);
-    if (number >= 1 && number <= 50 && number <= parseInt(maxSupply)) {
-      return true;
-    }
-    return false;
-  };
+    let valid = false;
+    let errorMessage;
 
-  const getFee = () =>
-    mintFee && mintFee !== 0 ? (
-      <FeeLabel>
-        <span>Mint Fee</span>
-        <span>{mintFee.toFixed(SHORTENED_TOKEN_PRECISION)} XUSDC</span>
-      </FeeLabel>
-    ) : null;
+    if (number >= 1 && number <= 50) {
+      if (parseInt(maxSupply) > 0) {
+        if (number <= parseInt(maxSupply)) {
+          valid = true;
+        } else {
+          errorMessage = 'You cannot mint more than the set edition size';
+        }
+      } else {
+        valid = true;
+      }
+    } else {
+      errorMessage = 'You can mint 1-50 assets at a time';
+    }
+
+    setIsValid(valid);
+    return {
+      isValid: valid,
+      errorMessage,
+    };
+  };
 
   return (
     <>
@@ -124,21 +134,12 @@ const InitialMint = ({
         setValue={setMintAmount}
         placeholder="Enter amount"
         submit={isValid ? null : createNft}
-        checkIfIsValid={(input) => {
-          const numberInput = parseInt(input as string);
-          const valid = checkMintAmountValidity(numberInput);
-          setIsValid(valid);
-          const errorMessage =
-            numberInput < parseInt(maxSupply)
-              ? 'You can mint 1-50 assets at a time'
-              : 'You cannot mint more than the set edition size';
-          return {
-            isValid: valid,
-            errorMessage,
-          };
-        }}
+        checkIfIsValid={checkMintAmountValidity}
       />
-      {getFee()}
+      <FeeLabel>
+        <span>Mint Fee</span>
+        <span>{mintFee.toFixed(SHORTENED_TOKEN_PRECISION)} XUSDC</span>
+      </FeeLabel>
       <Terms>By clicking “Create NFT” you agree to our</Terms>
       <TermsLink target="_blank" href="https://www.protonchain.com/terms">
         Terms of Service &amp; Privacy Policy
@@ -146,7 +147,7 @@ const InitialMint = ({
       {mintError ? <ErrorMessage>{mintError}</ErrorMessage> : null}
       <Button
         onClick={isLoading ? null : validateAndProceed}
-        disabled={parseInt(mintAmount) > 50 || isLoading}
+        disabled={!isValid || isLoading}
         padding={isLoading ? '0' : '12px 0'}>
         {isLoading ? (
           <Spinner size="42px" radius="10" hasBackground />

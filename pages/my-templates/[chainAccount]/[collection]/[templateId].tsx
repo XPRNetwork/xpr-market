@@ -16,8 +16,6 @@ import {
   Asset,
   FullSaleDataByAssetId,
 } from '../../../../services/assets';
-import { Sale } from '../../../../services/sales';
-import { getSalesHistory } from '../../../../services/sales';
 import { TAB_TYPES, RouterQuery } from '../../../../utils/constants';
 
 const emptyTemplateDetails = {
@@ -57,7 +55,6 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
   const { currentUser, isLoadingUser } = useAuthContext();
   const { openModal, setModalProps } = useModalContext();
 
-  const [sales, setSales] = useState<Sale[]>([]);
   const [templateAssets, setTemplateAssets] = useState<Asset[]>([]);
   const [
     saleDataByAssetId,
@@ -77,7 +74,12 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
   const {
     lowestPrice,
     max_supply,
-    collection: { author, collection_name, img: collectionImage },
+    collection: {
+      author,
+      collection_name,
+      name: collectionDisplayName,
+      img: collectionImage,
+    },
     immutable_data: { image, name, desc, video },
   } = template;
 
@@ -134,19 +136,6 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
       setError(e.message);
     }
   };
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const historyId =
-          activeTab === TAB_TYPES.ITEM ? currentAsset.asset_id : templateId;
-        const sales = await getSalesHistory({ id: historyId, type: activeTab });
-        setSales(sales);
-      } catch (e) {
-        setError(e.message);
-      }
-    })();
-  }, [currentAsset, activeTab]);
 
   useEffect(() => {
     if (collection && templateId) {
@@ -208,10 +197,10 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
       <DetailsLayout
         templateId={templateId}
         templateName={name}
+        collectionDisplayName={collectionDisplayName}
         collectionName={collection_name}
         collectionAuthor={author}
         collectionImage={collectionImage}
-        sales={sales}
         error={error}
         image={image}
         video={video}

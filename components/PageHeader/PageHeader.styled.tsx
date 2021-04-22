@@ -53,6 +53,10 @@ export const Description = styled.p`
   line-height: 1.71;
   color: #1a1a1a;
   margin-bottom: 8px;
+  max-width: 660px;
+  width: 100%;
+  overflow-wrap: break-word;
+  text-align: center;
 `;
 
 export const IconButton = styled.button`

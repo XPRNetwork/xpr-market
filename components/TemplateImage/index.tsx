@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { ImageContainer } from './TemplateImage.styled';
+import { ImageContainer, DefaultImage } from './TemplateImage.styled';
 
 type Props = {
   templateImgSrc?: string;
@@ -14,15 +14,22 @@ const TemplateImage = ({
 }: Props): JSX.Element => {
   return (
     <ImageContainer>
-      <Image
-        priority
-        layout="responsive"
-        width={220}
-        height={220}
-        objectFit="contain"
-        alt={templateName}
-        src={templateImgSrc || '/placeholder-template-image.png'}
-      />
+      {templateImgSrc ? (
+        <Image
+          priority
+          layout="responsive"
+          width={220}
+          height={220}
+          objectFit="contain"
+          alt={templateName}
+          src={templateImgSrc}
+        />
+      ) : (
+        <DefaultImage
+          src="/placeholder-template-image.png"
+          alt={templateName}
+        />
+      )}
       {priceTag}
     </ImageContainer>
   );

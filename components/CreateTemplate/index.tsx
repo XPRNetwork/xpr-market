@@ -94,7 +94,7 @@ const CreateTemplate = ({
   return (
     <>
       <Step>Step 2 of 3</Step>
-      <Title>Create a template</Title>
+      <Title>Create a NFT</Title>
       <SubTitle>
         Each NFT edition follows a specific &quot;template&quot; which
         identifies the fields of the NFT. This is also saved on the chain
@@ -126,8 +126,17 @@ const CreateTemplate = ({
         value={maxSupply}
         setValue={setMaxSupply}
         placeholder="Edition Size"
-        tooltip="The number of tokens created"
-        numberOfTooltipLines={1}
+        tooltip="Maximum number of NFTs in this edition. Put 0 for an unlimited edition size."
+        checkIfIsValid={(input) => {
+          const numberInput = parseFloat(input as string);
+          const isValid = !isNaN(numberInput) && numberInput >= 0;
+          const errorMessage = 'Edition size must be 0 or greater.';
+          return {
+            isValid,
+            errorMessage,
+          };
+        }}
+        numberOfTooltipLines={3}
       />
       {formError ? <ErrorMessage>{formError}</ErrorMessage> : null}
       <Button onClick={validateAndProceed}>Continue</Button>

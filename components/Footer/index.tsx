@@ -8,6 +8,10 @@ import {
 
 const links = [
   {
+    name: 'Give Us Feedback',
+    url: 'https://t.me/protonnft',
+  },
+  {
     name: 'Terms of Service',
     url: 'https://www.protonchain.com/terms',
   },

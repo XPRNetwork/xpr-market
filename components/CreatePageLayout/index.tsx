@@ -36,9 +36,8 @@ const CreatePageLayout = ({
             templateImage={templateImage}
             templateName={templateName}
             collectionImage={selectedCollection.img}
-            collectionName={
-              selectedCollection.name || selectedCollection.collection_name
-            }
+            collectionDisplayName={selectedCollection.name}
+            collectionName={selectedCollection.collection_name}
             maxSupply={maxSupply}
             noHoverEffect
             noIpfsConversion

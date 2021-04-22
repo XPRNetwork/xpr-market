@@ -98,10 +98,6 @@ export const CollectionNameButton = styled.button<CollectionNameButtonProps>`
   border: none;
   z-index: 1;
   ${({ isStatic }) => (isStatic ? '' : 'cursor: pointer')};
-
-  :hover {
-    ${({ isStatic }) => (isStatic ? '' : 'transform: scale(1.05)')};
-  }
 `;
 
 export const GreyText = styled(Text)<GreyTextProps>`
