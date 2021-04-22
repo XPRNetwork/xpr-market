@@ -20,7 +20,7 @@ const Grid = ({ items }: Props): JSX.Element => {
         ({
           name,
           template_id,
-          collection: { collection_name, img },
+          collection: { collection_name, img, name: collectionDisplayName },
           immutable_data: { image, video },
           issued_supply,
           max_supply,
@@ -42,6 +42,7 @@ const Grid = ({ items }: Props): JSX.Element => {
           return (
             <TemplateCard
               key={template_id}
+              collectionDisplayName={collectionDisplayName}
               collectionName={collection_name}
               templateName={name}
               maxSupply={max_supply}
