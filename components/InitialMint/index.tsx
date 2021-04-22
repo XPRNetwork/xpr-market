@@ -115,14 +115,6 @@ const InitialMint = ({
     };
   };
 
-  const getFee = () =>
-    mintFee && mintFee !== 0 ? (
-      <FeeLabel>
-        <span>Mint Fee</span>
-        <span>{mintFee.toFixed(SHORTENED_TOKEN_PRECISION)} XUSDC</span>
-      </FeeLabel>
-    ) : null;
-
   return (
     <>
       <Step>Step 3 of 3</Step>
@@ -144,7 +136,10 @@ const InitialMint = ({
         submit={isValid ? null : createNft}
         checkIfIsValid={checkMintAmountValidity}
       />
-      {getFee()}
+      <FeeLabel>
+        <span>Mint Fee</span>
+        <span>{mintFee.toFixed(SHORTENED_TOKEN_PRECISION)} XUSDC</span>
+      </FeeLabel>
       <Terms>By clicking “Create NFT” you agree to our</Terms>
       <TermsLink target="_blank" href="https://www.protonchain.com/terms">
         Terms of Service &amp; Privacy Policy
