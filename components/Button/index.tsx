@@ -35,7 +35,7 @@ const Button = ({
 
 Button.defaultProps = {
   margin: '12px 0',
-  padding: '8px 16px',
+  padding: '12px 16px',
 };
 
 export default Button;
