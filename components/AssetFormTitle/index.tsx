@@ -16,6 +16,7 @@ import { IPFS_RESOLVER } from '../../utils/constants';
 
 type Props = {
   templateName: string;
+  collectionDisplayName?: string;
   collectionName: string;
   collectionAuthor: string;
   collectionImage: string;
@@ -27,6 +28,7 @@ type Props = {
 const AssetFormTitle = ({
   templateName,
   collectionName,
+  collectionDisplayName,
   collectionAuthor,
   collectionImage,
   assetIds,
@@ -59,7 +61,7 @@ const AssetFormTitle = ({
           }
           alt={`${collectionName} icon`}
         />
-        <Title>{capitalize(collectionName)}</Title>
+        <Title>{capitalize(collectionDisplayName || collectionName)}</Title>
       </CollectionNameButton>
       <NameContainer>
         <Name>{templateName}</Name>

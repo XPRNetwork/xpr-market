@@ -51,6 +51,7 @@ export const ClearTextButton = styled(IconButton)<ClearTextButtonProps>`
 export const InputContainer = styled.div<InputContainerProps>`
   border-radius: 8px;
   width: 50%;
+  max-width: 600px;
   transition: 0.2s;
   display: flex;
   align-items: center;
@@ -68,15 +69,11 @@ export const InputContainer = styled.div<InputContainerProps>`
   }
 
   @media (max-width: 1360px) {
-    width: 45%;
+    width: 40%;
   }
 
-  ${breakpoint.laptop`
-    width: 40%;
-  `}
-
   @media (max-width: 1140px) {
-    width: 35%;
+    width: 30%;
   }
 
   @media (max-width: 1040px) {

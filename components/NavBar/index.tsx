@@ -43,8 +43,8 @@ const Logo = (): JSX.Element => {
           <Image
             priority
             layout="fixed"
-            width={143}
-            height={32}
+            width={194}
+            height={41}
             alt="logo"
             src="/logo-colored@3x.png"
           />

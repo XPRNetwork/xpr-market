@@ -19,6 +19,7 @@ import { IPFS_RESOLVER } from '../../utils/constants';
 
 type Props = {
   collectionName: string;
+  collectionDisplayName?: string;
   templateName: string;
   maxSupply: string;
   isUsersTemplates?: boolean;
@@ -43,6 +44,7 @@ const TemplateCard = ({
   maxSupply,
   redirectPath,
   isUsersTemplates,
+  collectionDisplayName,
   totalAssets,
   assetsForSale,
   collectionImage,
@@ -114,7 +116,7 @@ const TemplateCard = ({
       <Row>
         <CollectionNameButton isStatic={isStatic} onClick={openCollectionPage}>
           {collectionIcon}
-          <Text>{capitalize(collectionName)}</Text>
+          <Text>{capitalize(collectionDisplayName || collectionName)}</Text>
         </CollectionNameButton>
       </Row>
       {templateVideo ? (
