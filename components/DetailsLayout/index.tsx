@@ -50,9 +50,18 @@ const AssetImage = ({ image }: { image: string }): JSX.Element => (
 
 const AssetVideo = ({ video }: { video: string }): JSX.Element => (
   <ImageContainer>
-    <Video controls muted src={`${IPFS_RESOLVER}${video}`} />
+    <Video
+      controls
+      autoPlay
+      onLoadStart={setVolumeOnLoad}
+      src={`${IPFS_RESOLVER}${video}`}
+    />
   </ImageContainer>
 );
+
+const setVolumeOnLoad = () => {
+  document.getElementsByTagName('video')[0].volume = 0.3;
+};
 
 const DetailsLayout = ({
   children,
