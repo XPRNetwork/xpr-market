@@ -25,10 +25,11 @@ import {
   UserMenuText,
   CloseIconButton,
 } from './NavBar.styled';
-import { useScrollLock, useEscapeKeyClose } from '../../hooks';
+import { useScrollLock, useEscapeKeyClose, useWindowSize } from '../../hooks';
 import { useAuthContext } from '../Provider';
 import { ReactComponent as MagnifyingIcon } from '../../public/icon-light-search-24-px.svg';
 import { ReactComponent as CloseIcon } from '../../public/icon-light-close-16-px.svg';
+import { TOKEN_SYMBOL } from '../../utils/constants';
 
 type DropdownProps = {
   isOpen: boolean;
@@ -99,36 +100,51 @@ const UserAvatar = ({ isOpen, avatar, toggleNavDropdown }) => {
 const Dropdown = ({ isOpen, closeNavDropdown }: DropdownProps): JSX.Element => {
   const router = useRouter();
   const { currentUser, currentUserBalance, logout } = useAuthContext();
+  const { isMobile, isTablet } = useWindowSize();
   useEscapeKeyClose(closeNavDropdown);
 
-  const routes = [
-    {
-      name: 'Explore',
-      path: '/',
-      onClick: closeNavDropdown,
-    },
-    {
-      name: 'My Items',
-      path: `/my-items/${currentUser ? currentUser.actor : ''}`,
-      onClick: closeNavDropdown,
-    },
-    {
-      name: 'Sign out',
-      path: '',
-      onClick: () => {
-        closeNavDropdown();
-        logout();
-        router.push('/');
-      },
-      isRed: true,
-    },
-  ];
+  const routes =
+    isMobile || isTablet
+      ? [
+          {
+            name: 'Explore',
+            path: '/',
+            onClick: closeNavDropdown,
+          },
+          {
+            name: 'My Items',
+            path: `/my-items/${currentUser ? currentUser.actor : ''}`,
+            onClick: closeNavDropdown,
+          },
+          {
+            name: 'Sign out',
+            path: '',
+            onClick: () => {
+              closeNavDropdown();
+              logout();
+              router.push('/');
+            },
+            isRed: true,
+          },
+        ]
+      : [
+          {
+            name: 'Sign out',
+            path: '',
+            onClick: () => {
+              closeNavDropdown();
+              logout();
+              router.push('/');
+            },
+            isRed: true,
+          },
+        ];
 
   return (
     <DropdownList isOpen={isOpen}>
       <Name>{currentUser ? currentUser.name : ''}</Name>
       <Subtitle>Balance</Subtitle>
-      <Balance>{currentUserBalance ? currentUserBalance : 0}</Balance>
+      <Balance>{currentUserBalance || `0.00 ${TOKEN_SYMBOL}`}</Balance>
       {routes.map(({ name, path, onClick, isRed }) =>
         path ? (
           <Link href={path} passHref key={name}>
