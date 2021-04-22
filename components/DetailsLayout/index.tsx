@@ -22,6 +22,7 @@ type Props = {
   video?: string;
   templateId: string;
   templateName: string;
+  collectionDisplayName?: string;
   collectionName: string;
   collectionAuthor: string;
   collectionImage: string;
@@ -60,6 +61,7 @@ const DetailsLayout = ({
   templateId,
   templateName,
   collectionName,
+  collectionDisplayName,
   collectionAuthor,
   collectionImage,
   error,
@@ -77,6 +79,7 @@ const DetailsLayout = ({
         <Column>
           <AssetFormTitle
             templateName={templateName}
+            collectionDisplayName={collectionDisplayName}
             collectionName={collectionName}
             collectionAuthor={collectionAuthor}
             collectionImage={collectionImage}
