@@ -16,6 +16,7 @@ import {
   HalfButton,
 } from './Modal.styled';
 import InputField from '../InputField';
+import { useWindowSize } from '../../hooks';
 import ProtonSDK from '../../services/proton';
 import { ReactComponent as CloseIcon } from '../../public/close.svg';
 
@@ -29,6 +30,7 @@ export const TransferModal = (): JSX.Element => {
   } = modalProps as TransferOrBurnNFTModalProps;
   const [recipient, setRecipient] = useState<string>('');
   const [error, setError] = useState<string>('');
+  const { isMobile } = useWindowSize();
 
   const transfer = async () => {
     try {
@@ -90,7 +92,7 @@ export const TransferModal = (): JSX.Element => {
               };
             }}
           />
-          <HalfButton onClick={transfer} margin="12px 0">
+          <HalfButton fullWidth={isMobile} onClick={transfer} margin="12px 0">
             Transfer
           </HalfButton>
           <ErrorMessage>{error}</ErrorMessage>

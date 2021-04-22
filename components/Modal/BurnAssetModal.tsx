@@ -16,11 +16,13 @@ import {
 import InputField from '../InputField';
 import { ReactComponent as CloseIcon } from '../../public/close.svg';
 import ProtonSDK from '../../services/proton';
+import { useWindowSize } from '../../hooks';
 
 export const BurnAssetModal = (): JSX.Element => {
   const {
     currentUser: { actor },
   } = useAuthContext();
+  const { isMobile } = useWindowSize();
   const { closeModal, modalProps } = useModalContext();
   const {
     assetId,
@@ -61,6 +63,7 @@ export const BurnAssetModal = (): JSX.Element => {
         </Description>
         <InputField value={'#' + templateMint} disabled mb="24px" />
         <HalfButton
+          fullWidth={isMobile}
           color="#f94e6c"
           hoverColor="#ff778e"
           margin="0 0 12px"

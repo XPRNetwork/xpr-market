@@ -14,6 +14,7 @@ import {
   Description,
   HalfButton,
 } from './Modal.styled';
+import { useWindowSize } from '../../hooks';
 import { ReactComponent as CloseIcon } from '../../public/close.svg';
 import ProtonSDK from '../../services/proton';
 
@@ -31,6 +32,7 @@ const CancelModal = ({
   onButtonClick,
 }: Props): JSX.Element => {
   const { closeModal } = useModalContext();
+  const { isMobile } = useWindowSize();
 
   const handleBackgroundClick = (e: MouseEvent) => {
     if (e.target === e.currentTarget) {
@@ -49,6 +51,7 @@ const CancelModal = ({
         </Section>
         <Description>{description}</Description>
         <HalfButton
+          fullWidth={isMobile}
           color="#f94e6c"
           hoverColor="#ff778e"
           margin="0 0 12px"

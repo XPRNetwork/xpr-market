@@ -23,12 +23,14 @@ import {
 import { calculateFee } from '../../utils';
 import ProtonSDK from '../../services/proton';
 import { ReactComponent as CloseIcon } from '../../public/close.svg';
+import { useWindowSize } from '../../hooks';
 
 export const MintAssetModal = (): JSX.Element => {
   const {
     currentUser: { actor },
   } = useAuthContext();
   const { closeModal, modalProps } = useModalContext();
+  const { isMobile } = useWindowSize();
   const {
     templateId,
     maxSupply,
@@ -131,6 +133,7 @@ export const MintAssetModal = (): JSX.Element => {
         </FeeLabel>
         <HalfButton
           onClick={mintNfts}
+          fullWidth={isMobile}
           margin="0 0 20px"
           disabled={
             parseInt(amount) === 0 ||

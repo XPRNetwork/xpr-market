@@ -31,6 +31,7 @@ import {
   SHORTENED_TOKEN_PRECISION,
 } from '../../utils/constants';
 import ProtonSDK from '../../services/proton';
+import { useWindowSize } from '../../hooks';
 
 type Props = {
   title: string;
@@ -56,6 +57,7 @@ const SaleModal = ({
   setListingFee,
 }: Props): JSX.Element => {
   const { closeModal, modalProps } = useModalContext();
+  const { isMobile } = useWindowSize();
   const { accountRam, conversionRate } = modalProps as
     | CreateSaleModalProps
     | CreateMultipleSalesModalProps;
@@ -102,6 +104,7 @@ const SaleModal = ({
         />
         {getFee()}
         <HalfButton
+          fullWidth={isMobile}
           margin={listingFee !== 0 ? '0' : '24px 0 0'}
           onClick={onButtonClick}>
           {buttonText}

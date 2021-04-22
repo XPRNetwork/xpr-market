@@ -17,6 +17,7 @@ import {
   Description,
   ErrorMessage,
 } from './Modal.styled';
+import { useWindowSize } from '../../hooks';
 import uploadToIPFS from '../../services/upload';
 import { ReactComponent as CloseIcon } from '../../public/close.svg';
 import { sendToApi } from '../../utils/browser-fetch';
@@ -24,6 +25,7 @@ import { fileReader } from '../../utils';
 
 export const CreateCollectionModal = (): JSX.Element => {
   const { currentUser } = useAuthContext();
+  const { isMobile } = useWindowSize();
   const { closeModal, modalProps } = useModalContext();
   const uploadInputRef = useRef<HTMLInputElement>();
   const {
@@ -215,7 +217,10 @@ export const CreateCollectionModal = (): JSX.Element => {
             }}
           />
           <ErrorMessage>{formError}</ErrorMessage>
-          <HalfButton type="submit" disabled={formError.length > 0}>
+          <HalfButton
+            fullWidth={isMobile}
+            type="submit"
+            disabled={formError.length > 0}>
             Create Collection
           </HalfButton>
         </Form>
