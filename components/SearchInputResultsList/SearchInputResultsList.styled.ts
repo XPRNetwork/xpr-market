@@ -4,11 +4,13 @@ import { breakpoint } from '../../styles/Breakpoints';
 export const ResultsList = styled.ul`
   position: absolute;
   width: inherit;
-  top: 70px;
+  max-width: 600px;
+  top: 80px;
   background: #ffffff;
   border: 1px solid #f2f2f2;
   border-radius: 8px;
   padding: 24px 16px;
+  box-shadow: 0 12px 20px -4px rgba(0, 0, 0, 0.1), 0 0 8px 0 rgba(0, 0, 0, 0.08);
 
   ${breakpoint.tablet`
     top: 48px;
