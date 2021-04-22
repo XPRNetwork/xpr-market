@@ -8,6 +8,7 @@ export const AvatarImage = styled(Image)`
 
 export const ImageDataCell = styled.td`
   vertical-align: middle;
+  cursor: pointer;
   text-align: ${({ align }) => (align ? align : ' center')};
 
   ${breakpoint.mobile`

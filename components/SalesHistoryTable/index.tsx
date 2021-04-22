@@ -3,7 +3,7 @@ import TableHeaderRow from '../TableHeaderRow';
 import TableHeaderCell from '../TableHeaderCell';
 import TableRow from '../TableRow';
 import TableContentWrapper from '../TableContentWraper';
-import SalesHistoryTableCell from '../SalesHistoryTableCell';
+import SalesHistoryTableCell, { ImgContent } from '../SalesHistoryTableCell';
 import PaginationButton from '../../components/PaginationButton';
 import { addPrecisionDecimal, parseTimestamp } from '../../utils';
 import { StyledTable } from './SalesHistoryTable.styled';
@@ -89,7 +89,7 @@ const SalesHistoryTable = ({
   templateId,
 }: Props): JSX.Element => {
   const { currentUser } = useAuthContext();
-  const [avatars, setAvatars] = useState({});
+  const [avatars, setAvatars] = useState<{ [buyer: string]: string }>({});
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isLoadingNextPage, setIsLoadingNextPage] = useState<boolean>(true);
   const [salesById, setSalesById] = useState<SalesById>({
@@ -306,10 +306,17 @@ const SalesHistoryTable = ({
   );
 };
 
-const getCellContent = (sale, id, avatars) => {
+const getCellContent = (
+  sale: Sale,
+  id: string,
+  avatars: { [buyer: string]: string }
+): string | ImgContent => {
   switch (id) {
     case 'img': {
-      return avatars[sale.buyer];
+      return {
+        buyer: sale.buyer,
+        avatar: avatars[sale.buyer],
+      };
     }
     case 'buyer': {
       return sale.buyer;
@@ -317,7 +324,7 @@ const getCellContent = (sale, id, avatars) => {
     case 'price': {
       const { amount, token_precision, token_symbol } = sale.price;
       const price = `${addPrecisionDecimal(
-        amount,
+        amount.toString(),
         token_precision
       )} ${token_symbol}`;
       return price;

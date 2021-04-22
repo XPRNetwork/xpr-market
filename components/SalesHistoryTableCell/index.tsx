@@ -1,25 +1,33 @@
 import TableDataCell from '../TableDataCell';
 import Image from 'next/image';
 import Link from 'next/link';
-import { AvatarImage, ImageDataCell } from './SalesHistoryTabelCell.styled';
+import { AvatarImage, ImageDataCell } from './SalesHistoryTableCell.styled';
+import { useRouter } from 'next/router';
+
+export type ImgContent = {
+  avatar: string;
+  buyer: string;
+};
 
 type Props = {
   id: string;
-  content: string;
+  content: string | ImgContent;
 };
 
 const SalesHistoryTableCell = ({ id, content }: Props): JSX.Element => {
+  const router = useRouter();
   switch (id) {
     case 'img': {
+      const { avatar, buyer } = content as ImgContent;
       return (
-        <ImageDataCell>
+        <ImageDataCell onClick={() => router.push(`/my-items/${buyer}`)}>
           <AvatarImage
             priority
             width={32}
             height={32}
             src={
-              content
-                ? `data:image/jpeg;base64,${content}`
+              avatar
+                ? `data:image/jpeg;base64,${avatar}`
                 : '/default-avatar.png'
             }
           />
@@ -46,6 +54,13 @@ const SalesHistoryTableCell = ({ id, content }: Props): JSX.Element => {
             </a>
           </Link>
         </ImageDataCell>
+      );
+    }
+    case 'buyer': {
+      return (
+        <TableDataCell onClick={() => router.push(`/my-items/${content}`)}>
+          {content}
+        </TableDataCell>
       );
     }
     default: {
