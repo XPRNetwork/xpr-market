@@ -1,7 +1,11 @@
 import styled from 'styled-components';
 import { breakpoint } from '../../styles/Breakpoints';
 
-export const StyledTableDataCell = styled.td`
+type StyledTableDataCellProps = {
+  onClick?: () => void;
+};
+
+export const StyledTableDataCell = styled.td<StyledTableDataCellProps>`
   display: table-cell;
   vertical-align: middle;
   font-size: 16px;
@@ -12,6 +16,8 @@ export const StyledTableDataCell = styled.td`
   letter-spacing: normal;
   color: #1a1a1a;
   text-align: 'left';
+
+  ${({ onClick }) => (onClick ? 'cursor: pointer;' : '')}
 
   ${breakpoint.mobile`
     padding: 0px 10px;

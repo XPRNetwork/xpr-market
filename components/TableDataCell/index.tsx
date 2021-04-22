@@ -3,10 +3,13 @@ import { StyledTableDataCell } from './TableDataCell.styled';
 
 type Props = {
   children: ReactNode;
+  onClick?: () => void;
 };
 
-const TableDataCell = ({ children }: Props): JSX.Element => {
-  return <StyledTableDataCell>{children}</StyledTableDataCell>;
+const TableDataCell = ({ children, onClick }: Props): JSX.Element => {
+  return (
+    <StyledTableDataCell onClick={onClick}>{children}</StyledTableDataCell>
+  );
 };
 
 export default TableDataCell;

@@ -231,16 +231,6 @@ const Collection = (): JSX.Element => {
       );
     }
 
-    const isPaginationButtonHidden =
-      !isLoading && activeTab === TAB_TYPES.ITEMS
-        ? renderedItems.length < PAGINATION_LIMIT
-        : renderedCreations.length < PAGINATION_LIMIT;
-
-    const isPaginationButtonDisabled =
-      !isLoading && activeTab === TAB_TYPES.ITEMS
-        ? prefetchItemsPageNumber === -1
-        : prefetchCreationsPageNumber === -1;
-
     return (
       <>
         <PageHeader
