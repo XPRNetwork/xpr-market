@@ -10,13 +10,16 @@ import { StyledTable } from './SalesHistoryTable.styled';
 import { useWindowSize } from '../../hooks';
 import { getFromApi } from '../../utils/browser-fetch';
 import { useAuthContext } from '../Provider';
-import { SaleAsset, Sale } from '../../services/sales';
+import {
+  SaleAsset,
+  Sale,
+  getSalesHistoryForTemplate,
+  getSalesHistoryForAsset,
+} from '../../services/sales';
 import { Asset } from '../../services/assets';
 import { PAGINATION_LIMIT, TAB_TYPES } from '../../utils/constants';
-import { getSalesHistory } from '../../services/sales';
 
 type Props = {
-  tableData: Sale[];
   error?: string;
   asset?: Partial<SaleAsset> & Partial<Asset>;
   activeTab: string;
@@ -26,6 +29,14 @@ type Props = {
 type TableHeader = {
   title: string;
   id: string;
+};
+
+type SalesById = {
+  [id: string]: {
+    id?: string;
+    page: number;
+    data: Sale[];
+  };
 };
 
 export const tabs = [
@@ -72,7 +83,6 @@ const getAvatars = async (
 };
 
 const SalesHistoryTable = ({
-  tableData,
   error,
   asset,
   activeTab,
@@ -82,18 +92,59 @@ const SalesHistoryTable = ({
   const [avatars, setAvatars] = useState({});
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isLoadingNextPage, setIsLoadingNextPage] = useState<boolean>(true);
-  const [renderedData, setRenderedData] = useState<Sale[]>([]);
-  const [prefetchedData, setPrefetchedData] = useState<Sale[]>([]);
-  const [prefetchPageNumber, setPrefetchPageNumber] = useState<number>();
+  const [salesById, setSalesById] = useState<SalesById>({
+    [TAB_TYPES.GLOBAL]: {
+      id: '',
+      page: 1,
+      data: [],
+    },
+  });
   const [errorMessage, setErrorMessage] = useState<string>(error);
   const [tableHeaders, setTableHeaders] = useState<TableHeader[]>([]);
   const { isMobile } = useWindowSize();
 
+  const salesByIdType =
+    activeTab === TAB_TYPES.GLOBAL
+      ? TAB_TYPES.GLOBAL
+      : asset.asset_id || asset.assetId;
+
   useEffect(() => {
-    setIsLoading(true);
-    setRenderedData(tableData);
-    setPrefetchPageNumber(2);
-  }, [tableData]);
+    (async () => {
+      setIsLoadingNextPage(true);
+      try {
+        if (templateId && templateId !== salesById[TAB_TYPES.GLOBAL].id) {
+          const globalSales = await getSalesHistoryForTemplate(templateId, 1);
+          setSalesById((prevSales) => ({
+            ...prevSales,
+            [TAB_TYPES.GLOBAL]: {
+              id: templateId,
+              page: globalSales.length < PAGINATION_LIMIT ? -1 : 2,
+              data: globalSales,
+            },
+          }));
+        }
+
+        const assetId = asset ? asset.asset_id || asset.assetId : 0;
+        if (assetId) {
+          const salesForCurrentAsset = await getSalesHistoryForAsset(
+            assetId,
+            1
+          );
+
+          setSalesById((prevSales) => ({
+            ...prevSales,
+            [assetId]: {
+              page: salesForCurrentAsset.length < PAGINATION_LIMIT ? -1 : 2,
+              data: salesForCurrentAsset,
+            },
+          }));
+        }
+      } catch (e) {
+        setErrorMessage(e.message);
+      }
+      setIsLoadingNextPage(false);
+    })();
+  }, [templateId, asset]);
 
   useEffect(() => {
     if (isMobile) {
@@ -105,35 +156,30 @@ const SalesHistoryTable = ({
 
   useEffect(() => {
     (async () => {
-      try {
-        if (renderedData.length) {
-          const chainAccounts = renderedData.map(({ buyer }) => buyer);
-          const res = await getAvatars(chainAccounts);
-          setAvatars(res);
+      const globalSales = salesById[TAB_TYPES.GLOBAL].data;
+      if (globalSales) {
+        try {
+          const assetSales = salesById[asset.asset_id || asset.assetId]
+            ? salesById[asset.asset_id || asset.assetId].data
+            : [];
+
+          if (globalSales.length || assetSales.length) {
+            const chainAccounts = [
+              ...new Set(
+                globalSales.concat(assetSales).map(({ buyer }) => buyer)
+              ),
+            ];
+
+            const res = await getAvatars(chainAccounts);
+            setAvatars(res);
+          }
+        } catch (e) {
+          setErrorMessage(e.message);
         }
-      } catch (e) {
-        setErrorMessage(e.message);
       }
       setIsLoading(false);
     })();
-  }, [renderedData, activeTab]);
-
-  useEffect(() => {
-    (async () => {
-      try {
-        if (
-          !isLoading &&
-          renderedData.length &&
-          renderedData.length % PAGINATION_LIMIT == 0 &&
-          asset
-        ) {
-          await prefetchNextPage();
-        }
-      } catch (e) {
-        setErrorMessage(e.message);
-      }
-    })();
-  }, [isLoading, renderedData, asset]);
+  }, [salesById]);
 
   useEffect(() => {
     if (currentUser) {
@@ -144,41 +190,45 @@ const SalesHistoryTable = ({
     }
   }, [currentUser]);
 
-  const getTableContent = () => {
-    return renderedData.map((sale) => {
-      return (
-        <TableRow key={sale.sale_id}>
-          {tableHeaders.map(({ id }) => {
-            const content = getCellContent(sale, id, avatars);
-            return <SalesHistoryTableCell key={id} id={id} content={content} />;
-          })}
-        </TableRow>
-      );
-    });
+  const fetchNextGlobalPage = async () => {
+    const { page } = salesById[TAB_TYPES.GLOBAL];
+    const globalSales = await getSalesHistoryForTemplate(templateId, page);
+
+    setSalesById((prevSales) => ({
+      ...prevSales,
+      [TAB_TYPES.GLOBAL]: {
+        id: templateId,
+        page:
+          globalSales.length < PAGINATION_LIMIT
+            ? -1
+            : prevSales[TAB_TYPES.GLOBAL].page + 1,
+        data: [...prevSales[TAB_TYPES.GLOBAL].data, ...globalSales],
+      },
+    }));
   };
 
-  const prefetchNextPage = async () => {
-    const prefetchedResult = await getSalesHistory({
-      id: activeTab === TAB_TYPES.ITEM ? asset.assetId : templateId,
-      type: activeTab,
-      page: prefetchPageNumber,
-    });
-
-    setPrefetchedData(prefetchedResult as Sale[]);
-
-    if (!prefetchedResult.length) {
-      setPrefetchPageNumber(-1);
-    } else {
-      setPrefetchPageNumber(prefetchPageNumber + 1);
-    }
-
-    setIsLoadingNextPage(false);
+  const fetchNextAssetPage = async () => {
+    if (!asset) return;
+    const assetId = asset.asset_id || asset.assetId;
+    const sales = await getSalesHistoryForAsset(assetId, 1);
+    setSalesById((prevSales) => ({
+      ...prevSales,
+      [assetId]: {
+        page:
+          sales.length < PAGINATION_LIMIT ? -1 : prevSales[assetId].page + 1,
+        data: [...prevSales[assetId].data, ...sales],
+      },
+    }));
   };
 
   const showNextPage = async () => {
-    setRenderedData(renderedData.concat(prefetchedData));
     setIsLoadingNextPage(true);
-    await prefetchNextPage();
+    if (activeTab === TAB_TYPES.GLOBAL) {
+      await fetchNextGlobalPage();
+    } else {
+      await fetchNextAssetPage();
+    }
+    setIsLoadingNextPage(false);
   };
 
   const noDataMessage =
@@ -188,6 +238,39 @@ const SalesHistoryTable = ({
       : `No Recent Sales for Serial #${
           asset.templateMint || asset.template_mint
         }`;
+
+  const getTableContent = () => {
+    const sales =
+      salesByIdType && salesById[salesByIdType]
+        ? salesById[salesByIdType].data
+        : [];
+    return sales.map((sale) => (
+      <TableRow key={sale.sale_id}>
+        {tableHeaders.map(({ id }) => {
+          const content = getCellContent(sale, id, avatars);
+          return <SalesHistoryTableCell key={id} id={id} content={content} />;
+        })}
+      </TableRow>
+    ));
+  };
+
+  const getPaginationButton = () => {
+    const isPaginationButtonHidden =
+      !salesById[salesByIdType] ||
+      (salesById[salesByIdType] &&
+        salesById[salesByIdType].data.length < PAGINATION_LIMIT);
+    const isPaginationButtonDisabled =
+      !salesById[salesByIdType] ||
+      (salesById[salesByIdType] && salesById[salesByIdType].page === -1);
+    return (
+      <PaginationButton
+        onClick={showNextPage}
+        isHidden={isPaginationButtonHidden}
+        isLoading={isLoadingNextPage}
+        disabled={isPaginationButtonDisabled}
+      />
+    );
+  };
 
   return (
     <>
@@ -209,19 +292,16 @@ const SalesHistoryTable = ({
               errorMessage ? `An error has occurred: ${errorMessage}` : null
             }
             loading={isLoading}
-            noData={!renderedData.length}
-            noDataMessage={noDataMessage}
+            noData={
+              !salesById[salesByIdType] || !salesById[salesByIdType].data.length
+            }
+            noDataMessage={isLoadingNextPage ? '' : noDataMessage}
             columns={tableHeaders.length}>
             {getTableContent()}
           </TableContentWrapper>
         </tbody>
       </StyledTable>
-      <PaginationButton
-        onClick={showNextPage}
-        isHidden={renderedData.length < PAGINATION_LIMIT}
-        isLoading={isLoadingNextPage}
-        disabled={prefetchPageNumber === -1}
-      />
+      {getPaginationButton()}
     </>
   );
 };

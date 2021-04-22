@@ -7,10 +7,9 @@ import AssetFormBuy from '../../components/AssetFormBuy';
 import LoadingPage from '../../components/LoadingPage';
 import { useAuthContext } from '../../components/Provider';
 import { getTemplateDetails, Template } from '../../services/templates';
-import { getAllTemplateSales, Sale, SaleAsset } from '../../services/sales';
+import { getAllTemplateSales, SaleAsset } from '../../services/sales';
 import ProtonSDK from '../../services/proton';
 import * as gtag from '../../utils/gtag';
-import { getSalesHistory } from '../../services/sales';
 import { TAB_TYPES, RouterQuery } from '../../utils/constants';
 
 const emptyTemplateDetails = {
@@ -46,7 +45,6 @@ const MarketplaceTemplateDetail = (): JSX.Element => {
     login,
   } = useAuthContext();
 
-  const [sales, setSales] = useState<Sale[]>([]);
   const [templateAssets, setTemplateAssets] = useState<SaleAsset[]>([]);
   const [formattedPricesBySaleId, setFormattedPricesBySaleId] = useState<{
     [templateMint: string]: string;
@@ -102,19 +100,6 @@ const MarketplaceTemplateDetail = (): JSX.Element => {
       }
     }
   }, [templateId]);
-
-  useEffect(() => {
-    try {
-      (async () => {
-        const historyId =
-          activeTab === TAB_TYPES.ITEM ? currentAsset.assetId : templateId;
-        const sales = await getSalesHistory({ id: historyId, type: activeTab });
-        setSales(sales);
-      })();
-    } catch (e) {
-      setError(e.message);
-    }
-  }, [currentAsset, activeTab]);
 
   useEffect(() => {
     setPurchasingError('');
@@ -180,7 +165,6 @@ const MarketplaceTemplateDetail = (): JSX.Element => {
         collectionName={collection_name}
         collectionAuthor={author}
         collectionImage={collectionImage}
-        sales={sales}
         error={error}
         image={image}
         video={video}
