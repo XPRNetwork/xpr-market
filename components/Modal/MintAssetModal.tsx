@@ -87,14 +87,6 @@ export const MintAssetModal = (): JSX.Element => {
     }
   };
 
-  const getFee = () =>
-    mintFee && mintFee !== 0 ? (
-      <FeeLabel>
-        <span>Mint Fee</span>
-        <span>{mintFee.toFixed(SHORTENED_TOKEN_PRECISION)} XUSDC</span>
-      </FeeLabel>
-    ) : null;
-
   return (
     <Background onClick={handleBackgroundClick}>
       <ModalBox>
@@ -133,11 +125,15 @@ export const MintAssetModal = (): JSX.Element => {
             };
           }}
         />
-        {getFee()}
+        <FeeLabel>
+          <span>Mint Fee</span>
+          <span>{mintFee.toFixed(SHORTENED_TOKEN_PRECISION)} XUSDC</span>
+        </FeeLabel>
         <HalfButton
           onClick={mintNfts}
-          margin={mintFee !== 0 ? '0 0 20px' : '24px 0 20px'}
+          margin="0 0 20px"
           disabled={
+            parseInt(amount) === 0 ||
             isNaN(parseInt(amount)) ||
             parseInt(amount) > maxMintAmountForSession
           }>
