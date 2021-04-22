@@ -177,7 +177,7 @@ export const CreateCollectionModal = (): JSX.Element => {
               const isValid =
                 (hasValidCharacters && isValidLength) ||
                 input.toLowerCase() === author.toLowerCase();
-              const errorMessage = `Collection name should be your account name (${author}) or a name that is 12 characters long and only contains the following symbols: 12345abcdefghijklmnopqrstuvwxyz`;
+              const errorMessage = `Collection name should be your account name (${author}) or a 12-character long name that only contains the numbers 1-5 or lowercase letters a-z`;
               return {
                 isValid,
                 errorMessage,
