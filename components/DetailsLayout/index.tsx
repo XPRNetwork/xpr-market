@@ -60,7 +60,7 @@ const AssetVideo = ({ video }: { video: string }): JSX.Element => (
 );
 
 const setVolumeOnLoad = () => {
-  document.getElementsByTagName('video')[0].volume = 0.3;
+  document.getElementsByTagName('video')[0].volume = 0.15;
 };
 
 const DetailsLayout = ({
