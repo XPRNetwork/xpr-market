@@ -113,7 +113,7 @@ const Dropdown = ({ isOpen, closeNavDropdown }: DropdownProps): JSX.Element => {
           },
           {
             name: 'My Items',
-            path: `/my-items/${currentUser ? currentUser.actor : ''}`,
+            path: `/user/${currentUser ? currentUser.actor : ''}`,
             onClick: closeNavDropdown,
           },
           {
@@ -172,7 +172,7 @@ const DesktopNavRoutes = () => {
     },
     {
       name: 'My Items',
-      path: `/my-items/${currentUser ? currentUser.actor : ''}`,
+      path: `/user/${currentUser ? currentUser.actor : ''}`,
       isHidden: !currentUser,
     },
     {

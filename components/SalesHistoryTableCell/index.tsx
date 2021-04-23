@@ -23,7 +23,7 @@ const SalesHistoryTableCell = ({ id, content }: Props): JSX.Element => {
   switch (id) {
     case 'buyer': {
       const { avatar, buyer } = content as BuyerContent;
-      const navigateToBuyer = () => router.push(`/my-items/${buyer}`);
+      const navigateToBuyer = () => router.push(`/user/${buyer}`);
       return (
         <>
           <ImageDataCell

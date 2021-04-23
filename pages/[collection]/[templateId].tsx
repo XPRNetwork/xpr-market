@@ -134,7 +134,7 @@ const MarketplaceTemplateDetail = (): JSX.Element => {
         gtag.event({ action: 'buy_nft' });
         updateCurrentUserBalance(chainAccount);
         setTimeout(() => {
-          router.push(`/my-items/${chainAccount}`);
+          router.push(`/user/${chainAccount}`);
         }, 1000);
       } else {
         throw purchaseResult.error;

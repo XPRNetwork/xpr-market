@@ -36,7 +36,7 @@ const CreateNftSuccess = ({
           create more!
         </SuccessDescription>
         <ButtonsContainer>
-          <PurpleButton onClick={() => router.push(`/my-items/${actor}`)}>
+          <PurpleButton onClick={() => router.push(`/user/${actor}`)}>
             Go To My NFTs
           </PurpleButton>
           <GrayButton onClick={backToChooseCollection}>
