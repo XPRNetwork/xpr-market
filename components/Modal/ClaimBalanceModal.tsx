@@ -11,6 +11,7 @@ import {
 } from './Modal.styled';
 import ProtonSDK from '../../services/proton';
 import { formatPrice } from '../../utils';
+import { useWindowSize } from '../../hooks';
 import { ReactComponent as CloseIcon } from '../../public/close.svg';
 
 export const ClaimBalanceModal = (): JSX.Element => {
@@ -21,6 +22,7 @@ export const ClaimBalanceModal = (): JSX.Element => {
   } = useAuthContext();
   const { closeModal } = useModalContext();
   const [error, setError] = useState<string>('');
+  const { isMobile } = useWindowSize();
 
   useEffect(() => {
     if (error) setError('');
@@ -63,7 +65,9 @@ export const ClaimBalanceModal = (): JSX.Element => {
           Congratulations, your NFTs have earned you{' '}
           {formatPrice(atomicMarketBalance)} in royalties. Claim them now!
         </Description>
-        <HalfButton onClick={withdraw}>Claim Now</HalfButton>
+        <HalfButton fullWidth={isMobile} onClick={withdraw}>
+          Claim Now
+        </HalfButton>
       </ModalBox>
     </Background>
   );

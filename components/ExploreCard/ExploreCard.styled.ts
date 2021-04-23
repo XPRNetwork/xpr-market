@@ -94,6 +94,7 @@ export const ImageContainer = styled(FadeInImageContainer)`
 `;
 
 export const ButtonWrapper = styled.div`
+  width: 148px;
   ${breakpoint.mobile`
     width: 60%;
     margin: 0 auto;

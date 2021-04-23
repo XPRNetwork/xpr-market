@@ -15,7 +15,7 @@ import { BackButton } from '../CreatePageLayout/CreatePageLayout.styled';
 import { CREATE_PAGE_STATES } from '../../pages/create';
 import { calculateFee } from '../../utils';
 import {
-  RAM_COSTS,
+  RAM_AMOUNTS,
   SHORTENED_TOKEN_PRECISION,
   PRICE_OF_RAM_IN_XPR,
 } from '../../utils/constants';
@@ -65,14 +65,18 @@ const InitialMint = ({
 
   useEffect(() => {
     const numAssets = parseInt(mintAmount);
+    const currentRamAmount =
+      contractRam === -1
+        ? RAM_AMOUNTS.FREE_INITIAL_SPECIAL_MINT_CONTRACT_RAM
+        : contractRam;
     const mintFee = calculateFee({
       numAssets: isNaN(numAssets) ? 0 : numAssets,
-      currentRamAmount: contractRam,
-      ramCost: RAM_COSTS.MINT_ASSET,
+      currentRamAmount,
+      ramCost: RAM_AMOUNTS.MINT_ASSET,
       conversionRate,
     });
     const accountRamCosts =
-      (RAM_COSTS.CREATE_COLLECTION_SCHEMA_TEMPLATE - accountRam) *
+      (RAM_AMOUNTS.CREATE_COLLECTION_SCHEMA_TEMPLATE - accountRam) *
       PRICE_OF_RAM_IN_XPR *
       conversionRate;
     const ramFee = accountRamCosts > 0 ? accountRamCosts : 0;

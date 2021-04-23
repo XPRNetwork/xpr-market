@@ -18,7 +18,7 @@ import CreatePageLayout from '../components/CreatePageLayout';
 import ChooseCollection from '../components/ChooseCollection';
 import CreateTemplate from '../components/CreateTemplate';
 import InitialMint from '../components/InitialMint';
-import { RAM_COSTS } from '../utils/constants';
+import { RAM_AMOUNTS } from '../utils/constants';
 import proton from '../services/proton-rpc';
 
 export const CREATE_PAGE_STATES = {
@@ -120,9 +120,9 @@ const Create = (): JSX.Element => {
 
       const result = isUncreatedCollectionSelected
         ? await ProtonSDK.createNft({
-            requiredAccountRam: RAM_COSTS.CREATE_COLLECTION_SCHEMA_TEMPLATE,
+            requiredAccountRam: RAM_AMOUNTS.CREATE_COLLECTION_SCHEMA_TEMPLATE,
             requiredSpecialMintContractRam:
-              parseInt(mintAmount) * RAM_COSTS.MINT_ASSET,
+              parseInt(mintAmount) * RAM_AMOUNTS.MINT_ASSET,
             author: currentUser.actor,
             collection_name: newCollection.collection_name,
             collection_description: newCollection.description,
@@ -139,9 +139,9 @@ const Create = (): JSX.Element => {
             initial_mint_amount: parseInt(mintAmount),
           })
         : await ProtonSDK.createTemplateAssets({
-            requiredAccountRam: RAM_COSTS.CREATE_COLLECTION_SCHEMA_TEMPLATE,
+            requiredAccountRam: RAM_AMOUNTS.CREATE_COLLECTION_SCHEMA_TEMPLATE,
             requiredSpecialMintContractRam:
-              parseInt(mintAmount) * RAM_COSTS.MINT_ASSET,
+              parseInt(mintAmount) * RAM_AMOUNTS.MINT_ASSET,
             author: currentUser.actor,
             collection_name: selectedCollection.collection_name,
             template_name: templateName,

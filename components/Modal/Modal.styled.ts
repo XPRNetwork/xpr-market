@@ -20,13 +20,7 @@ export const Background = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: linear-gradient(
-    rgba(14, 16, 60, 0.3),
-    rgba(14, 16, 60, 0.4),
-    rgba(14, 16, 60, 0.5),
-    rgba(14, 16, 60, 0.6),
-    rgba(14, 16, 60, 0.67)
-  );
+  background: rgba(0, 0, 0, 0.7);
   display: flex;
   justify-content: center;
   align-items: flex-start;

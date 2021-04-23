@@ -2,7 +2,11 @@ import { ConnectWallet } from '@proton/web-sdk';
 import { LinkSession, Link } from '@proton/link';
 import logoUrl from '../public/logo.svg';
 import proton from './proton-rpc';
-import { DEFAULT_SCHEMA, PRICE_OF_RAM_IN_XPR } from '../utils/constants';
+import {
+  DEFAULT_SCHEMA,
+  PRICE_OF_RAM_IN_XPR,
+  RAM_AMOUNTS,
+} from '../utils/constants';
 
 export interface User {
   actor: string;
@@ -448,16 +452,23 @@ class ProtonSDK {
     const conversionRate = await proton.getXPRtoXUSDCConversionRate();
 
     const hasInitializedStorage = contractRam !== -1;
-    const hasEnoughAccountRam =
-      accountRam.max - accountRam.used >= requiredAccountRam;
-    const hasEnoughSpecialMintContractRam =
-      contractRam >= requiredSpecialMintContractRam;
+    const currentAccountRam = accountRam.max - accountRam.used;
+    const currentContractRam = hasInitializedStorage
+      ? contractRam
+      : RAM_AMOUNTS.FREE_INITIAL_SPECIAL_MINT_CONTRACT_RAM;
 
-    const accountRamToBuyInXPR =
+    const hasEnoughAccountRam = currentAccountRam >= requiredAccountRam;
+    const hasEnoughContractRam =
+      currentContractRam >= requiredSpecialMintContractRam;
+
+    const accountRamToBuyInXUSDC =
       PRICE_OF_RAM_IN_XPR *
-      (requiredAccountRam - (accountRam.max - accountRam.used));
-    const contractRamToBuyInXPR =
-      PRICE_OF_RAM_IN_XPR * (requiredSpecialMintContractRam - contractRam);
+      conversionRate *
+      (requiredAccountRam - currentAccountRam);
+    const contractRamToBuyInXUSDC =
+      PRICE_OF_RAM_IN_XPR *
+      conversionRate *
+      (requiredSpecialMintContractRam - currentContractRam);
 
     return [
       hasInitializedStorage
@@ -489,13 +500,11 @@ class ProtonSDK {
             data: {
               from: author,
               to: 'specialmint',
-              quantity: `${(accountRamToBuyInXPR * conversionRate).toFixed(
-                6
-              )} XUSDC`,
+              quantity: `${accountRamToBuyInXUSDC.toFixed(6)} XUSDC`,
               memo: 'account',
             },
           },
-      hasEnoughSpecialMintContractRam
+      hasEnoughContractRam
         ? undefined
         : {
             account: 'xtokens',
@@ -509,9 +518,7 @@ class ProtonSDK {
             data: {
               from: author,
               to: 'specialmint',
-              quantity: `${(contractRamToBuyInXPR * conversionRate).toFixed(
-                6
-              )} XUSDC`,
+              quantity: `${contractRamToBuyInXUSDC.toFixed(6)} XUSDC`,
               memo: 'contract',
             },
           },
