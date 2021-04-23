@@ -36,7 +36,7 @@ export const DropdownMenu = styled.select`
   margin-bottom: 12px;
   padding: 0 16px;
   width: 100%;
-  height: 40px;
+  height: 48px;
   color: #808080;
   border: 1px solid #e6e6e6;
   border-radius: 4px;
@@ -48,7 +48,7 @@ export const DropdownMenu = styled.select`
   appearance: none;
   background: url('/down-arrow.svg');
   background-repeat: no-repeat;
-  background-position: top 2px right 15px;
+  background-position: top 5px right 15px;
 
   &:hover {
     border: 1px solid #e6e6e6;

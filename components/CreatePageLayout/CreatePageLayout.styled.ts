@@ -19,7 +19,6 @@ export const LeftColumn = styled.div`
   flex-direction: column;
   width: 100%;
   max-width: 424px;
-  margin-right: 20px;
 `;
 
 export const RightColumn = styled.div`
@@ -87,6 +86,7 @@ export const ErrorMessage = styled.p`
 export const BackButton = styled(StyledButton)`
   background-color: transparent;
   color: rgb(117, 46, 235);
+  padding: 12px 16px;
 
   :hover {
     color: rgba(117, 46, 235, 0.55);

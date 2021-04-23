@@ -16,19 +16,21 @@ import {
   FeeLabel,
 } from './Modal.styled';
 import {
-  RAM_COSTS,
+  RAM_AMOUNTS,
   SHORTENED_TOKEN_PRECISION,
   TOKEN_SYMBOL,
 } from '../../utils/constants';
 import { calculateFee } from '../../utils';
 import ProtonSDK from '../../services/proton';
 import { ReactComponent as CloseIcon } from '../../public/close.svg';
+import { useWindowSize } from '../../hooks';
 
 export const MintAssetModal = (): JSX.Element => {
   const {
     currentUser: { actor },
   } = useAuthContext();
   const { closeModal, modalProps } = useModalContext();
+  const { isMobile } = useWindowSize();
   const {
     templateId,
     maxSupply,
@@ -53,7 +55,7 @@ export const MintAssetModal = (): JSX.Element => {
     const fee = calculateFee({
       numAssets: isNaN(numAssets) ? 0 : numAssets,
       currentRamAmount: accountRam,
-      ramCost: RAM_COSTS.MINT_ASSET,
+      ramCost: RAM_AMOUNTS.MINT_ASSET,
       conversionRate,
     });
     setMintFee(isNaN(fee) ? 0 : fee);
@@ -131,6 +133,7 @@ export const MintAssetModal = (): JSX.Element => {
         </FeeLabel>
         <HalfButton
           onClick={mintNfts}
+          fullWidth={isMobile}
           margin="0 0 20px"
           disabled={
             parseInt(amount) === 0 ||

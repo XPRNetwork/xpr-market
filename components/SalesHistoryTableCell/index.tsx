@@ -1,29 +1,54 @@
-import TableDataCell from '../TableDataCell';
+import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { AvatarImage, ImageDataCell } from './SalesHistoryTabelCell.styled';
+import { useRouter } from 'next/router';
+import TableDataCell from '../TableDataCell';
+import { AvatarImage, ImageDataCell } from './SalesHistoryTableCell.styled';
+
+export type BuyerContent = {
+  avatar: string;
+  buyer: string;
+};
 
 type Props = {
   id: string;
-  content: string;
+  content: string | BuyerContent;
 };
 
 const SalesHistoryTableCell = ({ id, content }: Props): JSX.Element => {
+  const [isOnHover, setIsOnHover] = useState<boolean>(false);
+  const router = useRouter();
+  const addHoverState = () => setIsOnHover(true);
+  const removeHoverState = () => setIsOnHover(false);
   switch (id) {
-    case 'img': {
+    case 'buyer': {
+      const { avatar, buyer } = content as BuyerContent;
+      const navigateToBuyer = () => router.push(`/my-items/${buyer}`);
       return (
-        <ImageDataCell>
-          <AvatarImage
-            priority
-            width={32}
-            height={32}
-            src={
-              content
-                ? `data:image/jpeg;base64,${content}`
-                : '/default-avatar.png'
-            }
-          />
-        </ImageDataCell>
+        <>
+          <ImageDataCell
+            onMouseEnter={addHoverState}
+            onMouseLeave={removeHoverState}
+            onClick={navigateToBuyer}>
+            <AvatarImage
+              priority
+              width={32}
+              height={32}
+              src={
+                avatar
+                  ? `data:image/jpeg;base64,${avatar}`
+                  : '/default-avatar.png'
+              }
+            />
+          </ImageDataCell>
+          <TableDataCell
+            color={isOnHover ? '#752eeb' : '#1a1a1a'}
+            onMouseEnter={addHoverState}
+            onMouseLeave={removeHoverState}
+            onClick={navigateToBuyer}>
+            {buyer}
+          </TableDataCell>
+        </>
       );
     }
     case 'serial': {
@@ -49,7 +74,7 @@ const SalesHistoryTableCell = ({ id, content }: Props): JSX.Element => {
       );
     }
     default: {
-      return <TableDataCell>{content}</TableDataCell>;
+      return content ? <TableDataCell>{content}</TableDataCell> : null;
     }
   }
 };

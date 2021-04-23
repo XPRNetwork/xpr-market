@@ -64,8 +64,8 @@ const Search = (): JSX.Element => {
   useEffect(() => {
     (async () => {
       if (searchTerm) {
+        setIsLoading(true);
         try {
-          setIsLoading(true);
           const number = await getNumberOfTemplatesByCollection({
             type: searchTerm,
           });
@@ -85,12 +85,10 @@ const Search = (): JSX.Element => {
           );
           setRenderedTemplates(templatesWithLowestPrice);
 
-          setIsLoading(false);
           await prefetchNextPage();
         } catch (e) {
           setErrorMessage(e.message);
         }
-      } else {
         setIsLoading(false);
       }
     })();
@@ -117,8 +115,22 @@ const Search = (): JSX.Element => {
       );
     }
 
+    const numberOfTemplatesString =
+      numberOfTemplates === 1
+        ? `${numberOfTemplates} result`
+        : `${numberOfTemplates} results`;
+
+    const title = searchTerm ? (
+      <>
+        {numberOfTemplatesString} for “<PurpleSpan>{searchTerm}</PurpleSpan>”
+      </>
+    ) : (
+      'No results found'
+    );
+
     return (
       <>
+        <Title>{title}</Title>
         <Grid items={renderedTemplates} />
         <PaginationButton
           onClick={showNextPage}
@@ -130,25 +142,7 @@ const Search = (): JSX.Element => {
     );
   };
 
-  const numberOfTemplatesString =
-    numberOfTemplates === 1
-      ? `${numberOfTemplates} result`
-      : `${numberOfTemplates} results`;
-
-  const title = searchTerm ? (
-    <>
-      {numberOfTemplatesString} for “<PurpleSpan>{searchTerm}</PurpleSpan>”
-    </>
-  ) : (
-    'No results found'
-  );
-
-  return (
-    <PageLayout title="Search Results">
-      <Title>{title}</Title>
-      {getContent()}
-    </PageLayout>
-  );
+  return <PageLayout title="Search Results">{getContent()}</PageLayout>;
 };
 
 export default Search;

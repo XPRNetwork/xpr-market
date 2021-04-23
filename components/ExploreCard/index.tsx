@@ -17,11 +17,6 @@ const ExploreCard = (): JSX.Element => {
   const router = useRouter();
   const { isMobile } = useWindowSize();
   const { currentUser, login } = useAuthContext();
-  const [isFullWidth, setIsFullWidth] = useState<boolean>(true);
-
-  useEffect(() => {
-    setIsFullWidth(isMobile);
-  }, [isMobile]);
 
   const handleGetStartedClick = currentUser
     ? () => router.push('/create')
@@ -36,7 +31,7 @@ const ExploreCard = (): JSX.Element => {
         </SubTitle>
         <ButtonWrapper>
           <Button
-            fullWidth={isFullWidth}
+            fullWidth
             margin="0"
             smallSize={isMobile}
             onClick={handleGetStartedClick}>
