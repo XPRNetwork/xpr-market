@@ -39,11 +39,11 @@ const AssetFormTitle = ({
   const { currentUser } = useAuthContext();
   const isMyTemplate =
     currentUser && router.query.chainAccount === currentUser.actor;
-  const redirectToAuthor = () => router.push(`/my-items/${collectionAuthor}`);
+  const redirectToAuthor = () => router.push(`/user/${collectionAuthor}`);
   const redirectToCollection = () => router.push(`/${collectionName}`);
 
   useEffect(() => {
-    router.prefetch(`/my-items/${collectionAuthor}`);
+    router.prefetch(`/user/${collectionAuthor}`);
   }, []);
 
   return (
