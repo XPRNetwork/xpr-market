@@ -65,3 +65,18 @@ update development helm chart:
     - mv -f new-values.yaml values-development.yaml
     - git add values-development.yaml
     - if [[ -z $(git status -s) ]]; then echo 'Tree is clean'; else git commit -m "Update $SERVICE_NAME image tag to $IMAGE"; git push; fi
+
+update acceptance helm chart:
+  image: 830055101690.dkr.ecr.us-west-2.amazonaws.com/metal/ci:latest
+  stage: release
+  only:
+    - /^release-.*/@proton/proton-dashboard-market
+  script:
+    - export IMAGE=$(cat package.json | jq .version -r)
+    - git clone -b develop git@ci.metalpay.network:metalpay/metal-devops.git
+    - cd metal-devops/helm/proton
+    - touch values-acceptance.yaml
+    - cat values-acceptance.yaml | yq '."'$SERVICE_NAME'".image.tag="'$IMAGE'"' -y > new-values.yaml
+    - mv -f new-values.yaml values-acceptance.yaml
+    - git add values-acceptance.yaml
+    - if [[ -z $(git status -s) ]]; then echo 'Tree is clean'; else git commit -m "Update $SERVICE_NAME image tag to $IMAGE"; git push; fi
