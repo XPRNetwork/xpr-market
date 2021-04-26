@@ -51,6 +51,35 @@ build development:
     - docker push $REPOSITORY_HOST/$REPOSITORY_IMAGE:latest
     - docker push $REPOSITORY_HOST/$REPOSITORY_IMAGE:$IMAGE
 
+build acceptance:
+  stage: build
+  only:
+    - /^release-.*/@proton/proton-market
+  variables:
+    DEPLOYMENT_ENVIRONMENT: "PRODUCTION"
+  services:
+    - docker:dind
+  before_script:
+    - docker info
+    - apk add --no-cache curl jq python py-pip
+    - pip install awscli yq
+  script:
+    - export IMAGE=$(cat package.json | jq .version -r)
+    - $(aws ecr get-login --no-include-email --region us-west-2)
+    - docker build --no-cache 
+      --build-arg NPM_TOKEN=${NPM_TOKEN} 
+      --build-arg NEXT_PUBLIC_BLOCK_EXPLORER=${NEXT_PUBLIC_BLOCK_EXPLORER} 
+      --build-arg NEXT_PUBLIC_CHAIN_ENDPOINT=${NEXT_PUBLIC_CHAIN_ENDPOINT} 
+      --build-arg NEXT_PUBLIC_CHAIN_ID=${NEXT_PUBLIC_CHAIN_ID} 
+      --build-arg NEXT_PUBLIC_GA_TRACKING_ID=${NEXT_PUBLIC_GA_TRACKING_ID} 
+      --build-arg NEXT_PUBLIC_NFT_ENDPOINT=${NEXT_PUBLIC_NFT_ENDPOINT} 
+      --build-arg PINATA_API_KEY=${PINATA_API_KEY} 
+      --build-arg PINATA_SECRET=${PINATA_SECRET} -t $REPOSITORY_IMAGE .
+    - docker tag $REPOSITORY_IMAGE:latest $REPOSITORY_HOST/$REPOSITORY_IMAGE:latest
+    - docker tag $REPOSITORY_IMAGE:latest $REPOSITORY_HOST/$REPOSITORY_IMAGE:$IMAGE
+    - docker push $REPOSITORY_HOST/$REPOSITORY_IMAGE:latest
+    - docker push $REPOSITORY_HOST/$REPOSITORY_IMAGE:$IMAGE
+
 update development helm chart:
   image: 830055101690.dkr.ecr.us-west-2.amazonaws.com/metal/ci:latest
   stage: release
