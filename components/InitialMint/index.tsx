@@ -142,7 +142,7 @@ const InitialMint = ({
         mt="8px"
         value={mintAmount}
         setValue={setMintAmount}
-        placeholder="Enter amount"
+        placeholder="Enter mint amount"
         submit={isValid ? null : createNft}
         checkIfIsValid={checkMintAmountValidity}
       />

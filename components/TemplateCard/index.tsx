@@ -1,4 +1,4 @@
-import { KeyboardEvent, MouseEvent } from 'react';
+import { KeyboardEvent, MouseEvent, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import {
   Card,
@@ -12,9 +12,14 @@ import {
   PlaceholderIcon,
 } from './TemplateCard.styled';
 import CollectionIcon, { IconContainer } from '../CollectionIcon';
+import { fileReader } from '../../utils';
 import TemplateImage from '../TemplateImage';
 import TemplateVideo from '../TemplateVideo';
 import { IPFS_RESOLVER } from '../../utils/constants';
+import {
+  useCreateAssetContext,
+  useAuthContext,
+} from '../../components/Provider';
 
 type Props = {
   collectionName: string;
@@ -36,6 +41,7 @@ type Props = {
   noIpfsConversion?: boolean;
   autoPlay?: boolean;
   hasPlaceholderIcon?: boolean;
+  createdAt?: string;
 };
 
 const TemplateCard = ({
@@ -58,8 +64,43 @@ const TemplateCard = ({
   autoPlay,
   hasPlaceholderIcon,
   imageHoverEffect,
+  createdAt,
 }: Props): JSX.Element => {
+  const { cachedNewlyCreatedAssets } = useCreateAssetContext();
+  const { currentUser } = useAuthContext();
+  const [templateVideoSrc, setTemplateVideoSrc] = useState<string>('');
+  const [templateImgSrc, setTemplateImgSrc] = useState<string>('');
+
+  useEffect(() => {
+    if (Date.now() - 600000 < Number(createdAt) && isMyTemplate) {
+      // created within the last 10 minutes to deal with propagation lag
+      if (cachedNewlyCreatedAssets[templateVideo]) {
+        fileReader((result) => {
+          setTemplateVideoSrc(result);
+        }, cachedNewlyCreatedAssets[templateVideo]);
+      }
+      if (cachedNewlyCreatedAssets[templateImage]) {
+        fileReader((result) => {
+          setTemplateImgSrc(result);
+        }, cachedNewlyCreatedAssets[templateImage]);
+      }
+    } else {
+      const videoSrc = noIpfsConversion
+        ? templateVideo
+        : `${IPFS_RESOLVER}${templateVideo}`;
+      const imageSrc =
+        noIpfsConversion || !templateImage
+          ? templateImage
+          : `${IPFS_RESOLVER}${templateImage}`;
+
+      setTemplateVideoSrc(videoSrc);
+      setTemplateImgSrc(imageSrc);
+    }
+  }, [templateVideo, templateImage]);
+
   const router = useRouter();
+  const isMyTemplate =
+    currentUser && router.query.chainAccount === currentUser.actor;
   const openDetailPage = () => {
     if (!isStatic) {
       router.push(redirectPath);
@@ -77,15 +118,6 @@ const TemplateCard = ({
       openDetailPage();
     }
   };
-
-  const templateVideoSrc = noIpfsConversion
-    ? templateVideo
-    : `${IPFS_RESOLVER}${templateVideo}`;
-
-  const templateImgSrc =
-    noIpfsConversion || !templateImage
-      ? templateImage
-      : `${IPFS_RESOLVER}${templateImage}`;
 
   const priceTag =
     isUsersTemplates && assetsForSale && totalAssets ? (

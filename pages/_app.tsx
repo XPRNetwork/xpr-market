@@ -7,7 +7,11 @@ import '../styles/reset.css';
 import '../styles/globals.css';
 import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
-import { AuthProvider, ModalProvider } from '../components/Provider';
+import {
+  AuthProvider,
+  ModalProvider,
+  CreateAssetProvider,
+} from '../components/Provider';
 import '../styles/customprogress.css';
 import * as gtag from '../utils/gtag';
 
@@ -47,9 +51,11 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
   return (
     <ModalProvider>
       <AuthProvider>
-        <NavBar />
-        <Component {...pageProps} />
-        <Footer />
+        <CreateAssetProvider>
+          <NavBar />
+          <Component {...pageProps} />
+          <Footer />
+        </CreateAssetProvider>
       </AuthProvider>
     </ModalProvider>
   );

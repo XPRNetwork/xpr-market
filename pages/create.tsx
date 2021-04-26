@@ -20,6 +20,7 @@ import CreateTemplate from '../components/CreateTemplate';
 import InitialMint from '../components/InitialMint';
 import { RAM_AMOUNTS } from '../utils/constants';
 import proton from '../services/proton-rpc';
+import { useCreateAssetContext } from '../components/Provider';
 
 export const CREATE_PAGE_STATES = {
   CHOOSE_COLLECTION: 'CHOOSE_COLLECTION',
@@ -35,6 +36,7 @@ const placeholderCollection = {
 };
 
 const Create = (): JSX.Element => {
+  const { updateCachedNewlyCreatedAssets } = useCreateAssetContext();
   const router = useRouter();
   const { currentUser, isLoadingUser } = useAuthContext();
   const { isDesktop } = useNavigatorUserAgent();
@@ -113,6 +115,10 @@ const Create = (): JSX.Element => {
 
     try {
       const templateIpfsImage = await uploadToIPFS(templateUploadedFile);
+      updateCachedNewlyCreatedAssets({
+        [templateIpfsImage]: templateUploadedFile,
+      });
+
       let isVideo = false;
       if (templateUploadedFile.type.includes('mp4')) {
         isVideo = true;
