@@ -10,5 +10,6 @@ const fadeIn = keyframes`
 `;
 
 export const FadeInImageContainer = styled.div`
+  overflow: hidden;
   animation: ${fadeIn} 0.5s linear;
 `;

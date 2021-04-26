@@ -6,7 +6,7 @@ import {
   DEFAULT_COLLECTION,
   PAGINATION_LIMIT,
 } from '../utils/constants';
-import { Collection } from './collections';
+import { Collection, getCollection } from './collections';
 
 export type SchemaFormat = {
   name: string;
@@ -48,6 +48,7 @@ export interface Template {
 
 type GetCollectionOptions = {
   type: string;
+  limit?: number;
   page?: number;
 };
 
@@ -119,7 +120,7 @@ export const getTemplateDetails = async (
 };
 
 /**
- * Get a list of all templates within a collection
+ * Get a list of templates within a collection by page
  * Mostly used in viewing all the templates of a collection (i.e. in the homepage or after searching for one collection)
  * @param  {string} type         The name of the collection
  * @param  {string} page         Page number of results to return (defaults to 1)
@@ -151,6 +152,56 @@ export const getTemplatesByCollection = async ({
     }
 
     return templatesResult.data;
+  } catch (e) {
+    throw new Error(e);
+  }
+};
+
+/**
+ * Get all templates within a collection
+ * @param {string} type       The name of the collection
+ * @param {number} limit      Max number of templates to return
+ * @returns {Template[]}      Returns arrray of all templates in that collection
+ */
+
+export const getAllTemplatesByCollection = async ({
+  type,
+  limit = 100,
+}: GetCollectionOptions): Promise<Template[]> => {
+  try {
+    let templates = [];
+    let page = 1;
+    let hasResults = true;
+
+    while (hasResults) {
+      const templatesQueryObject = {
+        collection_name: type,
+        limit,
+        page,
+      };
+
+      const templatesQueryParams = toQueryString(templatesQueryObject);
+      const templatesResult = await getFromApi<Template[]>(
+        `${process.env.NEXT_PUBLIC_NFT_ENDPOINT}/atomicassets/v1/templates?${templatesQueryParams}`
+      );
+
+      if (!templatesResult.success) {
+        const errorMessage =
+          typeof templatesResult.error === 'object'
+            ? templatesResult.error.message
+            : templatesResult.message;
+        throw new Error(errorMessage as string);
+      }
+
+      if (templatesResult.data.length < limit || limit !== 100) {
+        hasResults = false;
+      }
+
+      templates = templates.concat(templatesResult.data);
+      page += 1;
+    }
+
+    return templates;
   } catch (e) {
     throw new Error(e);
   }

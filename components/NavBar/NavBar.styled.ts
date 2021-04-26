@@ -35,6 +35,12 @@ export const Nav = styled(MaxWidth).attrs({ as: 'nav' })`
   position: relative;
 `;
 
+export const NavLeftContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
 export const Section = styled.section`
   display: flex;
   justify-content: space-between;

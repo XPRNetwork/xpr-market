@@ -32,6 +32,7 @@ type Props = {
   price?: string;
   hasMultiple?: boolean;
   noHoverEffect?: boolean;
+  imageHoverEffect?: boolean;
   isStatic?: boolean;
   noIpfsConversion?: boolean;
   autoPlay?: boolean;
@@ -57,6 +58,7 @@ const TemplateCard = ({
   isStatic,
   autoPlay,
   hasPlaceholderIcon,
+  imageHoverEffect,
 }: Props): JSX.Element => {
   const router = useRouter();
   const openDetailPage = () => {
@@ -110,6 +112,7 @@ const TemplateCard = ({
       tabIndex={0}
       hasMultiple={hasMultiple}
       noHoverEffect={noHoverEffect}
+      imageHoverEffect={imageHoverEffect}
       onClick={redirectPath ? openDetailPage : null}
       onKeyDown={redirectPath ? handleEnterKey : null}
       isStatic={isStatic}>

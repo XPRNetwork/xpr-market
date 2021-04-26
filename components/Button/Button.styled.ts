@@ -42,3 +42,25 @@ export const StyledButton = styled.button<ButtonProps>`
     opacity: 0.2;
   `};
 `;
+
+export const TextButton = styled.button`
+  font-family: CircularStdBold;
+  border: none;
+  padding: 0;
+  background: none;
+  color: #808080;
+  cursor: pointer;
+  transition: 0.2s;
+  height: auto;
+  font-size: 16px;
+  line-height: 24px;
+
+  :focus {
+    outline: none;
+  }
+
+  :hover,
+  :focus-visible {
+    color: #752eeb;
+  }
+`;

@@ -50,8 +50,9 @@ export const ClearTextButton = styled(IconButton)<ClearTextButtonProps>`
 
 export const InputContainer = styled.div<InputContainerProps>`
   border-radius: 8px;
-  width: 50%;
+  width: 50vw;
   max-width: 600px;
+  height: 48px;
   transition: 0.2s;
   display: flex;
   align-items: center;
@@ -61,6 +62,7 @@ export const InputContainer = styled.div<InputContainerProps>`
   border: solid 1px
     ${({ isSearchInputActive }) =>
       isSearchInputActive ? '#752eeb' : '#f2f2f2'};
+  margin: 0 20px 0 50px;
 
   :focus,
   :focus-visible {
@@ -68,16 +70,24 @@ export const InputContainer = styled.div<InputContainerProps>`
     border: solid 1px #752eeb;
   }
 
-  @media (max-width: 1360px) {
-    width: 40%;
+  @media (max-width: 1450px) {
+    width: 40vw;
   }
 
-  @media (max-width: 1140px) {
-    width: 30%;
+  @media (max-width: 1350px) {
+    width: 35vw;
   }
 
-  @media (max-width: 1040px) {
-    width: 30%;
+  @media (max-width: 1250px) {
+    width: 30vw;
+  }
+
+  @media (max-width: 1150px) {
+    width: 25vw;
+  }
+
+  @media (max-width: 1050px) {
+    width: 20vw;
   }
 
   ${breakpoint.tablet`
@@ -86,6 +96,8 @@ export const InputContainer = styled.div<InputContainerProps>`
     position: absolute;
     left: 0;
     width: 100%;
+    max-width: unset;
+    margin: 0;
     border-radius: 20px;
     border: solid 2px #752eeb;
     background: white;
