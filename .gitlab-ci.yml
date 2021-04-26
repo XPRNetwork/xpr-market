@@ -70,7 +70,7 @@ update acceptance helm chart:
   image: 830055101690.dkr.ecr.us-west-2.amazonaws.com/metal/ci:latest
   stage: release
   only:
-    - /^release-.*/@proton/proton-dashboard-market
+    - /^release-.*/@proton/proton-market
   script:
     - export IMAGE=$(cat package.json | jq .version -r)
     - git clone -b develop git@ci.metalpay.network:metalpay/metal-devops.git
