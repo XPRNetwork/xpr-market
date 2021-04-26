@@ -89,7 +89,7 @@ export const AssetFormBuy = ({
       </Row>
       <Row>
         <Amount>{lowestPrice || 'None'}</Amount>
-        <Amount>{maxSupply}</Amount>
+        <Amount>{maxSupply === '0' ? 'Unlimited' : maxSupply}</Amount>
       </Row>
       <DropdownMenu
         name="Available Assets For Sale"

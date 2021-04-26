@@ -135,7 +135,9 @@ const TemplateCard = ({
         />
       )}
       <Title>{templateName}</Title>
-      <GreyText>Edition size: {maxSupply}</GreyText>
+      <GreyText>
+        Edition size: {maxSupply === '0' ? 'Unlimited' : maxSupply}
+      </GreyText>
       {price ? <Text>{price}</Text> : <PlaceholderPrice aria-hidden />}
     </Card>
   );

@@ -46,7 +46,7 @@ export const AssetFormSell = ({
       </Row>
       <Row>
         <Amount>{lowestPrice || 'None'}</Amount>
-        <Amount>{maxSupply}</Amount>
+        <Amount>{maxSupply === '0' ? 'Unlimited' : maxSupply}</Amount>
       </Row>
       <General>Serial number</General>
       <DropdownMenu
