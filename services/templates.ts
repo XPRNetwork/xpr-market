@@ -353,9 +353,9 @@ export const getTemplatesWithUserAssetCount = async (
       userAssetsWithHiddenByTemplateId[template_id] = assets;
     });
 
-    const templateIds = accountResponse.data.templates
-      .map(({ template_id }) => template_id)
-      .splice((page - 1) * PAGINATION_LIMIT, PAGINATION_LIMIT);
+    const templateIds = accountResponse.data.templates.map(
+      ({ template_id }) => template_id
+    );
     if (!templateIds.length) return [];
 
     const templates = await getTemplatesFromTemplateIds(templateIds);
@@ -364,7 +364,7 @@ export const getTemplatesWithUserAssetCount = async (
       { type: DEFAULT_COLLECTION }
     );
 
-    const templatesWithAssetsForSaleCount = formatTemplatesWithLowPriceAndAssetCount(
+    const templatesWithAssetsForSaleCount = formatTemplatesWithPriceAndAssetCountInCreateDescOrder(
       {
         templateIds: templateIds,
         templates: templates,
@@ -373,7 +373,11 @@ export const getTemplatesWithUserAssetCount = async (
         lowPriceById: lowestPricesByTemplateId,
       }
     );
-    return templatesWithAssetsForSaleCount;
+
+    return templatesWithAssetsForSaleCount.slice(
+      (page - 1) * PAGINATION_LIMIT,
+      page * PAGINATION_LIMIT
+    );
   } catch (e) {
     throw new Error(e);
   }
@@ -390,29 +394,32 @@ export const getTemplatesWithUserAssetCount = async (
  * @returns {Template[]}
  */
 
-const formatTemplatesWithLowPriceAndAssetCount = ({
+const formatTemplatesWithPriceAndAssetCountInCreateDescOrder = ({
   templateIds,
   templates,
   assetCountById,
   assetCountByIdWithHidden,
   lowPriceById,
 }: formatTemplatesWithLowPriceAndAssetCountProps) => {
-  const templatesWithAssetsForSaleCount = templateIds.map((templateId) => {
-    const template = templates.find(({ template_id }) => {
-      return templateId == template_id;
-    });
-    if (template) {
-      template.totalAssets = `${assetCountById[templateId]}`;
+  const templatesWithAssetsForSaleCount = templateIds
+    .map((templateId) => {
+      const template = templates.find(({ template_id }) => {
+        return templateId == template_id;
+      });
+      if (template) {
+        template.totalAssets = `${assetCountById[templateId]}`;
 
-      const assetsForSale =
-        parseInt(assetCountById[templateId]) -
-        parseInt(assetCountByIdWithHidden[templateId] || '0');
+        const assetsForSale =
+          parseInt(assetCountById[templateId]) -
+          parseInt(assetCountByIdWithHidden[templateId] || '0');
 
-      template.assetsForSale = `${assetsForSale}`;
-      template.lowestPrice = lowPriceById[templateId];
-    }
-    return template;
-  });
+        template.assetsForSale = `${assetsForSale}`;
+        template.lowestPrice = lowPriceById[templateId];
+      }
+      return template;
+    })
+    .sort((a, b) => Number(b.created_at_time) - Number(a.created_at_time));
+
   return templatesWithAssetsForSaleCount;
 };
 
@@ -429,6 +436,7 @@ export const getTemplatesFromTemplateIds = async (
     const templatesQueryObject = {
       symbol: TOKEN_SYMBOL,
       ids: templateIds.join(','),
+      has_assets: true,
     };
 
     const templatesQueryParams = toQueryString(templatesQueryObject);
