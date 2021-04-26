@@ -29,6 +29,7 @@ export const TransferModal = (): JSX.Element => {
     fetchPageData,
   } = modalProps as TransferOrBurnNFTModalProps;
   const [recipient, setRecipient] = useState<string>('');
+  const [memo, setMemo] = useState<string>('');
   const [error, setError] = useState<string>('');
   const { isMobile } = useWindowSize();
 
@@ -41,6 +42,7 @@ export const TransferModal = (): JSX.Element => {
         sender: currentUser ? currentUser.actor : '',
         recipient: recipient,
         asset_id: assetId,
+        memo,
       });
 
       if (!res.success && !res.error.includes('Modal closed')) {
@@ -75,13 +77,13 @@ export const TransferModal = (): JSX.Element => {
           You can transfer NFTs from your account to another.
         </Description>
         <Column>
-          <InputField value={'#' + templateMint} disabled mb="16px" />
+          <InputField value={'Serial #' + templateMint} disabled mb="16px" />
           <InputField
             value={recipient}
             setValue={setRecipient}
             setFormError={setError}
             placeholder="Receiver name"
-            mb="12px"
+            mb="16px"
             checkIfIsValid={(input) => {
               const isValid = (input as string).length < 13;
               const errorMessage =
@@ -92,10 +94,17 @@ export const TransferModal = (): JSX.Element => {
               };
             }}
           />
-          <HalfButton fullWidth={isMobile} onClick={transfer} margin="12px 0">
+          <InputField
+            value={memo}
+            setValue={setMemo}
+            setFormError={setError}
+            placeholder="Memo"
+            mb="24px"
+          />
+          <HalfButton fullWidth={isMobile} onClick={transfer} margin="0">
             Transfer
           </HalfButton>
-          <ErrorMessage>{error}</ErrorMessage>
+          {error ? <ErrorMessage>{error}</ErrorMessage> : null}
         </Column>
       </ModalBox>
     </Background>
