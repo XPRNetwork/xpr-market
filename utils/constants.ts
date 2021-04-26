@@ -50,12 +50,12 @@ export const TAB_TYPES = {
   CREATIONS: 'CREATIONS',
 };
 export const FEATURED_HOMEPAGE_COLLECTIONS = [
-  {
-    name: 'madisyn',
-    displayName: 'Hodl Smiley',
-  },
   { name: 'moonboysnfts', displayName: 'Moonboy Collection' },
   { name: 'xelements', displayName: 'xElements Collectible Cards' },
+  {
+    name: 'cryptoangels',
+    displayName: 'Crypto Angels',
+  },
 ];
 export interface RouterQuery {
   [query: string]: string;
