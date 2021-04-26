@@ -10,7 +10,6 @@ import {
   ResultItem,
 } from './SearchInputResultsList.styled';
 import CollectionIcon from '../CollectionIcon';
-import { capitalize } from '../../utils';
 
 type Props = {
   input: string;
@@ -109,7 +108,7 @@ const SearchInputResultsList = ({
           tabIndex={0}
           key={name}>
           <CollectionIcon name={name} image={img} margin="0 16px 0 0" />
-          <span>{capitalize(name)}</span>
+          <span>{name}</span>
         </ResultItem>
       ))}
     </ResultsList>

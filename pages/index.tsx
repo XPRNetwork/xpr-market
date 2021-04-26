@@ -10,23 +10,22 @@ import ExploreCard from '../components/ExploreCard';
 import Banner from '../components/Banner';
 import FeaturedGrid from '../components/FeaturedGrid'; // Using FeaturedGrid component to potentially easily swap out with FeaturedCarousel component
 import { MODAL_TYPES } from '../components/Provider';
-
-const FEATURED = ['madisyn', 'moonboysnfts', 'xelements'];
+import { FEATURED_HOMEPAGE_COLLECTIONS } from '../utils/constants';
 
 const MarketPlace = (): JSX.Element => {
   const router = useRouter();
   const getCollections = () =>
-    FEATURED.map((collection, i) => {
-      const redirectToCollection = () => router.push(`/${collection}`);
+    FEATURED_HOMEPAGE_COLLECTIONS.map(({ name, displayName }, i) => {
+      const redirectToCollection = () => router.push(`/${name}`);
       return (
         <>
           <CollectionTitleRow margin={i == 0 ? '0 0 32px' : '52px 0 32px'}>
             <CollectionTitle onClick={redirectToCollection}>
-              {collection}
+              {displayName}
             </CollectionTitle>
             <TextButton onClick={redirectToCollection}>See all</TextButton>
           </CollectionTitleRow>
-          <FeaturedGrid collection={collection} />
+          <FeaturedGrid collection={name} />
         </>
       );
     });

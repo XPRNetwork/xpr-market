@@ -12,7 +12,6 @@ import {
   PlaceholderIcon,
 } from './TemplateCard.styled';
 import CollectionIcon, { IconContainer } from '../CollectionIcon';
-import { capitalize } from '../../utils';
 import TemplateImage from '../TemplateImage';
 import TemplateVideo from '../TemplateVideo';
 import { IPFS_RESOLVER } from '../../utils/constants';
@@ -119,7 +118,7 @@ const TemplateCard = ({
       <Row>
         <CollectionNameButton isStatic={isStatic} onClick={openCollectionPage}>
           {collectionIcon}
-          <Text>{capitalize(collectionDisplayName || collectionName)}</Text>
+          <Text>{collectionDisplayName || collectionName}</Text>
         </CollectionNameButton>
       </Row>
       {templateVideo ? (

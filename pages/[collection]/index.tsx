@@ -20,7 +20,6 @@ import { PAGINATION_LIMIT, RouterQuery } from '../../utils/constants';
 import Banner from '../../components/Banner';
 import { MODAL_TYPES, useAuthContext } from '../../components/Provider';
 import PageHeader from '../../components/PageHeader';
-import { capitalize } from '../../utils';
 
 const CollectionPage = (): JSX.Element => {
   const router = useRouter();
@@ -131,7 +130,7 @@ const CollectionPage = (): JSX.Element => {
       <>
         <PageHeader
           image={img}
-          name={capitalize(name || collection)}
+          name={name || collection}
           subName={collection_name}
           description={description}
           type="collection"

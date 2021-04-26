@@ -25,7 +25,7 @@ const Error = ({
 };
 
 Error.defaultProps = {
-  buttonText: 'Explore Monsters',
+  buttonText: 'Explore',
 };
 
 export default Error;

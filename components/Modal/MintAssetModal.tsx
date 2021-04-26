@@ -15,11 +15,7 @@ import {
   HalfButton,
   FeeLabel,
 } from './Modal.styled';
-import {
-  RAM_AMOUNTS,
-  SHORTENED_TOKEN_PRECISION,
-  TOKEN_SYMBOL,
-} from '../../utils/constants';
+import { RAM_AMOUNTS, SHORTENED_TOKEN_PRECISION } from '../../utils/constants';
 import { calculateFee } from '../../utils';
 import ProtonSDK from '../../services/proton';
 import { ReactComponent as CloseIcon } from '../../public/close.svg';
@@ -112,7 +108,7 @@ export const MintAssetModal = (): JSX.Element => {
           mt="8px"
           value={amount}
           setValue={setAmount}
-          placeholder={`Enter amount in ${TOKEN_SYMBOL}`}
+          placeholder="Enter Mint Amount"
           submit={parseInt(amount) > maxMintAmountForSession ? null : mintNfts}
           checkIfIsValid={(input) => {
             const numberInput = parseInt(input as string);

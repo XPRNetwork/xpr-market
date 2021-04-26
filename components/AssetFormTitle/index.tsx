@@ -11,7 +11,6 @@ import {
 } from './AssetFormTitle.styled';
 import AssetFormPopupMenu from '../AssetFormPopupMenu';
 import { useAuthContext } from '../Provider';
-import { capitalize } from '../../utils';
 import { IPFS_RESOLVER } from '../../utils/constants';
 
 type Props = {
@@ -61,7 +60,7 @@ const AssetFormTitle = ({
           }
           alt={`${collectionName} icon`}
         />
-        <Title>{capitalize(collectionDisplayName || collectionName)}</Title>
+        <Title>{collectionDisplayName || collectionName}</Title>
       </CollectionNameButton>
       <NameContainer>
         <Name>{templateName}</Name>
@@ -78,9 +77,7 @@ const AssetFormTitle = ({
       </NameContainer>
       <AuthorText>
         Created by{' '}
-        <Author onClick={redirectToAuthor}>
-          {capitalize(collectionAuthor)}
-        </Author>
+        <Author onClick={redirectToAuthor}>{collectionAuthor}</Author>
       </AuthorText>
     </>
   );
