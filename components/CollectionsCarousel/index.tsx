@@ -120,7 +120,6 @@ const CollectionsCarousel = ({
             <CarouselProvider
               totalSlides={totalSlides}
               currentSlide={currentSlide}
-              dragEnabled={false}
               naturalSlideHeight={136}
               naturalSlideWidth={144}>
               <Slider>

@@ -7,6 +7,7 @@ import SearchInput from '../SearchInput';
 import {
   Background,
   Nav,
+  NavLeftContainer,
   Section,
   AvatarContainer,
   ImageLink,
@@ -47,7 +48,7 @@ const Logo = (): JSX.Element => {
             width={194}
             height={41}
             alt="logo"
-            src="/logo-colored@3x.png"
+            src="/beta-logo.svg" // TODO: Swap back to non-beta logo: logo-colored@3x.png
           />
         </DesktopIcon>
         <MobileIcon>
@@ -168,24 +169,22 @@ const DesktopNavRoutes = () => {
     {
       name: 'Explore',
       path: '/',
-      isHidden: false,
     },
     {
       name: 'My Items',
       path: `/user/${currentUser ? currentUser.actor : ''}`,
-      isHidden: !currentUser,
     },
     {
       name: 'Create',
       path: `/create`,
-      isHidden: !currentUser,
     },
   ];
 
   return (
     <DesktopOnlySection>
-      {routes.map(({ name, path, isHidden }) => {
+      {routes.map(({ name, path }) => {
         const isActive = router.pathname.split('/')[1] === path.split('/')[1];
+        const isHidden = !currentUser;
         return isHidden ? null : (
           <Link href={path} passHref key={name}>
             <DesktopNavLink isActive={isActive}>{name}</DesktopNavLink>
@@ -236,11 +235,13 @@ const NavBar = (): JSX.Element => {
   return (
     <Background>
       <Nav>
-        <Logo />
-        <SearchInput
-          isMobileSearchOpen={isMobileSearchOpen}
-          closeMobileSearch={() => setIsMobileSearchOpen(false)}
-        />
+        <NavLeftContainer>
+          <Logo />
+          <SearchInput
+            isMobileSearchOpen={isMobileSearchOpen}
+            closeMobileSearch={() => setIsMobileSearchOpen(false)}
+          />
+        </NavLeftContainer>
         <Section>
           <DesktopNavRoutes />
           {mobileSearchHiddenNavItems}

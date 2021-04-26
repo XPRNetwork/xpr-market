@@ -13,7 +13,7 @@ const TemplateImage = ({
   priceTag,
 }: Props): JSX.Element => {
   return (
-    <ImageContainer>
+    <ImageContainer className="template-image-container">
       {templateImgSrc ? (
         <Image
           priority

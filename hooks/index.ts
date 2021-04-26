@@ -26,6 +26,8 @@ export const useWindowSize = (): {
   windowWidth: number;
   isMobile: boolean;
   isTablet: boolean;
+  isLaptop: boolean;
+  isDesktop: boolean;
 } => {
   const isSSR = typeof window === 'undefined';
   const [windowWidth, setWindowWidth] = useState(
@@ -37,18 +39,35 @@ export const useWindowSize = (): {
   const [isTablet, setIsTablet] = useState(
     isSSR ? false : window.innerWidth <= 970
   );
+  const [isLaptop, setIsLaptop] = useState(
+    isSSR ? false : window.innerWidth <= 1250
+  );
+  const [isDesktop, setIsDesktop] = useState(
+    isSSR ? false : window.innerWidth > 1250
+  );
 
   function changeWindowSize() {
     setWindowWidth(window.innerWidth);
     if (window.innerWidth <= 600) {
       setIsMobile(true);
+      setIsDesktop(false);
+      setIsLaptop(false);
       setIsTablet(false);
     } else if (window.innerWidth <= 970) {
       setIsTablet(true);
+      setIsDesktop(false);
+      setIsLaptop(false);
+      setIsMobile(false);
+    } else if (window.innerWidth <= 1250) {
+      setIsLaptop(true);
+      setIsDesktop(false);
+      setIsTablet(false);
       setIsMobile(false);
     } else {
       setIsMobile(false);
       setIsTablet(false);
+      setIsLaptop(false);
+      setIsDesktop(true);
     }
   }
 
@@ -61,7 +80,7 @@ export const useWindowSize = (): {
     };
   }, []);
 
-  return { windowWidth, isMobile, isTablet };
+  return { windowWidth, isMobile, isTablet, isLaptop, isDesktop };
 };
 
 export const useNavigatorUserAgent = (): { isDesktop: boolean } => {
