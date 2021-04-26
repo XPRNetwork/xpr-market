@@ -52,6 +52,7 @@ const AssetVideo = ({ video }: { video: string }): JSX.Element => (
   <ImageContainer>
     <Video
       controls
+      loop
       autoPlay
       onLoadStart={setVolumeOnLoad}
       src={`${IPFS_RESOLVER}${video}`}
