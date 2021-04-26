@@ -6,6 +6,7 @@ interface HalfButtonProps extends ButtonProps {
   color?: string;
   hoverColor?: string;
   height?: string;
+  padding?: string;
   disabled?: boolean;
 }
 
@@ -115,7 +116,7 @@ export const ModalButton = styled(StyledButton)`
 export const HalfButton = styled(StyledButton)<HalfButtonProps>`
   min-width: 144px;
   align-self: flex-end;
-  padding: 11px 16px 13px;
+  padding: ${({ padding }) => padding || '11px 16px 13px'};
 
   ${({ color }) =>
     color &&

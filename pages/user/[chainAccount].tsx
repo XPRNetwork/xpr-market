@@ -11,7 +11,6 @@ import {
 } from '../../services/templates';
 import { Template } from '../../services/templates';
 import LoadingPage from '../../components/LoadingPage';
-import { capitalize } from '../../utils';
 import {
   PAGINATION_LIMIT,
   TAB_TYPES,
@@ -235,7 +234,7 @@ const Collection = (): JSX.Element => {
       <>
         <PageHeader
           image={userAvatar}
-          name={capitalize(userName)}
+          name={userName}
           subName={chainAccount}
           type="user"
         />

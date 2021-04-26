@@ -6,7 +6,7 @@ import {
   DEFAULT_COLLECTION,
   PAGINATION_LIMIT,
 } from '../utils/constants';
-import { Collection, getCollection } from './collections';
+import { Collection } from './collections';
 
 export type SchemaFormat = {
   name: string;
@@ -136,6 +136,7 @@ export const getTemplatesByCollection = async ({
       collection_name: type,
       page: page || 1,
       limit: PAGINATION_LIMIT,
+      has_assets: true,
     };
 
     const templatesQueryParams = toQueryString(templatesQueryObject);

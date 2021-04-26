@@ -3,6 +3,7 @@ import { useAuthContext, useModalContext } from '../Provider';
 import { CreateCollectionProps } from '../Provider/ModalProvider';
 import DragDropFileUploadSm from '../DragDropFileUploadSm';
 import InputField from '../InputField';
+import Spinner from '../Spinner';
 import {
   Background,
   ModalBox,
@@ -40,6 +41,7 @@ export const CreateCollectionModal = (): JSX.Element => {
   const [royalties, setRoyalties] = useState<string>('');
   const [formError, setFormError] = useState<string>('');
   const [uploadedFile, setUploadedFile] = useState<File | null>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const author = currentUser ? currentUser.actor : '';
 
   const create: FormEventHandler<HTMLFormElement> = async (e) => {
@@ -90,6 +92,7 @@ export const CreateCollectionModal = (): JSX.Element => {
       return;
     }
 
+    setIsLoading(true);
     try {
       const ipfsImage = await uploadToIPFS(uploadedFile);
       await sendToApi('POST', '/api/collections', {
@@ -119,6 +122,7 @@ export const CreateCollectionModal = (): JSX.Element => {
     } catch (err) {
       setFormError('Unable to upload the collection image. Please try again.');
     }
+    setIsLoading(false);
   };
 
   const handleBackgroundClick = (e: MouseEvent) => {
@@ -160,7 +164,7 @@ export const CreateCollectionModal = (): JSX.Element => {
             <ErrorMessage>{uploadError}</ErrorMessage>
           </Column>
         </Row>
-        <Form onSubmit={create}>
+        <Form onSubmit={isLoading ? null : create}>
           <InputField
             placeholder="Display Name"
             value={displayName}
@@ -220,8 +224,13 @@ export const CreateCollectionModal = (): JSX.Element => {
           <HalfButton
             fullWidth={isMobile}
             type="submit"
-            disabled={formError.length > 0}>
-            Create Collection
+            disabled={formError.length > 0 || isLoading}
+            padding={isLoading ? '0 58px' : '11px 16px 13px'}>
+            {isLoading ? (
+              <Spinner size="42px" radius="10" hasBackground />
+            ) : (
+              'Create Collection'
+            )}
           </HalfButton>
         </Form>
       </ModalBox>

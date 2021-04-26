@@ -49,6 +49,14 @@ export const TAB_TYPES = {
   ITEMS: 'ITEMS',
   CREATIONS: 'CREATIONS',
 };
+export const FEATURED_HOMEPAGE_COLLECTIONS = [
+  {
+    name: 'madisyn',
+    displayName: 'Hodl Smiley',
+  },
+  { name: 'moonboysnfts', displayName: 'Moonboy Collection' },
+  { name: 'xelements', displayName: 'xElements Collectible Cards' },
+];
 export interface RouterQuery {
   [query: string]: string;
 }
