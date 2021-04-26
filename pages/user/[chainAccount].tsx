@@ -65,41 +65,35 @@ const Collection = (): JSX.Element => {
   ];
   const [activeTab, setActiveTab] = useState<string>(tabs[0].type);
 
-  const prefetchNextPage = async () => {
-    if (activeTab === TAB_TYPES.ITEMS) {
-      const items = await getTemplatesWithUserAssetCount(
-        chainAccount,
-        prefetchItemsPageNumber
-      );
-      setPrefetchedItems(items);
-    } else {
-      const creations = await getUserCreatedTemplates(
-        chainAccount,
-        prefetchCreationsPageNumber
-      );
-      setPrefetchedCreations(creations);
-    }
-
+  const showNextItemsPage = async () => {
+    setRenderedItems((prevItems) => [...prevItems, ...prefetchedItems]);
+    setPrefetchItemsPageNumber((prevPageNumber) =>
+      prefetchedItems.length < PAGINATION_LIMIT ? -1 : prevPageNumber + 1
+    );
+    setIsLoadingNextPage(true);
+    const items = await getTemplatesWithUserAssetCount(
+      chainAccount,
+      prefetchItemsPageNumber
+    );
+    setPrefetchedItems(items);
     setIsLoadingNextPage(false);
   };
 
-  const showNextPage = async () => {
-    if (activeTab === TAB_TYPES.ITEMS) {
-      setRenderedItems((prevItems) => [...prevItems, ...prefetchedItems]);
-      setPrefetchItemsPageNumber((prevPageNumber) =>
-        prefetchedItems.length < PAGINATION_LIMIT ? -1 : prevPageNumber + 1
-      );
-    } else {
-      setRenderedCreations((prevCreations) => [
-        ...prevCreations,
-        ...prefetchedCreations,
-      ]);
-      setPrefetchCreationsPageNumber((prevPageNumber) =>
-        prefetchedCreations.length < PAGINATION_LIMIT ? -1 : prevPageNumber + 1
-      );
-    }
+  const showNextCreationsPage = async () => {
+    setRenderedCreations((prevCreations) => [
+      ...prevCreations,
+      ...prefetchedCreations,
+    ]);
+    setPrefetchCreationsPageNumber((prevPageNumber) =>
+      prefetchedCreations.length < PAGINATION_LIMIT ? -1 : prevPageNumber + 1
+    );
     setIsLoadingNextPage(true);
-    await prefetchNextPage();
+    const creations = await getUserCreatedTemplates(
+      chainAccount,
+      prefetchCreationsPageNumber
+    );
+    setPrefetchedCreations(creations);
+    setIsLoadingNextPage(false);
   };
 
   const getUser = async (chainAccount: string): Promise<void> => {
@@ -120,6 +114,7 @@ const Collection = (): JSX.Element => {
       if (chainAccount) {
         try {
           setIsTemplatesLoading(true);
+          setIsLoadingNextPage(true);
           router.prefetch('/');
           const initialItems = await getTemplatesWithUserAssetCount(
             chainAccount,
@@ -131,13 +126,23 @@ const Collection = (): JSX.Element => {
           );
           setRenderedItems(initialItems);
           setRenderedCreations(initialCreations);
-          await prefetchNextPage();
+          const items = await getTemplatesWithUserAssetCount(
+            chainAccount,
+            prefetchItemsPageNumber
+          );
+          setPrefetchedItems(items);
+          const creations = await getUserCreatedTemplates(
+            chainAccount,
+            prefetchCreationsPageNumber
+          );
+          setPrefetchedCreations(creations);
         } catch (e) {
           setErrorMessage(e.message);
         }
       }
       setIsLoading(false);
       setIsTemplatesLoading(false);
+      setIsLoadingNextPage(false);
     })();
   }, [chainAccount]);
 
@@ -207,7 +212,11 @@ const Collection = (): JSX.Element => {
 
     return (
       <PaginationButton
-        onClick={showNextPage}
+        onClick={
+          activeTab === TAB_TYPES.ITEMS
+            ? showNextItemsPage
+            : showNextCreationsPage
+        }
         isHidden={isHidden}
         isLoading={isLoadingNextPage}
         disabled={isDisabled}
