@@ -39,7 +39,8 @@ export const MintAssetModal = (): JSX.Element => {
   } = modalProps as MintAssetModalProps;
   const [amount, setAmount] = useState<string>('');
   const [mintFee, setMintFee] = useState<number>(0);
-  const possibleMintAmount = maxSupply - issuedSupply;
+  const possibleMintAmount =
+    maxSupply === 0 ? Infinity : maxSupply - issuedSupply;
   const maxMintAmountForSession =
     possibleMintAmount < 50 ? possibleMintAmount : 50;
   const maxMintMessage = `${maxMintAmountForSession} max${
