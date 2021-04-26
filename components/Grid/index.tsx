@@ -27,6 +27,7 @@ const Grid = ({ items }: Props): JSX.Element => {
           lowestPrice,
           totalAssets,
           assetsForSale,
+          created_at_time,
         }) => {
           const redirectPath = isUsersTemplates
             ? `/details/${currentUser.actor}/${collection_name}/${template_id}`
@@ -53,6 +54,7 @@ const Grid = ({ items }: Props): JSX.Element => {
               collectionImage={img}
               templateVideo={video}
               templateImage={image}
+              createdAt={created_at_time}
               price={lowestPrice}
               hasMultiple={ownerHasMultiple || hasMultiple}
             />
