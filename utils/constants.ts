@@ -50,11 +50,17 @@ export const TAB_TYPES = {
   CREATIONS: 'CREATIONS',
 };
 export const FEATURED_HOMEPAGE_COLLECTIONS = [
+  { name: 'kawaiicrypto', displayName: 'Kawaii Crypto to the Moon!' },
+  { name: 'pourmeanftok', displayName: 'Benji432' },
   { name: 'moonboysnfts', displayName: 'Moonboy Collection' },
   { name: 'xelements', displayName: 'xElements Collectible Cards' },
   {
     name: 'cryptoangels',
     displayName: 'Crypto Angels',
+  },
+  {
+    name: 'restingbface',
+    displayName: 'RBF',
   },
 ];
 export interface RouterQuery {
