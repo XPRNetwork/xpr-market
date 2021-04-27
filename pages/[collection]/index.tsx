@@ -27,7 +27,7 @@ import {
 
 const CollectionPage = (): JSX.Element => {
   const router = useRouter();
-  const { isLoadingUser } = useAuthContext();
+  const { isLoadingUser, currentUser } = useAuthContext();
   const { setModalProps } = useModalContext();
   const { collection: caseSensitiveCollection } = router.query as RouterQuery;
   const collection = caseSensitiveCollection
@@ -47,6 +47,10 @@ const CollectionPage = (): JSX.Element => {
   const [collectionData, setCollectionData] = useState<Collection>(
     emptyCollection
   );
+  const isCurrentUserOwner =
+    currentUser &&
+    collectionData &&
+    currentUser.actor === collectionData.author;
 
   const prefetchNextPage = async () => {
     const prefetchedResult = await getTemplatesByCollection({
@@ -156,7 +160,7 @@ const CollectionPage = (): JSX.Element => {
           subName={collection_name}
           description={description}
           type="collection"
-          hasEditFunctionality
+          hasEditFunctionality={isCurrentUserOwner}
         />
         <Grid items={renderedTemplates} />
         <PaginationButton
