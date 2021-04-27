@@ -179,6 +179,7 @@ export const getAllTemplatesByCollection = async ({
         collection_name: type,
         limit,
         page,
+        has_assets: true,
       };
 
       const templatesQueryParams = toQueryString(templatesQueryObject);
@@ -466,6 +467,7 @@ export const getUserCreatedTemplates = async (
       order: 'desc',
       page: pageParam,
       limit: PAGINATION_LIMIT,
+      has_assets: true,
     };
     const queryString = toQueryString(queryObject);
     const templatesResponse = await getFromApi<Template[]>(
