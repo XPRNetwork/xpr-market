@@ -44,7 +44,6 @@ const PageHeader = ({
     ? `${IPFS_RESOLVER_IMAGE}${image}`
     : '/proton.svg';
   const displayImg = type === 'user' ? avatarImg : collectionImg;
-  const subNameIcon = type === 'user' ? '@' : '#';
 
   const shareButton = (
     <RoundButton
@@ -76,10 +75,7 @@ const PageHeader = ({
         <Image width="120px" height="120px" src={displayImg} />
       </ImageContainer>
       <Name>{name}</Name>
-      <SubName>
-        {subNameIcon}
-        {subName}
-      </SubName>
+      {type === 'user' ? <SubName>@{subName}</SubName> : null}
       {description ? <Description>{description}</Description> : null}
       {buttons}
     </PageHeaderContainer>
