@@ -66,6 +66,15 @@ interface MintAssetsOptions {
   mint_fee: number;
 }
 
+interface UpdateCollectionOptions {
+  author: string;
+  collection_name: string;
+  description: string;
+  display_name: string;
+  image: string;
+  market_fee: string;
+}
+
 interface SetMarketFeeOptions {
   author: string;
   collection_name: string;
@@ -713,6 +722,96 @@ class ProtonSDK {
         error:
           e.message ||
           'An error has occurred while creating and minting the collection, schema, template, and assets.',
+      };
+    }
+  };
+
+  /**
+   * Update a collection's data (mutable properties: description, display name, image, and royalty amount).
+   *
+   * @param {string}   author             Chain account of the collection's author.
+   * @param {string}   collection_name    Name of the collection to update.
+   * @param {string}   description        Collection's new description.
+   * @param {string}   display_name       Collection's new display name.
+   * @param {string}   image              Collection's new image.
+   * @param {string}   market_fee         Royalty amount owner receives for each asset transaction within the collection.
+   * @return {Response}                   Returns an object indicating the success of the transaction and transaction ID.
+   */
+
+  updateCollection = async ({
+    author,
+    collection_name,
+    description,
+    display_name,
+    image,
+    market_fee,
+  }: UpdateCollectionOptions): Promise<Response> => {
+    const actions: Action[] = [
+      {
+        account: 'atomicassets',
+        name: 'setcoldata',
+        authorization: [
+          {
+            actor: author,
+            permission: 'active',
+          },
+        ],
+        data: {
+          author,
+          collection_name,
+          data: [
+            {
+              key: 'description',
+              value: ['string', description],
+            },
+            {
+              key: 'name',
+              value: ['string', display_name],
+            },
+            {
+              key: 'img',
+              value: ['string', image || ''],
+            },
+          ],
+        },
+      },
+    ];
+
+    if (market_fee) {
+      actions.push({
+        account: 'atomicassets',
+        name: 'setmarketfee',
+        authorization: [
+          {
+            actor: author,
+            permission: 'active',
+          },
+        ],
+        data: {
+          author,
+          collection_name,
+          market_fee,
+        },
+      });
+    }
+
+    try {
+      if (!this.session) {
+        throw new Error('Unable to update a collection without logging in.');
+      }
+      const result = await this.session.transact(
+        { actions: actions },
+        { broadcast: true }
+      );
+      return {
+        success: true,
+        transactionId: result.processed.id,
+      };
+    } catch (e) {
+      return {
+        success: false,
+        error:
+          e.message || 'An error has occurred while updating the collection.',
       };
     }
   };
