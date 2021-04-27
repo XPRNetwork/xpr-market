@@ -55,7 +55,6 @@ const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
   const [uploadedFile, setUploadedFile] = useState<File | null>();
   const [updatedImage, setUpdatedImage] = useState<string>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const author = currentUser ? currentUser.actor : '';
 
   useEffect(() => {
     if (type === TYPES.UPDATE) {
@@ -202,6 +201,18 @@ const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
     setIsLoading(false);
   };
 
+  const createCollectionName = () => {
+    const collectionName = [];
+    const characters = '12345';
+    const charactersLength = characters.length;
+    for (let i = 0; i < 12; i++) {
+      collectionName.push(
+        characters.charAt(Math.floor(Math.random() * charactersLength))
+      );
+    }
+    return collectionName.join('');
+  };
+
   const handleBackgroundClick = (e: MouseEvent) => {
     if (e.target === e.currentTarget) {
       closeModal();
@@ -213,6 +224,29 @@ const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
       uploadInputRef.current.click();
     }
   };
+
+  useEffect(() => {
+    (async () => {
+      if (!name) {
+        let isUnique = false;
+
+        while (!isUnique) {
+          const collectionName = createCollectionName();
+          try {
+            const result = await getFromApi<Collection>(
+              `${process.env.NEXT_PUBLIC_NFT_ENDPOINT}/atomicassets/v1/collections/${collectionName}`
+            );
+            if (!result.success) {
+              setName(collectionName);
+              isUnique = true;
+            }
+          } catch (e) {
+            throw new Error(e);
+          }
+        }
+      }
+    })();
+  }, []);
 
   return (
     <Background onClick={handleBackgroundClick}>
