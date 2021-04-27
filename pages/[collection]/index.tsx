@@ -24,11 +24,13 @@ import {
   useAuthContext,
   useModalContext,
 } from '../../components/Provider';
+import { useNavigatorUserAgent } from '../../hooks';
 
 const CollectionPage = (): JSX.Element => {
   const router = useRouter();
   const { isLoadingUser, currentUser } = useAuthContext();
   const { setModalProps } = useModalContext();
+  const { isDesktop } = useNavigatorUserAgent();
   const { collection: caseSensitiveCollection } = router.query as RouterQuery;
   const collection = caseSensitiveCollection
     ? caseSensitiveCollection.toLowerCase()
@@ -47,7 +49,8 @@ const CollectionPage = (): JSX.Element => {
   const [collectionData, setCollectionData] = useState<Collection>(
     emptyCollection
   );
-  const isCurrentUserOwner =
+  const isEditButtonVisible =
+    isDesktop &&
     currentUser &&
     collectionData &&
     currentUser.actor === collectionData.author;
@@ -160,7 +163,7 @@ const CollectionPage = (): JSX.Element => {
           subName={collection_name}
           description={description}
           type="collection"
-          hasEditFunctionality={isCurrentUserOwner}
+          hasEditFunctionality={isEditButtonVisible}
         />
         <Grid items={renderedTemplates} />
         <PaginationButton
