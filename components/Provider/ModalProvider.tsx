@@ -18,6 +18,7 @@ export const MODAL_TYPES = {
   CANCEL_MULTIPLE_SALES: 'CANCEL_MULTIPLE_SALES',
   TRANSFER: 'TRANSFER',
   CREATE_COLLECTION: 'CREATE_COLLECTION',
+  UPDATE_COLLECTION: 'UPDATE_COLLECTION',
   MINT_ASSET: 'MINT_ASSET',
   BURN_ASSET: 'BURN_ASSET',
 };
@@ -64,6 +65,14 @@ export interface CreateCollectionProps {
   setIsUncreatedCollectionSelected: Dispatch<SetStateAction<boolean>>;
 }
 
+export interface UpdateCollectionProps {
+  collectionName: string;
+  defaultDescription: string;
+  defaultDisplayName: string;
+  defaultRoyalties: string;
+  defaultImage: string;
+}
+
 export interface MintAssetModalProps extends GeneralModalProps {
   collectionName: string;
   templateId: string;
@@ -82,6 +91,7 @@ type ModalProps =
   | CreateMultipleSalesModalProps
   | TransferOrBurnNFTModalProps
   | CreateCollectionProps
+  | UpdateCollectionProps
   | MintAssetModalProps;
 
 type ModalContextValue = {

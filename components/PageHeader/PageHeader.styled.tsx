@@ -1,6 +1,12 @@
 import styled from 'styled-components';
 import { breakpoint } from '../../styles/Breakpoints';
 
+type RoundButtonProps = {
+  size?: string;
+  padding?: string;
+  margin?: string;
+};
+
 export const PageHeaderContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -59,18 +65,22 @@ export const Description = styled.p`
   text-align: center;
 `;
 
-export const IconButton = styled.button`
+export const RoundButton = styled.button<RoundButtonProps>`
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
   background-color: transparent;
-  height: 40px;
-  width: 40px;
-  border-radius: 100%;
+  height: ${({ size }) => size || 'auto'};
+  width: ${({ size }) => size || 'auto'};
+  padding: ${({ padding }) => padding || 0};
+  margin: ${({ margin }) => margin || 0};
+  border-radius: 20px;
   border: 1px solid #e6e6e6;
   cursor: pointer;
   outline: none;
+  font-size: 16px;
+  lien-height: 24px;
 
   :hover {
     background-color: rgba(230, 230, 230, 0.3);
@@ -85,4 +95,10 @@ export const IconButton = styled.button`
     left: 7px;
     top: 6px;
   }
+`;
+
+export const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;

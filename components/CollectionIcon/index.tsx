@@ -23,4 +23,8 @@ const CollectionIcon = ({ name, image, margin, width }: Props): JSX.Element => {
   );
 };
 
+CollectionIcon.defaultProps = {
+  name: 'collection icon',
+};
+
 export default CollectionIcon;

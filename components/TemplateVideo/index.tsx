@@ -14,7 +14,6 @@ const TemplateVideo = ({
   autoPlay = false,
   controls = true,
 }: Props): JSX.Element => {
-
   return (
     <VideoContainer>
       <CenterContainer>

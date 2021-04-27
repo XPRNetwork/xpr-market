@@ -1,6 +1,12 @@
-import { FormEventHandler, MouseEvent, useState, useRef } from 'react';
+import {
+  FormEventHandler,
+  MouseEvent,
+  useState,
+  useRef,
+  useEffect,
+} from 'react';
 import { useAuthContext, useModalContext } from '../Provider';
-import { CreateCollectionProps } from '../Provider/ModalProvider';
+import { CreateCollectionProps, UpdateCollectionProps } from '../Provider';
 import DragDropFileUploadSm from '../DragDropFileUploadSm';
 import InputField from '../InputField';
 import Spinner from '../Spinner';
@@ -23,17 +29,31 @@ import uploadToIPFS from '../../services/upload';
 import { ReactComponent as CloseIcon } from '../../public/close.svg';
 import { sendToApi } from '../../utils/browser-fetch';
 import { fileReader } from '../../utils';
+import ProtonSDK from '../../services/proton';
 
-export const CreateCollectionModal = (): JSX.Element => {
+const TYPES = {
+  CREATE: 'CREATE',
+  UPDATE: 'UPDATE',
+};
+
+type Props = {
+  type: string;
+  modalProps: CreateCollectionProps | UpdateCollectionProps;
+};
+
+const updateSearchResultsListCache = async ({ name, displayName, img }) => {
+  await sendToApi('POST', '/api/collections', {
+    name,
+    displayName,
+    img,
+  });
+};
+
+const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
   const { currentUser } = useAuthContext();
   const { isMobile } = useWindowSize();
-  const { closeModal, modalProps } = useModalContext();
+  const { closeModal } = useModalContext();
   const uploadInputRef = useRef<HTMLInputElement>();
-  const {
-    setNewCollection,
-    setSelectedCollection,
-    setIsUncreatedCollectionSelected,
-  } = modalProps as CreateCollectionProps;
   const [name, setName] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [displayName, setDisplayName] = useState<string>('');
@@ -41,10 +61,107 @@ export const CreateCollectionModal = (): JSX.Element => {
   const [royalties, setRoyalties] = useState<string>('');
   const [formError, setFormError] = useState<string>('');
   const [uploadedFile, setUploadedFile] = useState<File | null>();
+  const [updatedImage, setUpdatedImage] = useState<string>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const author = currentUser ? currentUser.actor : '';
 
-  const create: FormEventHandler<HTMLFormElement> = async (e) => {
+  useEffect(() => {
+    if (type === TYPES.UPDATE) {
+      const {
+        collectionName,
+        defaultDescription,
+        defaultDisplayName,
+        defaultRoyalties,
+        defaultImage,
+      } = modalProps as UpdateCollectionProps;
+      setName(collectionName);
+      setDescription(defaultDescription);
+      setDisplayName(defaultDisplayName);
+      setRoyalties((parseFloat(defaultRoyalties) * 100).toString());
+      setUpdatedImage(defaultImage);
+    }
+  }, []);
+
+  const create = async () => {
+    const {
+      setNewCollection,
+      setSelectedCollection,
+      setIsUncreatedCollectionSelected,
+    } = modalProps as CreateCollectionProps;
+    try {
+      const ipfsImage = await uploadToIPFS(uploadedFile);
+      fileReader((img) => {
+        setSelectedCollection({
+          collection_name: name,
+          name: displayName,
+          img,
+        });
+      }, uploadedFile);
+
+      await updateSearchResultsListCache({
+        name,
+        displayName,
+        img: ipfsImage,
+      });
+
+      setNewCollection({
+        collection_name: name,
+        name: displayName,
+        img: ipfsImage,
+        description: description,
+        royalties,
+      });
+
+      setIsUncreatedCollectionSelected(true);
+      closeModal();
+    } catch (err) {
+      setFormError('Unable to upload the collection image. Please try again.');
+    }
+  };
+
+  const update = async () => {
+    try {
+      const ipfsImage = await uploadToIPFS(uploadedFile);
+      fileReader((img) => setUpdatedImage(img), uploadedFile);
+
+      await updateSearchResultsListCache({
+        name,
+        displayName,
+        img: ipfsImage,
+      });
+
+      const { defaultRoyalties } = modalProps as UpdateCollectionProps;
+
+      const hasUpdatedRoytalies =
+        parseFloat(defaultRoyalties) !== parseInt(royalties) / 100;
+
+      const res = await ProtonSDK.updateCollection({
+        author,
+        collection_name: name,
+        description,
+        display_name: displayName,
+        image: ipfsImage,
+        market_fee: hasUpdatedRoytalies
+          ? (parseInt(royalties) / 100).toFixed(6)
+          : '',
+      });
+
+      if (!res.success) {
+        throw new Error('Unable to update the collection. Please try again.');
+      }
+
+      closeModal();
+    } catch (err) {
+      setFormError('Unable to update the collection. Please try again.');
+    }
+  };
+
+  const formActions = {
+    [TYPES.CREATE]: create,
+    [TYPES.UPDATE]: update,
+  };
+
+  const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
     setFormError('');
 
@@ -93,35 +210,7 @@ export const CreateCollectionModal = (): JSX.Element => {
     }
 
     setIsLoading(true);
-    try {
-      const ipfsImage = await uploadToIPFS(uploadedFile);
-      await sendToApi('POST', '/api/collections', {
-        name,
-        displayName,
-        img: ipfsImage,
-      });
-
-      setNewCollection({
-        collection_name: name,
-        name: displayName,
-        img: ipfsImage,
-        description: description,
-        royalties,
-      });
-
-      fileReader((img) => {
-        setSelectedCollection({
-          collection_name: name,
-          name: displayName,
-          img,
-        });
-      }, uploadedFile);
-
-      setIsUncreatedCollectionSelected(true);
-      closeModal();
-    } catch (err) {
-      setFormError('Unable to upload the collection image. Please try again.');
-    }
+    await formActions[type]();
     setIsLoading(false);
   };
 
@@ -141,13 +230,14 @@ export const CreateCollectionModal = (): JSX.Element => {
     <Background onClick={handleBackgroundClick}>
       <ModalBox>
         <Section>
-          <Title>New collection</Title>
+          <Title>{type === TYPES.UPDATE ? 'Update' : 'New'} collection</Title>
           <CloseIconContainer role="button" onClick={closeModal}>
             <CloseIcon />
           </CloseIconContainer>
         </Section>
         <Row>
           <DragDropFileUploadSm
+            placeholderImage={updatedImage}
             uploadInputRef={uploadInputRef}
             uploadedFile={uploadedFile}
             setUploadedFile={setUploadedFile}
@@ -164,19 +254,13 @@ export const CreateCollectionModal = (): JSX.Element => {
             <ErrorMessage>{uploadError}</ErrorMessage>
           </Column>
         </Row>
-        <Form onSubmit={isLoading ? null : create}>
-          <InputField
-            placeholder="Display Name"
-            value={displayName}
-            setFormError={setFormError}
-            setValue={setDisplayName}
-            mb="16px"
-          />
+        <Form onSubmit={isLoading ? null : handleSubmit}>
           <InputField
             placeholder="Collection Name"
             value={name}
             setValue={setName}
             setFormError={setFormError}
+            disabled={type === TYPES.UPDATE}
             checkIfIsValid={(input: string) => {
               const hasValidCharacters = !!input.match(/^[a-z1-5]+$/);
               const isValidLength = input.length === 12;
@@ -189,6 +273,13 @@ export const CreateCollectionModal = (): JSX.Element => {
                 errorMessage,
               };
             }}
+            mb="16px"
+          />
+          <InputField
+            placeholder="Display Name"
+            value={displayName}
+            setFormError={setFormError}
+            setValue={setDisplayName}
             mb="16px"
           />
           <InputField
@@ -229,11 +320,25 @@ export const CreateCollectionModal = (): JSX.Element => {
             {isLoading ? (
               <Spinner size="42px" radius="10" hasBackground />
             ) : (
-              'Create Collection'
+              `${type === TYPES.UPDATE ? 'Update' : 'Create'} Collection`
             )}
           </HalfButton>
         </Form>
       </ModalBox>
     </Background>
   );
+};
+
+export const CreateCollectionModal = (): JSX.Element => {
+  const { modalProps } = useModalContext() as {
+    modalProps: CreateCollectionProps;
+  };
+  return <CollectionModal type={TYPES.CREATE} modalProps={modalProps} />;
+};
+
+export const UpdateCollectionModal = (): JSX.Element => {
+  const { modalProps } = useModalContext() as {
+    modalProps: UpdateCollectionProps;
+  };
+  return <CollectionModal type={TYPES.UPDATE} modalProps={modalProps} />;
 };

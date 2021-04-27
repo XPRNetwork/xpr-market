@@ -18,12 +18,17 @@ import {
 } from '../../services/collections';
 import { PAGINATION_LIMIT, RouterQuery } from '../../utils/constants';
 import Banner from '../../components/Banner';
-import { MODAL_TYPES, useAuthContext } from '../../components/Provider';
 import PageHeader from '../../components/PageHeader';
+import {
+  MODAL_TYPES,
+  useAuthContext,
+  useModalContext,
+} from '../../components/Provider';
 
 const CollectionPage = (): JSX.Element => {
   const router = useRouter();
   const { isLoadingUser } = useAuthContext();
+  const { setModalProps } = useModalContext();
   const { collection: caseSensitiveCollection } = router.query as RouterQuery;
   const collection = caseSensitiveCollection
     ? caseSensitiveCollection.toLowerCase()
@@ -75,6 +80,23 @@ const CollectionPage = (): JSX.Element => {
         try {
           const collectionResult = await getCollection(collection);
           setCollectionData(collectionResult);
+
+          const {
+            name,
+            collection_name,
+            img,
+            market_fee,
+            data: { description },
+          } = collectionResult;
+
+          setModalProps({
+            collectionName: collection_name,
+            defaultDescription: description,
+            defaultDisplayName: name,
+            defaultImage: img,
+            defaultRoyalties: market_fee.toString(),
+          });
+
           const lowestPricesResult = await getLowestPricesForAllCollectionTemplates(
             { type: collection }
           );
@@ -134,6 +156,7 @@ const CollectionPage = (): JSX.Element => {
           subName={collection_name}
           description={description}
           type="collection"
+          hasEditFunctionality
         />
         <Grid items={renderedTemplates} />
         <PaginationButton
