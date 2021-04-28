@@ -1,9 +1,8 @@
-import { NextApiResponse } from 'next';
+import { NextApiRequest, NextApiResponse } from 'next';
 import proton from '../../services/proton-rpc';
-import withCache, { MyAssetRequest } from '../../utils/withCache';
 
 const handler = async (
-  req: MyAssetRequest,
+  req: NextApiRequest,
   res: NextApiResponse
 ): Promise<void> => {
   const {
@@ -23,7 +22,7 @@ const handler = async (
           typeof accounts === 'string' ? [accounts] : [...new Set(accounts)];
 
         const avatarsByChainAccount = {};
-        const promises = chainAccounts.map(async (account) => {
+        const promises = chainAccounts.map(async (account: string) => {
           if (!avatarsByChainAccount[account]) {
             const avatar = await proton.getProfileImage({ account });
             avatarsByChainAccount[account] = avatar;
@@ -43,4 +42,4 @@ const handler = async (
   }
 };
 
-export default withCache(handler);
+export default handler;

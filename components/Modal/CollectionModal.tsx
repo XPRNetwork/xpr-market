@@ -27,7 +27,6 @@ import {
 import { useWindowSize } from '../../hooks';
 import uploadToIPFS from '../../services/upload';
 import { ReactComponent as CloseIcon } from '../../public/close.svg';
-import { sendToApi } from '../../utils/browser-fetch';
 import { fileReader, delay } from '../../utils';
 import ProtonSDK from '../../services/proton';
 
@@ -39,14 +38,6 @@ const TYPES = {
 type Props = {
   type: string;
   modalProps: CreateCollectionProps | UpdateCollectionProps;
-};
-
-const updateSearchResultsListCache = async ({ name, displayName, img }) => {
-  await sendToApi('POST', '/api/collections', {
-    name,
-    displayName,
-    img,
-  });
 };
 
 const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
@@ -98,12 +89,6 @@ const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
         });
       }, uploadedFile);
 
-      await updateSearchResultsListCache({
-        name,
-        displayName,
-        img: ipfsImage,
-      });
-
       setNewCollection({
         collection_name: name,
         name: displayName,
@@ -126,12 +111,6 @@ const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
         setUpdatedImage(ipfsImage);
         fileReader((img) => setUpdatedImage(img), uploadedFile);
       }
-
-      await updateSearchResultsListCache({
-        name,
-        displayName,
-        img: updatedImage,
-      });
 
       const {
         defaultRoyalties,

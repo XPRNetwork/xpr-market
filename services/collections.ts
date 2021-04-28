@@ -42,10 +42,6 @@ export type SearchCollection = {
   img: string | null;
 };
 
-export const collectionsApiService = new NodeFetch<Collection>(
-  '/atomicassets/v1/collections'
-);
-
 /**
  * Get all collection names
  * Mostly fetching collection names for the marketplace search
