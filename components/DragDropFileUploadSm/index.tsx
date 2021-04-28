@@ -47,11 +47,13 @@ const DragDropFileUploadSm = ({
   }, []);
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
-  const placeholder = placeholderImage ? (
-    <CollectionIcon image={placeholderImage} width="100%" />
-  ) : (
-    <PlaceholderContainer>
-      <PlaceholderIcon />
+  const placeholder = (
+    <PlaceholderContainer borderless={!!placeholderImage}>
+      {placeholderImage ? (
+        <CollectionIcon image={placeholderImage} width="100%" />
+      ) : (
+        <PlaceholderIcon />
+      )}
     </PlaceholderContainer>
   );
 
