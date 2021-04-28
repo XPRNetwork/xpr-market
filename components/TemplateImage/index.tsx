@@ -1,5 +1,4 @@
-import Image from 'next/image';
-import { ImageContainer, DefaultImage } from './TemplateImage.styled';
+import { ImageContainer, DefaultImage, Image } from './TemplateImage.styled';
 
 type Props = {
   templateImgSrc?: string;
@@ -15,15 +14,7 @@ const TemplateImage = ({
   return (
     <ImageContainer className="template-image-container">
       {templateImgSrc ? (
-        <Image
-          priority
-          layout="responsive"
-          width={220}
-          height={220}
-          objectFit="contain"
-          alt={templateName}
-          src={templateImgSrc}
-        />
+        <Image src={templateImgSrc} />
       ) : (
         <DefaultImage
           src="/placeholder-template-image.png"
