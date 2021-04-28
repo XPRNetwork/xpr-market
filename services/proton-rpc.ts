@@ -21,7 +21,7 @@ class ProtonJs {
 
   init() {
     return new Promise<void>((initResolve, reject) => {
-      this.setRPC(process.env.NEXT_PUBLIC_CHAIN_ENDPOINT)
+      this.setRPC(process.env.NEXT_PUBLIC_CHAIN_ENDPOINTS.split(', '))
         .then(() => {
           return this.rpc.get_info();
         })
@@ -39,9 +39,9 @@ class ProtonJs {
     });
   }
 
-  setRPC = (endpoint) => {
+  setRPC = (endpoints) => {
     return new Promise<void>((resolve) => {
-      this.rpc = new JsonRpc(endpoint);
+      this.rpc = new JsonRpc(endpoints);
       resolve();
     });
   };

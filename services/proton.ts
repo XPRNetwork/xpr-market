@@ -152,7 +152,7 @@ class ProtonSDK {
 
   constructor() {
     this.chainId = process.env.NEXT_PUBLIC_CHAIN_ID;
-    this.endpoints = [process.env.NEXT_PUBLIC_CHAIN_ENDPOINT];
+    this.endpoints = process.env.NEXT_PUBLIC_CHAIN_ENDPOINTS.split(', ');
     this.appName = 'Proton Market';
     this.requestAccount = 'protonmarket';
     this.session = null;
