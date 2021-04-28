@@ -1,5 +1,4 @@
 import { getFromApi } from '../utils/browser-fetch';
-import NodeFetch from '../utils/node-fetch';
 
 export interface Collection {
   author: string;
