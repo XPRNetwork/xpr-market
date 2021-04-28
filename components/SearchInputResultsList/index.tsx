@@ -16,6 +16,7 @@ type Props = {
   collections: Array<{
     name: string;
     img: string | null;
+    displayName?: string;
   }>;
   inputRef: MutableRefObject<HTMLInputElement>;
   resultsListRef: MutableRefObject<HTMLUListElement>;
@@ -92,23 +93,23 @@ const SearchInputResultsList = ({
   return (
     <ResultsList ref={resultsListRef}>
       <ResultListTitle>Collection</ResultListTitle>
-      {collections.map(({ name, img }, i) => (
+      {collections.map(({ name, img, displayName }, i) => (
         <ResultItem
           onKeyDown={
             i === 0 ? handleFirstResultItemKeyDown : handleResultItemKeyDown
           }
           onClick={() => {
-            setInput(name);
-            search(name);
+            setInput(displayName);
+            search(displayName);
           }}
           onTouchStart={() => {
-            setInput(name);
-            search(name);
+            setInput(displayName);
+            search(displayName);
           }}
           tabIndex={0}
           key={name}>
           <CollectionIcon name={name} image={img} margin="0 16px 0 0" />
-          <span>{name}</span>
+          <span>{displayName}</span>
         </ResultItem>
       ))}
     </ResultsList>
