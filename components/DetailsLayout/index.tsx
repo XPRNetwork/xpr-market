@@ -1,5 +1,4 @@
 import { Dispatch, SetStateAction, ReactNode } from 'react';
-import Image from 'next/image';
 import {
   Container,
   Row,
@@ -8,6 +7,7 @@ import {
   TabTitle,
   TabRow,
   Video,
+  TemplateImage,
 } from './DetailsLayout.styled';
 import SalesHistoryTable from '../SalesHistoryTable';
 import AssetFormTitle from '../AssetFormTitle';
@@ -35,16 +35,15 @@ type Props = {
   setCurrentAssetAsModalProps?: () => void;
 };
 
-const AssetImage = ({ image }: { image: string }): JSX.Element => (
+const AssetImage = ({
+  image,
+  templateName,
+}: {
+  image: string;
+  templateName: string;
+}): JSX.Element => (
   <ImageContainer>
-    <Image
-      priority
-      layout="responsive"
-      objectFit="contain"
-      width={456}
-      height={470}
-      src={`${IPFS_RESOLVER}${image}`}
-    />
+    <TemplateImage src={`${IPFS_RESOLVER}${image}`} alt={templateName} />
   </ImageContainer>
 );
 
@@ -85,7 +84,11 @@ const DetailsLayout = ({
   return (
     <Container>
       <Row>
-        {video ? <AssetVideo video={video} /> : <AssetImage image={image} />}
+        {video ? (
+          <AssetVideo video={video} />
+        ) : (
+          <AssetImage image={image} templateName={templateName} />
+        )}
         <Column>
           <AssetFormTitle
             templateName={templateName}
