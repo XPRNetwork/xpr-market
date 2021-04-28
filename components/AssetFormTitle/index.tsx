@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
+import CollectionIcon from '../CollectionIcon';
 import {
   NameContainer,
   Name,
@@ -48,18 +49,7 @@ const AssetFormTitle = ({
   return (
     <>
       <CollectionNameButton onClick={redirectToCollection}>
-        <Image
-          priority
-          layout="fixed"
-          width={32}
-          height={32}
-          src={
-            collectionImage
-              ? `${IPFS_RESOLVER}${collectionImage}`
-              : '/icon-monsters.png'
-          }
-          alt={`${collectionName} icon`}
-        />
+        <CollectionIcon image={collectionImage} name={collectionName} />
         <Title>{collectionDisplayName || collectionName}</Title>
       </CollectionNameButton>
       <NameContainer>
