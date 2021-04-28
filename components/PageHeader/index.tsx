@@ -73,11 +73,7 @@ const PageHeader = ({
   return (
     <PageHeaderContainer>
       <ImageContainer>
-        <Image
-          width={120}
-          height={120}
-          src={displayImg}
-        />
+        <Image width="120px" height="120px" src={displayImg} />
       </ImageContainer>
       <Name>{name}</Name>
       <SubName>
