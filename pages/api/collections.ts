@@ -39,7 +39,7 @@ const handler = async (
       break;
     default: {
       try {
-        if (req.collectionSearchCache.length) {
+        if (req.collectionSearchCache.length > 1) {
           const cachedCollections = req.collectionSearchCache.getAllValues();
           res.status(200).send({ success: true, message: cachedCollections });
           return;
