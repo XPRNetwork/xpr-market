@@ -48,6 +48,7 @@ export const ImageContainer = styled(FadeInImageContainer)`
   display: flex;
   justify-content: center;
   align-items: center;
+  max-height: 500px;
 
   > div {
     width: 100%;
@@ -65,7 +66,6 @@ export const ImageContainer = styled(FadeInImageContainer)`
 
 export const TemplateImage = styled.img`
   object-fit: contain;
-  width: 100%;
 `;
 
 export const Video = styled.video`

@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Button from '../Button';
 import SearchInput from '../SearchInput';
+import { Image } from '../../styles/index.styled';
 import {
   Background,
   Nav,
@@ -43,23 +43,14 @@ const Logo = (): JSX.Element => {
       <ImageLink>
         <DesktopIcon>
           <Image
-            priority
-            layout="fixed"
-            width={194}
-            height={41}
+            width="194px"
+            height="41px"
             alt="logo"
             src="/beta-logo.svg" // TODO: Swap back to non-beta logo: logo-colored@3x.png
           />
         </DesktopIcon>
         <MobileIcon>
-          <Image
-            priority
-            layout="fixed"
-            width={30}
-            height={33}
-            alt="logo"
-            src="/logo.svg"
-          />
+          <Image width="30px" height="33px" alt="logo" src="/logo.svg" />
         </MobileIcon>
       </ImageLink>
     </Link>
@@ -73,7 +64,12 @@ const UserAvatar = ({ isOpen, avatar, toggleNavDropdown }) => {
     <UserMenuButton>
       <UserMenuText>{currentUserBalance}</UserMenuText>
       <AvatarContainer>
-        <Image priority layout="fill" alt="chain account avatar" src={avatar} />
+        <Image
+          alt="chain account avatar"
+          src={avatar}
+          width="40px"
+          height="40px"
+        />
       </AvatarContainer>
     </UserMenuButton>
   );

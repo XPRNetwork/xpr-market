@@ -3,8 +3,8 @@ import { CarouselProvider, Slider, Slide } from 'pure-react-carousel';
 import CollectionBox from '../CollectionBox';
 import { ReactComponent as Arrow } from '../../public/chevron-right.svg';
 import { Collection } from '../../services/collections';
-import Image from 'next/image';
 import { useModalContext, MODAL_TYPES } from '../Provider';
+import { Image } from '../../styles/index.styled';
 import {
   BoxButton,
   CarouselContainer,
@@ -126,10 +126,8 @@ const CollectionsCarousel = ({
                 <Slide index={0} key={0}>
                   <BoxButton onClick={openCreateCollectionModal}>
                     <Image
-                      priority
-                      layout="fixed"
-                      width={40}
-                      height={40}
+                      width="40px"
+                      height="40px"
                       alt="plus icon"
                       src="/plus-icon.png"
                     />

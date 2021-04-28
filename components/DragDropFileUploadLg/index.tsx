@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/media-has-caption */
 import { useCallback, useState, Dispatch, SetStateAction } from 'react';
-import Image from 'next/image';
 import { useDropzone } from 'react-dropzone';
+import { Image } from '../../styles/index.styled';
 import {
   Container,
   FileTypeDescription,
@@ -72,10 +72,8 @@ const DragDropFileUploadLg = ({
                 />
               ) : (
                 <Image
-                  priority
-                  layout="responsive"
-                  width={64}
-                  height={64}
+                  width="64px"
+                  height="64px"
                   objectFit="contain"
                   alt={templateUploadedFile.name}
                   src={uploadPreview}

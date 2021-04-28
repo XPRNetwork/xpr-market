@@ -73,11 +73,8 @@ export const AvatarContainer = styled(FadeInImageContainer)`
   width: 40px;
   height: 40px;
   position: relative;
-
-  * {
-    border-radius: 100%;
-    z-index: 3;
-  }
+  border-radius: 100%;
+  z-index: 3;
 `;
 
 export const ImageLink = styled.a`

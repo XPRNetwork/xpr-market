@@ -1,5 +1,6 @@
-import { IconContainer, Img } from './CollectionIcon.styled';
-import { IPFS_RESOLVER } from '../../utils/constants';
+import { IconContainer } from './CollectionIcon.styled';
+import { IPFS_RESOLVER_IMAGE } from '../../utils/constants';
+import { Image } from '../../styles/index.styled';
 export { IconContainer } from './CollectionIcon.styled';
 
 type Props = {
@@ -12,12 +13,12 @@ type Props = {
 const CollectionIcon = ({ name, image, margin, width }: Props): JSX.Element => {
   const imageSrc = image
     ? image.slice(0, 4).toLowerCase() !== 'data'
-      ? `${IPFS_RESOLVER}${image}`
+      ? `${IPFS_RESOLVER_IMAGE}${image}`
       : image
     : '/icon-monsters.png';
   return (
     <IconContainer margin={margin} width={width}>
-      <Img alt={name} src={imageSrc} />
+      <Image alt={name} src={imageSrc} height="100%" width="100%" />
     </IconContainer>
   );
 };

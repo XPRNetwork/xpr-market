@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import { Image } from '../../styles/index.styled';
 import {
   ImageContainer,
   StyledFooter,
@@ -29,14 +29,7 @@ const Footer = (): JSX.Element => {
   return (
     <StyledFooter>
       <ImageContainer>
-        <Image
-          priority
-          layout="fixed"
-          width={143}
-          height={32}
-          alt="logo"
-          src="/logo@3x.png"
-        />
+        <Image width="143px" height="32px" alt="logo" src="/logo@3x.png" />
       </ImageContainer>
       <Section>
         {links.map(({ name, url }) => (

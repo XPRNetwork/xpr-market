@@ -1,6 +1,6 @@
-import Image from 'next/image';
 import { useRouter } from 'next/router';
 import Button from '../Button';
+import { Image } from '../../styles/index.styled';
 import { useWindowSize } from '../../hooks';
 import { useAuthContext } from '../Provider';
 import {
@@ -41,8 +41,6 @@ const ExploreCard = (): JSX.Element => {
       <ImageContainer>
         {isMobile ? (
           <Image
-            priority
-            layout="intrinsic"
             width="875px"
             height="430px"
             alt="ExploreMobile"
@@ -50,8 +48,6 @@ const ExploreCard = (): JSX.Element => {
           />
         ) : (
           <Image
-            priority
-            layout="intrinsic"
             width="672px"
             height="320px"
             alt="Explore"

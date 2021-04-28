@@ -14,7 +14,10 @@ import AssetFormTitle from '../AssetFormTitle';
 import { SaleAsset } from '../../services/sales';
 import { Asset } from '../../services/assets';
 import { tabs } from '../../components/SalesHistoryTable';
-import { IPFS_RESOLVER } from '../../utils/constants';
+import {
+  IPFS_RESOLVER_IMAGE,
+  IPFS_RESOLVER_VIDEO,
+} from '../../utils/constants';
 
 type Props = {
   children: ReactNode;
@@ -43,7 +46,7 @@ const AssetImage = ({
   templateName: string;
 }): JSX.Element => (
   <ImageContainer>
-    <TemplateImage src={`${IPFS_RESOLVER}${image}`} alt={templateName} />
+    <TemplateImage src={`${IPFS_RESOLVER_IMAGE}${image}`} alt={templateName} />
   </ImageContainer>
 );
 
@@ -54,7 +57,7 @@ const AssetVideo = ({ video }: { video: string }): JSX.Element => (
       loop
       autoPlay
       onLoadStart={setVolumeOnLoad}
-      src={`${IPFS_RESOLVER}${video}`}
+      src={`${IPFS_RESOLVER_VIDEO}${video}`}
     />
   </ImageContainer>
 );
