@@ -81,51 +81,60 @@ const CollectionPage = (): JSX.Element => {
     await prefetchNextPage();
   };
 
-  useEffect(() => {
-    if (collection && !renderedTemplates.length) {
-      (async () => {
-        try {
-          const collectionResult = await getCollection(collection);
-          setCollectionData(collectionResult);
+  const fetchCollection = async () => {
+    try {
+      const collectionResult = await getCollection(collection);
+      setCollectionData(collectionResult);
 
-          const {
-            name,
-            collection_name,
-            img,
-            market_fee,
-            data: { description },
-          } = collectionResult;
+      const lowestPricesResult = await getLowestPricesForAllCollectionTemplates(
+        { type: collection }
+      );
+      setLowestPrices(lowestPricesResult);
 
-          setModalProps({
-            collectionName: collection_name,
-            defaultDescription: description,
-            defaultDisplayName: name,
-            defaultImage: img,
-            defaultRoyalties: market_fee.toString(),
-          });
+      const result = await getTemplatesByCollection({ type: collection });
+      const templatesWithLowestPrice = formatTemplatesWithPriceData(
+        result,
+        lowestPricesResult
+      );
 
-          const lowestPricesResult = await getLowestPricesForAllCollectionTemplates(
-            { type: collection }
-          );
-          setLowestPrices(lowestPricesResult);
+      setRenderedTemplates(templatesWithLowestPrice);
 
-          const result = await getTemplatesByCollection({ type: collection });
-          const templatesWithLowestPrice = formatTemplatesWithPriceData(
-            result,
-            lowestPricesResult
-          );
-
-          setRenderedTemplates(templatesWithLowestPrice);
-
-          setIsLoading(false);
-          await prefetchNextPage();
-        } catch (e) {
-          setIsLoading(false);
-          setErrorMessage(e.message);
-        }
-      })();
+      setIsLoading(false);
+      await prefetchNextPage();
+    } catch (e) {
+      setIsLoading(false);
+      setErrorMessage(e.message);
     }
+  };
+
+  useEffect(() => {
+    (async () => {
+      if (collection && !renderedTemplates.length) {
+        fetchCollection();
+      }
+    })();
   }, [collection]);
+
+  useEffect(() => {
+    if (collectionData) {
+      const {
+        name,
+        collection_name,
+        img,
+        market_fee,
+        data: { description },
+      } = collectionData;
+
+      setModalProps({
+        collectionName: collection_name,
+        defaultDescription: description,
+        defaultDisplayName: name,
+        defaultImage: img,
+        defaultRoyalties: market_fee.toString(),
+        fetchPageData: fetchCollection,
+      });
+    }
+  }, [collectionData]);
 
   const getContent = () => {
     if (isLoading || isLoadingUser) {

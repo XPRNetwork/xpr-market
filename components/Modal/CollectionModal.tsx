@@ -28,7 +28,7 @@ import { useWindowSize } from '../../hooks';
 import uploadToIPFS from '../../services/upload';
 import { ReactComponent as CloseIcon } from '../../public/close.svg';
 import { sendToApi } from '../../utils/browser-fetch';
-import { fileReader } from '../../utils';
+import { fileReader, delay } from '../../utils';
 import ProtonSDK from '../../services/proton';
 
 const TYPES = {
@@ -121,16 +121,22 @@ const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
 
   const update = async () => {
     try {
-      const ipfsImage = await uploadToIPFS(uploadedFile);
-      fileReader((img) => setUpdatedImage(img), uploadedFile);
+      if (uploadedFile) {
+        const ipfsImage = await uploadToIPFS(uploadedFile);
+        setUpdatedImage(ipfsImage);
+        fileReader((img) => setUpdatedImage(img), uploadedFile);
+      }
 
       await updateSearchResultsListCache({
         name,
         displayName,
-        img: ipfsImage,
+        img: updatedImage,
       });
 
-      const { defaultRoyalties } = modalProps as UpdateCollectionProps;
+      const {
+        defaultRoyalties,
+        fetchPageData,
+      } = modalProps as UpdateCollectionProps;
 
       const hasUpdatedRoytalies =
         parseFloat(defaultRoyalties) !== parseInt(royalties) / 100;
@@ -140,7 +146,7 @@ const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
         collection_name: name,
         description,
         display_name: displayName,
-        image: ipfsImage,
+        image: updatedImage,
         market_fee: hasUpdatedRoytalies
           ? (parseInt(royalties) / 100).toFixed(6)
           : '',
@@ -150,7 +156,9 @@ const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
         throw new Error('Unable to update the collection. Please try again.');
       }
 
+      await delay(1000); // 1 second delay to give blockchain time to update before refetching page data
       closeModal();
+      await fetchPageData();
     } catch (err) {
       setFormError('Unable to update the collection. Please try again.');
     }
@@ -167,7 +175,7 @@ const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
 
     const errors = [];
 
-    if (!uploadedFile || uploadError) {
+    if (!(uploadedFile || updatedImage) || uploadError) {
       errors.push('upload a PNG, GIF, JPG, or WEBP image (max 5 MB)');
     }
 

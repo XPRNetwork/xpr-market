@@ -65,7 +65,7 @@ export interface CreateCollectionProps {
   setIsUncreatedCollectionSelected: Dispatch<SetStateAction<boolean>>;
 }
 
-export interface UpdateCollectionProps {
+export interface UpdateCollectionProps extends GeneralModalProps {
   collectionName: string;
   defaultDescription: string;
   defaultDisplayName: string;
