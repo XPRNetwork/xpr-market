@@ -143,16 +143,12 @@ interface Action {
 }
 
 class ProtonSDK {
-  chainId: string;
-  endpoints: string[];
   appName: string;
   requestAccount: string;
   session: LinkSession | null;
   link: Link | null;
 
   constructor() {
-    this.chainId = process.env.NEXT_PUBLIC_CHAIN_ID;
-    this.endpoints = process.env.NEXT_PUBLIC_CHAIN_ENDPOINTS.split(', ');
     this.appName = 'Proton Market';
     this.requestAccount = 'protonmarket';
     this.session = null;
@@ -162,8 +158,7 @@ class ProtonSDK {
   connect = async ({ restoreSession }): Promise<void> => {
     const { link, session } = await ConnectWallet({
       linkOptions: {
-        chainId: this.chainId,
-        endpoints: this.endpoints,
+        rpc: proton.rpc,
         restoreSession,
       },
       transportOptions: {
