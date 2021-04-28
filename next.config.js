@@ -1,6 +1,11 @@
 module.exports = {
   images: {
-    domains: ['cloudflare-ipfs.com', 'gateway.pinata.cloud', 'ipfs.io', 'bloks.io'],
+    domains: [
+      'cloudflare-ipfs.com',
+      'gateway.pinata.cloud',
+      'ipfs.io',
+      'bloks.io',
+    ],
   },
   target: 'serverless',
   webpack(config) {

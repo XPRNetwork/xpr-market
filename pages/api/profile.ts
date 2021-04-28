@@ -1,11 +1,8 @@
-import { NextApiResponse } from 'next';
-import withCache, {
-  MyAssetRequest,
-  conditionallyUpdateCache,
-} from '../../utils/withCache';
+import { NextApiRequest, NextApiResponse } from 'next';
+import proton from '../../services/proton-rpc';
 
 const handler = async (
-  req: MyAssetRequest,
+  req: NextApiRequest,
   res: NextApiResponse
 ): Promise<void> => {
   const {
@@ -24,12 +21,15 @@ const handler = async (
         const chainAccounts =
           typeof accounts === 'string' ? [accounts] : [...new Set(accounts)];
 
-        const promises = chainAccounts.map((account) =>
-          conditionallyUpdateCache(account, req.profileCache)
-        );
+        const avatarsByChainAccount = {};
+        const promises = chainAccounts.map(async (account: string) => {
+          if (!avatarsByChainAccount[account]) {
+            const avatar = await proton.getProfileImage({ account });
+            avatarsByChainAccount[account] = avatar;
+          }
+        });
         await Promise.all(promises);
 
-        const avatarsByChainAccount = req.profileCache.getValues(chainAccounts);
         res.status(200).send({ success: true, message: avatarsByChainAccount });
       } catch (e) {
         res.status(500).send({
@@ -42,4 +42,4 @@ const handler = async (
   }
 };
 
-export default withCache(handler);
+export default handler;
