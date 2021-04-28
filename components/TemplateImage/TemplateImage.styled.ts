@@ -13,6 +13,7 @@ export const ImageContainer = styled(FadeInImageContainer)<ImageContainerProps>`
   display: flex;
   align-items: center;
   margin-bottom: 24px;
+  border-radius: 8px;
 `;
 
 export const DefaultImage = styled.img`
@@ -21,9 +22,8 @@ export const DefaultImage = styled.img`
 `;
 
 export const Image = styled.img`
-  max-height: 270px;
-  max-width: 270px;
   border-radius: 8px;
   width: 100%;
+  height: 100%;
   object-fit: cover;
 `;
