@@ -321,13 +321,10 @@ export const formatTemplatesWithPriceData = (
  * @return {Template[]}
  */
 
-export const getTemplatesWithUserAssetCount = async (
-  owner: string,
-  page: number
+export const getAllTemplatesForUserWithAssetCount = async (
+  owner: string
 ): Promise<Template[]> => {
   try {
-    if (page === -1) return [];
-
     const accountResponse = await getFromApi<Account>(
       `${process.env.NEXT_PUBLIC_NFT_ENDPOINT}/atomicassets/v1/accounts/${owner}`
     );
@@ -375,10 +372,7 @@ export const getTemplatesWithUserAssetCount = async (
       }
     );
 
-    return templatesWithAssetsForSaleCount.slice(
-      (page - 1) * PAGINATION_LIMIT,
-      page * PAGINATION_LIMIT
-    );
+    return templatesWithAssetsForSaleCount;
   } catch (e) {
     throw new Error(e);
   }
@@ -386,7 +380,7 @@ export const getTemplatesWithUserAssetCount = async (
 
 /**
  * Function to add total asset count, assets for sale, and lowest price to template data for each template
- * Used in conjunction with function getTemplatesWithUserAssetCount
+ * Used in conjunction with function getAllTemplatesForUserWithAssetCount
  * @param templateIds list of templateIds of templates to add data to
  * @param templates   templates of the template Ids listed in templateIds param
  * @param assetCountById  total number of assets for each template that user owns
