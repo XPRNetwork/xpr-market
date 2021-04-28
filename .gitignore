@@ -33,3 +33,6 @@ package-lock.json
 
 # vercel
 .vercel
+
+# env files
+.env

@@ -210,33 +210,6 @@ export const getAllTemplatesByCollection = async ({
 };
 
 /**
- * Gets the number of templates a collection has
- * @param  {string} type    Name of collection that templates belong to
- * @return {number}         Returns the number of templates of a specific collection
- */
-
-export const getNumberOfTemplatesByCollection = async ({
-  type,
-}: {
-  type: string;
-}): Promise<number> => {
-  const statsResults = await getFromApi<{ templates: string }>(
-    `${process.env.NEXT_PUBLIC_NFT_ENDPOINT}/atomicassets/v1/collections/${type}/stats`
-  );
-
-  if (!statsResults.success) {
-    const errorMessage =
-      typeof statsResults.error === 'object'
-        ? statsResults.error.message
-        : statsResults.message;
-    throw new Error(errorMessage as string);
-  }
-
-  const numberOfTemplates = parseInt(statsResults.data.templates);
-  return isNaN(numberOfTemplates) ? 0 : numberOfTemplates;
-};
-
-/**
  * Gets the lowest price of assets for sale for a collection's templates
  * Mostly used to display the lowest price of any of the templates with assets for sale in the collection
  * @param  {string} type               Name of collection that templates belong to
@@ -245,16 +218,17 @@ export const getNumberOfTemplatesByCollection = async ({
 
 export const getLowestPricesForAllCollectionTemplates = async ({
   type,
+  limit,
 }: {
   type: string;
+  limit: number;
 }): Promise<{ [id: string]: string }> => {
-  const numberOfTemplates = await getNumberOfTemplatesByCollection({ type });
   const salesQueryObject = {
     collection_name: type,
     symbol: TOKEN_SYMBOL,
     order: 'desc',
     sort: 'created',
-    limit: numberOfTemplates,
+    limit: limit,
   };
 
   const salesQueryParams = toQueryString(salesQueryObject);
@@ -359,7 +333,10 @@ export const getAllTemplatesForUserWithAssetCount = async (
     const templates = await getTemplatesFromTemplateIds(templateIds);
 
     const lowestPricesByTemplateId = await getLowestPricesForAllCollectionTemplates(
-      { type: DEFAULT_COLLECTION }
+      {
+        type: DEFAULT_COLLECTION,
+        limit: templates.length,
+      }
     );
 
     const templatesWithAssetsForSaleCount = formatTemplatesWithPriceAndAssetCountInCreateDescOrder(

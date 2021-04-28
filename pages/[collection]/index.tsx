@@ -86,14 +86,19 @@ const CollectionPage = (): JSX.Element => {
       const collectionResult = await getCollection(collection);
       setCollectionData(collectionResult);
 
+      const templates = await getTemplatesByCollection({
+        type: collection,
+      });
       const lowestPricesResult = await getLowestPricesForAllCollectionTemplates(
-        { type: collection }
+        {
+          type: collection,
+          limit: templates.length,
+        }
       );
       setLowestPrices(lowestPricesResult);
 
-      const result = await getTemplatesByCollection({ type: collection });
       const templatesWithLowestPrice = formatTemplatesWithPriceData(
-        result,
+        templates,
         lowestPricesResult
       );
 
