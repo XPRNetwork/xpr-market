@@ -1,5 +1,9 @@
 import styled from 'styled-components';
 
+type PlaceholderContainerProps = {
+  borderless?: boolean;
+};
+
 export const Container = styled.div`
   min-width: 88px;
   height: 88px;
@@ -24,11 +28,11 @@ export const PreviewImage = styled.img`
 
 export const PlaceholderContainer = styled(PreviewImage).attrs({
   as: 'div',
-})`
+})<PlaceholderContainerProps>`
   width: 88px;
   height: 88px;
   border-radius: 100%;
-  border: 2px dashed #e6e6e6;
+  border: ${({ borderless }) => (borderless ? 'none' : '2px dashed #e6e6e6')};
   display: flex;
   justify-content: center;
   align-items: center;
