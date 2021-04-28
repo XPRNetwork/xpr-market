@@ -47,7 +47,7 @@ const FeaturedCarousel = ({
       const templates = await getAllTemplatesByCollection({ type: collection });
       const prices = await getLowestPricesForAllCollectionTemplates({
         type: collection,
-        limit: templates.length
+        limit: templates.length,
       });
       const templatesWithLowestPrice = formatTemplatesWithPriceData(
         templates,

@@ -218,7 +218,7 @@ export const getAllTemplatesByCollection = async ({
 
 export const getLowestPricesForAllCollectionTemplates = async ({
   type,
-  limit
+  limit,
 }: {
   type: string;
   limit: number;
@@ -228,7 +228,7 @@ export const getLowestPricesForAllCollectionTemplates = async ({
     symbol: TOKEN_SYMBOL,
     order: 'desc',
     sort: 'created',
-    limit: limit
+    limit: limit,
   };
 
   const salesQueryParams = toQueryString(salesQueryObject);
@@ -332,10 +332,12 @@ export const getAllTemplatesForUserWithAssetCount = async (
 
     const templates = await getTemplatesFromTemplateIds(templateIds);
 
-    const lowestPricesByTemplateId = await getLowestPricesForAllCollectionTemplates({
-      type: DEFAULT_COLLECTION,
-      limit: templates.length
-    });
+    const lowestPricesByTemplateId = await getLowestPricesForAllCollectionTemplates(
+      {
+        type: DEFAULT_COLLECTION,
+        limit: templates.length,
+      }
+    );
 
     const templatesWithAssetsForSaleCount = formatTemplatesWithPriceAndAssetCountInCreateDescOrder(
       {

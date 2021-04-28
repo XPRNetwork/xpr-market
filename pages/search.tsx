@@ -11,7 +11,7 @@ import {
   Template,
   getTemplatesByCollection,
   formatTemplatesWithPriceData,
-  getLowestPricesForAllCollectionTemplates
+  getLowestPricesForAllCollectionTemplates,
 } from '../services/templates';
 import { PAGINATION_LIMIT } from '../utils/constants';
 
@@ -70,10 +70,12 @@ const Search = (): JSX.Element => {
           });
           setNumberOfTemplates(templates.length);
 
-          const lowestPricesResult = await getLowestPricesForAllCollectionTemplates({
-            type: searchTerm,
-            length: templates.length
-          });
+          const lowestPricesResult = await getLowestPricesForAllCollectionTemplates(
+            {
+              type: searchTerm,
+              limit: templates.length,
+            }
+          );
           setLowestPrices(lowestPricesResult);
 
           const templatesWithLowestPrice = formatTemplatesWithPriceData(

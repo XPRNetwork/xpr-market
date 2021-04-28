@@ -9,5 +9,5 @@ type ImgProps = {
 export const Image = styled.img<ImgProps>`
   width: ${({ width }) => width || '270px'};
   height: ${({ height }) => height || '270px'};
-  object-fit: ${({ objectFit }) => objectFit || '' };
+  object-fit: ${({ objectFit }) => objectFit || ''};
 `;
