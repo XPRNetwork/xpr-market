@@ -6,7 +6,7 @@ import ErrorComponent from '../../components/Error';
 import Grid from '../../components/Grid';
 import { MODAL_TYPES, useAuthContext } from '../../components/Provider';
 import {
-  getTemplatesWithUserAssetCount,
+  getAllTemplatesForUserWithAssetCount,
   getUserCreatedTemplates,
 } from '../../services/templates';
 import { Template } from '../../services/templates';
@@ -31,8 +31,8 @@ const Collection = (): JSX.Element => {
     ? caseSensitiveChainAccount.toLowerCase()
     : '';
   const { currentUser, isLoadingUser } = useAuthContext();
+  const [allItems, setAllItems] = useState<Template[]>([]);
   const [renderedItems, setRenderedItems] = useState<Template[]>([]);
-  const [prefetchedItems, setPrefetchedItems] = useState<Template[]>([]);
   const [
     prefetchItemsPageNumber,
     setPrefetchItemsPageNumber,
@@ -66,17 +66,16 @@ const Collection = (): JSX.Element => {
   const [activeTab, setActiveTab] = useState<string>(tabs[0].type);
 
   const showNextItemsPage = async () => {
-    setRenderedItems((prevItems) => [...prevItems, ...prefetchedItems]);
+    const numNextPageItems = allItems.slice(
+      (prefetchItemsPageNumber - 1) * PAGINATION_LIMIT,
+      prefetchItemsPageNumber * PAGINATION_LIMIT
+    ).length;
+    setRenderedItems(
+      allItems.slice(0, prefetchItemsPageNumber * PAGINATION_LIMIT)
+    );
     setPrefetchItemsPageNumber((prevPageNumber) =>
-      prefetchedItems.length < PAGINATION_LIMIT ? -1 : prevPageNumber + 1
+      numNextPageItems < PAGINATION_LIMIT ? -1 : prevPageNumber + 1
     );
-    setIsLoadingNextPage(true);
-    const items = await getTemplatesWithUserAssetCount(
-      chainAccount,
-      prefetchItemsPageNumber
-    );
-    setPrefetchedItems(items);
-    setIsLoadingNextPage(false);
   };
 
   const showNextCreationsPage = async () => {
@@ -116,25 +115,22 @@ const Collection = (): JSX.Element => {
           setIsTemplatesLoading(true);
           setIsLoadingNextPage(true);
           router.prefetch('/');
-          const initialItems = await getTemplatesWithUserAssetCount(
-            chainAccount,
-            1
+
+          const items = await getAllTemplatesForUserWithAssetCount(
+            chainAccount
           );
+          setAllItems(items);
+          setRenderedItems(items.slice(0, PAGINATION_LIMIT));
+
           const initialCreations = await getUserCreatedTemplates(
             chainAccount,
             1
           );
-          setRenderedItems(initialItems);
-          setRenderedCreations(initialCreations);
-          const items = await getTemplatesWithUserAssetCount(
-            chainAccount,
-            prefetchItemsPageNumber
-          );
-          setPrefetchedItems(items);
           const creations = await getUserCreatedTemplates(
             chainAccount,
             prefetchCreationsPageNumber
           );
+          setRenderedCreations(initialCreations);
           setPrefetchedCreations(creations);
         } catch (e) {
           setErrorMessage(e.message);
