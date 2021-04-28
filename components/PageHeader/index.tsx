@@ -3,15 +3,17 @@ import Image from 'next/image';
 import {
   PageHeaderContainer,
   ImageContainer,
-  IconButton,
+  RoundButton,
   Name,
   SubName,
   Description,
+  ButtonContainer,
 } from './PageHeader.styled';
 import { ReactComponent as MoreIcon } from '../../public/more.svg';
 import ShareOnSocial from '../ShareOnSocial';
 import { useClickAway } from '../../hooks';
 import { IPFS_RESOLVER } from '../../utils/constants';
+import { useModalContext, MODAL_TYPES } from '../Provider';
 
 type PageHeaderProps = {
   image?: string;
@@ -19,6 +21,7 @@ type PageHeaderProps = {
   name?: string;
   subName?: string;
   type: 'user' | 'collection';
+  hasEditFunctionality?: boolean;
 };
 
 const PageHeader = ({
@@ -27,7 +30,9 @@ const PageHeader = ({
   name,
   subName,
   type,
+  hasEditFunctionality,
 }: PageHeaderProps): JSX.Element => {
+  const { openModal } = useModalContext();
   const [shareActive, setShareActive] = useState<boolean>(false);
   const shareRef = useRef(null);
   useClickAway(shareRef, () => setShareActive(false));
@@ -38,6 +43,30 @@ const PageHeader = ({
   const collectionImg = image ? `${IPFS_RESOLVER}${image}` : '/proton.svg';
   const displayImg = type === 'user' ? avatarImg : collectionImg;
   const subNameIcon = type === 'user' ? '@' : '#';
+
+  const shareButton = (
+    <RoundButton
+      size="40px"
+      ref={shareRef}
+      onClick={() => setShareActive(!shareActive)}>
+      <MoreIcon />
+      <ShareOnSocial top="50px" active={shareActive} />
+    </RoundButton>
+  );
+
+  const buttons = hasEditFunctionality ? (
+    <ButtonContainer>
+      {shareButton}
+      <RoundButton
+        onClick={() => openModal(MODAL_TYPES.UPDATE_COLLECTION)}
+        padding="8px 16px"
+        margin="0 0 0 8px">
+        Edit collection
+      </RoundButton>
+    </ButtonContainer>
+  ) : (
+    shareButton
+  );
 
   return (
     <PageHeaderContainer>
@@ -56,10 +85,7 @@ const PageHeader = ({
         {subName}
       </SubName>
       {description ? <Description>{description}</Description> : null}
-      <IconButton ref={shareRef} onClick={() => setShareActive(!shareActive)}>
-        <MoreIcon />
-        <ShareOnSocial top={'50px'} active={shareActive} />
-      </IconButton>
+      {buttons}
     </PageHeaderContainer>
   );
 };

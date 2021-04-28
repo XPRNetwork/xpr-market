@@ -18,12 +18,19 @@ import {
 } from '../../services/collections';
 import { PAGINATION_LIMIT, RouterQuery } from '../../utils/constants';
 import Banner from '../../components/Banner';
-import { MODAL_TYPES, useAuthContext } from '../../components/Provider';
 import PageHeader from '../../components/PageHeader';
+import {
+  MODAL_TYPES,
+  useAuthContext,
+  useModalContext,
+} from '../../components/Provider';
+import { useNavigatorUserAgent } from '../../hooks';
 
 const CollectionPage = (): JSX.Element => {
   const router = useRouter();
-  const { isLoadingUser } = useAuthContext();
+  const { isLoadingUser, currentUser } = useAuthContext();
+  const { setModalProps } = useModalContext();
+  const { isDesktop } = useNavigatorUserAgent();
   const { collection: caseSensitiveCollection } = router.query as RouterQuery;
   const collection = caseSensitiveCollection
     ? caseSensitiveCollection.toLowerCase()
@@ -42,6 +49,11 @@ const CollectionPage = (): JSX.Element => {
   const [collectionData, setCollectionData] = useState<Collection>(
     emptyCollection
   );
+  const isEditButtonVisible =
+    isDesktop &&
+    currentUser &&
+    collectionData &&
+    currentUser.actor === collectionData.author;
 
   const prefetchNextPage = async () => {
     const prefetchedResult = await getTemplatesByCollection({
@@ -69,34 +81,60 @@ const CollectionPage = (): JSX.Element => {
     await prefetchNextPage();
   };
 
-  useEffect(() => {
-    if (collection && !renderedTemplates.length) {
-      (async () => {
-        try {
-          const collectionResult = await getCollection(collection);
-          setCollectionData(collectionResult);
-          const lowestPricesResult = await getLowestPricesForAllCollectionTemplates(
-            { type: collection }
-          );
-          setLowestPrices(lowestPricesResult);
+  const fetchCollection = async () => {
+    try {
+      const collectionResult = await getCollection(collection);
+      setCollectionData(collectionResult);
 
-          const result = await getTemplatesByCollection({ type: collection });
-          const templatesWithLowestPrice = formatTemplatesWithPriceData(
-            result,
-            lowestPricesResult
-          );
+      const lowestPricesResult = await getLowestPricesForAllCollectionTemplates(
+        { type: collection }
+      );
+      setLowestPrices(lowestPricesResult);
 
-          setRenderedTemplates(templatesWithLowestPrice);
+      const result = await getTemplatesByCollection({ type: collection });
+      const templatesWithLowestPrice = formatTemplatesWithPriceData(
+        result,
+        lowestPricesResult
+      );
 
-          setIsLoading(false);
-          await prefetchNextPage();
-        } catch (e) {
-          setIsLoading(false);
-          setErrorMessage(e.message);
-        }
-      })();
+      setRenderedTemplates(templatesWithLowestPrice);
+
+      setIsLoading(false);
+      await prefetchNextPage();
+    } catch (e) {
+      setIsLoading(false);
+      setErrorMessage(e.message);
     }
+  };
+
+  useEffect(() => {
+    (async () => {
+      if (collection && !renderedTemplates.length) {
+        fetchCollection();
+      }
+    })();
   }, [collection]);
+
+  useEffect(() => {
+    if (collectionData) {
+      const {
+        name,
+        collection_name,
+        img,
+        market_fee,
+        data: { description },
+      } = collectionData;
+
+      setModalProps({
+        collectionName: collection_name,
+        defaultDescription: description,
+        defaultDisplayName: name,
+        defaultImage: img,
+        defaultRoyalties: market_fee.toString(),
+        fetchPageData: fetchCollection,
+      });
+    }
+  }, [collectionData]);
 
   const getContent = () => {
     if (isLoading || isLoadingUser) {
@@ -134,6 +172,7 @@ const CollectionPage = (): JSX.Element => {
           subName={collection_name}
           description={description}
           type="collection"
+          hasEditFunctionality={isEditButtonVisible}
         />
         <Grid items={renderedTemplates} />
         <PaginationButton

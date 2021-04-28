@@ -11,6 +11,7 @@ import {
   CancelMultipleSalesModal,
   TransferModal,
   CreateCollectionModal,
+  UpdateCollectionModal,
   MintAssetModal,
   BurnAssetModal,
 } from '../Modal';
@@ -45,6 +46,8 @@ const PageLayout = ({ title, children }: Props): JSX.Element => {
         return <TransferModal />;
       case MODAL_TYPES.CREATE_COLLECTION:
         return <CreateCollectionModal />;
+      case MODAL_TYPES.UPDATE_COLLECTION:
+        return <UpdateCollectionModal />;
       case MODAL_TYPES.MINT_ASSET:
         return <MintAssetModal />;
       case MODAL_TYPES.BURN_ASSET:

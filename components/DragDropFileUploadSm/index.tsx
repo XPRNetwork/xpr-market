@@ -1,5 +1,6 @@
 import { useCallback, Dispatch, SetStateAction, MutableRefObject } from 'react';
 import { useDropzone } from 'react-dropzone';
+import CollectionIcon from '../CollectionIcon';
 import {
   Container,
   PreviewImage,
@@ -19,6 +20,7 @@ type Props = {
   setUploadedFile: Dispatch<SetStateAction<File>>;
   setFormError: Dispatch<SetStateAction<string>>;
   setUploadError: Dispatch<SetStateAction<string>>;
+  placeholderImage?: string;
 };
 
 const DragDropFileUploadSm = ({
@@ -27,6 +29,7 @@ const DragDropFileUploadSm = ({
   setUploadedFile,
   setFormError,
   setUploadError,
+  placeholderImage,
 }: Props): JSX.Element => {
   const onDrop = useCallback((acceptedFiles) => {
     setUploadError('');
@@ -44,6 +47,14 @@ const DragDropFileUploadSm = ({
   }, []);
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
+  const placeholder = placeholderImage ? (
+    <CollectionIcon image={placeholderImage} width="100%" />
+  ) : (
+    <PlaceholderContainer>
+      <PlaceholderIcon />
+    </PlaceholderContainer>
+  );
+
   return (
     <Container {...getRootProps()} ref={uploadInputRef}>
       <input
@@ -60,9 +71,7 @@ const DragDropFileUploadSm = ({
               src={URL.createObjectURL(uploadedFile)}
             />
           ) : (
-            <PlaceholderContainer>
-              <PlaceholderIcon />
-            </PlaceholderContainer>
+            placeholder
           )}
         </>
       )}
