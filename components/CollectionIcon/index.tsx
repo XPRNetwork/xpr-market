@@ -1,5 +1,4 @@
-import Image from 'next/image';
-import { IconContainer } from './CollectionIcon.styled';
+import { IconContainer, Img } from './CollectionIcon.styled';
 import { IPFS_RESOLVER } from '../../utils/constants';
 export { IconContainer } from './CollectionIcon.styled';
 
@@ -18,7 +17,7 @@ const CollectionIcon = ({ name, image, margin, width }: Props): JSX.Element => {
     : '/icon-monsters.png';
   return (
     <IconContainer margin={margin} width={width}>
-      <Image priority layout="fill" alt={name} src={imageSrc} />
+      <Img alt={name} src={imageSrc} />
     </IconContainer>
   );
 };
