@@ -40,6 +40,7 @@ export const emptyCollection: Collection = {
 export type SearchCollection = {
   name: string;
   img: string | null;
+  displayName?: string;
 };
 
 export const collectionsApiService = new NodeFetch<Collection>(

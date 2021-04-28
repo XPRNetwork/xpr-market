@@ -124,8 +124,9 @@ const SearchInput = ({
   };
 
   const collections = searchCollections
-    .filter(({ name }) => {
-      const isFragment = name.toLowerCase().includes(input.toLowerCase());
+    .filter(({ displayName }) => {
+      const isFragment =
+        displayName && displayName.toLowerCase().includes(input.toLowerCase());
       return isFragment;
     })
     .slice(0, 5);
