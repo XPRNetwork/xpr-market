@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import Image from 'next/image';
+import { Image } from '../../styles/index.styled';
 import {
   PageHeaderContainer,
   ImageContainer,
@@ -12,7 +12,7 @@ import {
 import { ReactComponent as MoreIcon } from '../../public/more.svg';
 import ShareOnSocial from '../ShareOnSocial';
 import { useClickAway } from '../../hooks';
-import { IPFS_RESOLVER } from '../../utils/constants';
+import { IPFS_RESOLVER_IMAGE } from '../../utils/constants';
 import { useModalContext, MODAL_TYPES } from '../Provider';
 
 type PageHeaderProps = {
@@ -40,7 +40,9 @@ const PageHeader = ({
   const avatarImg = image
     ? `data:image/jpeg;base64,${image}`
     : '/default-avatar.png';
-  const collectionImg = image ? `${IPFS_RESOLVER}${image}` : '/proton.svg';
+  const collectionImg = image
+    ? `${IPFS_RESOLVER_IMAGE}${image}`
+    : '/proton.svg';
   const displayImg = type === 'user' ? avatarImg : collectionImg;
   const subNameIcon = type === 'user' ? '@' : '#';
 
@@ -72,8 +74,6 @@ const PageHeader = ({
     <PageHeaderContainer>
       <ImageContainer>
         <Image
-          priority
-          layout="responsive"
           width={120}
           height={120}
           src={displayImg}

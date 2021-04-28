@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
 import CollectionIcon from '../CollectionIcon';
 import {
@@ -12,7 +11,6 @@ import {
 } from './AssetFormTitle.styled';
 import AssetFormPopupMenu from '../AssetFormPopupMenu';
 import { useAuthContext } from '../Provider';
-import { IPFS_RESOLVER } from '../../utils/constants';
 
 type Props = {
   templateName: string;

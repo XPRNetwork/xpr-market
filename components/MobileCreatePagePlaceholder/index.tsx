@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import { Image } from '../../styles/index.styled';
 import {
   MobileContainer,
   MobileTitle,
@@ -8,10 +8,8 @@ import {
 const MobileCreatePagePlaceholder = (): JSX.Element => (
   <MobileContainer>
     <Image
-      priority
-      layout="fixed"
-      width={179}
-      height={162}
+      width="179px"
+      height="162px"
       alt="mobile create"
       src="/mobile-create.png"
     />

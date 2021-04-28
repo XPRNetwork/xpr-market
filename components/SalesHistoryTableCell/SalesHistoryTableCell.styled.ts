@@ -1,9 +1,12 @@
 import styled from 'styled-components';
-import Image from 'next/image';
 import { breakpoint } from '../../styles/Breakpoints';
 
-export const AvatarImage = styled(Image)`
+export const AvatarImage = styled.div`
   border-radius: 100%;
+  overflow: hidden;
+  width: 32px;
+  height: 32px;
+  margin-left: 10px;
 `;
 
 export const ImageDataCell = styled.td`

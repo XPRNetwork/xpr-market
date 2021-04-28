@@ -15,7 +15,7 @@ import CollectionIcon, { IconContainer } from '../CollectionIcon';
 import { fileReader } from '../../utils';
 import TemplateImage from '../TemplateImage';
 import TemplateVideo from '../TemplateVideo';
-import { IPFS_RESOLVER } from '../../utils/constants';
+import { IPFS_RESOLVER_VIDEO, IPFS_RESOLVER_IMAGE } from '../../utils/constants';
 import {
   useCreateAssetContext,
   useAuthContext,
@@ -87,11 +87,11 @@ const TemplateCard = ({
     } else {
       const videoSrc = noIpfsConversion
         ? templateVideo
-        : `${IPFS_RESOLVER}${templateVideo}`;
+        : `${IPFS_RESOLVER_VIDEO}${templateVideo}`;
       const imageSrc =
         noIpfsConversion || !templateImage
           ? templateImage
-          : `${IPFS_RESOLVER}${templateImage}`;
+          : `${IPFS_RESOLVER_IMAGE}${templateImage}`;
 
       setTemplateVideoSrc(videoSrc);
       setTemplateImgSrc(imageSrc);
