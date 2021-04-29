@@ -11,6 +11,7 @@ import InputField from '../InputField';
 import Button from '../Button';
 import { BackButton } from '../CreatePageLayout/CreatePageLayout.styled';
 import { CREATE_PAGE_STATES } from '../../pages/create';
+import { LG_FILE_UPLOAD_TYPES_TEXT } from '../../utils/constants';
 
 type Props = {
   goToMint: () => void;
@@ -42,11 +43,8 @@ const CreateTemplate = ({
   const validateAndProceed = () => {
     const errors = [];
     if (!templateUploadedFile) {
-      errors.push(
-        'upload a PNG, GIF, JPG, or WEBP image or MP4 video (max 30 MB)'
-      );
+      errors.push('upload a ' + LG_FILE_UPLOAD_TYPES_TEXT);
     }
-
     if (!templateName) {
       errors.push('set a name');
     }

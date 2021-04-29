@@ -29,6 +29,7 @@ import uploadToIPFS from '../../services/upload';
 import { ReactComponent as CloseIcon } from '../../public/close.svg';
 import { fileReader, delay } from '../../utils';
 import ProtonSDK from '../../services/proton';
+import { SM_FILE_UPLOAD_TYPES_TEXT } from '../../utils/constants';
 
 const TYPES = {
   CREATE: 'CREATE',
@@ -155,7 +156,7 @@ const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
     const errors = [];
 
     if (!(uploadedFile || updatedImage) || uploadError) {
-      errors.push('upload a PNG, GIF, JPG, or WEBP image (max 5 MB)');
+      errors.push('upload a ' + SM_FILE_UPLOAD_TYPES_TEXT);
     }
 
     if (!displayName) {

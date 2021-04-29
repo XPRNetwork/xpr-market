@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { FadeInImageContainer } from '../../styles/FadeInImageContainer.styled';
 import { breakpoint } from '../../styles/Breakpoints';
 
-export const ImageContainer = styled(FadeInImageContainer)`
+export const AssetDisplayContainer = styled(FadeInImageContainer)`
   width: 100%;
   display: flex;
   justify-content: center;
@@ -23,7 +23,7 @@ export const ImageContainer = styled(FadeInImageContainer)`
   `};
 `;
 
-export const TemplateImage = styled.img`
+export const Image = styled.img`
   object-fit: contain;
   width: 100%;
   height: 100%;

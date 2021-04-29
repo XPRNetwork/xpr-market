@@ -1,9 +1,6 @@
-import { ImageContainer, TemplateImage, Video } from './AssetDisplay.styled';
-import {
-  IPFS_RESOLVER_IMAGE,
-  IPFS_RESOLVER_VIDEO,
-  RESIZER_IMAGE,
-} from '../../utils/constants';
+import { AssetDisplayContainer } from './AssetDisplay.styled';
+import AssetImage from './AssetImage';
+import AssetVideo from './AssetVideo';
 import dynamic from 'next/dynamic';
 
 const AssetModelWithNoSsr = dynamic(() => import('./AssetModel'), {
@@ -19,43 +16,6 @@ type Props = {
   templateName: string;
 };
 
-const AssetImage = ({
-  image,
-  templateName,
-}: {
-  image: string;
-  templateName: string;
-}): JSX.Element => {
-  const onImageError = (e) => {
-    e.currentTarget.onerror = null;
-    e.currentTarget.src = `${IPFS_RESOLVER_IMAGE}${image}`;
-  };
-
-  return (
-    <ImageContainer>
-      <TemplateImage
-        src={`${RESIZER_IMAGE}${IPFS_RESOLVER_IMAGE}${image}`}
-        alt={templateName}
-        onError={onImageError}
-      />
-    </ImageContainer>
-  );
-};
-
-const AssetVideo = ({ video }: { video: string }): JSX.Element => (
-  <ImageContainer>
-    <Video
-      controls
-      loop
-      autoPlay
-      onLoadStart={() =>
-        (document.getElementsByTagName('video')[0].volume = 0.15)
-      }
-      src={`${IPFS_RESOLVER_VIDEO}${video}`}
-    />
-  </ImageContainer>
-);
-
 export const AssetDisplay = ({
   image,
   video,
@@ -64,13 +24,16 @@ export const AssetDisplay = ({
   skybox,
   templateName,
 }: Props): JSX.Element => {
+  let asset;
   if (video) {
-    return <AssetVideo video={video} />;
+    asset = <AssetVideo video={video} />;
   } else if (model) {
-    return <AssetModelWithNoSsr model={model} stage={stage} skybox={skybox} />;
+    asset = <AssetModelWithNoSsr model={model} stage={stage} skybox={skybox} />;
   } else {
-    return <AssetImage image={image} templateName={templateName} />;
+    asset = <AssetImage image={image} templateName={templateName} />;
   }
+
+  return <AssetDisplayContainer>{asset}</AssetDisplayContainer>;
 };
 
 export default AssetDisplay;
