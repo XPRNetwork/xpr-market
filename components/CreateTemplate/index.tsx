@@ -43,7 +43,7 @@ const CreateTemplate = ({
   const validateAndProceed = () => {
     const errors = [];
     if (!templateUploadedFile) {
-      errors.push('upload a ' + LG_FILE_UPLOAD_TYPES_TEXT);
+      errors.push(`upload a ${LG_FILE_UPLOAD_TYPES_TEXT}`);
     }
     if (!templateName) {
       errors.push('set a name');

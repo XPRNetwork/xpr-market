@@ -156,7 +156,7 @@ const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
     const errors = [];
 
     if (!(uploadedFile || updatedImage) || uploadError) {
-      errors.push('upload a ' + SM_FILE_UPLOAD_TYPES_TEXT);
+      errors.push(`upload a ${SM_FILE_UPLOAD_TYPES_TEXT}`);
     }
 
     if (!displayName) {
