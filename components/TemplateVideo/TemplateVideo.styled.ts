@@ -34,4 +34,5 @@ export const Video = styled.video`
   max-height: 100%;
   border-radius: 16px;
   outline: none;
+  z-index: 1;
 `;
