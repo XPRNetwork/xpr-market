@@ -85,7 +85,7 @@ const SearchInput = ({
     setInput('');
     setIsSearchInputActive(false);
     if (!type) return;
-    router.push(`/search?keywords=${type.toLowerCase()}`);
+    router.push(`/search?keywords=${type}`);
   };
 
   const handleClearTextButtonKeyDown = (e: KeyboardEvent) => {

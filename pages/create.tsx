@@ -17,7 +17,6 @@ import NftCreateSuccess from '../components/NftCreateSuccess';
 import CreatePageLayout from '../components/CreatePageLayout';
 import ChooseCollection from '../components/ChooseCollection';
 import CreateTemplate from '../components/CreateTemplate';
-import InitialMint from '../components/InitialMint';
 import { RAM_AMOUNTS } from '../utils/constants';
 import proton from '../services/proton-rpc';
 import { useCreateAssetContext } from '../components/Provider';

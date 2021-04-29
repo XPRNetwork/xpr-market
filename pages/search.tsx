@@ -19,7 +19,7 @@ const Search = (): JSX.Element => {
   const router = useRouter();
   const { isLoadingUser } = useAuthContext();
   const searchTerm = router.query.keywords
-    ? (router.query.keywords as string).toLowerCase()
+    ? (router.query.keywords as string)
     : '';
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [numberOfTemplates, setNumberOfTemplates] = useState<number>(0);
