@@ -15,7 +15,7 @@ type User = {
 class ProtonJs {
   rpc: JsonRpc = null;
 
-  constructor () {
+  constructor() {
     const endpoints = process.env.NEXT_PUBLIC_CHAIN_ENDPOINTS.split(', ');
     this.rpc = new JsonRpc(endpoints);
   }

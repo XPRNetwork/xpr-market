@@ -52,12 +52,23 @@ const DragDropFileUploadLg = ({
   const [uploadPreview, setUploadPreview] = useState<string>('');
   const [uploadError, setUploadError] = useState<string>('');
 
+  const extToMime = {
+    '.png': 'image/png',
+    '.jpg': 'image/jpg',
+    '.jpeg': 'image/jpeg',
+    '.webp': 'image/webp',
+    '.gif': 'image/gif',
+    '.mpeg': 'video/mpeg',
+    '.mp4': 'video/mp4',
+    // '.glb': 'model/gltf-binary',
+    // '.gltf': 'model/gltf+json',
+  };
+  const accept =
+    Object.values(extToMime).join(',') + ',' + Object.keys(extToMime).join(',');
+
   return (
     <Container {...getRootProps()} isDragActive={isDragActive}>
-      <input
-        {...getInputProps()}
-        accept="image/png,image/jpg,image/jpeg,image/webp,image/gif,video/mp4,.png,.jpg,.jpeg,.webp,.mpeg,.gif,.mp4"
-      />
+      <input {...getInputProps()} accept={accept} />
       {templateUploadedFile && uploadPreview ? (
         <Preview>
           <ImageInfo>

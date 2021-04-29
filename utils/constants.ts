@@ -28,8 +28,8 @@ export const SM_FILE_UPLOAD_TYPES = {
 };
 export const LG_FILE_SIZE_UPLOAD_LIMIT = 30 * 1000000; // 30 MB
 export const SM_FILE_SIZE_UPLOAD_LIMIT = 5 * 1000000; // 5 MB
-export const IPFS_RESOLVER_IMAGE =
-  'https://bloks.io/cdn-cgi/image/width=500/https://ipfs.io/ipfs/';
+export const RESIZER_IMAGE = 'https://bloks.io/cdn-cgi/image/width=500/';
+export const IPFS_RESOLVER_IMAGE = 'https://ipfs.io/ipfs/';
 export const IPFS_RESOLVER_VIDEO = 'https://ipfs.io/ipfs/';
 export const DEFAULT_SCHEMA = {
   series: 'uint16',
