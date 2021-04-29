@@ -1,5 +1,4 @@
 import { getFromApi } from '../utils/browser-fetch';
-import NodeFetch from '../utils/node-fetch';
 
 export interface Collection {
   author: string;
@@ -42,10 +41,6 @@ export type SearchCollection = {
   img: string | null;
 };
 
-export const collectionsApiService = new NodeFetch<Collection>(
-  '/atomicassets/v1/collections'
-);
-
 /**
  * Get all collection names
  * Mostly fetching collection names for the marketplace search
@@ -54,11 +49,39 @@ export const collectionsApiService = new NodeFetch<Collection>(
 
 export const getSearchCollections = async (): Promise<SearchCollection[]> => {
   try {
-    const result = await getFromApi<SearchCollection[]>('/api/collections');
-    if (!result.success) {
-      throw new Error((result.message as unknown) as string);
+    const limit = 100;
+    const collectionsByName: {
+      [name: string]: SearchCollection;
+    } = {};
+    let hasResults = true;
+    let page = 1;
+
+    while (hasResults) {
+      const result = await getFromApi<Collection[]>(
+        `https://proton.api.atomicassets.io/atomicassets/v1/collections?limit=${limit}&page=${page}`
+      );
+
+      if (!result.success) {
+        throw new Error((result.message as unknown) as string);
+      }
+
+      const collections = result.data as Collection[];
+      if (collections.length < limit) {
+        hasResults = false;
+      }
+
+      for (const collection of collections) {
+        const { collection_name, img } = collection;
+        collectionsByName[collection_name] = {
+          name: collection_name,
+          img,
+        };
+      }
+
+      page += 1;
     }
-    return result.message;
+
+    return Object.values(collectionsByName);
   } catch (e) {
     throw new Error(e);
   }

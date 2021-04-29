@@ -1,6 +1,6 @@
 {
   "name": "proton-market",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "private": true,
   "scripts": {
     "dev": "node server.js",
@@ -17,7 +17,6 @@
     "@proton/web-sdk": "^2.7.21",
     "@svgr/webpack": "^5.5.0",
     "@types/styled-components": "^5.1.7",
-    "cron": "^1.8.2",
     "dayjs": "^1.10.4",
     "form-data": "^4.0.0",
     "multer": "^1.4.2",
