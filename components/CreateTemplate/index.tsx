@@ -44,7 +44,6 @@ type Props = {
 };
 
 const CreateTemplate = ({
-  goToMint,
   setTemplateUploadedFile,
   templateUploadedFile,
   templateName,
@@ -66,7 +65,13 @@ const CreateTemplate = ({
   const [mintError, setMintError] = useState<string>('');
   const [mintFee, setMintFee] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isValid, setIsValid] = useState<boolean>(false);
+  const [mintIsValid, setMintIsValid] = useState<boolean>(false);
+  const allFieldsFilled =
+    templateUploadedFile &&
+    templateName &&
+    templateDescription &&
+    maxSupply &&
+    mintAmount;
 
   const validateAndProceed = async () => {
     const errors = [];
@@ -147,7 +152,7 @@ const CreateTemplate = ({
       errorMessage = 'You can mint 1-50 assets at a time';
     }
 
-    setIsValid(valid);
+    setMintIsValid(valid);
     return {
       isValid: valid,
       errorMessage,
@@ -239,7 +244,7 @@ const CreateTemplate = ({
       />
       {formError ? <ErrorMessage>{formError}</ErrorMessage> : null}
 
-      <Title>Initial Mint</Title>
+      <ElementTitle>Initial Mint</ElementTitle>
       <SubTitle>
         Now you are ready to mint your NFT. Choose an initial mint amount (first
         10 are for free). Minting takes a bit of time, so we recommend no more
@@ -251,10 +256,12 @@ const CreateTemplate = ({
         max={50}
         step={1}
         mt="8px"
+        disabled={!maxSupply}
         value={mintAmount}
         setValue={setMintAmount}
         placeholder="Enter mint amount"
-        submit={isValid ? null : createNft}
+        setIsValid={setMintIsValid}
+        submit={mintIsValid ? null : createNft}
         checkIfIsValid={checkMintAmountValidity}
       />
       <FeeLabel>
@@ -268,7 +275,7 @@ const CreateTemplate = ({
       {mintError ? <ErrorMessage>{mintError}</ErrorMessage> : null}
       <Button
         onClick={isLoading ? null : validateAndProceed}
-        disabled={!isValid || isLoading}
+        disabled={!mintIsValid || isLoading || !allFieldsFilled}
         padding={isLoading ? '0' : '12px 0'}>
         {isLoading ? (
           <Spinner size="42px" radius="10" hasBackground />

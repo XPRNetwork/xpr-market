@@ -14,6 +14,7 @@ type Props = {
   placeholder: string;
   setValue: Dispatch<SetStateAction<string | number>>;
   setFormError?: Dispatch<SetStateAction<string>>;
+  setIsValid?: Dispatch<SetStateAction<boolean>>;
   checkIfIsValid: (
     text: string | number
   ) => {
@@ -41,6 +42,7 @@ const InputField = ({
   setValue,
   setFormError,
   checkIfIsValid,
+  setIsValid,
   submit,
   tooltip,
   numberOfTooltipLines,
@@ -59,11 +61,13 @@ const InputField = ({
   const updateText = (e: ChangeEvent<HTMLInputElement>) => {
     const textInput = e.target.value;
     if (setFormError) setFormError('');
+    if (setIsValid) setIsValid(false);
     setError('');
     setValue(textInput);
     if (!textInput.length) return;
 
     const { isValid, errorMessage } = checkIfIsValid(textInput);
+
     if (!isValid) {
       setError(errorMessage);
     }
