@@ -52,12 +52,12 @@ export const TAB_TYPES = {
   CREATIONS: 'CREATIONS',
 };
 export const FEATURED_HOMEPAGE_COLLECTIONS = [
-  { name: 'madisyn', displayName: 'Hodl Smiley' },
-  { name: 'meoweehayner', displayName: 'Meowee Dope Li Hayner' },
-  { name: 'vogueforwild', displayName: 'Vogue, the Wild Series' },
+  { name: 'protonpups', displayName: 'ProtonPups' },
+  { name: 'cryptocoins1', displayName: 'Crypto Coins' },
+  { name: 'cryptocadets', displayName: 'Crypto Cadets' },
   {
-    name: 'restingbface',
-    displayName: 'RBF',
+    name: 'japanesebuba',
+    displayName: 'Buba The Pig Collection',
   },
   { name: 'kawaiicrypto', displayName: 'Kawaii Crypto to the Moon!' },
   { name: 'pourmeanftok', displayName: 'Benji432' },
