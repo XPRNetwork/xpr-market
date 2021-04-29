@@ -66,6 +66,8 @@ export const ImageContainer = styled(FadeInImageContainer)`
 
 export const TemplateImage = styled.img`
   object-fit: contain;
+  width: 100%;
+  height: 100%;
 `;
 
 export const Video = styled.video`

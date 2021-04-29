@@ -120,6 +120,7 @@ export const Tag = styled.div`
   letter-spacing: 1px;
   position: absolute;
   bottom: 0;
+  left: 0;
   margin: 16px;
   padding: 8px 16px;
   opacity: 0.6;
