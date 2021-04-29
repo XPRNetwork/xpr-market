@@ -13,38 +13,12 @@ type User = {
 };
 
 class ProtonJs {
-  rpc: JsonRpc;
+  rpc: JsonRpc = null;
 
   constructor() {
-    this.rpc = null;
+    const endpoints = process.env.NEXT_PUBLIC_CHAIN_ENDPOINTS.split(', ');
+    this.rpc = new JsonRpc(endpoints);
   }
-
-  init() {
-    return new Promise<void>((initResolve, reject) => {
-      this.setRPC(process.env.NEXT_PUBLIC_CHAIN_ENDPOINT)
-        .then(() => {
-          return this.rpc.get_info();
-        })
-        .then((result) => {
-          if (result) {
-            initResolve();
-          } else {
-            reject(new Error('UNABLE TO CONNECT'));
-          }
-        })
-        .catch((err) => {
-          console.warn(err);
-          reject(err);
-        });
-    });
-  }
-
-  setRPC = (endpoint) => {
-    return new Promise<void>((resolve) => {
-      this.rpc = new JsonRpc(endpoint);
-      resolve();
-    });
-  };
 
   getAccountBalance = async (account): Promise<string> => {
     const balance = await this.rpc.get_currency_balance(
@@ -192,5 +166,4 @@ class ProtonJs {
 }
 
 const proton = new ProtonJs();
-proton.init();
 export default proton;

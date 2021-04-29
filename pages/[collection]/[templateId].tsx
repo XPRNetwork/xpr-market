@@ -75,7 +75,7 @@ const MarketplaceTemplateDetail = (): JSX.Element => {
       name: collectionDisplayName,
       img: collectionImage,
     },
-    immutable_data: { image, name, desc, video },
+    immutable_data: { image, name, desc, video, model, stage, skybox },
   } = template;
 
   useEffect(() => {
@@ -174,6 +174,9 @@ const MarketplaceTemplateDetail = (): JSX.Element => {
         error={error}
         image={image}
         video={video}
+        model={model}
+        stage={stage}
+        skybox={skybox}
         currentAsset={currentAsset}
         activeTab={activeTab}
         setActiveTab={setActiveTab}>

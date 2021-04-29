@@ -3,26 +3,23 @@ import {
   Container,
   Row,
   Column,
-  ImageContainer,
   TabTitle,
   TabRow,
-  Video,
-  TemplateImage,
 } from './DetailsLayout.styled';
 import SalesHistoryTable from '../SalesHistoryTable';
 import AssetFormTitle from '../AssetFormTitle';
+import AssetDisplay from '../AssetDisplay';
 import { SaleAsset } from '../../services/sales';
 import { Asset } from '../../services/assets';
 import { tabs } from '../../components/SalesHistoryTable';
-import {
-  IPFS_RESOLVER_IMAGE,
-  IPFS_RESOLVER_VIDEO,
-} from '../../utils/constants';
 
 type Props = {
   children: ReactNode;
   image?: string;
   video?: string;
+  model?: string;
+  stage?: string;
+  skybox?: string;
   templateId: string;
   templateName: string;
   collectionDisplayName?: string;
@@ -38,38 +35,13 @@ type Props = {
   setCurrentAssetAsModalProps?: () => void;
 };
 
-const AssetImage = ({
-  image,
-  templateName,
-}: {
-  image: string;
-  templateName: string;
-}): JSX.Element => (
-  <ImageContainer>
-    <TemplateImage src={`${IPFS_RESOLVER_IMAGE}${image}`} alt={templateName} />
-  </ImageContainer>
-);
-
-const AssetVideo = ({ video }: { video: string }): JSX.Element => (
-  <ImageContainer>
-    <Video
-      controls
-      loop
-      autoPlay
-      onLoadStart={setVolumeOnLoad}
-      src={`${IPFS_RESOLVER_VIDEO}${video}`}
-    />
-  </ImageContainer>
-);
-
-const setVolumeOnLoad = () => {
-  document.getElementsByTagName('video')[0].volume = 0.15;
-};
-
 const DetailsLayout = ({
   children,
   image,
   video,
+  model,
+  stage,
+  skybox,
   templateId,
   templateName,
   collectionName,
@@ -87,11 +59,15 @@ const DetailsLayout = ({
   return (
     <Container>
       <Row>
-        {video ? (
-          <AssetVideo video={video} />
-        ) : (
-          <AssetImage image={image} templateName={templateName} />
-        )}
+        <AssetDisplay
+          image={image}
+          video={video}
+          model={model}
+          stage={stage}
+          skybox={skybox}
+          templateName={templateName}
+        />
+
         <Column>
           <AssetFormTitle
             templateName={templateName}

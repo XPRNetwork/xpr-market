@@ -24,4 +24,6 @@ export const DefaultImage = styled.img`
 
 export const Image = styled.img`
   border-radius: 8px;
+  max-width: 270px;
+  max-height: 270px;
 `;

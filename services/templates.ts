@@ -26,6 +26,9 @@ type ImmutableData = {
   series: number;
   desc: string;
   video?: string;
+  model?: string;
+  stage?: string;
+  skybox?: string;
 };
 
 export interface Template {

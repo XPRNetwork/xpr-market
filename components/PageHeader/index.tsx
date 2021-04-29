@@ -12,7 +12,7 @@ import {
 import { ReactComponent as MoreIcon } from '../../public/more.svg';
 import ShareOnSocial from '../ShareOnSocial';
 import { useClickAway } from '../../hooks';
-import { IPFS_RESOLVER_IMAGE } from '../../utils/constants';
+import { IPFS_RESOLVER_IMAGE, RESIZER_IMAGE } from '../../utils/constants';
 import { useModalContext, MODAL_TYPES } from '../Provider';
 
 type PageHeaderProps = {
@@ -41,10 +41,18 @@ const PageHeader = ({
     ? `data:image/jpeg;base64,${image}`
     : '/default-avatar.png';
   const collectionImg = image
-    ? `${IPFS_RESOLVER_IMAGE}${image}`
+    ? `${RESIZER_IMAGE}${IPFS_RESOLVER_IMAGE}${image}`
     : '/proton.svg';
+
   const displayImg = type === 'user' ? avatarImg : collectionImg;
   const subNameIcon = type === 'user' ? '@' : '#';
+
+  const onImageError = (e) => {
+    e.currentTarget.onerror = null;
+    if (type === 'user' && image) {
+      e.currentTarget.src = `${IPFS_RESOLVER_IMAGE}${image}`;
+    }
+  };
 
   const shareButton = (
     <RoundButton
@@ -73,7 +81,12 @@ const PageHeader = ({
   return (
     <PageHeaderContainer>
       <ImageContainer>
-        <Image width="120px" height="120px" src={displayImg} />
+        <Image
+          width="120px"
+          height="120px"
+          src={displayImg}
+          onError={onImageError}
+        />
       </ImageContainer>
       <Name>{name}</Name>
       <SubName>

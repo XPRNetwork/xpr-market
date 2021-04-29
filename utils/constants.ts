@@ -28,8 +28,8 @@ export const SM_FILE_UPLOAD_TYPES = {
 };
 export const LG_FILE_SIZE_UPLOAD_LIMIT = 30 * 1000000; // 30 MB
 export const SM_FILE_SIZE_UPLOAD_LIMIT = 5 * 1000000; // 5 MB
-export const IPFS_RESOLVER_IMAGE =
-  'https://bloks.io/cdn-cgi/image/width=270,height=270/https://ipfs.io/ipfs/';
+export const RESIZER_IMAGE = 'https://bloks.io/cdn-cgi/image/width=500/';
+export const IPFS_RESOLVER_IMAGE = 'https://ipfs.io/ipfs/';
 export const IPFS_RESOLVER_VIDEO = 'https://ipfs.io/ipfs/';
 export const DEFAULT_SCHEMA = {
   series: 'uint16',
@@ -52,12 +52,12 @@ export const TAB_TYPES = {
   CREATIONS: 'CREATIONS',
 };
 export const FEATURED_HOMEPAGE_COLLECTIONS = [
-  { name: 'madisyn', displayName: 'Hodl Smiley' },
-  { name: 'meoweehayner', displayName: 'Meowee Dope Li Hayner' },
-  { name: 'vogueforwild', displayName: 'Vogue, the Wild Series' },
+  { name: 'protonpups', displayName: 'ProtonPups' },
+  { name: 'cryptocoins1', displayName: 'Crypto Coins' },
+  { name: 'cryptocadets', displayName: 'Crypto Cadets' },
   {
-    name: 'restingbface',
-    displayName: 'RBF',
+    name: 'japanesebuba',
+    displayName: 'Buba The Pig Collection',
   },
   { name: 'kawaiicrypto', displayName: 'Kawaii Crypto to the Moon!' },
   { name: 'pourmeanftok', displayName: 'Benji432' },

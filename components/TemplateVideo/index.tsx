@@ -18,7 +18,6 @@ const TemplateVideo = ({
     <VideoContainer>
       <CenterContainer>
         <Video
-          muted
           autoPlay={autoPlay}
           controls={controls}
           loop
