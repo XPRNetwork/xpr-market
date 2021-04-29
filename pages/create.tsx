@@ -212,7 +212,6 @@ const Create = (): JSX.Element => {
             <CreateTemplate
               setTemplateUploadedFile={setTemplateUploadedFile}
               templateUploadedFile={templateUploadedFile}
-              goToMint={() => setPageState(CREATE_PAGE_STATES.SUCCESS)}
               templateName={templateName}
               setTemplateName={setTemplateName}
               templateDescription={templateDescription}

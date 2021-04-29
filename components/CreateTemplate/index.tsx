@@ -24,7 +24,6 @@ import {
 } from '../../utils/constants';
 
 type Props = {
-  goToMint: () => void;
   setTemplateUploadedFile: Dispatch<SetStateAction<File>>;
   templateUploadedFile: File;
   templateName: string;

@@ -281,26 +281,7 @@ const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
         </Row>
         <Form onSubmit={isLoading ? null : handleSubmit}>
           {type === TYPES.UPDATE ? (
-            <InputField
-              placeholder="Collection Name"
-              value={name}
-              setValue={setName}
-              setFormError={setFormError}
-              disabled={true}
-              checkIfIsValid={(input: string) => {
-                const hasValidCharacters = !!input.match(/^[a-z1-5]+$/);
-                const isValidLength = input.length === 12;
-                const isValid =
-                  (hasValidCharacters && isValidLength) ||
-                  input.toLowerCase() === author.toLowerCase();
-                const errorMessage = `Collection name should be your account name (${author}) or a 12-character long name that only contains the numbers 1-5 or lowercase letters a-z`;
-                return {
-                  isValid,
-                  errorMessage,
-                };
-              }}
-              mb="16px"
-            />
+            <InputField value={name} disabled={true} mb="16px" />
           ) : null}
           <InputField
             placeholder="Display Name"
