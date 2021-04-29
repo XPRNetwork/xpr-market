@@ -40,7 +40,6 @@ export const AssetFormSell = ({
     setCurrentAsset(dropdownAsset);
   };
 
-  console.log('listingFee: ', listingSaleFee);
   return (
     <>
       {description ? <AssetDescription description={description} /> : ''}

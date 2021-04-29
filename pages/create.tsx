@@ -104,7 +104,7 @@ const Create = (): JSX.Element => {
         );
         const rate = await proton.getXPRtoXUSDCConversionRate();
         setAccountRam(max - used);
-        console.log('ACCOUNT RAM CREATE: ', max - used);
+
         setContractRam(specialMintRam);
         setConversionRate(rate);
       }

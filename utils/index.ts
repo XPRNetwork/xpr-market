@@ -4,8 +4,11 @@ import utc from 'dayjs/plugin/utc'; // dependent on utc plugin
 import {
   QueryParams,
   SHORTENED_TOKEN_PRECISION,
+  RAM_ACCOUNTS,
   PRICE_OF_RAM_IN_XPR,
 } from './constants';
+import proton from '../services/proton-rpc';
+
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
@@ -105,22 +108,48 @@ export const fileReader = (
 export const delay = (ms: number): Promise<void> =>
   new Promise((resolve) => setTimeout(resolve, ms));
 
-export const calculateFee = ({
-  numAssets,
-  currentRamAmount,
-  ramCost,
-  conversionRate,
-}: {
-  numAssets: number;
-  currentRamAmount: number;
-  ramCost: number;
-  conversionRate: number;
-}): number => {
-  const requiredRam = numAssets * ramCost - currentRamAmount;
-  console.log(requiredRam, numAssets, ramCost, currentRamAmount);
-  if (requiredRam > 0) {
-    const calculatedFee = PRICE_OF_RAM_IN_XPR * requiredRam * conversionRate;
-    const fee = isNaN(calculatedFee) ? 0 : Math.ceil(calculatedFee * 100) / 100;
-    return fee;
+// export const calculateFee = ({
+//   numAssets,
+//   currentRamAmount,
+//   ramCost,
+//   conversionRate,
+// }: {
+//   numAssets: number;
+//   currentRamAmount: number;
+//   ramCost: number;
+//   conversionRate: number;
+// }): number => {
+//   const requiredRam = numAssets * ramCost - currentRamAmount;
+//   console.log(requiredRam, numAssets, ramCost, currentRamAmount);
+//   if (requiredRam > 0) {
+//     const calculatedFee = PRICE_OF_RAM_IN_XPR * requiredRam * conversionRate;
+//     const fee = isNaN(calculatedFee) ? 0 : Math.ceil(calculatedFee * 100) / 100;
+//     return fee;
+//   }
+// };
+
+export const calculateFee = async ({ numAssets, actor, ramCost }) => {
+  if (actor && Number(numAssets) > 0) {
+    const { max, used } = await proton.getAccountRam(actor);
+    const conversionRate = await proton.getXPRtoXUSDCConversionRate();
+    const currentAccountRam = max - used;
+
+    console.log('calculateFee: ', numAssets, actor, ramCost);
+    const requiredRam = numAssets * ramCost - currentAccountRam;
+    console.log('calculateFee 2: ', requiredRam, currentAccountRam);
+    if (requiredRam > 0) {
+      const calculatedFee = PRICE_OF_RAM_IN_XPR * requiredRam * conversionRate;
+      const fee = isNaN(calculatedFee)
+        ? 0
+        : Math.ceil(calculatedFee * 100) / 100;
+      return {
+        display: fee.toFixed(SHORTENED_TOKEN_PRECISION).toString(),
+        raw: fee,
+      };
+    }
   }
+  return {
+    display: Number('0').toFixed(SHORTENED_TOKEN_PRECISION).toString(),
+    raw: 0,
+  };
 };

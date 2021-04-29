@@ -98,7 +98,7 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
       (async () => {
         const { max, used } = await proton.getAccountRam(currentUser.actor);
         const rate = await proton.getXPRtoXUSDCConversionRate();
-        console.log('templateId', max - used);
+
         setAccountRam(max - used);
         setConversionRate(rate);
       })();
@@ -113,7 +113,6 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
       conversionRate,
     });
 
-    console.log('templateId RAM in calculateFee: ', accountRam);
     setListingFee(isNaN(fee) ? 0 : fee);
   }, [accountRam, conversionRate]);
 

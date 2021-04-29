@@ -76,11 +76,14 @@ const InitialMint = ({
       conversionRate,
     });
     const accountRamCosts =
-      (RAM_AMOUNTS.CREATE_COLLECTION_SCHEMA_TEMPLATE + (RAM_AMOUNTS.LIST_SALE * numAssets) - accountRam)*
+      (RAM_AMOUNTS.CREATE_COLLECTION_SCHEMA_TEMPLATE +
+        RAM_AMOUNTS.LIST_SALE * numAssets -
+        accountRam) *
       PRICE_OF_RAM_IN_XPR *
       conversionRate;
     const ramFee = accountRamCosts > 0 ? accountRamCosts : 0;
     const fee = mintFee + ramFee;
+
     setMintFee(isNaN(fee) ? 0 : fee);
   }, [mintAmount, isLoading]);
 

@@ -28,7 +28,6 @@ import {
   TOKEN_SYMBOL,
   TOKEN_PRECISION,
   RAM_AMOUNTS,
-  SHORTENED_TOKEN_PRECISION,
 } from '../../utils/constants';
 import ProtonSDK from '../../services/proton';
 import { useWindowSize } from '../../hooks';
@@ -56,23 +55,22 @@ const SaleModal = ({
   onButtonClick,
   setListingFee,
 }: Props): JSX.Element => {
-  const { closeModal, modalProps } = useModalContext();
+  const { closeModal } = useModalContext();
+  const { currentUser } = useAuthContext();
   const { isMobile } = useWindowSize();
-  const { accountRam, conversionRate } = modalProps as
-    | CreateSaleModalProps
-    | CreateMultipleSalesModalProps;
 
   useEffect(() => {
-    const fee = calculateFee({
-      numAssets: numSales,
-      currentRamAmount: accountRam,
-      ramCost: RAM_AMOUNTS.LIST_SALE,
-      conversionRate,
-    });
+    (async () => {
+      const fee = await calculateFee({
+        numAssets: numSales,
+        actor: currentUser ? currentUser.actor : '',
+        ramCost: RAM_AMOUNTS.LIST_SALE,
+      });
 
-    console.log('conversionRate: ', conversionRate);
-    setListingFee(isNaN(fee) ? 0 : fee);
-  }, [numSales, accountRam, conversionRate]);
+      console.log('CREATE SALE MODAL: ', fee);
+      setListingFee(fee);
+    })();
+  }, [numSales, currentUser]);
 
   const handleBackgroundClick = (e: MouseEvent) => {
     if (e.target === e.currentTarget) {
@@ -83,7 +81,7 @@ const SaleModal = ({
   const getFee = () => (
     <FeeLabel>
       <span>Listing Fee</span>
-      <span>{listingFee.toFixed(SHORTENED_TOKEN_PRECISION)} XUSDC</span>
+      <span>{listingFee} XUSDC</span>
     </FeeLabel>
   );
 
@@ -120,7 +118,7 @@ export const CreateSaleModal = (): JSX.Element => {
   const { closeModal, modalProps } = useModalContext();
   const { assetId, fetchPageData } = modalProps as CreateSaleModalProps;
   const [amount, setAmount] = useState<string>('');
-  const [listingFee, setListingFee] = useState<number>(0);
+  const [listingFee, setListingFee] = useState<string>('');
 
   const createOneSale = async () => {
     try {
@@ -173,24 +171,18 @@ export const CreateMultipleSalesModal = (): JSX.Element => {
     setIsModalWithFeeOpen,
   } = modalProps as CreateMultipleSalesModalProps;
   const [amount, setAmount] = useState<string>('');
-  const [listingFee, setListingFee] = useState<number>(0);
+  const [listingFee, setListingFee] = useState<string>({});
   const numSales = assetIds.length;
 
   const createMultipleSales = async () => {
     try {
       const formattedAmount = parseFloat(amount).toFixed(TOKEN_PRECISION);
-      const listing_fee =
-        typeof listingFee === 'string'
-          ? isNaN(parseFloat(listingFee))
-            ? 0
-            : parseFloat(listingFee)
-          : listingFee;
       const res = await ProtonSDK.createMultipleSales({
         seller: currentUser ? currentUser.actor : '',
         assetIds,
         price: `${formattedAmount} ${TOKEN_SYMBOL}`,
         currency: `${TOKEN_PRECISION},${TOKEN_SYMBOL}`,
-        listing_fee,
+        listing_fee: listingFee.raw,
       });
 
       if (res.success) {
