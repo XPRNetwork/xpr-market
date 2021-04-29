@@ -22,9 +22,7 @@ const TemplateVideo = ({
           controls={controls}
           loop
           src={src}
-          onClick={(e) => {
-            e.stopPropagation();
-          }}
+          onClick={(e) => e.stopPropagation()}
         />
         {priceTag}
       </CenterContainer>
