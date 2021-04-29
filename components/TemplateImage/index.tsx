@@ -5,7 +5,6 @@ type Props = {
   fallbackImgSrc?: string;
   templateName: string;
   priceTag?: JSX.Element;
-  resize?: boolean;
 };
 
 const TemplateImageChild = ({
@@ -36,8 +35,12 @@ const TemplateImage = ({
   templateName,
   templateImgSrc,
   priceTag,
-  fallbackImgSrc = '/placeholder-template-image.png',
+  fallbackImgSrc,
 }: Props): JSX.Element => {
+  if (!fallbackImgSrc) {
+    fallbackImgSrc = '/placeholder-template-image.png';
+  }
+
   return (
     <ImageContainer className="template-image-container">
       <TemplateImageChild
