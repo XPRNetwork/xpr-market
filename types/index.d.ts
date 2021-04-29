@@ -4,3 +4,8 @@ declare module '*.svg' {
   const src: string;
   export default src;
 }
+declare namespace JSX {
+  interface IntrinsicElements {
+    ['model-viewer']: any;
+  }
+}

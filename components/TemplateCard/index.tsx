@@ -18,6 +18,7 @@ import TemplateVideo from '../TemplateVideo';
 import {
   IPFS_RESOLVER_VIDEO,
   IPFS_RESOLVER_IMAGE,
+  RESIZER_IMAGE,
 } from '../../utils/constants';
 import {
   useCreateAssetContext,
@@ -73,6 +74,7 @@ const TemplateCard = ({
   const { currentUser } = useAuthContext();
   const [templateVideoSrc, setTemplateVideoSrc] = useState<string>('');
   const [templateImgSrc, setTemplateImgSrc] = useState<string>('');
+  const [fallbackImgSrc, setFallbackImgSrc] = useState<string>('');
 
   useEffect(() => {
     if (Date.now() - 600000 < Number(createdAt) && isMyTemplate) {
@@ -94,10 +96,15 @@ const TemplateCard = ({
       const imageSrc =
         noIpfsConversion || !templateImage
           ? templateImage
-          : `${IPFS_RESOLVER_IMAGE}${templateImage}`;
+          : `${RESIZER_IMAGE}${IPFS_RESOLVER_IMAGE}${templateImage}`;
+      const fallbackImageSrc =
+        !noIpfsConversion && templateImage
+          ? `${IPFS_RESOLVER_IMAGE}${templateImage}`
+          : '';
 
       setTemplateVideoSrc(videoSrc);
       setTemplateImgSrc(imageSrc);
+      setFallbackImgSrc(fallbackImageSrc);
     }
   }, [templateVideo, templateImage]);
 
@@ -165,6 +172,7 @@ const TemplateCard = ({
       ) : (
         <TemplateImage
           templateImgSrc={templateImgSrc}
+          fallbackImgSrc={fallbackImgSrc}
           templateName={templateName}
           priceTag={priceTag}
         />

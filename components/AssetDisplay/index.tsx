@@ -1,9 +1,14 @@
-// import '@google/model-viewer'
 import { ImageContainer, TemplateImage, Video } from './AssetDisplay.styled';
 import {
   IPFS_RESOLVER_IMAGE,
   IPFS_RESOLVER_VIDEO,
+  RESIZER_IMAGE,
 } from '../../utils/constants';
+import dynamic from 'next/dynamic';
+
+const AssetModelWithNoSsr = dynamic(() => import('./AssetModel'), {
+  ssr: false,
+});
 
 type Props = {
   image?: string;
@@ -20,11 +25,22 @@ const AssetImage = ({
 }: {
   image: string;
   templateName: string;
-}): JSX.Element => (
-  <ImageContainer>
-    <TemplateImage src={`${IPFS_RESOLVER_IMAGE}${image}`} alt={templateName} />
-  </ImageContainer>
-);
+}): JSX.Element => {
+  const onImageError = (e) => {
+    e.currentTarget.onerror = null;
+    e.currentTarget.src = `${IPFS_RESOLVER_IMAGE}${image}`;
+  };
+
+  return (
+    <ImageContainer>
+      <TemplateImage
+        src={`${RESIZER_IMAGE}${IPFS_RESOLVER_IMAGE}${image}`}
+        alt={templateName}
+        onError={onImageError}
+      />
+    </ImageContainer>
+  );
+};
 
 const AssetVideo = ({ video }: { video: string }): JSX.Element => (
   <ImageContainer>
@@ -40,33 +56,6 @@ const AssetVideo = ({ video }: { video: string }): JSX.Element => (
   </ImageContainer>
 );
 
-const AssetModel = ({
-  model,
-  stage,
-  skybox,
-}: {
-  model: string;
-  stage: string;
-  skybox: string;
-}): JSX.Element => {
-  return (
-    <ImageContainer>
-      {/* <model-viewer
-        src={parseIpfs(model)}
-        ios-src={parseIpfs(stage)}
-        skybox-image={parseIpfs(skybox)}
-        auto-rotate
-        autoplay
-        ar
-        ar-modes="scene-viewer webxr quick-look"
-        ar-scale="auto"
-        camera-controls
-        camera-orbit="0deg 90deg 2.5m"
-      /> */}
-    </ImageContainer>
-  );
-};
-
 export const AssetDisplay = ({
   image,
   video,
@@ -78,7 +67,7 @@ export const AssetDisplay = ({
   if (video) {
     return <AssetVideo video={video} />;
   } else if (model) {
-    return <AssetModel model={model} stage={stage} skybox={skybox} />;
+    return <AssetModelWithNoSsr model={model} stage={stage} skybox={skybox} />;
   } else {
     return <AssetImage image={image} templateName={templateName} />;
   }
