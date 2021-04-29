@@ -76,7 +76,7 @@ const ChooseCollection = ({
 
   return (
     <>
-      <Step>Step 1 of 3</Step>
+      <Step>Step 1 of 2</Step>
       <Title>Choose a collection</Title>
       <SubTitle>
         Every new account can create up to 10 NFTs for free. After that a small

@@ -123,6 +123,8 @@ const SearchInput = ({
     }
   };
 
+  console.log('searchcollections: ', searchCollections);
+
   const collections = searchCollections
     .filter(({ displayName }) => {
       const isFragment =

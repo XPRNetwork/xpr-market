@@ -25,7 +25,6 @@ import { useCreateAssetContext } from '../components/Provider';
 export const CREATE_PAGE_STATES = {
   CHOOSE_COLLECTION: 'CHOOSE_COLLECTION',
   CREATE_TEMPLATE: 'CREATE_TEMPLATE',
-  MINT_ASSETS: 'MINT_ASSETS',
   SUCCESS: 'SUCCESS',
 };
 
@@ -214,26 +213,12 @@ const Create = (): JSX.Element => {
             <CreateTemplate
               setTemplateUploadedFile={setTemplateUploadedFile}
               templateUploadedFile={templateUploadedFile}
-              goToMint={() => setPageState(CREATE_PAGE_STATES.MINT_ASSETS)}
+              goToMint={() => setPageState(CREATE_PAGE_STATES.SUCCESS)}
               templateName={templateName}
               setTemplateName={setTemplateName}
               templateDescription={templateDescription}
               setTemplateDescription={setTemplateDescription}
               maxSupply={maxSupply}
-              setMaxSupply={setMaxSupply}
-              setPageState={setPageState}
-            />
-          </CreatePageLayout>
-        );
-      case CREATE_PAGE_STATES.MINT_ASSETS:
-        return (
-          <CreatePageLayout
-            templateVideo={templateVideo}
-            templateImage={templateImage}
-            templateName={templateName}
-            selectedCollection={selectedCollection}
-            maxSupply={maxSupply}>
-            <InitialMint
               accountRam={accountRam}
               contractRam={contractRam}
               conversionRate={conversionRate}
@@ -241,8 +226,8 @@ const Create = (): JSX.Element => {
               setMintAmount={setMintAmount}
               createNft={createNft}
               createNftError={createNftError}
+              setMaxSupply={setMaxSupply}
               setPageState={setPageState}
-              maxSupply={maxSupply}
             />
           </CreatePageLayout>
         );

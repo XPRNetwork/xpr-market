@@ -2,7 +2,6 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import {
   Title,
   SubTitle,
-  Step,
   Terms,
   TermsLink,
   ErrorMessage,
@@ -127,7 +126,6 @@ const InitialMint = ({
 
   return (
     <>
-      <Step>Step 3 of 3</Step>
       <Title>Initial Mint</Title>
       <SubTitle>
         Now you are ready to mint your NFT. Choose an initial mint amount (first
@@ -166,7 +164,7 @@ const InitialMint = ({
         )}
       </Button>
       <BackButton
-        onClick={() => setPageState(CREATE_PAGE_STATES.CREATE_TEMPLATE)}>
+        onClick={() => setPageState(CREATE_PAGE_STATES.CHOOSE_COLLECTION)}>
         Back
       </BackButton>
     </>

@@ -72,10 +72,11 @@ export const getSearchCollections = async (): Promise<SearchCollection[]> => {
       }
 
       for (const collection of collections) {
-        const { collection_name, img } = collection;
+        const { collection_name, img, name } = collection;
         collectionsByName[collection_name] = {
           name: collection_name,
           img,
+          displayName: name,
         };
       }
 
