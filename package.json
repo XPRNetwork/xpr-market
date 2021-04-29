@@ -15,8 +15,6 @@
     "@google/model-viewer": "^1.6.0",
     "@proton/js": "^22.0.64",
     "@proton/web-sdk": "^2.7.23",
-    "@svgr/webpack": "^5.5.0",
-    "@types/styled-components": "^5.1.7",
     "dayjs": "^1.10.4",
     "form-data": "^4.0.0",
     "multer": "^1.4.2",
@@ -30,12 +28,14 @@
     "styled-components": "^5.2.1"
   },
   "devDependencies": {
+    "@svgr/webpack": "^5.5.0",
     "@axe-core/react": "^4.1.1",
     "@babel/core": "^7.12.10",
     "@babel/preset-env": "^7.12.11",
     "@babel/preset-react": "^7.12.10",
     "@types/cron": "^1.7.2",
     "@types/gtag.js": "0.0.4",
+    "@types/styled-components": "^5.1.7",
     "@types/jest": "^26.0.20",
     "@types/node": "^14.14.20",
     "@types/react": "^17.0.0",
