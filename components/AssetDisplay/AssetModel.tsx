@@ -42,6 +42,7 @@ const AssetModel = ({
         height: height || '100%',
         width: width || '100%',
         borderRadius: 20,
+        minHeight: 350,
       }}
     />
   );
