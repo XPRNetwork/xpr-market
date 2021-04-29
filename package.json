@@ -13,8 +13,8 @@
   },
   "dependencies": {
     "@google/model-viewer": "^1.6.0",
-    "@proton/js": "^22.0.63",
-    "@proton/web-sdk": "^2.7.21",
+    "@proton/js": "^22.0.64",
+    "@proton/web-sdk": "^2.7.23",
     "@svgr/webpack": "^5.5.0",
     "@types/styled-components": "^5.1.7",
     "dayjs": "^1.10.4",
