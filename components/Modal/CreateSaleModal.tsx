@@ -69,6 +69,8 @@ const SaleModal = ({
       ramCost: RAM_AMOUNTS.LIST_SALE,
       conversionRate,
     });
+
+    console.log('conversionRate: ', conversionRate);
     setListingFee(isNaN(fee) ? 0 : fee);
   }, [numSales, accountRam, conversionRate]);
 
@@ -78,13 +80,12 @@ const SaleModal = ({
     }
   };
 
-  const getFee = () =>
-    listingFee && listingFee !== 0 ? (
-      <FeeLabel>
-        <span>Listing Fee</span>
-        <span>{listingFee.toFixed(SHORTENED_TOKEN_PRECISION)} XUSDC</span>
-      </FeeLabel>
-    ) : null;
+  const getFee = () => (
+    <FeeLabel>
+      <span>Listing Fee</span>
+      <span>{listingFee.toFixed(SHORTENED_TOKEN_PRECISION)} XUSDC</span>
+    </FeeLabel>
+  );
 
   return (
     <Background onClick={handleBackgroundClick}>

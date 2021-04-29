@@ -46,6 +46,7 @@ const AssetFormPopupMenu = ({
     (async () => {
       const { max, used } = await proton.getAccountRam(actor);
       const rate = await proton.getXPRtoXUSDCConversionRate();
+      console.log('MODAL ACCOUNT RAM: ', max - used);
       setAccountRam(max - used);
       setConversionRate(rate);
     })();

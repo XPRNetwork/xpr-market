@@ -130,6 +130,7 @@ class ProtonJs {
         throw new Error(`No initial storage found for ${chainAccount}.`);
       }
 
+      console.log('specialMintContractRam: ', contractRamDataByUser[0].ram_bytes);
       return contractRamDataByUser[0].ram_bytes;
     } catch (err) {
       console.warn(err);

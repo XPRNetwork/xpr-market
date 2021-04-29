@@ -6,6 +6,7 @@ import {
   General,
   Amount,
   Row,
+  FeeLabel,
 } from '../AssetFormBuy/AssetFormBuy.styled';
 import { Asset } from '../../services/assets';
 
@@ -16,6 +17,7 @@ type Props = {
   maxSupply: string;
   buttonText: string;
   assetId: string;
+  listingSaleFee?: number;
   handleButtonClick: () => void;
   setCurrentAsset: Dispatch<SetStateAction<Asset>>;
 };
@@ -27,6 +29,7 @@ export const AssetFormSell = ({
   maxSupply,
   buttonText,
   assetId,
+  listingSaleFee,
   handleButtonClick,
   setCurrentAsset,
 }: Props): JSX.Element => {
@@ -37,6 +40,7 @@ export const AssetFormSell = ({
     setCurrentAsset(dropdownAsset);
   };
 
+  console.log('listingFee: ', listingSaleFee);
   return (
     <>
       {description ? <AssetDescription description={description} /> : ''}
@@ -63,6 +67,12 @@ export const AssetFormSell = ({
             </option>
           ))}
       </DropdownMenu>
+      {listingSaleFee ? (
+        <FeeLabel>
+          <span>Listing Fee</span>
+          <span>{listingSaleFee}</span>
+        </FeeLabel>
+      ) : null}
       <Button
         cancel={buttonText.toLowerCase().includes('cancel')}
         fullWidth

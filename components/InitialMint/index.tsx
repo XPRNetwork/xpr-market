@@ -65,18 +65,18 @@ const InitialMint = ({
 
   useEffect(() => {
     const numAssets = parseInt(mintAmount);
-    const currentRamAmount =
+    const currentContractRamAmount =
       contractRam === -1
         ? RAM_AMOUNTS.FREE_INITIAL_SPECIAL_MINT_CONTRACT_RAM
         : contractRam;
     const mintFee = calculateFee({
       numAssets: isNaN(numAssets) ? 0 : numAssets,
-      currentRamAmount,
+      currentRamAmount: currentContractRamAmount,
       ramCost: RAM_AMOUNTS.MINT_ASSET,
       conversionRate,
     });
     const accountRamCosts =
-      (RAM_AMOUNTS.CREATE_COLLECTION_SCHEMA_TEMPLATE - accountRam) *
+      (RAM_AMOUNTS.CREATE_COLLECTION_SCHEMA_TEMPLATE + (RAM_AMOUNTS.LIST_SALE * numAssets) - accountRam)*
       PRICE_OF_RAM_IN_XPR *
       conversionRate;
     const ramFee = accountRamCosts > 0 ? accountRamCosts : 0;

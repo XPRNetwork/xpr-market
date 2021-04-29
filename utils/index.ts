@@ -117,6 +117,7 @@ export const calculateFee = ({
   conversionRate: number;
 }): number => {
   const requiredRam = numAssets * ramCost - currentRamAmount;
+  console.log(requiredRam, numAssets, ramCost, currentRamAmount);
   if (requiredRam > 0) {
     const calculatedFee = PRICE_OF_RAM_IN_XPR * requiredRam * conversionRate;
     const fee = isNaN(calculatedFee) ? 0 : Math.ceil(calculatedFee * 100) / 100;
