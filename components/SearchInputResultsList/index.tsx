@@ -93,23 +93,23 @@ const SearchInputResultsList = ({
   return (
     <ResultsList ref={resultsListRef}>
       <ResultListTitle>Collection</ResultListTitle>
-      {collections.map(({ name, img, displayName }, i) => (
+      {collections.map(({ name, img }, i) => (
         <ResultItem
           onKeyDown={
             i === 0 ? handleFirstResultItemKeyDown : handleResultItemKeyDown
           }
           onClick={() => {
-            setInput(displayName);
-            search(displayName);
+            setInput(name);
+            search(name);
           }}
           onTouchStart={() => {
-            setInput(displayName);
-            search(displayName);
+            setInput(name);
+            search(name);
           }}
           tabIndex={0}
           key={name}>
           <CollectionIcon name={name} image={img} margin="0 16px 0 0" />
-          <span>{displayName}</span>
+          <span>{name}</span>
         </ResultItem>
       ))}
     </ResultsList>

@@ -85,7 +85,7 @@ const SearchInput = ({
     setInput('');
     setIsSearchInputActive(false);
     if (!type) return;
-    router.push(`/search?keywords=${type}`);
+    router.push(`/search?keywords=${type.toLowerCase()}`);
   };
 
   const handleClearTextButtonKeyDown = (e: KeyboardEvent) => {
@@ -124,9 +124,8 @@ const SearchInput = ({
   };
 
   const collections = searchCollections
-    .filter(({ displayName }) => {
-      const isFragment =
-        displayName && displayName.toLowerCase().includes(input.toLowerCase());
+    .filter(({ name }) => {
+      const isFragment = name.toLowerCase().includes(input.toLowerCase());
       return isFragment;
     })
     .slice(0, 5);
