@@ -2,7 +2,8 @@ import { ConnectWallet } from '@proton/web-sdk';
 import { LinkSession, Link } from '@proton/link';
 import logoUrl from '../public/logo.svg';
 import proton from './proton-rpc';
-import { DEFAULT_SCHEMA, MintFee } from '../utils/constants';
+import { DEFAULT_SCHEMA } from '../utils/constants';
+import { MintFee } from '../services/fees';
 
 export interface User {
   actor: string;

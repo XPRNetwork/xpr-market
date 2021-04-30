@@ -30,7 +30,12 @@ class Fees {
     this.conversionRate = await proton.getXPRtoXUSDCConversionRate();
     this.currentAccountRam = max - used;
     this.specialMintContractRam = await proton.getSpecialMintContractRam(actor);
-    console.log('called refresh: ', this.specialMintContractRam, this.currentAccountRam, this.conversionRate)
+    console.log(
+      'called refresh: ',
+      this.specialMintContractRam,
+      this.currentAccountRam,
+      this.conversionRate
+    );
   };
 
   parseDisplayRawFee = (
