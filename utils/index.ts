@@ -1,11 +1,8 @@
 import dayjs from 'dayjs';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc'; // dependent on utc plugin
-import {
-  QueryParams,
-  SHORTENED_TOKEN_PRECISION,
-  PRICE_OF_RAM_IN_XPR,
-} from './constants';
+import { QueryParams, SHORTENED_TOKEN_PRECISION } from './constants';
+
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
@@ -104,22 +101,3 @@ export const fileReader = (
 
 export const delay = (ms: number): Promise<void> =>
   new Promise((resolve) => setTimeout(resolve, ms));
-
-export const calculateFee = ({
-  numAssets,
-  currentRamAmount,
-  ramCost,
-  conversionRate,
-}: {
-  numAssets: number;
-  currentRamAmount: number;
-  ramCost: number;
-  conversionRate: number;
-}): number => {
-  const requiredRam = numAssets * ramCost - currentRamAmount;
-  if (requiredRam > 0) {
-    const calculatedFee = PRICE_OF_RAM_IN_XPR * requiredRam * conversionRate;
-    const fee = isNaN(calculatedFee) ? 0 : Math.ceil(calculatedFee * 100) / 100;
-    return fee;
-  }
-};

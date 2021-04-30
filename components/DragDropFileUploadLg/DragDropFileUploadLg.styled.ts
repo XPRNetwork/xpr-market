@@ -55,9 +55,10 @@ export const UploadButton = styled.button`
 `;
 
 export const UploadError = styled.span`
-  margin-top: 10px;
+  margin: 10px 10px 0;
   font-size: 13px;
   color: #f94e6c;
+  text-align: center;
 `;
 
 export const RemovePreviewIcon = styled.div`

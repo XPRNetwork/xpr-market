@@ -54,3 +54,12 @@ export const DropdownMenu = styled.select`
     border: 1px solid #e6e6e6;
   }
 `;
+
+export const FeeLabel = styled.p`
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  line-height: 24px;
+  color: #333333;
+  margin: 2px 0 12px;
+`;

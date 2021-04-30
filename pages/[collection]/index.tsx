@@ -92,7 +92,6 @@ const CollectionPage = (): JSX.Element => {
       const lowestPricesResult = await getLowestPricesForAllCollectionTemplates(
         {
           type: collection,
-          limit: templates.length,
         }
       );
       setLowestPrices(lowestPricesResult);
@@ -185,6 +184,7 @@ const CollectionPage = (): JSX.Element => {
           isHidden={renderedTemplates.length < PAGINATION_LIMIT}
           isLoading={isLoadingNextPage}
           disabled={prefetchPageNumber === -1}
+          autoLoad
         />
       </>
     );

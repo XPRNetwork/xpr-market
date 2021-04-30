@@ -2,11 +2,8 @@ import { ConnectWallet } from '@proton/web-sdk';
 import { LinkSession, Link } from '@proton/link';
 import logoUrl from '../public/logo.svg';
 import proton from './proton-rpc';
-import {
-  DEFAULT_SCHEMA,
-  PRICE_OF_RAM_IN_XPR,
-  RAM_AMOUNTS,
-} from '../utils/constants';
+import { DEFAULT_SCHEMA } from '../utils/constants';
+import { MintFee } from '../services/fees';
 
 export interface User {
   actor: string;
@@ -29,8 +26,7 @@ interface BurnOptions {
 }
 
 interface CreateNftOptions {
-  requiredAccountRam: number;
-  requiredSpecialMintContractRam: number;
+  mintFee: MintFee;
   author: string;
   collection_name?: string;
   collection_description: string;
@@ -46,8 +42,7 @@ interface CreateNftOptions {
 }
 
 interface CreateTemplateAssetsOptions {
-  requiredAccountRam: number;
-  requiredSpecialMintContractRam: number;
+  mintFee: MintFee;
   author: string;
   collection_name: string;
   template_name: string;
@@ -128,8 +123,7 @@ interface WalletResponse {
 
 interface GenerateRamActions {
   author: string;
-  requiredAccountRam: number;
-  requiredSpecialMintContractRam: number;
+  mintFee: MintFee;
 }
 
 interface Action {
@@ -448,31 +442,11 @@ class ProtonSDK {
 
   generateRamActions = async ({
     author,
-    requiredAccountRam,
-    requiredSpecialMintContractRam,
+    mintFee,
   }: GenerateRamActions): Promise<Action[]> => {
-    const accountRam = await proton.getAccountRam(author);
-    const contractRam = await proton.getSpecialMintContractRam(author);
-    const conversionRate = await proton.getXPRtoXUSDCConversionRate();
-
-    const hasInitializedStorage = contractRam !== -1;
-    const currentAccountRam = accountRam.max - accountRam.used;
-    const currentContractRam = hasInitializedStorage
-      ? contractRam
-      : RAM_AMOUNTS.FREE_INITIAL_SPECIAL_MINT_CONTRACT_RAM;
-
-    const hasEnoughAccountRam = currentAccountRam >= requiredAccountRam;
-    const hasEnoughContractRam =
-      currentContractRam >= requiredSpecialMintContractRam;
-
-    const accountRamToBuyInXUSDC =
-      PRICE_OF_RAM_IN_XPR *
-      conversionRate *
-      (requiredAccountRam - currentAccountRam);
-    const contractRamToBuyInXUSDC =
-      PRICE_OF_RAM_IN_XPR *
-      conversionRate *
-      (requiredSpecialMintContractRam - currentContractRam);
+    const hasInitializedStorage = mintFee.userSpecialMintContractRam !== -1;
+    const hasEnoughAccountRam = mintFee.accountRamFee.raw === 0;
+    const hasEnoughContractRam = mintFee.specialMintFee.raw === 0;
 
     return [
       hasInitializedStorage
@@ -504,7 +478,7 @@ class ProtonSDK {
             data: {
               from: author,
               to: 'specialmint',
-              quantity: `${accountRamToBuyInXUSDC.toFixed(6)} XUSDC`,
+              quantity: `${mintFee.accountRamFee.raw.toFixed(6)} XUSDC`,
               memo: 'account',
             },
           },
@@ -522,7 +496,7 @@ class ProtonSDK {
             data: {
               from: author,
               to: 'specialmint',
-              quantity: `${contractRamToBuyInXUSDC.toFixed(6)} XUSDC`,
+              quantity: `${mintFee.specialMintFee.raw.toFixed(6)} XUSDC`,
               memo: 'contract',
             },
           },
@@ -547,8 +521,7 @@ class ProtonSDK {
    */
 
   createNft = async ({
-    requiredAccountRam,
-    requiredSpecialMintContractRam,
+    mintFee,
     author,
     collection_name,
     collection_description,
@@ -566,8 +539,7 @@ class ProtonSDK {
 
     const ramActions = await this.generateRamActions({
       author,
-      requiredAccountRam,
-      requiredSpecialMintContractRam,
+      mintFee,
     });
 
     const default_template = {
@@ -876,8 +848,7 @@ class ProtonSDK {
    */
 
   createTemplateAssets = async ({
-    requiredAccountRam,
-    requiredSpecialMintContractRam,
+    mintFee,
     author,
     collection_name,
     template_name,
@@ -889,8 +860,7 @@ class ProtonSDK {
   }: CreateTemplateAssetsOptions): Promise<Response> => {
     const ramActions = await this.generateRamActions({
       author,
-      requiredAccountRam,
-      requiredSpecialMintContractRam,
+      mintFee,
     });
 
     const default_template = {

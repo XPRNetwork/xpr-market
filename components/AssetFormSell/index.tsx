@@ -6,6 +6,7 @@ import {
   General,
   Amount,
   Row,
+  FeeLabel,
 } from '../AssetFormBuy/AssetFormBuy.styled';
 import { Asset } from '../../services/assets';
 
