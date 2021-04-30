@@ -2,7 +2,7 @@ const uploadToIPFS = async (file: File): Promise<string> => {
   const formData = new FormData();
   formData.append('file', file);
   try {
-    const resultRaw = await fetch('/api/upload', {
+    const resultRaw = await fetch('/api/upload-background', {
       method: 'POST',
       body: formData,
     });
