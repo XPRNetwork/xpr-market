@@ -110,6 +110,12 @@ const Collection = (): JSX.Element => {
 
   useEffect(() => {
     (async () => {
+      const resultRaw = await fetch('https://nft.protonchain.com/api/upload');
+
+      console.log('resultRaw', resultRaw);
+      const result = await resultRaw.json();
+      console.log('result', result);
+
       if (chainAccount) {
         try {
           setIsTemplatesLoading(true);
