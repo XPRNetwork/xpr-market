@@ -1,11 +1,7 @@
 import { getFromApi } from '../utils/browser-fetch';
 import { Sale, getLowestPriceAsset } from './sales';
 import { addPrecisionDecimal, toQueryString } from '../utils/';
-import {
-  TOKEN_SYMBOL,
-  DEFAULT_COLLECTION,
-  PAGINATION_LIMIT,
-} from '../utils/constants';
+import { TOKEN_SYMBOL, PAGINATION_LIMIT } from '../utils/constants';
 import { Collection } from './collections';
 
 export type SchemaFormat = {
@@ -335,12 +331,48 @@ export const getAllTemplatesForUserWithAssetCount = async (
 
     const templates = await getTemplatesFromTemplateIds(templateIds);
 
-    const lowestPricesByTemplateId = await getLowestPricesForAllCollectionTemplates(
-      {
-        type: DEFAULT_COLLECTION,
-        limit: templates.length,
+    const templatesAndPricesByCollection = {};
+    for (const template of templates) {
+      const {
+        template_id,
+        collection: { collection_name },
+      } = template;
+      if (templatesAndPricesByCollection[collection_name]) {
+        templatesAndPricesByCollection[collection_name]['templates'][
+          template_id
+        ] = template;
+      } else {
+        templatesAndPricesByCollection[collection_name] = {
+          lowestPricesByTemplateId: {},
+          templates: {
+            [template_id]: template,
+          },
+        };
       }
-    );
+    }
+
+    for (const collection_name of Object.keys(templatesAndPricesByCollection)) {
+      const lowestPrices = await getLowestPricesForAllCollectionTemplates({
+        type: collection_name,
+        limit: templates.length,
+      });
+
+      templatesAndPricesByCollection[
+        collection_name
+      ].lowestPricesByTemplateId = lowestPrices;
+    }
+
+    const lowestPricesByCollection = Object.values(
+      templatesAndPricesByCollection
+    ).map(({ lowestPricesByTemplateId }) => lowestPricesByTemplateId);
+
+    let allLowestPricesByTemplateId = {};
+    for (const price of lowestPricesByCollection) {
+      allLowestPricesByTemplateId = {
+        ...allLowestPricesByTemplateId,
+        ...price,
+      };
+    }
 
     const templatesWithAssetsForSaleCount = formatTemplatesWithPriceAndAssetCountInCreateDescOrder(
       {
@@ -348,7 +380,7 @@ export const getAllTemplatesForUserWithAssetCount = async (
         templates: templates,
         assetCountById: userAssetsByTemplateId,
         assetCountByIdWithHidden: userAssetsWithHiddenByTemplateId,
-        lowPriceById: lowestPricesByTemplateId,
+        lowPriceById: allLowestPricesByTemplateId,
       }
     );
 
