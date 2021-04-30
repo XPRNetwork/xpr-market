@@ -3,15 +3,15 @@ const uploadToIPFS = async (file: File): Promise<string> => {
   formData.append('file', file);
   try {
     const resultRaw = await fetch(
-      `https://api-dev.protonchain.com/v1/chain/files`,
+      `https://api.protonchain.com/v1/chain/files`,
       {
         method: 'POST',
         body: formData,
       }
     );
     const result = await resultRaw.json();
-    if (result.success) {
-      return result.message.IpfsHash;
+    if (result) {
+      return result.IpfsHash;
     }
   } catch (e) {
     throw new Error(e);
