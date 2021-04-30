@@ -18,9 +18,23 @@ import CreatePageLayout from '../components/CreatePageLayout';
 import ChooseCollection from '../components/ChooseCollection';
 import CreateTemplate from '../components/CreateTemplate';
 import InitialMint from '../components/InitialMint';
-import { RAM_AMOUNTS } from '../utils/constants';
-import proton from '../services/proton-rpc';
+import { SHORTENED_TOKEN_PRECISION } from '../utils/constants';
 import { useCreateAssetContext } from '../components/Provider';
+import fees, { MintFee } from '../services/fees';
+
+const MintFeeInitial = {
+  specialMintFee: {
+    display: Number('0').toFixed(SHORTENED_TOKEN_PRECISION).toString(),
+    raw: 0,
+  },
+  accountRamFee: {
+    display: Number('0').toFixed(SHORTENED_TOKEN_PRECISION).toString(),
+    raw: 0,
+  },
+  userSpecialMintContractRam: 0,
+  userAccountRam: 0,
+  totalFee: Number('0').toFixed(SHORTENED_TOKEN_PRECISION).toString(),
+};
 
 export const CREATE_PAGE_STATES = {
   CHOOSE_COLLECTION: 'CHOOSE_COLLECTION',
@@ -56,6 +70,7 @@ const Create = (): JSX.Element => {
   );
   const [collectionsList, setCollectionsList] = useState<Collection[]>([]);
   const [createNftError, setCreateNftError] = useState<string>('');
+  const [mintFee, setMintFee] = useState<MintFee>(MintFeeInitial);
   const [
     isUncreatedCollectionSelected,
     setIsUncreatedCollectionSelected,
@@ -63,9 +78,6 @@ const Create = (): JSX.Element => {
   const [pageState, setPageState] = useState<string>(
     CREATE_PAGE_STATES.CHOOSE_COLLECTION
   );
-  const [accountRam, setAccountRam] = useState<number>(0);
-  const [contractRam, setContractRam] = useState<number>(0);
-  const [conversionRate, setConversionRate] = useState<number>(0);
 
   useEffect(() => {
     if (templateUploadedFile && window) {
@@ -93,22 +105,12 @@ const Create = (): JSX.Element => {
     if (!currentUser && !isLoadingUser) {
       router.push('/');
     }
-  }, [currentUser, isLoadingUser]);
-
-  useEffect(() => {
     (async () => {
-      if (currentUser) {
-        const { max, used } = await proton.getAccountRam(currentUser.actor);
-        const specialMintRam = await proton.getSpecialMintContractRam(
-          currentUser.actor
-        );
-        const rate = await proton.getXPRtoXUSDCConversionRate();
-        setAccountRam(max - used);
-        setContractRam(specialMintRam);
-        setConversionRate(rate);
+      if (currentUser && currentUser.actor) {
+        await fees.refreshRamInfoForUser(currentUser.actor);
       }
     })();
-  }, [currentUser]);
+  }, [currentUser, isLoadingUser]);
 
   const createNft = async () => {
     setCreateNftError('');
@@ -124,11 +126,15 @@ const Create = (): JSX.Element => {
         isVideo = true;
       }
 
+      await fees.refreshRamInfoForUser(currentUser.actor);
+      const finalMintFees = fees.calculateCreateFlowFees({
+        numAssets: parseInt(mintAmount),
+        actor: currentUser ? currentUser.actor : '',
+      });
+
       const result = isUncreatedCollectionSelected
         ? await ProtonSDK.createNft({
-            requiredAccountRam: RAM_AMOUNTS.CREATE_COLLECTION_SCHEMA_TEMPLATE,
-            requiredSpecialMintContractRam:
-              parseInt(mintAmount) * RAM_AMOUNTS.MINT_ASSET,
+            mintFee: finalMintFees,
             author: currentUser.actor,
             collection_name: newCollection.collection_name,
             collection_description: newCollection.description,
@@ -145,9 +151,7 @@ const Create = (): JSX.Element => {
             initial_mint_amount: parseInt(mintAmount),
           })
         : await ProtonSDK.createTemplateAssets({
-            requiredAccountRam: RAM_AMOUNTS.CREATE_COLLECTION_SCHEMA_TEMPLATE,
-            requiredSpecialMintContractRam:
-              parseInt(mintAmount) * RAM_AMOUNTS.MINT_ASSET,
+            mintFee: finalMintFees,
             author: currentUser.actor,
             collection_name: selectedCollection.collection_name,
             template_name: templateName,
@@ -234,10 +238,9 @@ const Create = (): JSX.Element => {
             selectedCollection={selectedCollection}
             maxSupply={maxSupply}>
             <InitialMint
-              accountRam={accountRam}
-              contractRam={contractRam}
-              conversionRate={conversionRate}
               mintAmount={mintAmount}
+              setMintFee={setMintFee}
+              mintFee={mintFee}
               setMintAmount={setMintAmount}
               createNft={createNft}
               createNftError={createNftError}

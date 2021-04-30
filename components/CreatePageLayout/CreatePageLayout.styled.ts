@@ -66,7 +66,6 @@ export const Terms = styled.p`
   font-size: 12px;
   line-height: 20px;
   color: #808080;
-  margin-top: 24px;
 `;
 
 export const TermsLink = styled.a`
@@ -101,5 +100,5 @@ export const FeeLabel = styled.p`
   font-size: 14px;
   line-height: 24px;
   color: #333333;
-  margin: 8px 0 0;
+  margin: 8px 0 20px;
 `;

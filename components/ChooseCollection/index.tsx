@@ -79,8 +79,7 @@ const ChooseCollection = ({
       <Step>Step 1 of 3</Step>
       <Title>Choose a collection</Title>
       <SubTitle>
-        Every new account can create up to 10 NFTs for free. After that a small
-        fee per NFT is charged reflecting network costs.
+        A small fee per NFT may be charged reflecting network costs.
       </SubTitle>
       <ElementTitle>Collections</ElementTitle>
       <CollectionsCarousel

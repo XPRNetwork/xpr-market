@@ -16,6 +16,7 @@ import {
   Asset,
   FullSaleDataByAssetId,
 } from '../../../../services/assets';
+import fees from '../../../../services/fees';
 import { TAB_TYPES, RouterQuery } from '../../../../utils/constants';
 
 const emptyTemplateDetails = {
@@ -152,6 +153,11 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
     ) {
       router.push(`/${collection}/${templateId}`);
     }
+    (async () => {
+      if (currentUser && currentUser.actor) {
+        await fees.refreshRamInfoForUser(currentUser.actor);
+      }
+    })();
   }, [chainAccount, collection, templateId, currentUser]);
 
   const setCurrentAssetAsModalProps = () => {
@@ -175,7 +181,6 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
     setCurrentAssetAsModalProps();
   };
   const handleButtonClick = isSelectedAssetBeingSold ? cancelSale : createSale;
-
   const buttonText = isSelectedAssetBeingSold ? 'Cancel Sale' : 'Mark for sale';
 
   const getContent = () => {

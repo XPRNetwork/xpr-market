@@ -44,7 +44,7 @@ const DragDropFileUploadLg = ({
       fileReader((result) => setUploadPreview(result), file);
     } else {
       setUploadError(
-        'Unable to upload, please double check your file size or file type.'
+        'Unable to upload, please double check your file size or file type. Please note that large files are currently disabled due to service update.'
       );
     }
   }, []);
