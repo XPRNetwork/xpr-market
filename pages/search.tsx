@@ -73,7 +73,6 @@ const Search = (): JSX.Element => {
           const lowestPricesResult = await getLowestPricesForAllCollectionTemplates(
             {
               type: searchTerm,
-              limit: templates.length,
             }
           );
           setLowestPrices(lowestPricesResult);

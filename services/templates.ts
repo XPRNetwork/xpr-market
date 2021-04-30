@@ -217,51 +217,61 @@ export const getAllTemplatesByCollection = async ({
 
 export const getLowestPricesForAllCollectionTemplates = async ({
   type,
-  limit,
 }: {
   type: string;
-  limit: number;
 }): Promise<{ [id: string]: string }> => {
-  const salesQueryObject = {
-    collection_name: type,
-    symbol: TOKEN_SYMBOL,
-    order: 'desc',
-    sort: 'created',
-    limit: limit,
-  };
-
-  const salesQueryParams = toQueryString(salesQueryObject);
-  const salesResult = await getFromApi<Sale[]>(
-    `${process.env.NEXT_PUBLIC_NFT_ENDPOINT}/atomicmarket/v1/sales/templates?${salesQueryParams}`
-  );
-
-  if (!salesResult.success) {
-    const errorMessage =
-      typeof salesResult.error === 'object'
-        ? salesResult.error.message
-        : salesResult.message;
-    throw new Error(errorMessage as string);
-  }
-
+  const limit = 100;
   const lowestPriceByTemplateIds = {};
-  for (const sale of salesResult.data) {
-    const {
-      listing_price,
-      assets,
-      price: { token_precision },
-    } = sale;
+  let hasResults = true;
 
-    if (!assets.length) {
-      continue;
+  while (hasResults) {
+    const salesQueryObject = {
+      collection_name: type,
+      symbol: TOKEN_SYMBOL,
+      order: 'desc',
+      sort: 'created',
+      limit,
+    };
+
+    const salesQueryParams = toQueryString(salesQueryObject);
+    const salesResult = await getFromApi<Sale[]>(
+      `${process.env.NEXT_PUBLIC_NFT_ENDPOINT}/atomicmarket/v1/sales/templates?${salesQueryParams}`
+    );
+
+    if (!salesResult.success) {
+      const errorMessage =
+        typeof salesResult.error === 'object'
+          ? salesResult.error.message
+          : salesResult.message;
+      throw new Error(errorMessage as string);
     }
 
-    const {
-      template: { template_id },
-    } = assets[0];
+    for (const sale of salesResult.data) {
+      const {
+        listing_price,
+        assets,
+        price: { token_precision },
+      } = sale;
 
-    lowestPriceByTemplateIds[template_id] = listing_price
-      ? `${addPrecisionDecimal(listing_price, token_precision)} ${TOKEN_SYMBOL}`
-      : '';
+      if (!assets.length) {
+        continue;
+      }
+
+      const {
+        template: { template_id },
+      } = assets[0];
+
+      lowestPriceByTemplateIds[template_id] = listing_price
+        ? `${addPrecisionDecimal(
+            listing_price,
+            token_precision
+          )} ${TOKEN_SYMBOL}`
+        : '';
+    }
+
+    if (salesResult.data.length < limit) {
+      hasResults = false;
+    }
   }
 
   return lowestPriceByTemplateIds;
@@ -354,7 +364,6 @@ export const getAllTemplatesForUserWithAssetCount = async (
     for (const collection_name of Object.keys(templatesAndPricesByCollection)) {
       const lowestPrices = await getLowestPricesForAllCollectionTemplates({
         type: collection_name,
-        limit: templates.length,
       });
 
       templatesAndPricesByCollection[
