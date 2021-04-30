@@ -125,10 +125,20 @@ const InitialMint = ({
         <span>Mint Fee</span>
         <span>≈ {mintFee.totalFee} XUSDC</span>
       </FeeLabel>
-      <Terms>By clicking “Create NFT” you agree to our</Terms>
-      <TermsLink target="_blank" href="https://www.protonchain.com/terms">
-        Terms of Service &amp; Privacy Policy
-      </TermsLink>
+      <Terms>By clicking “Create NFT”: </Terms>
+      <span>
+        <Terms>
+          - You agree to our{' '}
+          <TermsLink target="_blank" href="https://www.protonchain.com/terms">
+            Terms of Service &amp; Privacy Policy.
+          </TermsLink>
+        </Terms>
+      </span>
+      <Terms>
+        - You declare that everything you have uploaded is original artwork. Any
+        plagiarization is not allowed and will be subject to removal.
+      </Terms>
+      <br />
       {mintError ? <ErrorMessage>{mintError}</ErrorMessage> : null}
       <Button
         onClick={isLoading ? null : validateAndProceed}
