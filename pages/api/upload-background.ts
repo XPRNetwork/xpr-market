@@ -27,7 +27,9 @@ const handler = async (
   switch (method) {
     case 'POST': {
       try {
+        console.log('req before multer', req);
         await multerAny(req, res);
+        console.log('req', req);
         if (!req.files?.length || req.files.length > 1) {
           res.status(400).send({
             success: false,
