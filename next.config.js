@@ -19,4 +19,12 @@ module.exports = {
 
     return config;
   },
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: 'https://nft.protonchain.com/:path*',
+      },
+    ];
+  },
 };
