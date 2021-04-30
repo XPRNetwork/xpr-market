@@ -377,10 +377,11 @@ const formatTemplatesWithPriceAndAssetCountInCreateDescOrder = ({
   lowPriceById,
 }: formatTemplatesWithLowPriceAndAssetCountProps) => {
   const templatesWithAssetsForSaleCount = templateIds
-    .map((templateId) => {
-      const template = templates.find(({ template_id }) => {
-        return templateId == template_id;
-      });
+    .reduce((acc, templateId) => {
+      const template = templates.find(
+        ({ template_id }) => templateId == template_id
+      );
+
       if (template) {
         template.totalAssets = `${assetCountById[templateId]}`;
 
@@ -390,9 +391,12 @@ const formatTemplatesWithPriceAndAssetCountInCreateDescOrder = ({
 
         template.assetsForSale = `${assetsForSale}`;
         template.lowestPrice = lowPriceById[templateId];
+
+        acc.push(template);
       }
-      return template;
-    })
+
+      return acc;
+    }, [])
     .sort((a, b) => Number(b.created_at_time) - Number(a.created_at_time));
 
   return templatesWithAssetsForSaleCount;

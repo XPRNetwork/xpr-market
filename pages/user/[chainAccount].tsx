@@ -216,6 +216,7 @@ const Collection = (): JSX.Element => {
         isHidden={isHidden}
         isLoading={isLoadingNextPage}
         disabled={isDisabled}
+        autoLoad
       />
     );
   };

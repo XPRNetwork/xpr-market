@@ -136,6 +136,7 @@ const Search = (): JSX.Element => {
           isHidden={renderedTemplates.length < PAGINATION_LIMIT}
           isLoading={isLoadingNextPage}
           disabled={prefetchPageNumber === -1}
+          autoLoad
         />
       </>
     );
