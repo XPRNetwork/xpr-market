@@ -1,14 +1,7 @@
 import dayjs from 'dayjs';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc'; // dependent on utc plugin
-import {
-  QueryParams,
-  SHORTENED_TOKEN_PRECISION,
-  PRICE_OF_RAM_IN_XPR,
-  RAM_AMOUNTS,
-} from './constants';
-import proton from '../services/proton-rpc';
-import { ListingFee, MintFee } from '../services/fees';
+import { QueryParams, SHORTENED_TOKEN_PRECISION } from './constants';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
