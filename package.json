@@ -26,6 +26,7 @@
     "react-dom": "17.0.1",
     "react-dropzone": "^11.3.2",
     "react-intersection-observer": "^8.31.1",
+    "simple-react-lightbox": "^3.6.6",
     "styled-components": "^5.2.1"
   },
   "devDependencies": {

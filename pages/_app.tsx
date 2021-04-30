@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import type { AppProps } from 'next/app';
 import Router from 'next/router';
 import NProgress from 'nprogress';
+import SimpleReactLightbox from 'simple-react-lightbox';
 import '../styles/reset.css';
 import '../styles/globals.css';
 import NavBar from '../components/NavBar';
@@ -49,15 +50,17 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
   }, []);
 
   return (
-    <ModalProvider>
-      <AuthProvider>
-        <CreateAssetProvider>
-          <NavBar />
-          <Component {...pageProps} />
-          <Footer />
-        </CreateAssetProvider>
-      </AuthProvider>
-    </ModalProvider>
+    <SimpleReactLightbox>
+      <ModalProvider>
+        <AuthProvider>
+          <CreateAssetProvider>
+            <NavBar />
+            <Component {...pageProps} />
+            <Footer />
+          </CreateAssetProvider>
+        </AuthProvider>
+      </ModalProvider>
+    </SimpleReactLightbox>
   );
 }
 
