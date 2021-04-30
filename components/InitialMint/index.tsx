@@ -12,10 +12,9 @@ import InputField from '../InputField';
 import Button from '../Button';
 import Spinner from '../Spinner';
 import { BackButton } from '../CreatePageLayout/CreatePageLayout.styled';
-import { CREATE_PAGE_STATES, MintFee } from '../../pages/create';
+import { CREATE_PAGE_STATES } from '../../pages/create';
 import { useAuthContext } from '../../components/Provider';
-import { calculateCreateFlowFees } from '../../utils';
-import { SHORTENED_TOKEN_PRECISION } from '../../utils/constants';
+import fees, { MintFee } from '../../services/fees';
 
 type Props = {
   mintAmount: string;
@@ -52,15 +51,12 @@ const InitialMint = ({
   }, [createNftError]);
 
   useEffect(() => {
-    (async () => {
-      const numAssets = parseInt(mintAmount);
-      const fees = await calculateCreateFlowFees({
-        numAssets,
-        actor: currentUser ? currentUser.actor : '',
-      });
-      console.log('FEES: ', fees);
-      setMintFee(fees);
-    })();
+    const numAssets = parseInt(mintAmount);
+    const mintFees = fees.calculateCreateFlowFees({
+      numAssets,
+      actor: currentUser ? currentUser.actor : '',
+    });
+    setMintFee(mintFees);
   }, [mintAmount, currentUser, isLoading]);
 
   const validateAndProceed = async () => {
@@ -127,7 +123,7 @@ const InitialMint = ({
       />
       <FeeLabel>
         <span>Mint Fee</span>
-        <span>{mintFee.totalFee} XUSDC</span>
+        <span>≈ {mintFee.totalFee} XUSDC</span>
       </FeeLabel>
       <Terms>By clicking “Create NFT” you agree to our</Terms>
       <TermsLink target="_blank" href="https://www.protonchain.com/terms">

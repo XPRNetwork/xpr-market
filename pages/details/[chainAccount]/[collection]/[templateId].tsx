@@ -16,13 +16,8 @@ import {
   Asset,
   FullSaleDataByAssetId,
 } from '../../../../services/assets';
-import {
-  RAM_AMOUNTS,
-  TAB_TYPES,
-  RouterQuery,
-  ListingFee,
-} from '../../../../utils/constants';
-import { calculateFee } from '../../../../utils';
+import fees from '../../../../services/fees';
+import { TAB_TYPES, RouterQuery } from '../../../../utils/constants';
 
 const emptyTemplateDetails = {
   lowestPrice: '',
@@ -73,10 +68,6 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
   const [assetIds, setAssetIds] = useState<string[]>([]);
   const [saleIds, setSaleIds] = useState<string[]>();
   const [activeTab, setActiveTab] = useState<string>(TAB_TYPES.ITEM);
-  const [listingFee, setListingFee] = useState<ListingFee>({
-    display: '0.00',
-    raw: null,
-  });
 
   const isSelectedAssetBeingSold =
     saleDataByAssetId[currentAsset.asset_id] &&
@@ -92,17 +83,6 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
     },
     immutable_data: { image, name, desc, video, model, stage, skybox },
   } = template;
-
-  useEffect(() => {
-    (async () => {
-      const fee = await calculateFee({
-        numAssets: 1,
-        ramCost: RAM_AMOUNTS.LIST_SALE,
-        actor: currentUser ? currentUser.actor : '',
-      });
-      setListingFee(fee);
-    })();
-  }, [currentUser]);
 
   const fetchPageData = async () => {
     try {
@@ -173,6 +153,11 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
     ) {
       router.push(`/${collection}/${templateId}`);
     }
+    (async () => {
+      if (currentUser && currentUser.actor) {
+        await fees.refreshRamInfoForUser(currentUser.actor);
+      }
+    })();
   }, [chainAccount, collection, templateId, currentUser]);
 
   const setCurrentAssetAsModalProps = () => {
@@ -196,9 +181,6 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
     setCurrentAssetAsModalProps();
   };
   const handleButtonClick = isSelectedAssetBeingSold ? cancelSale : createSale;
-  const listingSaleFee = isSelectedAssetBeingSold
-    ? null
-    : `${listingFee.display} XUSDC`;
   const buttonText = isSelectedAssetBeingSold ? 'Cancel Sale' : 'Mark for sale';
 
   const getContent = () => {
@@ -241,7 +223,6 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
           dropdownAssets={templateAssets}
           lowestPrice={lowestPrice}
           maxSupply={max_supply}
-          listingSaleFee={listingSaleFee}
           buttonText={buttonText}
           assetId={currentAsset.asset_id}
           handleButtonClick={handleButtonClick}

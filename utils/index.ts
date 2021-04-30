@@ -8,6 +8,7 @@ import {
   RAM_AMOUNTS,
 } from './constants';
 import proton from '../services/proton-rpc';
+import { ListingFee, MintFee } from '../services/fees';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -108,89 +109,3 @@ export const fileReader = (
 export const delay = (ms: number): Promise<void> =>
   new Promise((resolve) => setTimeout(resolve, ms));
 
-export const parseDisplayRawFee = (requiredRam, conversionRate) => {
-  const calculatedFee = PRICE_OF_RAM_IN_XPR * requiredRam * conversionRate;
-  const fee = isNaN(calculatedFee) ? 0 : Math.ceil(calculatedFee * 100) / 100;
-  return {
-    display: fee.toFixed(SHORTENED_TOKEN_PRECISION).toString(),
-    raw: fee,
-  };
-};
-
-export const calculateFee = async ({ numAssets, actor, ramCost }) => {
-  if (actor && Number(numAssets) > 0) {
-    const { max, used } = await proton.getAccountRam(actor);
-    const conversionRate = await proton.getXPRtoXUSDCConversionRate();
-    const currentAccountRam = max - used;
-
-    console.log('calculateFee: ', numAssets, actor, ramCost);
-    const requiredRam = numAssets * ramCost - currentAccountRam;
-    console.log('calculateFee 2: ', requiredRam, currentAccountRam);
-    if (requiredRam > 0) {
-      return parseDisplayRawFee(requiredRam, conversionRate);
-    }
-  }
-  return {
-    display: Number('0').toFixed(SHORTENED_TOKEN_PRECISION).toString(),
-    raw: 0,
-  };
-};
-
-export const calculateCreateFlowFees = async ({ numAssets, actor }) => {
-  const createFlowFee = {
-    specialMintFee: {
-      display: Number('0').toFixed(SHORTENED_TOKEN_PRECISION).toString(),
-      raw: 0,
-    },
-    accountRamFee: {
-      display: Number('0').toFixed(SHORTENED_TOKEN_PRECISION).toString(),
-      raw: 0,
-    },
-    totalFee: Number('0').toFixed(SHORTENED_TOKEN_PRECISION).toString(),
-  };
-
-  if (actor && Number(numAssets) > 0) {
-    const { max, used } = await proton.getAccountRam(actor);
-    const conversionRate = await proton.getXPRtoXUSDCConversionRate();
-    const specialMintContractRam = await proton.getSpecialMintContractRam(
-      actor
-    );
-    const currentAccountRam = max - used;
-
-    const accountRamCosts =
-      RAM_AMOUNTS.CREATE_COLLECTION_SCHEMA_TEMPLATE +
-      RAM_AMOUNTS.LIST_SALE * numAssets;
-
-    const requiredAccountRam = accountRamCosts - currentAccountRam;
-
-    if (requiredAccountRam > 0) {
-      createFlowFee.accountRamFee = parseDisplayRawFee(
-        requiredAccountRam,
-        conversionRate
-      );
-    }
-
-    const currentContractRamAmount =
-      specialMintContractRam === -1
-        ? RAM_AMOUNTS.FREE_INITIAL_SPECIAL_MINT_CONTRACT_RAM
-        : specialMintContractRam;
-
-    const contractRamCosts = RAM_AMOUNTS.MINT_ASSET * numAssets;
-
-    const requiredContractRam = contractRamCosts - currentContractRamAmount;
-
-    if (requiredContractRam > 0) {
-      createFlowFee.specialMintFee = parseDisplayRawFee(
-        requiredContractRam,
-        conversionRate
-      );
-    }
-
-    const total =
-      createFlowFee.specialMintFee.raw + createFlowFee.accountRamFee.raw;
-    createFlowFee.totalFee = Number(total)
-      .toFixed(SHORTENED_TOKEN_PRECISION)
-      .toString();
-  }
-  return createFlowFee;
-};

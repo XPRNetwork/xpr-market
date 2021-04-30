@@ -17,7 +17,6 @@ type Props = {
   maxSupply: string;
   buttonText: string;
   assetId: string;
-  listingSaleFee?: string;
   handleButtonClick: () => void;
   setCurrentAsset: Dispatch<SetStateAction<Asset>>;
 };
@@ -29,7 +28,6 @@ export const AssetFormSell = ({
   maxSupply,
   buttonText,
   assetId,
-  listingSaleFee,
   handleButtonClick,
   setCurrentAsset,
 }: Props): JSX.Element => {
@@ -66,12 +64,6 @@ export const AssetFormSell = ({
             </option>
           ))}
       </DropdownMenu>
-      {listingSaleFee && (
-        <FeeLabel>
-          <span>Listing Fee</span>
-          <span>{listingSaleFee}</span>
-        </FeeLabel>
-      )}
       <Button
         cancel={buttonText.toLowerCase().includes('cancel')}
         fullWidth

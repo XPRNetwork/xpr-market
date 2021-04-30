@@ -16,7 +16,7 @@ import {
   FeeLabel,
 } from './Modal.styled';
 import { RAM_AMOUNTS } from '../../utils/constants';
-import { calculateFee } from '../../utils';
+import fees from '../../services/fees';
 import ProtonSDK from '../../services/proton';
 import { ReactComponent as CloseIcon } from '../../public/close.svg';
 import { useWindowSize } from '../../hooks';
@@ -55,15 +55,13 @@ export const MintAssetModal = (): JSX.Element => {
   }`;
 
   useEffect(() => {
-    (async () => {
-      const numAssets = parseInt(amount);
-      const fee = await calculateFee({
-        numAssets: isNaN(numAssets) ? 0 : numAssets,
-        ramCost: RAM_AMOUNTS.MINT_ASSET,
-        actor: currentUser ? currentUser.actor : '',
-      });
-      setMintFee(fee);
-    })();
+    const numAssets = parseInt(amount);
+    const fee = fees.calculateFee({
+      numAssets: isNaN(numAssets) ? 0 : numAssets,
+      ramCost: RAM_AMOUNTS.MINT_ASSET,
+      actor: currentUser ? currentUser.actor : '',
+    });
+    setMintFee(fee);
   }, [amount, currentUser]);
 
   const mintNfts = async () => {
@@ -134,7 +132,7 @@ export const MintAssetModal = (): JSX.Element => {
         />
         <FeeLabel>
           <span>Mint Fee</span>
-          <span>{mintFee.display} XUSDC</span>
+          <span>≈ {mintFee.display} XUSDC</span>
         </FeeLabel>
         <HalfButton
           onClick={mintNfts}

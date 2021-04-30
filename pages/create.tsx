@@ -18,13 +18,22 @@ import CreatePageLayout from '../components/CreatePageLayout';
 import ChooseCollection from '../components/ChooseCollection';
 import CreateTemplate from '../components/CreateTemplate';
 import InitialMint from '../components/InitialMint';
-import { RAM_AMOUNTS, ListingFee } from '../utils/constants';
+import { SHORTENED_TOKEN_PRECISION } from '../utils/constants';
 import { useCreateAssetContext } from '../components/Provider';
+import fees, { MintFee } from '../services/fees';
 
-export type MintFee = {
-  specialMintFee: ListingFee;
-  accountRamFee: ListingFee;
-  totalFee: string;
+const MintFeeInitial = {
+  specialMintFee: {
+    display: Number('0').toFixed(SHORTENED_TOKEN_PRECISION).toString(),
+    raw: 0,
+  },
+  accountRamFee: {
+    display: Number('0').toFixed(SHORTENED_TOKEN_PRECISION).toString(),
+    raw: 0,
+  },
+  userSpecialMintContractRam: 0,
+  userAccountRam: 0,
+  totalFee: Number('0').toFixed(SHORTENED_TOKEN_PRECISION).toString(),
 };
 
 export const CREATE_PAGE_STATES = {
@@ -61,7 +70,7 @@ const Create = (): JSX.Element => {
   );
   const [collectionsList, setCollectionsList] = useState<Collection[]>([]);
   const [createNftError, setCreateNftError] = useState<string>('');
-  const [mintFee, setMintFee] = useState<MintFee>({});
+  const [mintFee, setMintFee] = useState<MintFee>(MintFeeInitial);
   const [
     isUncreatedCollectionSelected,
     setIsUncreatedCollectionSelected,
@@ -96,6 +105,11 @@ const Create = (): JSX.Element => {
     if (!currentUser && !isLoadingUser) {
       router.push('/');
     }
+    (async () => {
+      if (currentUser && currentUser.actor) {
+        await fees.refreshRamInfoForUser(currentUser.actor);
+      }
+    })();
   }, [currentUser, isLoadingUser]);
 
   const createNft = async () => {
@@ -112,11 +126,15 @@ const Create = (): JSX.Element => {
         isVideo = true;
       }
 
+      await fees.refreshRamInfoForUser(currentUser.actor);
+      const finalMintFees = fees.calculateCreateFlowFees({
+        numAssets: parseInt(mintAmount),
+        actor: currentUser ? currentUser.actor : '',
+      });
+
       const result = isUncreatedCollectionSelected
         ? await ProtonSDK.createNft({
-            requiredAccountRam: RAM_AMOUNTS.CREATE_COLLECTION_SCHEMA_TEMPLATE,
-            requiredSpecialMintContractRam:
-              parseInt(mintAmount) * RAM_AMOUNTS.MINT_ASSET,
+            mintFee: finalMintFees,
             author: currentUser.actor,
             collection_name: newCollection.collection_name,
             collection_description: newCollection.description,
@@ -133,9 +151,7 @@ const Create = (): JSX.Element => {
             initial_mint_amount: parseInt(mintAmount),
           })
         : await ProtonSDK.createTemplateAssets({
-            requiredAccountRam: RAM_AMOUNTS.CREATE_COLLECTION_SCHEMA_TEMPLATE,
-            requiredSpecialMintContractRam:
-              parseInt(mintAmount) * RAM_AMOUNTS.MINT_ASSET,
+            mintFee: finalMintFees,
             author: currentUser.actor,
             collection_name: selectedCollection.collection_name,
             template_name: templateName,

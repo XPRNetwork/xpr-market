@@ -23,15 +23,14 @@ import {
   FeeLabel,
 } from './Modal.styled';
 import { ReactComponent as CloseIcon } from '../../public/close.svg';
-import { calculateFee } from '../../utils';
 import {
   TOKEN_SYMBOL,
   TOKEN_PRECISION,
   RAM_AMOUNTS,
-  ListingFee,
 } from '../../utils/constants';
 import ProtonSDK from '../../services/proton';
 import { useWindowSize } from '../../hooks';
+import fees, { ListingFee } from '../../services/fees';
 
 type Props = {
   title: string;
@@ -61,14 +60,12 @@ const SaleModal = ({
   const { isMobile } = useWindowSize();
 
   useEffect(() => {
-    (async () => {
-      const fee = await calculateFee({
-        numAssets: numSales,
-        actor: currentUser ? currentUser.actor : '',
-        ramCost: RAM_AMOUNTS.LIST_SALE,
-      });
-      setListingFee(fee);
-    })();
+    const fee = fees.calculateFee({
+      numAssets: numSales,
+      actor: currentUser ? currentUser.actor : '',
+      ramCost: RAM_AMOUNTS.LIST_SALE,
+    });
+    setListingFee(fee);
   }, [numSales, currentUser]);
 
   const handleBackgroundClick = (e: MouseEvent) => {
@@ -80,7 +77,7 @@ const SaleModal = ({
   const getFee = () => (
     <FeeLabel>
       <span>Listing Fee</span>
-      <span>{listingFee.display} XUSDC</span>
+      <span>≈ {listingFee.display} XUSDC</span>
     </FeeLabel>
   );
 
@@ -125,12 +122,18 @@ export const CreateSaleModal = (): JSX.Element => {
   const createOneSale = async () => {
     try {
       const formattedAmount = parseFloat(amount).toFixed(TOKEN_PRECISION);
+      await fees.refreshRamInfoForUser(currentUser.actor);
+      const finalFee = fees.calculateFee({
+        numAssets: 1,
+        actor: currentUser ? currentUser.actor : '',
+        ramCost: RAM_AMOUNTS.LIST_SALE,
+      });
       const res = await ProtonSDK.createSale({
         seller: currentUser ? currentUser.actor : '',
         asset_id: assetId,
         price: `${formattedAmount} ${TOKEN_SYMBOL}`,
         currency: `${TOKEN_PRECISION},${TOKEN_SYMBOL}`,
-        listing_fee: listingFee.raw,
+        listing_fee: finalFee.raw,
       });
 
       if (res.success) {
@@ -175,12 +178,18 @@ export const CreateMultipleSalesModal = (): JSX.Element => {
   const createMultipleSales = async () => {
     try {
       const formattedAmount = parseFloat(amount).toFixed(TOKEN_PRECISION);
+      await fees.refreshRamInfoForUser(currentUser.actor);
+      const finalFee = fees.calculateFee({
+        numAssets: 1,
+        actor: currentUser ? currentUser.actor : '',
+        ramCost: RAM_AMOUNTS.LIST_SALE,
+      });
       const res = await ProtonSDK.createMultipleSales({
         seller: currentUser ? currentUser.actor : '',
         assetIds,
         price: `${formattedAmount} ${TOKEN_SYMBOL}`,
         currency: `${TOKEN_PRECISION},${TOKEN_SYMBOL}`,
-        listing_fee: listingFee.raw,
+        listing_fee: finalFee.raw,
       });
 
       if (res.success) {
