@@ -1,11 +1,7 @@
 import { getFromApi } from '../utils/browser-fetch';
 import { Sale, getLowestPriceAsset } from './sales';
 import { addPrecisionDecimal, toQueryString } from '../utils/';
-import {
-  TOKEN_SYMBOL,
-  DEFAULT_COLLECTION,
-  PAGINATION_LIMIT,
-} from '../utils/constants';
+import { TOKEN_SYMBOL, PAGINATION_LIMIT } from '../utils/constants';
 import { Collection } from './collections';
 
 export type SchemaFormat = {
@@ -221,51 +217,65 @@ export const getAllTemplatesByCollection = async ({
 
 export const getLowestPricesForAllCollectionTemplates = async ({
   type,
-  limit,
 }: {
   type: string;
-  limit: number;
 }): Promise<{ [id: string]: string }> => {
-  const salesQueryObject = {
-    collection_name: type,
-    symbol: TOKEN_SYMBOL,
-    order: 'desc',
-    sort: 'created',
-    limit: limit,
-  };
-
-  const salesQueryParams = toQueryString(salesQueryObject);
-  const salesResult = await getFromApi<Sale[]>(
-    `${process.env.NEXT_PUBLIC_NFT_ENDPOINT}/atomicmarket/v1/sales/templates?${salesQueryParams}`
-  );
-
-  if (!salesResult.success) {
-    const errorMessage =
-      typeof salesResult.error === 'object'
-        ? salesResult.error.message
-        : salesResult.message;
-    throw new Error(errorMessage as string);
-  }
-
+  const limit = 100;
   const lowestPriceByTemplateIds = {};
-  for (const sale of salesResult.data) {
-    const {
-      listing_price,
-      assets,
-      price: { token_precision },
-    } = sale;
+  let page = 1;
+  let hasResults = true;
 
-    if (!assets.length) {
-      continue;
+  while (hasResults) {
+    const salesQueryObject = {
+      collection_name: type,
+      symbol: TOKEN_SYMBOL,
+      order: 'desc',
+      sort: 'created',
+      limit,
+      page,
+    };
+
+    const salesQueryParams = toQueryString(salesQueryObject);
+    const salesResult = await getFromApi<Sale[]>(
+      `${process.env.NEXT_PUBLIC_NFT_ENDPOINT}/atomicmarket/v1/sales/templates?${salesQueryParams}`
+    );
+
+    if (!salesResult.success) {
+      const errorMessage =
+        typeof salesResult.error === 'object'
+          ? salesResult.error.message
+          : salesResult.message;
+      throw new Error(errorMessage as string);
     }
 
-    const {
-      template: { template_id },
-    } = assets[0];
+    for (const sale of salesResult.data) {
+      const {
+        listing_price,
+        assets,
+        price: { token_precision },
+      } = sale;
 
-    lowestPriceByTemplateIds[template_id] = listing_price
-      ? `${addPrecisionDecimal(listing_price, token_precision)} ${TOKEN_SYMBOL}`
-      : '';
+      if (!assets.length) {
+        continue;
+      }
+
+      const {
+        template: { template_id },
+      } = assets[0];
+
+      lowestPriceByTemplateIds[template_id] = listing_price
+        ? `${addPrecisionDecimal(
+            listing_price,
+            token_precision
+          )} ${TOKEN_SYMBOL}`
+        : '';
+    }
+
+    if (salesResult.data.length < limit) {
+      hasResults = false;
+    }
+
+    page += 1;
   }
 
   return lowestPriceByTemplateIds;
@@ -335,12 +345,47 @@ export const getAllTemplatesForUserWithAssetCount = async (
 
     const templates = await getTemplatesFromTemplateIds(templateIds);
 
-    const lowestPricesByTemplateId = await getLowestPricesForAllCollectionTemplates(
-      {
-        type: DEFAULT_COLLECTION,
-        limit: templates.length,
+    const templatesAndPricesByCollection = {};
+    for (const template of templates) {
+      const {
+        template_id,
+        collection: { collection_name },
+      } = template;
+      if (templatesAndPricesByCollection[collection_name]) {
+        templatesAndPricesByCollection[collection_name]['templates'][
+          template_id
+        ] = template;
+      } else {
+        templatesAndPricesByCollection[collection_name] = {
+          lowestPricesByTemplateId: {},
+          templates: {
+            [template_id]: template,
+          },
+        };
       }
-    );
+    }
+
+    for (const collection_name of Object.keys(templatesAndPricesByCollection)) {
+      const lowestPrices = await getLowestPricesForAllCollectionTemplates({
+        type: collection_name,
+      });
+
+      templatesAndPricesByCollection[
+        collection_name
+      ].lowestPricesByTemplateId = lowestPrices;
+    }
+
+    const lowestPricesByCollection = Object.values(
+      templatesAndPricesByCollection
+    ).map(({ lowestPricesByTemplateId }) => lowestPricesByTemplateId);
+
+    let allLowestPricesByTemplateId = {};
+    for (const price of lowestPricesByCollection) {
+      allLowestPricesByTemplateId = {
+        ...allLowestPricesByTemplateId,
+        ...price,
+      };
+    }
 
     const templatesWithAssetsForSaleCount = formatTemplatesWithPriceAndAssetCountInCreateDescOrder(
       {
@@ -348,7 +393,7 @@ export const getAllTemplatesForUserWithAssetCount = async (
         templates: templates,
         assetCountById: userAssetsByTemplateId,
         assetCountByIdWithHidden: userAssetsWithHiddenByTemplateId,
-        lowPriceById: lowestPricesByTemplateId,
+        lowPriceById: allLowestPricesByTemplateId,
       }
     );
 

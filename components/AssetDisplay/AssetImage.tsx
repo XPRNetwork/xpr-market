@@ -16,7 +16,7 @@ const AssetImage = ({
 
   const onImageError = (e) => {
     e.currentTarget.onerror = null;
-    setSrc(`${IPFS_RESOLVER_IMAGE}${image}`);
+    setSrc(image ? `${IPFS_RESOLVER_IMAGE}${image}` : '');
   };
 
   const lightboxCallbacks = {
