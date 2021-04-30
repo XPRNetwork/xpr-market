@@ -10,6 +10,10 @@ const uploadToIPFS = async (file: File): Promise<string> => {
       }
     );
     const result = await resultRaw.json();
+
+    if (result.error) {
+      throw new Error(result.message);
+    }
     if (result) {
       return result.IpfsHash;
     }
