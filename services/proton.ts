@@ -448,7 +448,6 @@ class ProtonSDK {
     const hasEnoughAccountRam = mintFee.accountRamFee.raw === 0;
     const hasEnoughContractRam = mintFee.specialMintFee.raw === 0;
 
-    console.log(mintFee);
     return [
       hasInitializedStorage
         ? undefined

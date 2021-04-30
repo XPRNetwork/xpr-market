@@ -30,12 +30,6 @@ class Fees {
     this.conversionRate = await proton.getXPRtoXUSDCConversionRate();
     this.currentAccountRam = max - used;
     this.specialMintContractRam = await proton.getSpecialMintContractRam(actor);
-    console.log(
-      'called refresh: ',
-      this.specialMintContractRam,
-      this.currentAccountRam,
-      this.conversionRate
-    );
   };
 
   parseDisplayRawFee = (
@@ -61,7 +55,6 @@ class Fees {
   }): ListingFee => {
     if (actor && Number(numAssets) > 0) {
       const requiredRam = numAssets * ramCost - this.currentAccountRam;
-      console.log('this.currentAccountRam', this.currentAccountRam);
       if (requiredRam > 0) {
         return this.parseDisplayRawFee(requiredRam, this.conversionRate);
       }
@@ -122,8 +115,6 @@ class Fees {
           this.conversionRate
         );
       }
-
-      console.log(numAssets, requiredAccountRam, requiredContractRam);
 
       const total =
         createFlowFee.specialMintFee.raw + createFlowFee.accountRamFee.raw;
