@@ -20,10 +20,9 @@ import {
   RAM_AMOUNTS,
   TAB_TYPES,
   RouterQuery,
+  ListingFee,
 } from '../../../../utils/constants';
-import proton from '../../../../services/proton-rpc';
 import { calculateFee } from '../../../../utils';
-import { SHORTENED_TOKEN_PRECISION } from '../../../../utils/constants';
 
 const emptyTemplateDetails = {
   lowestPrice: '',
@@ -74,9 +73,10 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
   const [assetIds, setAssetIds] = useState<string[]>([]);
   const [saleIds, setSaleIds] = useState<string[]>();
   const [activeTab, setActiveTab] = useState<string>(TAB_TYPES.ITEM);
-  const [accountRam, setAccountRam] = useState<number>(0);
-  const [conversionRate, setConversionRate] = useState<number>(0);
-  const [listingFee, setListingFee] = useState<number>(0);
+  const [listingFee, setListingFee] = useState<ListingFee>({
+    display: '0.00',
+    raw: null,
+  });
 
   const isSelectedAssetBeingSold =
     saleDataByAssetId[currentAsset.asset_id] &&
@@ -94,27 +94,15 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
   } = template;
 
   useEffect(() => {
-    if (currentUser && currentUser.actor) {
-      (async () => {
-        const { max, used } = await proton.getAccountRam(currentUser.actor);
-        const rate = await proton.getXPRtoXUSDCConversionRate();
-
-        setAccountRam(max - used);
-        setConversionRate(rate);
-      })();
-    }
+    (async () => {
+      const fee = await calculateFee({
+        numAssets: 1,
+        ramCost: RAM_AMOUNTS.LIST_SALE,
+        actor: currentUser ? currentUser.actor : '',
+      });
+      setListingFee(fee);
+    })();
   }, [currentUser]);
-
-  useEffect(() => {
-    const fee = calculateFee({
-      numAssets: 1,
-      currentRamAmount: accountRam,
-      ramCost: RAM_AMOUNTS.LIST_SALE,
-      conversionRate,
-    });
-
-    setListingFee(isNaN(fee) ? 0 : fee);
-  }, [accountRam, conversionRate]);
 
   const fetchPageData = async () => {
     try {
@@ -208,7 +196,9 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
     setCurrentAssetAsModalProps();
   };
   const handleButtonClick = isSelectedAssetBeingSold ? cancelSale : createSale;
-  const listingSaleFee = isSelectedAssetBeingSold ? null : `${listingFee.toFixed(SHORTENED_TOKEN_PRECISION)} XUSDC`;
+  const listingSaleFee = isSelectedAssetBeingSold
+    ? null
+    : `${listingFee.display} XUSDC`;
   const buttonText = isSelectedAssetBeingSold ? 'Cancel Sale' : 'Mark for sale';
 
   const getContent = () => {

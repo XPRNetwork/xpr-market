@@ -12,48 +12,36 @@ import InputField from '../InputField';
 import Button from '../Button';
 import Spinner from '../Spinner';
 import { BackButton } from '../CreatePageLayout/CreatePageLayout.styled';
-import { CREATE_PAGE_STATES } from '../../pages/create';
-import { calculateFee } from '../../utils';
-import {
-  RAM_AMOUNTS,
-  SHORTENED_TOKEN_PRECISION,
-  PRICE_OF_RAM_IN_XPR,
-} from '../../utils/constants';
+import { CREATE_PAGE_STATES, MintFee } from '../../pages/create';
+import { useAuthContext } from '../../components/Provider';
+import { calculateCreateFlowFees } from '../../utils';
+import { SHORTENED_TOKEN_PRECISION } from '../../utils/constants';
 
 type Props = {
   mintAmount: string;
   setMintAmount: Dispatch<SetStateAction<string>>;
+  setMintFee: Dispatch<SetStateAction<MintFee>>;
+  mintFee: MintFee;
   createNft: () => Promise<void>;
   createNftError: string;
   setPageState: Dispatch<SetStateAction<string>>;
   maxSupply: string;
-  accountRam: number;
-  contractRam: number;
-  conversionRate: number;
 };
 
 const InitialMint = ({
   createNft,
   setMintAmount,
+  setMintFee,
+  mintFee,
   mintAmount,
   createNftError,
   setPageState,
   maxSupply,
-  accountRam,
-  contractRam,
-  conversionRate,
 }: Props): JSX.Element => {
+  const { currentUser } = useAuthContext();
   const [mintError, setMintError] = useState<string>('');
-  const [mintFee, setMintFee] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isValid, setIsValid] = useState<boolean>(false);
-
-  useEffect(() => {
-    return () => {
-      setMintAmount('');
-      setMintFee(0);
-    };
-  }, []);
 
   useEffect(() => {
     if (createNftError) {
@@ -64,28 +52,16 @@ const InitialMint = ({
   }, [createNftError]);
 
   useEffect(() => {
-    const numAssets = parseInt(mintAmount);
-    const currentContractRamAmount =
-      contractRam === -1
-        ? RAM_AMOUNTS.FREE_INITIAL_SPECIAL_MINT_CONTRACT_RAM
-        : contractRam;
-    const mintFee = calculateFee({
-      numAssets: isNaN(numAssets) ? 0 : numAssets,
-      currentRamAmount: currentContractRamAmount,
-      ramCost: RAM_AMOUNTS.MINT_ASSET,
-      conversionRate,
-    });
-    const accountRamCosts =
-      (RAM_AMOUNTS.CREATE_COLLECTION_SCHEMA_TEMPLATE +
-        RAM_AMOUNTS.LIST_SALE * numAssets -
-        accountRam) *
-      PRICE_OF_RAM_IN_XPR *
-      conversionRate;
-    const ramFee = accountRamCosts > 0 ? accountRamCosts : 0;
-    const fee = mintFee + ramFee;
-
-    setMintFee(isNaN(fee) ? 0 : fee);
-  }, [mintAmount, isLoading]);
+    (async () => {
+      const numAssets = parseInt(mintAmount);
+      const fees = await calculateCreateFlowFees({
+        numAssets,
+        actor: currentUser ? currentUser.actor : '',
+      });
+      console.log('FEES: ', fees);
+      setMintFee(fees);
+    })();
+  }, [mintAmount, currentUser, isLoading]);
 
   const validateAndProceed = async () => {
     if (!mintAmount) {
@@ -151,7 +127,7 @@ const InitialMint = ({
       />
       <FeeLabel>
         <span>Mint Fee</span>
-        <span>{mintFee.toFixed(SHORTENED_TOKEN_PRECISION)} XUSDC</span>
+        <span>{mintFee.totalFee} XUSDC</span>
       </FeeLabel>
       <Terms>By clicking “Create NFT” you agree to our</Terms>
       <TermsLink target="_blank" href="https://www.protonchain.com/terms">

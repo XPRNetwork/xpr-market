@@ -80,3 +80,8 @@ export interface QueryParams {
   page?: number;
   symbol?: string;
 }
+
+export type ListingFee = {
+  display: string;
+  raw: number;
+};

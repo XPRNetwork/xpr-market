@@ -15,30 +15,37 @@ import {
   HalfButton,
   FeeLabel,
 } from './Modal.styled';
-import { RAM_AMOUNTS, SHORTENED_TOKEN_PRECISION } from '../../utils/constants';
+import { RAM_AMOUNTS } from '../../utils/constants';
 import { calculateFee } from '../../utils';
 import ProtonSDK from '../../services/proton';
 import { ReactComponent as CloseIcon } from '../../public/close.svg';
 import { useWindowSize } from '../../hooks';
+
+type MintFee = {
+  display: string;
+  raw: number;
+};
 
 export const MintAssetModal = (): JSX.Element => {
   const {
     currentUser: { actor },
   } = useAuthContext();
   const { closeModal, modalProps } = useModalContext();
+  const { currentUser } = useAuthContext();
   const { isMobile } = useWindowSize();
   const {
     templateId,
     maxSupply,
     issuedSupply,
     collectionName,
-    accountRam,
-    conversionRate,
     fetchPageData,
     setIsModalWithFeeOpen,
   } = modalProps as MintAssetModalProps;
   const [amount, setAmount] = useState<string>('');
-  const [mintFee, setMintFee] = useState<number>(0);
+  const [mintFee, setMintFee] = useState<MintFee>({
+    display: '0.00',
+    raw: null,
+  });
   const possibleMintAmount =
     maxSupply === 0 ? Infinity : maxSupply - issuedSupply;
   const maxMintAmountForSession =
@@ -48,15 +55,16 @@ export const MintAssetModal = (): JSX.Element => {
   }`;
 
   useEffect(() => {
-    const numAssets = parseInt(amount);
-    const fee = calculateFee({
-      numAssets: isNaN(numAssets) ? 0 : numAssets,
-      currentRamAmount: accountRam,
-      ramCost: RAM_AMOUNTS.MINT_ASSET,
-      conversionRate,
-    });
-    setMintFee(isNaN(fee) ? 0 : fee);
-  }, [amount, accountRam, conversionRate]);
+    (async () => {
+      const numAssets = parseInt(amount);
+      const fee = await calculateFee({
+        numAssets: isNaN(numAssets) ? 0 : numAssets,
+        ramCost: RAM_AMOUNTS.MINT_ASSET,
+        actor: currentUser ? currentUser.actor : '',
+      });
+      setMintFee(fee);
+    })();
+  }, [amount, currentUser]);
 
   const mintNfts = async () => {
     try {
@@ -65,7 +73,7 @@ export const MintAssetModal = (): JSX.Element => {
         collection_name: collectionName,
         template_id: templateId,
         mint_amount: parseInt(amount),
-        mint_fee: mintFee,
+        mint_fee: mintFee.raw,
       });
 
       if (result.success) {
@@ -126,7 +134,7 @@ export const MintAssetModal = (): JSX.Element => {
         />
         <FeeLabel>
           <span>Mint Fee</span>
-          <span>{mintFee.toFixed(SHORTENED_TOKEN_PRECISION)} XUSDC</span>
+          <span>{mintFee.display} XUSDC</span>
         </FeeLabel>
         <HalfButton
           onClick={mintNfts}

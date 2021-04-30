@@ -17,7 +17,7 @@ type Props = {
   maxSupply: string;
   buttonText: string;
   assetId: string;
-  listingSaleFee?: number;
+  listingSaleFee?: string;
   handleButtonClick: () => void;
   setCurrentAsset: Dispatch<SetStateAction<Asset>>;
 };
@@ -66,12 +66,12 @@ export const AssetFormSell = ({
             </option>
           ))}
       </DropdownMenu>
-      {listingSaleFee ? (
+      {listingSaleFee && (
         <FeeLabel>
           <span>Listing Fee</span>
           <span>{listingSaleFee}</span>
         </FeeLabel>
-      ) : null}
+      )}
       <Button
         cancel={buttonText.toLowerCase().includes('cancel')}
         fullWidth
