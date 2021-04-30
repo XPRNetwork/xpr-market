@@ -3,7 +3,7 @@ const uploadToIPFS = async (file: File): Promise<string> => {
   formData.append('file', file);
   try {
     const resultRaw = await fetch(
-      'https://nft-demo.protonchain.com/api/upload',
+      'https://nft.protonchain.com/api/upload',
       {
         method: 'POST',
         headers: {
