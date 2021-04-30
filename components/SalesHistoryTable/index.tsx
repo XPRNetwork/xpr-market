@@ -270,6 +270,7 @@ const SalesHistoryTable = ({
         isHidden={isPaginationButtonHidden}
         isLoading={isLoadingNextPage}
         disabled={isPaginationButtonDisabled}
+        autoLoad
       />
     );
   };
