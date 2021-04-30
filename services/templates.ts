@@ -222,6 +222,7 @@ export const getLowestPricesForAllCollectionTemplates = async ({
 }): Promise<{ [id: string]: string }> => {
   const limit = 100;
   const lowestPriceByTemplateIds = {};
+  let page = 1;
   let hasResults = true;
 
   while (hasResults) {
@@ -231,6 +232,7 @@ export const getLowestPricesForAllCollectionTemplates = async ({
       order: 'desc',
       sort: 'created',
       limit,
+      page,
     };
 
     const salesQueryParams = toQueryString(salesQueryObject);
@@ -272,6 +274,8 @@ export const getLowestPricesForAllCollectionTemplates = async ({
     if (salesResult.data.length < limit) {
       hasResults = false;
     }
+
+    page += 1;
   }
 
   return lowestPriceByTemplateIds;
