@@ -3,7 +3,7 @@ const uploadToIPFS = async (file: File): Promise<string> => {
   formData.append('file', file);
   try {
     const resultRaw = await fetch(
-      `https://api-dev.protonchain.com/v1/chain/files`,
+      `https://api.protonchain.com/v1/chain/files`,
       {
         method: 'POST',
         body: formData,
