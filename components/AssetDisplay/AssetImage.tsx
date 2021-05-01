@@ -26,8 +26,18 @@ const AssetImage = ({
   };
 
   const lightboxOptions = {
+    thumbnails: {
+      showThumbnails: false,
+    },
     buttons: {
       showDownloadButton: false,
+      showThumbnailsButton: false,
+      showAutoplayButton: false,
+      showNextButton: false,
+      showPrevButton: false,
+    },
+    settings: {
+      overlayColor: 'rgba(0, 0, 0)',
     },
   };
 
