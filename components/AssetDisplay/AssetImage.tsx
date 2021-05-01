@@ -36,6 +36,9 @@ const AssetImage = ({
       showNextButton: false,
       showPrevButton: false,
     },
+    settings: {
+      overlayColor: 'rgba(0, 0, 0)',
+    },
   };
 
   return (
