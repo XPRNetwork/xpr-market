@@ -38,6 +38,7 @@ const AssetImage = ({
     },
     settings: {
       overlayColor: 'rgba(0, 0, 0)',
+      disablePanzoom: true,
     },
   };
 
