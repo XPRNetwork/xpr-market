@@ -29,7 +29,7 @@ export const AssetDisplay = ({
     asset = <AssetVideo video={video} />;
   } else if (model) {
     asset = <AssetModelWithNoSsr model={model} stage={stage} skybox={skybox} />;
-  } else {
+  } else if (image) {
     asset = <AssetImage image={image} templateName={templateName} />;
   }
 
