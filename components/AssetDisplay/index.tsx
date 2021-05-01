@@ -30,7 +30,7 @@ export const AssetDisplay = ({
   } else if (model) {
     asset = <AssetModelWithNoSsr model={model} stage={stage} skybox={skybox} />;
   } else if (image) {
-    asset = <AssetImage image={image} templateName={templateName} />;
+    asset = <AssetImage image={image} templateName={templateName} lightbox />;
   }
 
   return <AssetDisplayContainer>{asset}</AssetDisplayContainer>;
