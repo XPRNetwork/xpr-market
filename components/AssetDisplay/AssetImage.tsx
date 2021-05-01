@@ -16,7 +16,7 @@ const lightboxOptions = {
   },
   settings: {
     overlayColor: 'rgba(0, 0, 0)',
-    disablePanzoom: true,
+    // disablePanzoom: true,
   },
 };
 
