@@ -7,7 +7,7 @@ export const DEFAULT_COLLECTION = 'monsters';
 export const PRICE_OF_RAM_IN_XPR = 0.0222;
 export const PAGINATION_LIMIT = 12;
 export const LG_FILE_UPLOAD_TYPES_TEXT =
-  'PNG, GIF, JPG, WEBP, or MP4. Max 5 MB.';
+  'PNG, GIF, JPG, WEBP, or MP4. Max 30 MB.';
 export const SM_FILE_UPLOAD_TYPES_TEXT = 'PNG, GIF, JPG, or WEBP. Max 5 MB.';
 export const LG_FILE_UPLOAD_TYPES = {
   'image/png': true,
