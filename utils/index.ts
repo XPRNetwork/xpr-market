@@ -7,14 +7,12 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 
 export const toQueryString = (queryObject: QueryParams): string => {
-  const parts = [];
-  for (const key in queryObject) {
-    const value = queryObject[key];
-    if (value && (typeof value === 'string' || typeof value === 'number')) {
-      parts.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`);
-    }
-  }
-  return parts.length ? parts.join('&') : '';
+  return Object.keys(queryObject)
+    .map(
+      (key) =>
+        encodeURIComponent(key) + '=' + encodeURIComponent(queryObject[key])
+    )
+    .join('&');
 };
 
 export const capitalize = (word: string): string => {
