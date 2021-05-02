@@ -88,12 +88,20 @@ export const getTemplateDetails = async (
   templateId: string
 ): Promise<Template> => {
   try {
-    const templateResponse = await getFromApi<Template>(
-      `${process.env.NEXT_PUBLIC_NFT_ENDPOINT}/atomicassets/v1/templates/${collectionName}/${templateId}`
+    const templatesQueryObject = {
+      collection_name: collectionName,
+      ids: templateId,
+      page: 1,
+      limit: 1,
+    };
+
+    const templatesQueryParams = toQueryString(templatesQueryObject);
+    const templatesResult = await getFromApi<Template[]>(
+      `${process.env.NEXT_PUBLIC_NFT_ENDPOINT}/atomicassets/v1/templates?${templatesQueryParams}`
     );
 
-    if (!templateResponse.success) {
-      throw new Error((templateResponse.message as unknown) as string);
+    if (!templatesResult.success || !templatesResult.data.length) {
+      throw new Error((templatesResult.message as unknown) as string);
     }
 
     const saleForTemplateAsc = await getLowestPriceAsset(
@@ -110,7 +118,7 @@ export const getTemplateDetails = async (
         : '';
 
     return {
-      ...templateResponse.data,
+      ...templatesResult.data[0],
       lowestPrice,
     };
   } catch (e) {
