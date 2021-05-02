@@ -492,6 +492,7 @@ export const getUserCreatedTemplates = async (
       limit: PAGINATION_LIMIT,
       has_assets: true,
     };
+
     const templatesQueryParams = toQueryString(templatesQueryObject);
     const templatesResult = await getFromApi<Template[]>(
       `${process.env.NEXT_PUBLIC_NFT_ENDPOINT}/atomicassets/v1/templates?${templatesQueryParams}`
