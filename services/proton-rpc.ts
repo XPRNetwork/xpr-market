@@ -26,7 +26,8 @@ class ProtonJs {
       account,
       TOKEN_SYMBOL
     );
-    return formatPrice(balance[0]);
+    const price = balance.length ? balance[0] : `${0} ${TOKEN_SYMBOL}`;
+    return formatPrice(price);
   };
 
   getUserByChainAccount = async ({ account }): Promise<User> => {
