@@ -65,9 +65,9 @@ export const FEATURED_HOMEPAGE_COLLECTIONS = [
 ];
 
 export const META = {
-  twitterHandle: 'protonxpr',
+  twitterHandle: '@protonxpr',
   siteName: 'Proton Market',
-  previewImage: '/banner-rectangle.png',
+  bannerImage: '/banner-rectangle.png',
   description:
     'Start creating and selling your own NFTs! The best way to monetize your talent. Free to get started.',
 };

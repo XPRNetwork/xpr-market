@@ -65,11 +65,11 @@ const PageLayout = ({ title, children }: Props): JSX.Element => {
         <link rel="shortcut icon" href="/favicon.png" />
 
         {/* Twitter */}
-        <meta name="twitter:card" content="summary" key="twcard" />
+        <meta name="twitter:card" content="summary_large_image" key="twcard" />
         <meta name="twitter:site" content={META.twitterHandle} key="twhandle" />
+        <meta name="twitter:image" content={META.bannerImage} key="twimage" />
 
         {/* Open Graph */}
-        <meta property="og:image" content={META.previewImage} key="ogimage" />
         <meta
           property="og:site_name"
           content={META.siteName}
