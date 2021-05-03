@@ -98,7 +98,7 @@ export const AssetMeta = (props: Props): JSX.Element => {
       },
       {
         key: 'ogmodel',
-        name: 'og:image',
+        name: 'og:asset',
         content: modelUrl,
       },
     ]);
