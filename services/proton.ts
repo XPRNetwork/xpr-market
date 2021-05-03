@@ -407,7 +407,6 @@ class ProtonSDK {
     listing_fee: number;
     seller: string;
   }): Action[] => {
-    console.log('generateSaleRamActions', listing_fee);
     return listing_fee === 0
       ? []
       : [
@@ -1157,14 +1156,6 @@ class ProtonSDK {
     currency,
     listing_fee,
   }: CreateMultipleSalesOptions): Promise<Response> => {
-    console.log(
-      'createMultipleSales: ',
-      seller,
-      assetIds,
-      price,
-      currency,
-      listing_fee
-    );
     const ramActions = this.generateSaleRamActions({
       listing_fee,
       seller,
