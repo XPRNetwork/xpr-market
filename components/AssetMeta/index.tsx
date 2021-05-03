@@ -14,37 +14,71 @@ type Props = {
 };
 
 export const AssetMeta = (props: Props): JSX.Element => {
-  const metas = [
+  const title = props.templateName;
+  const description = `From ${props.collectionDisplayName} collection by ${props.collectionAuthor}`;
+
+  let metas = [
     {
-      key: 'ogdesc',
+      key: 'ogtitle',
+      property: 'og:title',
+      content: title,
+    },
+    {
+      key: 'twtitle',
+      property: 'twitter:title',
+      content: title,
+    },
+    {
+      key: 'ogdescription',
       property: 'og:description',
-      content: `${props.templateName} from ${props.collectionDisplayName} by ${props.collectionAuthor}`,
+      content: description,
+    },
+    {
+      key: 'twdescription',
+      property: 'twitter:description',
+      content: description,
     },
   ];
 
   if (props.video) {
-    metas.push({
-      key: 'ogvideo',
-      property: 'og:video',
-      content: `${IPFS_RESOLVER_VIDEO}${props.video}`,
-    });
+    metas = metas.concat([
+      {
+        key: 'twcard',
+        property: 'twitter:card',
+        content: 'player',
+      },
+      {
+        key: 'ogvideo',
+        property: 'og:video',
+        content: `${IPFS_RESOLVER_VIDEO}${props.video}`,
+      },
+    ]);
   } else if (props.model) {
-    metas.push({
-      key: 'ogtype',
-      property: 'og:type',
-      content: 'threed.asset',
-    });
-    metas.push({
-      key: 'og',
-      property: 'og:image',
-      content: `${IPFS_RESOLVER_IMAGE}${props.image}`,
-    });
+    metas = metas.concat([
+      {
+        key: 'ogtype',
+        property: 'og:type',
+        content: 'threed.asset',
+      },
+      {
+        key: 'ogmodel',
+        property: 'og:image',
+        content: `${IPFS_RESOLVER_IMAGE}${props.image}`,
+      },
+    ]);
   } else if (props.image) {
-    metas.push({
-      key: 'ogimage',
-      property: 'og:image',
-      content: `${IPFS_RESOLVER_IMAGE}${props.image}`,
-    });
+    metas = metas.concat([
+      {
+        key: 'twcard',
+        property: 'twitter:card',
+        content: 'summary_large_image',
+      },
+      {
+        key: 'ogimage',
+        property: 'og:image',
+        content: `${IPFS_RESOLVER_IMAGE}${props.image}`,
+      },
+    ]);
   }
 
   return (

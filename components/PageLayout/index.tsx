@@ -86,7 +86,7 @@ const PageLayout = ({ title, children }: Props): JSX.Element => {
         <meta
           property="og:description"
           content={META.description}
-          key="ogdesc"
+          key="ogdescription"
         />
       </Head>
 
