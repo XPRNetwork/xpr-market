@@ -30,7 +30,7 @@ const MarketPlace = (): JSX.Element => {
       );
     });
   return (
-    <PageLayout title="Featured Collections">
+    <PageLayout title="Proton Market">
       <Banner modalType={MODAL_TYPES.CLAIM} />
       <ExploreCard />
       <Title>Featured Collections 🏆</Title>
