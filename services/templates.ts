@@ -96,11 +96,11 @@ export const getTemplateDetails = async (
     };
 
     const templatesQueryParams = toQueryString(templatesQueryObject);
-    const templatesResult = await getFromApi<Template[]>(
+    const templatesResponse = await getFromApi<Template[]>(
       `${process.env.NEXT_PUBLIC_NFT_ENDPOINT}/atomicassets/v1/templates?${templatesQueryParams}`
     );
 
-    if (!templatesResult.success || !templatesResult.data.length) {
+    if (!templatesResponse.success || !templatesResponse.data.length) {
       throw new Error('NFT not found');
     }
 
@@ -118,7 +118,7 @@ export const getTemplateDetails = async (
         : '';
 
     return {
-      ...templatesResult.data[0],
+      ...templatesResponse.data[0],
       lowestPrice,
     };
   } catch (e) {
@@ -147,19 +147,19 @@ export const getTemplatesByCollection = async ({
     };
 
     const templatesQueryParams = toQueryString(templatesQueryObject);
-    const templatesResult = await getFromApi<Template[]>(
+    const templatesResponse = await getFromApi<Template[]>(
       `${process.env.NEXT_PUBLIC_NFT_ENDPOINT}/atomicassets/v1/templates?${templatesQueryParams}`
     );
 
-    if (!templatesResult.success) {
+    if (!templatesResponse.success) {
       const errorMessage =
-        typeof templatesResult.error === 'object'
-          ? templatesResult.error.message
-          : templatesResult.message;
+        typeof templatesResponse.error === 'object'
+          ? templatesResponse.error.message
+          : templatesResponse.message;
       throw new Error(errorMessage as string);
     }
 
-    return templatesResult.data;
+    return templatesResponse.data;
   } catch (e) {
     throw new Error(e);
   }
@@ -190,23 +190,23 @@ export const getAllTemplatesByCollection = async ({
       };
 
       const templatesQueryParams = toQueryString(templatesQueryObject);
-      const templatesResult = await getFromApi<Template[]>(
+      const templatesResponse = await getFromApi<Template[]>(
         `${process.env.NEXT_PUBLIC_NFT_ENDPOINT}/atomicassets/v1/templates?${templatesQueryParams}`
       );
 
-      if (!templatesResult.success) {
+      if (!templatesResponse.success) {
         const errorMessage =
-          typeof templatesResult.error === 'object'
-            ? templatesResult.error.message
-            : templatesResult.message;
+          typeof templatesResponse.error === 'object'
+            ? templatesResponse.error.message
+            : templatesResponse.message;
         throw new Error(errorMessage as string);
       }
 
-      if (templatesResult.data.length < limit || limit !== 100) {
+      if (templatesResponse.data.length < limit || limit !== 100) {
         hasResults = false;
       }
 
-      templates = templates.concat(templatesResult.data);
+      templates = templates.concat(templatesResponse.data);
       page += 1;
     }
 
@@ -472,15 +472,15 @@ export const getTemplatesFromTemplateIds = async (
     };
 
     const templatesQueryParams = toQueryString(templatesQueryObject);
-    const templatesResult = await getFromApi<Template[]>(
+    const templatesResponse = await getFromApi<Template[]>(
       `${process.env.NEXT_PUBLIC_NFT_ENDPOINT}/atomicassets/v1/templates?${templatesQueryParams}`
     );
 
-    if (!templatesResult.success) {
-      throw new Error((templatesResult.message as unknown) as string);
+    if (!templatesResponse.success) {
+      throw new Error((templatesResponse.message as unknown) as string);
     }
 
-    return templatesResult.data;
+    return templatesResponse.data;
   } catch (e) {
     throw new Error(e);
   }
@@ -502,15 +502,15 @@ export const getUserCreatedTemplates = async (
     };
 
     const templatesQueryParams = toQueryString(templatesQueryObject);
-    const templatesResult = await getFromApi<Template[]>(
+    const templatesResponse = await getFromApi<Template[]>(
       `${process.env.NEXT_PUBLIC_NFT_ENDPOINT}/atomicassets/v1/templates?${templatesQueryParams}`
     );
 
-    if (!templatesResult.success) {
-      throw new Error((templatesResult.message as unknown) as string);
+    if (!templatesResponse.success) {
+      throw new Error((templatesResponse.message as unknown) as string);
     }
 
-    return templatesResult.data;
+    return templatesResponse.data;
   } catch (e) {
     throw new Error(e);
   }
