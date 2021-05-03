@@ -5,7 +5,7 @@ import {
   DropdownMenu,
   General,
   Amount,
-  DisalbedInput,
+  DisabledInput,
   Row,
 } from '../AssetFormBuy/AssetFormBuy.styled';
 import { Asset } from '../../services/assets';
@@ -38,7 +38,6 @@ export const AssetFormSell = ({
     setCurrentAsset(dropdownAsset);
   };
 
-  console.log('asset Id: ', assetId);
   return (
     <>
       {description ? <AssetDescription description={description} /> : ''}
@@ -67,7 +66,7 @@ export const AssetFormSell = ({
             ))}
         </DropdownMenu>
       ) : (
-        <DisalbedInput placeholder="No assets" disabled />
+        <DisabledInput placeholder="No assets" disabled />
       )}
       <Button
         cancel={buttonText.toLowerCase().includes('cancel')}

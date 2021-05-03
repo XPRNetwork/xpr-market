@@ -51,7 +51,7 @@ const inputCSS = css`
   }
 `;
 
-export const DisalbedInput = styled.input`
+export const DisabledInput = styled.input`
   ${inputCSS}
 `;
 
