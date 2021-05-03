@@ -63,6 +63,15 @@ export const FEATURED_HOMEPAGE_COLLECTIONS = [
   { name: 'pourmeanftok', displayName: 'Benji432' },
   { name: 'moonboysnfts', displayName: 'Moonboy Collection' },
 ];
+
+export const META = {
+  twitterHandle: '@protonxpr',
+  siteName: 'Proton Market',
+  bannerImage: 'https://protonmarket.com/banner-rectangle.png',
+  description:
+    'Start creating and selling your own NFTs! The best way to monetize your talent. Free to get started.',
+};
+
 export interface RouterQuery {
   [query: string]: string;
 }

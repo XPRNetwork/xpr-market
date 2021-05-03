@@ -9,6 +9,7 @@ import {
 import SalesHistoryTable from '../SalesHistoryTable';
 import AssetFormTitle from '../AssetFormTitle';
 import AssetDisplay from '../AssetDisplay';
+import AssetMeta from '../AssetMeta';
 import { SaleAsset } from '../../services/sales';
 import { Asset } from '../../services/assets';
 import { tabs } from '../../components/SalesHistoryTable';
@@ -58,6 +59,15 @@ const DetailsLayout = ({
 }: Props): JSX.Element => {
   return (
     <Container>
+      <AssetMeta
+        templateName={templateName}
+        collectionName={collectionName}
+        collectionDisplayName={collectionDisplayName}
+        collectionAuthor={collectionAuthor}
+        image={image}
+        video={video}
+        model={model}
+      />
       <Row>
         <AssetDisplay
           image={image}
