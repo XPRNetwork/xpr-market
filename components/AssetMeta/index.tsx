@@ -6,16 +6,19 @@ import Head from 'next/head';
 
 type Props = {
   templateName?: string;
+  collectionName: string;
   collectionDisplayName?: string;
-  collectionAuthor?: string;
+  collectionAuthor: string;
   image?: string;
   video?: string;
   model?: string;
 };
 
 export const AssetMeta = (props: Props): JSX.Element => {
-  const title = props.templateName;
-  const description = `From ${props.collectionDisplayName} by ${props.collectionAuthor}`;
+  const title = props.templateName || 'NFT';
+  const description = `${
+    props.collectionDisplayName || props.collectionName
+  } by ${props.collectionAuthor}`;
 
   let metas = [
     {

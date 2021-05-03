@@ -61,6 +61,7 @@ const DetailsLayout = ({
     <Container>
       <AssetMeta
         templateName={templateName}
+        collectionName={collectionName}
         collectionDisplayName={collectionDisplayName}
         collectionAuthor={collectionAuthor}
         image={image}
