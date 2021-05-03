@@ -62,8 +62,6 @@ export const FEATURED_HOMEPAGE_COLLECTIONS = [
     displayName: 'Buba The Pig Collection',
   },
   { name: 'kawaiicrypto', displayName: 'Kawaii Crypto to the Moon!' },
-  { name: 'pourmeanftok', displayName: 'Benji432' },
-  { name: 'moonboysnfts', displayName: 'Moonboy Collection' },
 ];
 
 export const META = {
