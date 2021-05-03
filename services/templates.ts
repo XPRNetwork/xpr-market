@@ -88,12 +88,20 @@ export const getTemplateDetails = async (
   templateId: string
 ): Promise<Template> => {
   try {
-    const templateResponse = await getFromApi<Template>(
-      `${process.env.NEXT_PUBLIC_NFT_ENDPOINT}/atomicassets/v1/templates/${collectionName}/${templateId}`
+    const templatesQueryObject = {
+      collection_name: collectionName,
+      ids: templateId,
+      page: 1,
+      limit: 1,
+    };
+
+    const templatesQueryParams = toQueryString(templatesQueryObject);
+    const templatesResponse = await getFromApi<Template[]>(
+      `${process.env.NEXT_PUBLIC_NFT_ENDPOINT}/atomicassets/v1/templates?${templatesQueryParams}`
     );
 
-    if (!templateResponse.success) {
-      throw new Error((templateResponse.message as unknown) as string);
+    if (!templatesResponse.success || !templatesResponse.data.length) {
+      throw new Error('NFT not found');
     }
 
     const saleForTemplateAsc = await getLowestPriceAsset(
@@ -110,7 +118,7 @@ export const getTemplateDetails = async (
         : '';
 
     return {
-      ...templateResponse.data,
+      ...templatesResponse.data[0],
       lowestPrice,
     };
   } catch (e) {
@@ -139,19 +147,19 @@ export const getTemplatesByCollection = async ({
     };
 
     const templatesQueryParams = toQueryString(templatesQueryObject);
-    const templatesResult = await getFromApi<Template[]>(
+    const templatesResponse = await getFromApi<Template[]>(
       `${process.env.NEXT_PUBLIC_NFT_ENDPOINT}/atomicassets/v1/templates?${templatesQueryParams}`
     );
 
-    if (!templatesResult.success) {
+    if (!templatesResponse.success) {
       const errorMessage =
-        typeof templatesResult.error === 'object'
-          ? templatesResult.error.message
-          : templatesResult.message;
+        typeof templatesResponse.error === 'object'
+          ? templatesResponse.error.message
+          : templatesResponse.message;
       throw new Error(errorMessage as string);
     }
 
-    return templatesResult.data;
+    return templatesResponse.data;
   } catch (e) {
     throw new Error(e);
   }
@@ -182,23 +190,23 @@ export const getAllTemplatesByCollection = async ({
       };
 
       const templatesQueryParams = toQueryString(templatesQueryObject);
-      const templatesResult = await getFromApi<Template[]>(
+      const templatesResponse = await getFromApi<Template[]>(
         `${process.env.NEXT_PUBLIC_NFT_ENDPOINT}/atomicassets/v1/templates?${templatesQueryParams}`
       );
 
-      if (!templatesResult.success) {
+      if (!templatesResponse.success) {
         const errorMessage =
-          typeof templatesResult.error === 'object'
-            ? templatesResult.error.message
-            : templatesResult.message;
+          typeof templatesResponse.error === 'object'
+            ? templatesResponse.error.message
+            : templatesResponse.message;
         throw new Error(errorMessage as string);
       }
 
-      if (templatesResult.data.length < limit || limit !== 100) {
+      if (templatesResponse.data.length < limit || limit !== 100) {
         hasResults = false;
       }
 
-      templates = templates.concat(templatesResult.data);
+      templates = templates.concat(templatesResponse.data);
       page += 1;
     }
 
@@ -484,7 +492,7 @@ export const getUserCreatedTemplates = async (
 ): Promise<Template[]> => {
   try {
     const pageParam = page ? page : 1;
-    const queryObject = {
+    const templatesQueryObject = {
       authorized_account: account,
       sort: 'updated',
       order: 'desc',
@@ -492,9 +500,10 @@ export const getUserCreatedTemplates = async (
       limit: PAGINATION_LIMIT,
       has_assets: true,
     };
-    const queryString = toQueryString(queryObject);
+
+    const templatesQueryParams = toQueryString(templatesQueryObject);
     const templatesResponse = await getFromApi<Template[]>(
-      `${process.env.NEXT_PUBLIC_NFT_ENDPOINT}/atomicassets/v1/templates?${queryString}`
+      `${process.env.NEXT_PUBLIC_NFT_ENDPOINT}/atomicassets/v1/templates?${templatesQueryParams}`
     );
 
     if (!templatesResponse.success) {
