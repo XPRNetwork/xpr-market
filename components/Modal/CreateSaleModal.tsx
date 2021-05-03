@@ -184,7 +184,6 @@ export const CreateMultipleSalesModal = (): JSX.Element => {
         actor: currentUser ? currentUser.actor : '',
         ramCost: RAM_AMOUNTS.LIST_SALE,
       });
-
       const res = await ProtonSDK.createMultipleSales({
         seller: currentUser ? currentUser.actor : '',
         assetIds,
