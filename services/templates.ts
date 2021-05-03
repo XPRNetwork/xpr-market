@@ -101,7 +101,7 @@ export const getTemplateDetails = async (
     );
 
     if (!templatesResult.success || !templatesResult.data.length) {
-      throw new Error((templatesResult.message as unknown) as string);
+      throw new Error('NFT not found');
     }
 
     const saleForTemplateAsc = await getLowestPriceAsset(

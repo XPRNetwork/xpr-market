@@ -156,13 +156,7 @@ const MarketplaceTemplateDetail = (): JSX.Element => {
 
   const getContent = () => {
     if (error) {
-      return (
-        <ErrorComponent
-          errorMessage={error}
-          buttonText="Try again"
-          buttonOnClick={() => router.reload()}
-        />
-      );
+      return <ErrorComponent errorMessage={error} />;
     }
 
     if (isLoading || isLoadingUser) {
