@@ -519,7 +519,6 @@ export const getUserCreatedTemplates = async (
       order: 'desc',
       page: pageParam,
       limit: PAGINATION_LIMIT,
-      has_assets: true,
     };
 
     const templatesQueryParams = toQueryString(templatesQueryObject);
