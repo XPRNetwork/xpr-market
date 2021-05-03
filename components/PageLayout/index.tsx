@@ -58,7 +58,7 @@ const PageLayout = ({ title, children }: Props): JSX.Element => {
     }
   };
 
-  const fullTitle = title ? `${title} - Proton Market` : 'Proton Market';
+  const fullTitle = title ? `${title} - ${META.siteName}` : META.siteName;
 
   return (
     <Main>
