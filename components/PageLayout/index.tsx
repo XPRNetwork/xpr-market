@@ -19,7 +19,7 @@ import { useEscapeKeyClose } from '../../hooks';
 import { META } from '../../utils/constants';
 
 type Props = {
-  title: string;
+  title?: string;
   children: ReactNode;
 };
 
@@ -58,7 +58,7 @@ const PageLayout = ({ title, children }: Props): JSX.Element => {
     }
   };
 
-  const fullTitle = `${title} - Proton Market`;
+  const fullTitle = title ? `${title} - Proton Market` : 'Proton Market';
 
   return (
     <Main>
