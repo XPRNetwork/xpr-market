@@ -56,12 +56,12 @@ export const AssetMeta = (props: Props): JSX.Element => {
       },
       {
         key: 'twplayerheight',
-        name: 'twitter:player:width',
+        name: 'twitter:player:height',
         content: '720',
       },
       {
         key: 'twplayerwidth',
-        name: 'twitter:player:height',
+        name: 'twitter:player:width',
         content: '480',
       },
       {
