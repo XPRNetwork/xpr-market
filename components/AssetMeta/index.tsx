@@ -88,7 +88,7 @@ export const AssetMeta = (props: Props): JSX.Element => {
       },
     ]);
   } else if (props.model) {
-    const modelUrl = `${IPFS_RESOLVER_IMAGE}${props.image}`;
+    const modelUrl = `${IPFS_RESOLVER_IMAGE}${props.model}`;
 
     metas = metas.concat([
       {
