@@ -180,7 +180,7 @@ export const CreateMultipleSalesModal = (): JSX.Element => {
       const formattedAmount = parseFloat(amount).toFixed(TOKEN_PRECISION);
       await fees.refreshRamInfoForUser(currentUser.actor);
       const finalFee = fees.calculateFee({
-        numAssets: numSales,
+        numAssets: numSales || 0,
         actor: currentUser ? currentUser.actor : '',
         ramCost: RAM_AMOUNTS.LIST_SALE,
       });
