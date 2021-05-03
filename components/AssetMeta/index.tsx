@@ -26,7 +26,7 @@ export const AssetMeta = (props: Props): JSX.Element => {
     metas.push({
       key: 'ogvideo',
       property: 'og:video',
-      content: `${IPFS_RESOLVER_VIDEO}/${props.video}`,
+      content: `${IPFS_RESOLVER_VIDEO}${props.video}`,
     });
   } else if (props.model) {
     metas.push({
@@ -37,13 +37,13 @@ export const AssetMeta = (props: Props): JSX.Element => {
     metas.push({
       key: 'og',
       property: 'og:image',
-      content: `${IPFS_RESOLVER_IMAGE}/${props.image}`,
+      content: `${IPFS_RESOLVER_IMAGE}${props.image}`,
     });
   } else if (props.image) {
     metas.push({
       key: 'ogimage',
       property: 'og:image',
-      content: `${IPFS_RESOLVER_IMAGE}/${props.image}`,
+      content: `${IPFS_RESOLVER_IMAGE}${props.image}`,
     });
   }
 
