@@ -15,7 +15,7 @@ type Props = {
 
 export const AssetMeta = (props: Props): JSX.Element => {
   const title = props.templateName;
-  const description = `From ${props.collectionDisplayName} collection by ${props.collectionAuthor}`;
+  const description = `From ${props.collectionDisplayName} by ${props.collectionAuthor}`;
 
   let metas = [
     {
@@ -41,6 +41,8 @@ export const AssetMeta = (props: Props): JSX.Element => {
   ];
 
   if (props.video) {
+    const videoUrl = `${IPFS_RESOLVER_VIDEO}${props.video}`;
+
     metas = metas.concat([
       {
         key: 'twcard',
@@ -48,12 +50,19 @@ export const AssetMeta = (props: Props): JSX.Element => {
         content: 'player',
       },
       {
+        key: 'twplayer',
+        name: 'twitter:player',
+        content: videoUrl,
+      },
+      {
         key: 'ogvideo',
         name: 'og:video',
-        content: `${IPFS_RESOLVER_VIDEO}${props.video}`,
+        content: videoUrl,
       },
     ]);
   } else if (props.model) {
+    const modelUrl = `${IPFS_RESOLVER_IMAGE}${props.image}`;
+
     metas = metas.concat([
       {
         key: 'ogtype',
@@ -63,10 +72,12 @@ export const AssetMeta = (props: Props): JSX.Element => {
       {
         key: 'ogmodel',
         name: 'og:image',
-        content: `${IPFS_RESOLVER_IMAGE}${props.image}`,
+        content: modelUrl,
       },
     ]);
   } else if (props.image) {
+    const imageUrl = `${IPFS_RESOLVER_IMAGE}${props.image}`;
+
     metas = metas.concat([
       {
         key: 'twcard',
@@ -74,9 +85,14 @@ export const AssetMeta = (props: Props): JSX.Element => {
         content: 'summary_large_image',
       },
       {
+        key: 'twimage',
+        name: 'twitter:image',
+        content: imageUrl,
+      },
+      {
         key: 'ogimage',
         name: 'og:image',
-        content: `${IPFS_RESOLVER_IMAGE}${props.image}`,
+        content: imageUrl,
       },
     ]);
   }
