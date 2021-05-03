@@ -55,7 +55,7 @@ export const AssetMeta = (props: Props): JSX.Element => {
         content: videoUrl,
       },
       {
-        key: 'twplayerwidth',
+        key: 'twplayerheight',
         name: 'twitter:player:width',
         content: '720',
       },
