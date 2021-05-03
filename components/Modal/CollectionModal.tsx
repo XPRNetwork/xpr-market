@@ -30,6 +30,8 @@ import { ReactComponent as CloseIcon } from '../../public/close.svg';
 import { fileReader, delay } from '../../utils';
 import ProtonSDK from '../../services/proton';
 import { SM_FILE_UPLOAD_TYPES_TEXT } from '../../utils/constants';
+import { getFromApi } from '../../utils/browser-fetch';
+import { Collection } from '../../services/collections';
 
 const TYPES = {
   CREATE: 'CREATE',
@@ -214,6 +216,41 @@ const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
     }
   };
 
+  const createCollectionName = () => {
+    const collectionName = [];
+    const characters = '12345';
+    const charactersLength = characters.length;
+    for (let i = 0; i < 12; i++) {
+      collectionName.push(
+        characters.charAt(Math.floor(Math.random() * charactersLength))
+      );
+    }
+    return collectionName.join('');
+  };
+
+  useEffect(() => {
+    (async () => {
+      if (!name && type === TYPES.CREATE) {
+        let isUnique = false;
+
+        while (!isUnique) {
+          const collectionName = createCollectionName();
+          try {
+            const result = await getFromApi<Collection>(
+              `${process.env.NEXT_PUBLIC_NFT_ENDPOINT}/atomicassets/v1/collections/${collectionName}`
+            );
+            if (!result.success) {
+              setName(collectionName);
+              isUnique = true;
+            }
+          } catch (e) {
+            throw new Error(e);
+          }
+        }
+      }
+    })();
+  }, []);
+
   return (
     <Background onClick={handleBackgroundClick}>
       <ModalBox>
@@ -243,26 +280,9 @@ const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
           </Column>
         </Row>
         <Form onSubmit={isLoading ? null : handleSubmit}>
-          <InputField
-            placeholder="Collection Name"
-            value={name}
-            setValue={setName}
-            setFormError={setFormError}
-            disabled={type === TYPES.UPDATE}
-            checkIfIsValid={(input: string) => {
-              const hasValidCharacters = !!input.match(/^[a-z1-5]+$/);
-              const isValidLength = input.length === 12;
-              const isValid =
-                (hasValidCharacters && isValidLength) ||
-                input.toLowerCase() === author.toLowerCase();
-              const errorMessage = `Collection name should be your account name (${author}) or a 12-character long name that only contains the numbers 1-5 or lowercase letters a-z`;
-              return {
-                isValid,
-                errorMessage,
-              };
-            }}
-            mb="16px"
-          />
+          {type === TYPES.UPDATE ? (
+            <InputField value={name} disabled={true} mb="16px" />
+          ) : null}
           <InputField
             placeholder="Display Name"
             value={displayName}

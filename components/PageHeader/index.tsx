@@ -45,7 +45,6 @@ const PageHeader = ({
     : '/proton.svg';
 
   const displayImg = type === 'user' ? avatarImg : collectionImg;
-  const subNameIcon = type === 'user' ? '@' : '#';
 
   const onImageError = (e) => {
     e.currentTarget.onerror = null;
@@ -89,10 +88,7 @@ const PageHeader = ({
         />
       </ImageContainer>
       <Name>{name}</Name>
-      <SubName>
-        {subNameIcon}
-        {subName}
-      </SubName>
+      {type === 'user' ? <SubName>@{subName}</SubName> : null}
       {description ? <Description>{description}</Description> : null}
       {buttons}
     </PageHeaderContainer>

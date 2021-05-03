@@ -20,7 +20,7 @@ export const ImageContainer = styled.div`
   width: 120px;
   height: 120px;
   border-radius: 100%;
-  margin-bottom: 32px;
+  margin-bottom: 16px;
   overflow: hidden;
 
   ${breakpoint.mobile`
@@ -32,7 +32,7 @@ export const ImageContainer = styled.div`
 
 export const Name = styled.p`
   font-size: 48px;
-  line-height: 1.17;
+  line-height: 1.4;
   color: #1a1a1a;
   text-align: center;
 
@@ -58,7 +58,8 @@ export const Description = styled.p`
   font-size: 14px;
   line-height: 1.71;
   color: #1a1a1a;
-  margin-bottom: 8px;
+  margin-top: 8px;
+  margin-bottom: 24px;
   max-width: 660px;
   width: 100%;
   overflow-wrap: break-word;
