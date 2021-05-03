@@ -42,8 +42,8 @@ export const AssetMeta = (props: Props): JSX.Element => {
 
   if (props.video) {
     const videoUrl = `${IPFS_RESOLVER_VIDEO}${props.video}`;
-    const videoWidth = '480'
-    const videoHeight = '480'
+    const videoWidth = '480';
+    const videoHeight = '480';
 
     metas = metas.concat([
       {
