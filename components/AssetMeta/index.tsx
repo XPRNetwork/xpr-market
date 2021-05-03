@@ -42,6 +42,8 @@ export const AssetMeta = (props: Props): JSX.Element => {
 
   if (props.video) {
     const videoUrl = `${IPFS_RESOLVER_VIDEO}${props.video}`;
+    const videoWidth = '480'
+    const videoHeight = '480'
 
     metas = metas.concat([
       {
@@ -57,17 +59,32 @@ export const AssetMeta = (props: Props): JSX.Element => {
       {
         key: 'twplayerheight',
         name: 'twitter:player:height',
-        content: '720',
+        content: videoHeight,
       },
       {
         key: 'twplayerwidth',
         name: 'twitter:player:width',
-        content: '480',
+        content: videoWidth,
       },
       {
         key: 'ogvideo',
         name: 'og:video',
         content: videoUrl,
+      },
+      {
+        key: 'ogvideoheight',
+        name: 'og:video:height',
+        content: videoHeight,
+      },
+      {
+        key: 'ogvideowidth',
+        name: 'og:video:width',
+        content: videoWidth,
+      },
+      {
+        key: 'ogtype',
+        name: 'og:type',
+        content: 'video',
       },
     ]);
   } else if (props.model) {
