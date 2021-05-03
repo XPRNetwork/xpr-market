@@ -52,6 +52,8 @@ export const TAB_TYPES = {
   CREATIONS: 'CREATIONS',
 };
 export const FEATURED_HOMEPAGE_COLLECTIONS = [
+  { name: 'restingbface', displayName: 'RBF' },
+  { name: 'madysn', displayName: 'Hodl Smiley' },
   { name: 'protonpups', displayName: 'ProtonPups' },
   { name: 'cryptocoins1', displayName: 'Crypto Coins' },
   { name: 'cryptocadets', displayName: 'Crypto Cadets' },
