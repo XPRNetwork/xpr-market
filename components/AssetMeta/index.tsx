@@ -20,22 +20,22 @@ export const AssetMeta = (props: Props): JSX.Element => {
   let metas = [
     {
       key: 'ogtitle',
-      property: 'og:title',
+      name: 'og:title',
       content: title,
     },
     {
       key: 'twtitle',
-      property: 'twitter:title',
+      name: 'twitter:title',
       content: title,
     },
     {
       key: 'ogdescription',
-      property: 'og:description',
+      name: 'og:description',
       content: description,
     },
     {
       key: 'twdescription',
-      property: 'twitter:description',
+      name: 'twitter:description',
       content: description,
     },
   ];
@@ -44,12 +44,12 @@ export const AssetMeta = (props: Props): JSX.Element => {
     metas = metas.concat([
       {
         key: 'twcard',
-        property: 'twitter:card',
+        name: 'twitter:card',
         content: 'player',
       },
       {
         key: 'ogvideo',
-        property: 'og:video',
+        name: 'og:video',
         content: `${IPFS_RESOLVER_VIDEO}${props.video}`,
       },
     ]);
@@ -57,12 +57,12 @@ export const AssetMeta = (props: Props): JSX.Element => {
     metas = metas.concat([
       {
         key: 'ogtype',
-        property: 'og:type',
+        name: 'og:type',
         content: 'threed.asset',
       },
       {
         key: 'ogmodel',
-        property: 'og:image',
+        name: 'og:image',
         content: `${IPFS_RESOLVER_IMAGE}${props.image}`,
       },
     ]);
@@ -70,12 +70,12 @@ export const AssetMeta = (props: Props): JSX.Element => {
     metas = metas.concat([
       {
         key: 'twcard',
-        property: 'twitter:card',
+        name: 'twitter:card',
         content: 'summary_large_image',
       },
       {
         key: 'ogimage',
-        property: 'og:image',
+        name: 'og:image',
         content: `${IPFS_RESOLVER_IMAGE}${props.image}`,
       },
     ]);
@@ -84,7 +84,7 @@ export const AssetMeta = (props: Props): JSX.Element => {
   return (
     <Head>
       {metas.map((meta) => (
-        <meta key={meta.key} property={meta.property} content={meta.content} />
+        <meta key={meta.key} name={meta.name} content={meta.content} />
       ))}
     </Head>
   );
