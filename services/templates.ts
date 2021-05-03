@@ -456,26 +456,47 @@ const formatTemplatesWithPriceAndAssetCountInCreateDescOrder = ({
 export const getTemplatesFromTemplateIds = async (
   templateIds: string[]
 ): Promise<Template[]> => {
-  try {
-    const templatesQueryObject = {
-      symbol: TOKEN_SYMBOL,
-      ids: templateIds.join(','),
-      has_assets: true,
-    };
-
-    const templatesQueryParams = toQueryString(templatesQueryObject);
-    const templatesResponse = await getFromApi<Template[]>(
-      `${process.env.NEXT_PUBLIC_NFT_ENDPOINT}/atomicassets/v1/templates?${templatesQueryParams}`
-    );
-
-    if (!templatesResponse.success) {
-      throw new Error((templatesResponse.message as unknown) as string);
-    }
-
-    return templatesResponse.data;
-  } catch (e) {
-    throw new Error(e);
+  // Organize pagination with an object (key: page number, value: array of templateIds)
+  const pages: { [page: number]: string[] } = {};
+  for (let i = 1; i <= Math.ceil(templateIds.length / 100); i++) {
+    const startIdx = i - 1 + (i - 1) * 100;
+    const endIdx = i * 100;
+    pages[i] = templateIds.slice(startIdx, endIdx);
   }
+
+  let templates = [];
+  let page = 1;
+  let hasResults = true;
+
+  while (hasResults) {
+    try {
+      const templatesQueryObject = {
+        symbol: TOKEN_SYMBOL,
+        ids: pages[page].join(','),
+        has_assets: true,
+      };
+
+      const templatesQueryParams = toQueryString(templatesQueryObject);
+      const templatesResponse = await getFromApi<Template[]>(
+        `${process.env.NEXT_PUBLIC_NFT_ENDPOINT}/atomicassets/v1/templates?${templatesQueryParams}`
+      );
+
+      if (!templatesResponse.success) {
+        throw new Error((templatesResponse.message as unknown) as string);
+      }
+
+      if (!pages[page + 1]) {
+        hasResults = false;
+      }
+
+      page += 1;
+      templates = templates.concat(templatesResponse.data);
+    } catch (e) {
+      throw new Error(e);
+    }
+  }
+
+  return templates;
 };
 
 export const getUserCreatedTemplates = async (
