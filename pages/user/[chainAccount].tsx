@@ -64,6 +64,7 @@ const Collection = (): JSX.Element => {
     { title: 'Creations', type: TAB_TYPES.CREATIONS },
   ];
   const [activeTab, setActiveTab] = useState<string>(tabs[0].type);
+  const isUsersPage = currentUser.actor === chainAccount;
 
   const showNextItemsPage = async () => {
     const numNextPageItems = allItems.slice(
@@ -89,7 +90,8 @@ const Collection = (): JSX.Element => {
     setIsLoadingNextPage(true);
     const creations = await getUserCreatedTemplates(
       chainAccount,
-      prefetchCreationsPageNumber
+      prefetchCreationsPageNumber,
+      !isUsersPage
     );
     setPrefetchedCreations(creations);
     setIsLoadingNextPage(false);
@@ -124,11 +126,13 @@ const Collection = (): JSX.Element => {
 
           const initialCreations = await getUserCreatedTemplates(
             chainAccount,
-            1
+            1,
+            !isUsersPage
           );
           const creations = await getUserCreatedTemplates(
             chainAccount,
-            prefetchCreationsPageNumber
+            prefetchCreationsPageNumber,
+            !isUsersPage
           );
           setRenderedCreations(initialCreations);
           setPrefetchedCreations(creations);
