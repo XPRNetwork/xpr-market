@@ -10,6 +10,7 @@ import PageLayout from '../components/PageLayout';
 import ExploreCard from '../components/ExploreCard';
 import Banner from '../components/Banner';
 import FeaturedGrid from '../components/FeaturedGrid'; // Using FeaturedGrid component to potentially easily swap out with FeaturedCarousel component
+import HomepageStatistics from '../components/HomepageStatistics';
 import { MODAL_TYPES } from '../components/Provider';
 import { useFirebaseFeaturedCollections } from '../services/firebase';
 
@@ -35,6 +36,7 @@ const MarketPlace = (): JSX.Element => {
     <PageLayout>
       <Banner modalType={MODAL_TYPES.CLAIM} />
       <ExploreCard />
+      <HomepageStatistics />
       <Title>Featured Collections 🏆</Title>
       {getCollections()}
     </PageLayout>

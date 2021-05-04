@@ -64,7 +64,7 @@ const Collection = (): JSX.Element => {
     { title: 'Creations', type: TAB_TYPES.CREATIONS },
   ];
   const [activeTab, setActiveTab] = useState<string>(tabs[0].type);
-  const isUsersPage = currentUser.actor === chainAccount;
+  const isUsersPage = currentUser && currentUser.actor === chainAccount;
 
   const showNextItemsPage = async () => {
     const numNextPageItems = allItems.slice(

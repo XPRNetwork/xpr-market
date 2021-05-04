@@ -79,7 +79,7 @@ export const formatPrice = (priceString: string): string => {
   return `${amount} ${currency}`;
 };
 
-const formatThousands = (numberString: string): string => {
+export const formatThousands = (numberString: string): string => {
   const [integers, decimals] = numberString.split('.');
   let salePrice = parseFloat(integers.replace(/[,]/g, '')).toLocaleString();
   salePrice = decimals ? salePrice + '.' + decimals : salePrice;
