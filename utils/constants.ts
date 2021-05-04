@@ -52,6 +52,8 @@ export const TAB_TYPES = {
   CREATIONS: 'CREATIONS',
 };
 export const FEATURED_HOMEPAGE_COLLECTIONS = [
+  { name: 'restingbface', displayName: 'RBF' },
+  { name: 'madisyn', displayName: 'Hodl Smiley' },
   { name: 'protonpups', displayName: 'ProtonPups' },
   { name: 'cryptocoins1', displayName: 'Crypto Coins' },
   { name: 'cryptocadets', displayName: 'Crypto Cadets' },
@@ -60,8 +62,6 @@ export const FEATURED_HOMEPAGE_COLLECTIONS = [
     displayName: 'Buba The Pig Collection',
   },
   { name: 'kawaiicrypto', displayName: 'Kawaii Crypto to the Moon!' },
-  { name: 'pourmeanftok', displayName: 'Benji432' },
-  { name: 'moonboysnfts', displayName: 'Moonboy Collection' },
 ];
 
 export const META = {

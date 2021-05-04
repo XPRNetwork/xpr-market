@@ -5,8 +5,8 @@ import {
   DropdownMenu,
   General,
   Amount,
+  DisabledInput,
   Row,
-  FeeLabel,
 } from '../AssetFormBuy/AssetFormBuy.styled';
 import { Asset } from '../../services/assets';
 
@@ -50,23 +50,28 @@ export const AssetFormSell = ({
         <Amount>{maxSupply === '0' ? 'Unlimited' : maxSupply}</Amount>
       </Row>
       <General>Serial number</General>
-      <DropdownMenu
-        name="Available Assets For Sale"
-        value={assetId}
-        onChange={(e) => handleDropdownSelect(e.target.value)}>
-        <option key="blank" value="" disabled>
-          - - Select a serial number - -
-        </option>
-        {dropdownAssets.length > 0 &&
-          dropdownAssets.map(({ asset_id, template_mint, salePrice }) => (
-            <option key={template_mint} value={asset_id}>
-              #{template_mint} - {salePrice || 'Not for sale'}
-            </option>
-          ))}
-      </DropdownMenu>
+      {dropdownAssets.length ? (
+        <DropdownMenu
+          name="Available Assets For Sale"
+          value={assetId}
+          onChange={(e) => handleDropdownSelect(e.target.value)}>
+          <option key="blank" value="" disabled>
+            - - Select a serial number - -
+          </option>
+          {dropdownAssets.length > 0 &&
+            dropdownAssets.map(({ asset_id, template_mint, salePrice }) => (
+              <option key={template_mint} value={asset_id}>
+                #{template_mint} - {salePrice || 'Not for sale'}
+              </option>
+            ))}
+        </DropdownMenu>
+      ) : (
+        <DisabledInput placeholder="No assets" disabled />
+      )}
       <Button
         cancel={buttonText.toLowerCase().includes('cancel')}
         fullWidth
+        disabled={!assetId}
         onClick={handleButtonClick}>
         {buttonText}
       </Button>

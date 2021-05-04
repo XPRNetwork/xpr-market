@@ -79,36 +79,42 @@ const MarketplaceTemplateDetail = (): JSX.Element => {
   } = template;
 
   useEffect(() => {
-    if (templateId) {
-      try {
-        (async () => {
-          setIsLoading(true);
-          const templateDetails = await getTemplateDetails(
-            collection,
-            templateId
-          );
-          const {
-            formattedPrices,
-            rawPrices,
-            assets,
-          } = await getAllTemplateSales(templateId);
+    if (!templateId) {
+      return;
+    }
 
-          setTemplateAssets(assets);
-          setFormattedPricesBySaleId(formattedPrices);
-          setRawPricesBySaleId(rawPrices);
-          setIsLoading(false);
-          setTemplate(templateDetails);
-          setIsLoading(false);
-        })();
+    const loadTemplate = async () => {
+      try {
+        setIsLoading(true);
+        const templateDetails = await getTemplateDetails(
+          collection,
+          templateId
+        );
+        const {
+          formattedPrices,
+          rawPrices,
+          assets,
+        } = await getAllTemplateSales(templateId);
+
+        setTemplateAssets(assets);
+        setFormattedPricesBySaleId(formattedPrices);
+        setRawPricesBySaleId(rawPrices);
+        setIsLoading(false);
+        setTemplate(templateDetails);
+        setIsLoading(false);
       } catch (e) {
         setError(e.message);
       }
-    }
+    };
+
+    loadTemplate();
   }, [templateId]);
 
   useEffect(() => {
     setPurchasingError('');
-    if (balanceAmount === 0) setIsBalanceInsufficient(true);
+    if (balanceAmount === 0) {
+      setIsBalanceInsufficient(true);
+    }
   }, [currentUser, currentUserBalance]);
 
   const buyAsset = async () => {
@@ -150,13 +156,7 @@ const MarketplaceTemplateDetail = (): JSX.Element => {
 
   const getContent = () => {
     if (error) {
-      return (
-        <ErrorComponent
-          errorMessage={error}
-          buttonText="Try again"
-          buttonOnClick={() => router.reload()}
-        />
-      );
+      return <ErrorComponent errorMessage={error} />;
     }
 
     if (isLoading || isLoadingUser) {
