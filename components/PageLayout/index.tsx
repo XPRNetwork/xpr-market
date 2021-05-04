@@ -19,7 +19,7 @@ import { useEscapeKeyClose } from '../../hooks';
 import { META } from '../../utils/constants';
 
 type Props = {
-  title: string;
+  title?: string;
   children: ReactNode;
 };
 
@@ -58,7 +58,7 @@ const PageLayout = ({ title, children }: Props): JSX.Element => {
     }
   };
 
-  const fullTitle = `${title} - Proton Market`;
+  const fullTitle = title ? `${title} - ${META.siteName}` : META.siteName;
 
   return (
     <Main>
@@ -78,13 +78,9 @@ const PageLayout = ({ title, children }: Props): JSX.Element => {
         />
 
         {/* Open Graph */}
+        <meta name="og:site_name" content={META.siteName} key="ogsitename" />
         <meta
-          property="og:site_name"
-          content={META.siteName}
-          key="ogsitename"
-        />
-        <meta
-          property="og:description"
+          name="og:description"
           content={META.description}
           key="ogdescription"
         />
