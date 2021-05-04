@@ -54,8 +54,8 @@ const Collection = (): JSX.Element => {
   const [userAvatar, setUserAvatar] = useState<string>('/default-avatar.png');
 
   const getTitle = () => {
-    return currentUser && currentUser.actor !== chainAccount && userName
-      ? `${userName.split(' ')[0]}'s Items`
+    return !currentUser || (currentUser && currentUser.actor !== chainAccount)
+      ? `${userName ? userName.split(' ')[0] : chainAccount}'s Items`
       : 'My Items';
   };
 

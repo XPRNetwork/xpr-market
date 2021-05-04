@@ -16,9 +16,10 @@ import {
   BurnAssetModal,
 } from '../Modal';
 import { useEscapeKeyClose } from '../../hooks';
+import { META } from '../../utils/constants';
 
 type Props = {
-  title: string;
+  title?: string;
   children: ReactNode;
 };
 
@@ -57,13 +58,40 @@ const PageLayout = ({ title, children }: Props): JSX.Element => {
     }
   };
 
+  const fullTitle = title ? `${title} - ${META.siteName}` : META.siteName;
+
   return (
     <Main>
       <Head>
-        <title>{`${title} - Proton Market`}</title>
+        <title>{fullTitle}</title>
         <link rel="shortcut icon" href="/favicon.png" />
+
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" key="twcard" />
+        <meta name="twitter:site" content={META.twitterHandle} key="twhandle" />
+        <meta name="twitter:image" content={META.bannerImage} key="twimage" />
+        <meta name="twitter:title" content={fullTitle} key="twtitle" />
+        <meta
+          name="twitter:description"
+          content={META.description}
+          key="twdescription"
+        />
+
+        {/* Open Graph */}
+        <meta
+          property="og:site_name"
+          content={META.siteName}
+          key="ogsitename"
+        />
+        <meta
+          property="og:description"
+          content={META.description}
+          key="ogdescription"
+        />
       </Head>
+
       <Container>{children}</Container>
+
       {renderModal()}
     </Main>
   );

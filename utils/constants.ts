@@ -7,7 +7,7 @@ export const DEFAULT_COLLECTION = 'monsters';
 export const PRICE_OF_RAM_IN_XPR = 0.0222;
 export const PAGINATION_LIMIT = 12;
 export const LG_FILE_UPLOAD_TYPES_TEXT =
-  'PNG, GIF, JPG, WEBP, or MP4. Max 5 MB.';
+  'PNG, GIF, JPG, WEBP, or MP4. Max 30 MB.';
 export const SM_FILE_UPLOAD_TYPES_TEXT = 'PNG, GIF, JPG, or WEBP. Max 5 MB.';
 export const LG_FILE_UPLOAD_TYPES = {
   'image/png': true,
@@ -40,7 +40,7 @@ export const DEFAULT_SCHEMA = {
   video: 'string',
 };
 export const RAM_AMOUNTS = {
-  CREATE_COLLECTION_SCHEMA_TEMPLATE: 3000,
+  CREATE_COLLECTION_SCHEMA_TEMPLATE: 2000,
   MINT_ASSET: 151,
   LIST_SALE: 768,
   FREE_INITIAL_SPECIAL_MINT_CONTRACT_RAM: 1510,
@@ -52,6 +52,8 @@ export const TAB_TYPES = {
   CREATIONS: 'CREATIONS',
 };
 export const FEATURED_HOMEPAGE_COLLECTIONS = [
+  { name: 'restingbface', displayName: 'RBF' },
+  { name: 'madisyn', displayName: 'Hodl Smiley' },
   { name: 'protonpups', displayName: 'ProtonPups' },
   { name: 'cryptocoins1', displayName: 'Crypto Coins' },
   { name: 'cryptocadets', displayName: 'Crypto Cadets' },
@@ -60,9 +62,16 @@ export const FEATURED_HOMEPAGE_COLLECTIONS = [
     displayName: 'Buba The Pig Collection',
   },
   { name: 'kawaiicrypto', displayName: 'Kawaii Crypto to the Moon!' },
-  { name: 'pourmeanftok', displayName: 'Benji432' },
-  { name: 'moonboysnfts', displayName: 'Moonboy Collection' },
 ];
+
+export const META = {
+  twitterHandle: '@protonxpr',
+  siteName: 'Proton Market',
+  bannerImage: 'https://protonmarket.com/banner-rectangle.png',
+  description:
+    'Start creating and selling your own NFTs! The best way to monetize your talent. Free to get started.',
+};
+
 export interface RouterQuery {
   [query: string]: string;
 }

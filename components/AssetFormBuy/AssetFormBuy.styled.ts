@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { breakpoint } from '../../styles/Breakpoints';
 
 export const General = styled.p`
@@ -31,7 +31,7 @@ export const ErrorMessage = styled.p`
   line-height: 24px;
 `;
 
-export const DropdownMenu = styled.select`
+const inputCSS = css`
   font-size: 16px;
   margin-bottom: 12px;
   padding: 0 16px;
@@ -40,19 +40,27 @@ export const DropdownMenu = styled.select`
   color: #808080;
   border: 1px solid #e6e6e6;
   border-radius: 4px;
-  cursor: pointer;
   line-height: 24px;
   position: relative;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  background: url('/down-arrow.svg');
-  background-repeat: no-repeat;
-  background-position: top 5px right 15px;
 
   &:hover {
     border: 1px solid #e6e6e6;
   }
+`;
+
+export const DisabledInput = styled.input`
+  ${inputCSS}
+`;
+
+export const DropdownMenu = styled.select`
+  ${inputCSS}
+  background: url('/down-arrow.svg');
+  background-repeat: no-repeat;
+  background-position: top 5px right 15px;
+  cursor: pointer;
 `;
 
 export const FeeLabel = styled.p`
