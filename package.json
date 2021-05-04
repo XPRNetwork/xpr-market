@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@google/model-viewer": "^1.6.0",
+    "@netlify/plugin-nextjs": "3.2.2",
     "@proton/js": "^22.0.64",
     "@proton/web-sdk": "^2.7.23",
     "dayjs": "^1.10.4",
