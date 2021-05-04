@@ -53,6 +53,7 @@ export const TAB_TYPES = {
 };
 export const FEATURED_HOMEPAGE_COLLECTIONS = [
   { name: 'restingbface', displayName: 'RBF' },
+  { name: 'boardtodeath', displayName: 'Board To Death' },
   { name: 'madisyn', displayName: 'Hodl Smiley' },
   { name: 'protonpups', displayName: 'ProtonPups' },
   { name: 'cryptocoins1', displayName: 'Crypto Coins' },
