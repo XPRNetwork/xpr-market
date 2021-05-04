@@ -325,7 +325,7 @@ class ProtonSDK {
         { actions: action },
         { broadcast: true }
       );
-      
+
       await fees.refreshRamInfoForUser(owner);
 
       return {
