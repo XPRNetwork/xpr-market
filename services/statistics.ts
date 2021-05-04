@@ -94,7 +94,7 @@ const getNFTsCreatedCount = async (): Promise<number> => {
       page: 1,
       limit: 1,
       order: 'desc',
-      sort: 'minted',
+      sort: 'asset_id',
     };
     const queryString = toQueryString(queryObject);
     const res = await getFromApi<Asset[]>(
