@@ -19,4 +19,11 @@ module.exports = {
 
     return config;
   },
+  publicRuntimeConfig: {
+    firebase: {
+      apiKey: 'AIzaSyDmqEpBSu_APMnGpLvG43nrbWHKFXgR7FE',
+      authDomain: 'proton-market.firebaseapp.com',
+      projectId: 'proton-market',
+    },
+  },
 };
