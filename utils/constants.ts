@@ -52,6 +52,7 @@ export const TAB_TYPES = {
   CREATIONS: 'CREATIONS',
 };
 export const FEATURED_HOMEPAGE_COLLECTIONS = [
+  { name: 'boardtodeath', displayName: 'Board To Death' },
   { name: 'restingbface', displayName: 'RBF' },
   { name: 'madisyn', displayName: 'Hodl Smiley' },
   { name: 'protonpups', displayName: 'ProtonPups' },
