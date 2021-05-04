@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import { useRouter } from 'next/router';
 import {
   Title,
@@ -10,23 +11,24 @@ import ExploreCard from '../components/ExploreCard';
 import Banner from '../components/Banner';
 import FeaturedGrid from '../components/FeaturedGrid'; // Using FeaturedGrid component to potentially easily swap out with FeaturedCarousel component
 import { MODAL_TYPES } from '../components/Provider';
-import { FEATURED_HOMEPAGE_COLLECTIONS } from '../utils/constants';
+import { useFirebaseFeaturedCollections } from '../services/firebase';
 
 const MarketPlace = (): JSX.Element => {
   const router = useRouter();
+  const featuredCollections = useFirebaseFeaturedCollections();
   const getCollections = () =>
-    FEATURED_HOMEPAGE_COLLECTIONS.map(({ name, displayName }, i) => {
-      const redirectToCollection = () => router.push(`/${name}`);
+    featuredCollections.map(({ collection_name, name, order }) => {
+      const redirectToCollection = () => router.push(`/${collection_name}`);
       return (
-        <>
-          <CollectionTitleRow margin={i == 0 ? '0 0 32px' : '52px 0 32px'}>
+        <Fragment key={collection_name}>
+          <CollectionTitleRow margin={order === 1 ? '0 0 32px' : '52px 0 32px'}>
             <CollectionTitle onClick={redirectToCollection}>
-              {displayName}
+              {name}
             </CollectionTitle>
             <TextButton onClick={redirectToCollection}>See all</TextButton>
           </CollectionTitleRow>
-          <FeaturedGrid collection={name} />
-        </>
+          <FeaturedGrid collection={collection_name} />
+        </Fragment>
       );
     });
   return (
