@@ -2,7 +2,11 @@ import styled from 'styled-components';
 import { breakpoint } from '../../styles/Breakpoints';
 import { IconContainer } from '../CollectionIcon/CollectionIcon.styled';
 
-export const Container = styled.section`
+type ContainerProps = {
+  isLoading: boolean;
+};
+
+export const Container = styled.section<ContainerProps>`
   width: 100%;
   margin: 24px 0 16px;
   display: inline-grid;
@@ -16,6 +20,15 @@ export const Container = styled.section`
 
   ${breakpoint.mobile`
     grid-template-columns: repeat(1, minmax(0, 1fr));
+  `}
+
+  ${({ isLoading }) =>
+    isLoading &&
+    `
+    height: 144px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   `}
 `;
 

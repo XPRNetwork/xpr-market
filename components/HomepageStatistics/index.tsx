@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import Spinner from '../Spinner';
 import {
   Container,
   Section,
@@ -30,53 +31,57 @@ const StatisticCard = ({ text, subtext, imgSrc }: Props): JSX.Element => (
 );
 
 const HomepageStatistics = (): JSX.Element => {
-  const [nftsCreated, setNftsCreated] = useState<string>('16156137');
-  const [transactions, setTransactions] = useState<string>('125580');
-  const [totalSales, setTotalSales] = useState<string>('7091022');
-  const [salesToday, setSalesToday] = useState<string>('51899');
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [nftsCreated, setNftsCreated] = useState<string>();
+  const [transactions, setTransactions] = useState<string>();
+  const [totalSales, setTotalSales] = useState<string>();
+  const [salesToday, setSalesToday] = useState<string>();
 
   useEffect(() => {
     (async () => {
       try {
         const stats = await getStatistics();
-        setNftsCreated(stats.nftsCreated);
-        setTransactions(stats.transactions);
-        setTotalSales(stats.totalSales);
-        setSalesToday(stats.salesToday);
+        setNftsCreated(formatThousands(stats.nftsCreated));
+        setTransactions(formatThousands(stats.transactions));
+        setTotalSales(`$${formatThousands(stats.totalSales)}`);
+        setSalesToday(`$${formatThousands(stats.salesToday)}`);
       } catch (err) {
         console.warn(err);
       }
+      setIsLoading(false);
     })();
   }, []);
 
   const stats = [
     {
-      text: formatThousands(nftsCreated),
+      text: nftsCreated,
       subtext: "NFT'S CREATED",
       imgSrc: '/nfts-created.svg',
     },
     {
-      text: formatThousands(transactions),
+      text: transactions,
       subtext: 'TRANSACTIONS',
       imgSrc: '/transactions.svg',
     },
     {
-      text: `$${formatThousands(totalSales)}`,
+      text: totalSales,
       subtext: 'TOTAL SALES',
       imgSrc: '/total-sales.svg',
     },
     {
-      text: `$${formatThousands(salesToday)}`,
+      text: salesToday,
       subtext: 'SALES TODAY',
       imgSrc: '/sales-today.svg',
     },
   ];
 
   return (
-    <Container>
-      {stats.map((stat) => (
-        <StatisticCard {...stat} key={stat.subtext} />
-      ))}
+    <Container isLoading={isLoading}>
+      {isLoading ? (
+        <Spinner />
+      ) : (
+        stats.map((stat) => <StatisticCard {...stat} key={stat.subtext} />)
+      )}
     </Container>
   );
 };
