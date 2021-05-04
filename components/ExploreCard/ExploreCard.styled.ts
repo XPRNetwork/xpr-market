@@ -8,7 +8,7 @@ export const Container = styled.div`
   align-items: center;
   width: 100%;
   height: 320px;
-  background-color: #f0e8fd;
+  background: linear-gradient(64deg, #4710a3 14%, #b28bf4 109%);
   margin-top: 40px;
   border-radius: 16px;
   overflow: hidden;
@@ -42,9 +42,10 @@ export const Content = styled.div`
 `;
 
 export const Title = styled.h1`
-  color: #1a1a1a;
+  color: #ffffff;
   font-size: 48px;
   line-height: 56px;
+  max-width: 534px;
 
   ${breakpoint.tablet`
     font-size: 32px;
@@ -60,7 +61,7 @@ export const Title = styled.h1`
 `;
 
 export const SubTitle = styled.p`
-  color: #752eeb;
+  color: #b28bf4;
   font-size: 21px;
   line-height: 32px;
   margin: 16px 0 40px;
