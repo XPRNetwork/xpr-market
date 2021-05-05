@@ -69,7 +69,7 @@ const PriceInput = ({
       e.preventDefault();
     }
 
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && submit) {
       submit();
     }
   };
