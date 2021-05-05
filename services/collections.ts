@@ -61,7 +61,7 @@ export const getSearchCollections = async (): Promise<SearchCollection[]> => {
 
     while (hasResults) {
       const result = await getFromApi<Collection[]>(
-        `https://proton.api.atomicassets.io/atomicassets/v1/collections?limit=${limit}&page=${page}`
+        `${process.env.NEXT_PUBLIC_NFT_ENDPOINT}/atomicassets/v1/collections?limit=${limit}&page=${page}`
       );
 
       if (!result.success) {
