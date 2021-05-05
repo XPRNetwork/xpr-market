@@ -92,6 +92,11 @@ export const MintAssetModal = (): JSX.Element => {
     }
   };
 
+  const maxSupplyDescription =
+    maxSupply === 0
+      ? `You have minted ${issuedSupply} out of an unlimited edition size.`
+      : `You have minted ${issuedSupply} out of a total edition size of ${maxSupply}.`;
+
   return (
     <Background onClick={handleBackgroundClick}>
       <ModalBox>
@@ -102,8 +107,7 @@ export const MintAssetModal = (): JSX.Element => {
           </CloseIconContainer>
         </Section>
         <Description>
-          You have minted {issuedSupply} out of a total edition size of{' '}
-          {maxSupply}.
+          {maxSupplyDescription}
           <br />
           Enter an amount to mint ({maxMintMessage}).
         </Description>
