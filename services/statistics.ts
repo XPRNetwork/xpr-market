@@ -42,7 +42,7 @@ const getTotalVolumeAndSales = async (): Promise<{
 
 const getDailyTotalSales = async (): Promise<number> => {
   const d = new Date();
-  const utcDateTime = d.setUTCHours(d.getUTCHours() - 24);
+  const last24Hours = d.setUTCHours(d.getUTCHours() - 24);
   const limit = 100;
   let page = 1;
   let salesToday = 0;
@@ -56,7 +56,7 @@ const getDailyTotalSales = async (): Promise<number> => {
         sort: 'volumes',
         page,
         limit,
-        after: utcDateTime,
+        after: last24Hours,
       };
       const queryParams = toQueryString(queryObject);
 
