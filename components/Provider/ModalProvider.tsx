@@ -1,4 +1,5 @@
 import {
+  useMemo,
   useState,
   createContext,
   useContext,
@@ -122,13 +123,16 @@ export const ModalProvider = ({ children }: Props): JSX.Element => {
   const closeModal = () => setModalType(MODAL_TYPES.HIDDEN);
   useScrollLock(modalType !== MODAL_TYPES.HIDDEN);
 
-  const value: ModalContextValue = {
-    modalType,
-    openModal,
-    closeModal,
-    modalProps,
-    setModalProps,
-  };
+  const value = useMemo<ModalContextValue>(
+    () => ({
+      modalType,
+      modalProps,
+      openModal,
+      closeModal,
+      setModalProps,
+    }),
+    [modalType, modalProps]
+  );
 
   return (
     <ModalContext.Provider value={value}>{children}</ModalContext.Provider>
