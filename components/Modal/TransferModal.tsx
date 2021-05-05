@@ -18,6 +18,7 @@ import {
 import InputField from '../InputField';
 import { useWindowSize } from '../../hooks';
 import ProtonSDK from '../../services/proton';
+import proton from '../../services/proton-rpc';
 import { ReactComponent as CloseIcon } from '../../public/close.svg';
 
 export const TransferModal = (): JSX.Element => {
@@ -35,12 +36,22 @@ export const TransferModal = (): JSX.Element => {
 
   const transfer = async () => {
     try {
-      if (recipient.length == 0 || recipient.length > 12) {
+      if (recipient.length < 4 || recipient.length > 12) {
         return;
       }
+
+      const user = await proton.getUserByChainAccount({
+        account: recipient,
+      });
+
+      if (!user) {
+        setError('Invalid user. Please try again.');
+        return;
+      }
+
       const res = await ProtonSDK.transfer({
         sender: currentUser ? currentUser.actor : '',
-        recipient: recipient,
+        recipient,
         asset_id: assetId,
         memo,
       });
@@ -84,10 +95,10 @@ export const TransferModal = (): JSX.Element => {
             setFormError={setError}
             placeholder="Receiver name"
             mb="16px"
-            checkIfIsValid={(input) => {
-              const isValid = (input as string).length < 13;
+            checkIfIsValid={(input: string) => {
+              const isValid = input.length >= 4 && input.length < 13;
               const errorMessage =
-                "Error: Recipient's name must be 12 characters or less.";
+                "Error: Recipient's name must be 4-12 characters";
               return {
                 isValid,
                 errorMessage,
