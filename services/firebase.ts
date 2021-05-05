@@ -3,7 +3,7 @@ import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/auth';
 import getConfig from 'next/config';
-import { Collection } from './collections';
+import { Template } from './templates';
 const { publicRuntimeConfig } = getConfig();
 
 const initializeFirebase = async () => {
@@ -19,27 +19,25 @@ const initializeFirebase = async () => {
   return firebase.firestore();
 };
 
-export const useFirebaseFeaturedCollections = (): Collection[] => {
-  const [featuredCollections, setFeaturedCollections] = useState<Collection[]>(
-    []
-  );
+export const useFirebaseFeaturedTemplates = (): Template[] => {
+  const [featuredTemplates, setFeaturedTemplates] = useState<Template[]>([]);
 
   useEffect(() => {
     (async () => {
       const db = await initializeFirebase();
-      db.collection('featuredCollections')
+      db.collection('featuredTemplates')
         .orderBy('order', 'asc')
         .onSnapshot((snapshot) => {
           if (snapshot.size) {
-            const firebaseCollections: Collection[] = [];
+            const firebaseTemplates: Template[] = [];
             snapshot.forEach((doc) => {
-              firebaseCollections.push(doc.data() as Collection);
+              firebaseTemplates.push(doc.data() as Template);
             });
-            setFeaturedCollections(firebaseCollections);
+            setFeaturedTemplates(firebaseTemplates);
           }
         });
     })();
   }, []);
 
-  return featuredCollections;
+  return featuredTemplates;
 };
