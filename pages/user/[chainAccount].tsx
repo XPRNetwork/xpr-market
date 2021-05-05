@@ -166,9 +166,9 @@ const Collection = (): JSX.Element => {
       return (
         <EmptyUserContent
           subtitle={
-            currentUser && chainAccount !== currentUser.actor
-              ? 'Looks like this user has not bought any NFT’s yet.'
-              : 'Looks like you have not bought any NFT’s yet. Come back when you do!'
+            isUsersPage
+              ? 'Looks like you have not bought any NFT’s yet. Come back when you do!'
+              : 'Looks like this user has not bought any NFT’s yet.'
           }
           buttonTitle="Explore NFTs"
           link="/"
@@ -176,13 +176,13 @@ const Collection = (): JSX.Element => {
       );
     }
 
-    if (!renderedItems.length && activeTab === TAB_TYPES.CREATIONS) {
+    if (!renderedCreations.length && activeTab === TAB_TYPES.CREATIONS) {
       return (
         <EmptyUserContent
           subtitle={
-            chainAccount !== currentUser.actor
-              ? 'Looks like this user does not have any creations yet.'
-              : 'Looks like you have not created any NFT’s yet. Come back when you do!'
+            isUsersPage
+              ? 'Looks like you have not created any NFT’s yet. Come back when you do!'
+              : 'Looks like this user does not have any creations yet.'
           }
           buttonTitle="Create NFT"
           link="/create"
