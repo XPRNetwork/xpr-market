@@ -19,7 +19,7 @@ const PaginationButton = ({
   isHidden,
   autoLoad,
 }: Props): JSX.Element => {
-  const { ref, inView, entry } = useInView({
+  const { ref, inView } = useInView({
     threshold: 0,
   });
 
