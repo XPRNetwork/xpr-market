@@ -22,7 +22,6 @@ const Search = (): JSX.Element => {
     ? (router.query.keywords as string).toLowerCase()
     : '';
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [numberOfTemplates, setNumberOfTemplates] = useState<number>(0);
   const [lowestPrices, setLowestPrices] = useState<{ [id: string]: string }>(
     {}
   );
@@ -68,7 +67,6 @@ const Search = (): JSX.Element => {
           const templates = await getTemplatesByCollection({
             type: searchTerm,
           });
-          setNumberOfTemplates(templates.length);
 
           const lowestPricesResult = await getLowestPricesForAllCollectionTemplates(
             {
@@ -114,9 +112,9 @@ const Search = (): JSX.Element => {
     }
 
     const numberOfTemplatesString =
-      numberOfTemplates === 1
-        ? `${numberOfTemplates} result`
-        : `${numberOfTemplates} results`;
+      renderedTemplates.length === 1
+        ? `${renderedTemplates.length} result`
+        : `${renderedTemplates.length} results`;
 
     const title = searchTerm ? (
       <>

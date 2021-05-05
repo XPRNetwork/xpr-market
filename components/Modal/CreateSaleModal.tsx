@@ -11,7 +11,7 @@ import {
   CreateSaleModalProps,
   CreateMultipleSalesModalProps,
 } from '../Provider';
-import PriceInput from '../PriceInput';
+import InputField from '../InputField';
 import {
   Background,
   ModalBox,
@@ -58,6 +58,11 @@ const SaleModal = ({
   const { closeModal } = useModalContext();
   const { currentUser } = useAuthContext();
   const { isMobile } = useWindowSize();
+  const isInvalid =
+    !amount ||
+    isNaN(parseFloat(amount)) ||
+    parseFloat(amount) === 0 ||
+    parseFloat(amount) > 1000000000;
 
   useEffect(() => {
     const fee = fees.calculateFee({
@@ -91,14 +96,32 @@ const SaleModal = ({
           </CloseIconContainer>
         </Section>
         <Description>{description}</Description>
-        <PriceInput
-          amount={amount}
-          setAmount={setAmount}
-          submit={onButtonClick}
+        <InputField
+          inputType="number"
+          min={0}
+          max={1000000000}
+          step={1 / 10 ** TOKEN_PRECISION}
+          value={amount}
+          setValue={setAmount}
+          submit={isInvalid ? null : onButtonClick}
           placeholder={`Enter amount in ${TOKEN_SYMBOL}`}
+          onBlur={() => {
+            const numberAmount = parseFloat(amount).toFixed(TOKEN_PRECISION);
+            setAmount(numberAmount);
+          }}
+          checkIfIsValid={(input) => {
+            const floatAmount = parseFloat(input as string);
+            const isValid = floatAmount > 0 && floatAmount <= 1000000000;
+            const errorMessage = `Sales price must be between 0 ${TOKEN_SYMBOL} and 1,000,000,000 ${TOKEN_SYMBOL}.`;
+            return {
+              isValid,
+              errorMessage,
+            };
+          }}
         />
         {getFee()}
         <HalfButton
+          disabled={isInvalid}
           fullWidth={isMobile}
           margin="24px 0 0"
           onClick={onButtonClick}>

@@ -65,6 +65,8 @@ export const FEATURED_HOMEPAGE_COLLECTIONS = [
   { name: 'kawaiicrypto', displayName: 'Kawaii Crypto to the Moon!' },
 ];
 
+export const FIRST_PROTON_MARKET_ASSET_ID = 4398046511103;
+
 export const META = {
   twitterHandle: '@protonxpr',
   siteName: 'Proton Market',

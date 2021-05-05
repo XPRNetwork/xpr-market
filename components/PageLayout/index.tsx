@@ -79,6 +79,7 @@ const PageLayout = ({ title, children }: Props): JSX.Element => {
 
         {/* Open Graph */}
         <meta name="og:site_name" content={META.siteName} key="ogsitename" />
+        <meta name="og:image" content={META.bannerImage} key="ogimage" />
         <meta
           name="og:description"
           content={META.description}

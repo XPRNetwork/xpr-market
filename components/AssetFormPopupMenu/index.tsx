@@ -91,7 +91,7 @@ const AssetFormPopupMenu = ({
       },
     },
     {
-      isHidden: false,
+      isHidden: assetIds.length === 0,
       name: 'Transfer NFT',
       onClick: () => {
         setIsOpen(false);
@@ -100,7 +100,7 @@ const AssetFormPopupMenu = ({
       },
     },
     {
-      isHidden: false,
+      isHidden: assetIds.length === 0,
       name: 'Burn NFT',
       onClick: () => {
         setIsOpen(false);

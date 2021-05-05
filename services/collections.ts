@@ -11,6 +11,9 @@ export interface Collection {
   market_fee?: number;
   created_at_block?: string;
   created_at_time?: string;
+  order?: number;
+  sales?: string;
+  volume?: string;
   data?: {
     img?: string;
     name?: string;

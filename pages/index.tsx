@@ -1,40 +1,21 @@
-import { useRouter } from 'next/router';
-import {
-  Title,
-  CollectionTitle,
-  CollectionTitleRow,
-} from '../styles/Title.styled';
-import { TextButton } from '../components/Button/Button.styled';
+import { Title } from '../styles/Title.styled';
 import PageLayout from '../components/PageLayout';
 import ExploreCard from '../components/ExploreCard';
 import Banner from '../components/Banner';
-import FeaturedGrid from '../components/FeaturedGrid'; // Using FeaturedGrid component to potentially easily swap out with FeaturedCarousel component
+import HomepageStatistics from '../components/HomepageStatistics';
 import { MODAL_TYPES } from '../components/Provider';
-import { FEATURED_HOMEPAGE_COLLECTIONS } from '../utils/constants';
+import { useFirebaseFeaturedTemplates } from '../services/firebase';
+import Grid from '../components/Grid';
 
 const MarketPlace = (): JSX.Element => {
-  const router = useRouter();
-  const getCollections = () =>
-    FEATURED_HOMEPAGE_COLLECTIONS.map(({ name, displayName }, i) => {
-      const redirectToCollection = () => router.push(`/${name}`);
-      return (
-        <>
-          <CollectionTitleRow margin={i == 0 ? '0 0 32px' : '52px 0 32px'}>
-            <CollectionTitle onClick={redirectToCollection}>
-              {displayName}
-            </CollectionTitle>
-            <TextButton onClick={redirectToCollection}>See all</TextButton>
-          </CollectionTitleRow>
-          <FeaturedGrid collection={name} />
-        </>
-      );
-    });
+  const featuredTemplates = useFirebaseFeaturedTemplates();
   return (
     <PageLayout>
       <Banner modalType={MODAL_TYPES.CLAIM} />
       <ExploreCard />
-      <Title>Featured Collections 🏆</Title>
-      {getCollections()}
+      <HomepageStatistics />
+      <Title>New &amp; Noteworthy</Title>
+      <Grid items={featuredTemplates} />
     </PageLayout>
   );
 };

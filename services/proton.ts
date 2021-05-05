@@ -3,7 +3,7 @@ import { LinkSession, Link } from '@proton/link';
 import logoUrl from '../public/logo.svg';
 import proton from './proton-rpc';
 import { DEFAULT_SCHEMA } from '../utils/constants';
-import { MintFee } from '../services/fees';
+import fees, { MintFee } from '../services/fees';
 
 export interface User {
   actor: string;
@@ -325,6 +325,8 @@ class ProtonSDK {
         { actions: action },
         { broadcast: true }
       );
+
+      await fees.refreshRamInfoForUser(owner);
 
       return {
         success: true,
@@ -679,6 +681,8 @@ class ProtonSDK {
         { broadcast: true }
       );
 
+      await fees.refreshRamInfoForUser(author);
+
       return {
         success: true,
         transactionId: result.processed.id,
@@ -958,6 +962,8 @@ class ProtonSDK {
         { broadcast: true }
       );
 
+      await fees.refreshRamInfoForUser(author);
+
       return {
         success: true,
         transactionId: result.processed.id,
@@ -1041,6 +1047,9 @@ class ProtonSDK {
         { actions },
         { broadcast: true }
       );
+
+      await fees.refreshRamInfoForUser(author);
+
       return {
         success: true,
         transactionId: result.processed.id,
@@ -1123,6 +1132,8 @@ class ProtonSDK {
         { actions: actions },
         { broadcast: true }
       );
+
+      await fees.refreshRamInfoForUser(seller);
 
       return {
         success: true,
@@ -1213,6 +1224,8 @@ class ProtonSDK {
         { broadcast: true }
       );
 
+      await fees.refreshRamInfoForUser(seller);
+
       return {
         success: true,
         transactionId: result.processed.id,
@@ -1261,6 +1274,8 @@ class ProtonSDK {
         { broadcast: true }
       );
 
+      await fees.refreshRamInfoForUser(actor);
+
       return {
         success: true,
         transactionId: result.processed.id,
@@ -1308,6 +1323,8 @@ class ProtonSDK {
         { actions: actions },
         { broadcast: true }
       );
+
+      await fees.refreshRamInfoForUser(actor);
 
       return {
         success: true,
@@ -1369,6 +1386,8 @@ class ProtonSDK {
         { actions: actions },
         { broadcast: true }
       );
+
+      await fees.refreshRamInfoForUser(buyer);
 
       return {
         success: true,

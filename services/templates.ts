@@ -509,7 +509,8 @@ export const getTemplatesFromTemplateIds = async (
 
 export const getUserCreatedTemplates = async (
   account: string,
-  page?: number
+  page?: number,
+  hasAssets?: boolean
 ): Promise<Template[]> => {
   try {
     const pageParam = page ? page : 1;
@@ -519,6 +520,7 @@ export const getUserCreatedTemplates = async (
       order: 'desc',
       page: pageParam,
       limit: PAGINATION_LIMIT,
+      has_assets: Boolean(hasAssets),
     };
 
     const templatesQueryParams = toQueryString(templatesQueryObject);

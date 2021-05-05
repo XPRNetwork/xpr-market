@@ -55,6 +55,7 @@ const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
   const [uploadedFile, setUploadedFile] = useState<File | null>();
   const [updatedImage, setUpdatedImage] = useState<string>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isInvalid, setIsInvalid] = useState<boolean>(false);
   const author = currentUser ? currentUser.actor : '';
 
   useEffect(() => {
@@ -105,13 +106,24 @@ const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
     }
   };
 
+  const updateImage = async (): Promise<string> => {
+    if (!uploadedFile) {
+      return updatedImage;
+    }
+
+    try {
+      const ipfsImage = await uploadToIPFS(uploadedFile);
+      setUpdatedImage(ipfsImage);
+      fileReader((img) => setUpdatedImage(img), uploadedFile);
+      return ipfsImage;
+    } catch (err) {
+      throw new Error(err.message);
+    }
+  };
+
   const update = async () => {
     try {
-      if (uploadedFile) {
-        const ipfsImage = await uploadToIPFS(uploadedFile);
-        setUpdatedImage(ipfsImage);
-        fileReader((img) => setUpdatedImage(img), uploadedFile);
-      }
+      const image = await updateImage();
 
       const {
         defaultRoyalties,
@@ -126,7 +138,7 @@ const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
         collection_name: name,
         description,
         display_name: displayName,
-        image: updatedImage,
+        image,
         market_fee: hasUpdatedRoytalies
           ? (parseInt(royalties) / 100).toFixed(6)
           : '',
@@ -255,6 +267,7 @@ const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
               const isValid =
                 (hasValidCharacters && isValidLength) ||
                 input.toLowerCase() === author.toLowerCase();
+              setIsInvalid(!isValid);
               const errorMessage = `Collection name should be your account name (${author}) or a 12-character long name that only contains the numbers 1-5 or lowercase letters a-z`;
               return {
                 isValid,
@@ -292,6 +305,7 @@ const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
               const numberInput = parseFloat(input as string);
               const isValid =
                 !isNaN(numberInput) && numberInput >= 0 && numberInput <= 15;
+              setIsInvalid(!isValid);
               const errorMessage = 'Royalties must be between 0% and 15%';
               return {
                 isValid,
@@ -303,7 +317,7 @@ const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
           <HalfButton
             fullWidth={isMobile}
             type="submit"
-            disabled={formError.length > 0 || isLoading}
+            disabled={isInvalid || formError.length > 0 || isLoading}
             padding={isLoading ? '0 58px' : '11px 16px 13px'}>
             {isLoading ? (
               <Spinner size="42px" radius="10" hasBackground />

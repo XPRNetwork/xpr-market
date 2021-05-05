@@ -4,6 +4,7 @@ import {
   KeyboardEvent,
   Dispatch,
   SetStateAction,
+  FocusEventHandler,
 } from 'react';
 import Tooltip from '../Tooltip';
 import { InputContainer, Input, ErrorMessage } from './InputField.styled';
@@ -21,6 +22,7 @@ type Props = {
     errorMessage: string;
   };
   submit?: () => Promise<void>;
+  onBlur?: FocusEventHandler<HTMLInputElement>;
   tooltip?: string;
   numberOfTooltipLines?: number;
   halfWidth?: boolean;
@@ -42,6 +44,7 @@ const InputField = ({
   setFormError,
   checkIfIsValid,
   submit,
+  onBlur,
   tooltip,
   numberOfTooltipLines,
   halfWidth,
@@ -116,6 +119,7 @@ const InputField = ({
         type={inputType}
         placeholder={placeholder}
         value={value}
+        onBlur={onBlur}
         onChange={updateText}
         onKeyDown={handleKeyDown}
         disabled={disabled}
