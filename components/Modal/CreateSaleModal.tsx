@@ -94,11 +94,12 @@ const SaleModal = ({
         <PriceInput
           amount={amount}
           setAmount={setAmount}
-          submit={onButtonClick}
+          submit={amount ? onButtonClick : null}
           placeholder={`Enter amount in ${TOKEN_SYMBOL}`}
         />
         {getFee()}
         <HalfButton
+          disabled={!amount}
           fullWidth={isMobile}
           margin="24px 0 0"
           onClick={onButtonClick}>
