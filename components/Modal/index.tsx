@@ -8,3 +8,4 @@ export {
   UpdateCollectionModal,
 } from './CollectionModal';
 export { BurnAssetModal } from './BurnAssetModal';
+export { ReportModal } from './ReportModal';

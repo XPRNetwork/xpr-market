@@ -21,6 +21,7 @@ type Props = {
   assetIds?: string[];
   saleIds?: string[];
   isTemplateCreator?: boolean;
+  isMyTemplate: boolean;
 };
 
 const AssetFormPopupMenu = ({
@@ -28,6 +29,7 @@ const AssetFormPopupMenu = ({
   assetIds,
   saleIds,
   isTemplateCreator,
+  isMyTemplate,
 }: Props): JSX.Element => {
   const {
     currentUser: { actor },
@@ -61,7 +63,7 @@ const AssetFormPopupMenu = ({
 
   const popupMenuItems = [
     {
-      isHidden: !assetIds || assetIds.length === 0,
+      isHidden: !isMyTemplate || !assetIds || assetIds.length === 0,
       name: 'Mark all for sale',
       onClick: () => {
         setIsOpen(false);
@@ -76,7 +78,7 @@ const AssetFormPopupMenu = ({
       },
     },
     {
-      isHidden: isMintAssetModalHidden(),
+      isHidden: !isMyTemplate || isMintAssetModalHidden(),
       name: 'Mint more assets',
       onClick: () => {
         setIsOpen(false);
@@ -91,7 +93,7 @@ const AssetFormPopupMenu = ({
       },
     },
     {
-      isHidden: assetIds.length === 0,
+      isHidden: !isMyTemplate || assetIds.length === 0,
       name: 'Transfer NFT',
       onClick: () => {
         setIsOpen(false);
@@ -100,7 +102,7 @@ const AssetFormPopupMenu = ({
       },
     },
     {
-      isHidden: assetIds.length === 0,
+      isHidden: !isMyTemplate || assetIds.length === 0,
       name: 'Burn NFT',
       onClick: () => {
         setIsOpen(false);
@@ -109,11 +111,19 @@ const AssetFormPopupMenu = ({
       },
     },
     {
-      isHidden: !saleIds || saleIds.length === 0,
+      isHidden: !isMyTemplate || !saleIds || saleIds.length === 0,
       name: 'Cancel all sales',
       onClick: () => {
         setIsOpen(false);
         openModal(MODAL_TYPES.CANCEL_MULTIPLE_SALES);
+      },
+    },
+    {
+      isHidden: isTemplateCreator,
+      name: 'Report',
+      onClick: () => {
+        setIsOpen(false);
+        openModal(MODAL_TYPES.REPORT);
       },
     },
   ];

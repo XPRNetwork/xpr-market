@@ -52,16 +52,15 @@ const AssetFormTitle = ({
       </CollectionNameButton>
       <NameContainer>
         <Name>{templateName}</Name>
-        {isMyTemplate && (
-          <AssetFormPopupMenu
-            setCurrentAssetAsModalProps={setCurrentAssetAsModalProps}
-            assetIds={assetIds}
-            saleIds={saleIds}
-            isTemplateCreator={
-              currentUser && collectionAuthor === currentUser.actor
-            }
-          />
-        )}
+        <AssetFormPopupMenu
+          setCurrentAssetAsModalProps={setCurrentAssetAsModalProps}
+          assetIds={assetIds}
+          saleIds={saleIds}
+          isMyTemplate={isMyTemplate}
+          isTemplateCreator={
+            currentUser && collectionAuthor === currentUser.actor
+          }
+        />
       </NameContainer>
       <AuthorText>
         Created by{' '}
