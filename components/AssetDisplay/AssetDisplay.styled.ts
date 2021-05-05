@@ -10,8 +10,11 @@ export const AssetDisplayContainer = styled(FadeInImageContainer)`
   max-height: 500px;
 
   > div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 100%;
-    max-height: 100%;
+    height: 100%;
   }
 
   ${breakpoint.tablet`
@@ -26,8 +29,8 @@ export const AssetDisplayContainer = styled(FadeInImageContainer)`
 
 export const Image = styled.img`
   object-fit: contain;
-  width: 100%;
-  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
   cursor: pointer;
 `;
 
