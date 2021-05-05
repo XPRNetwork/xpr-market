@@ -7,11 +7,9 @@ import {
   MagnifyingIconButton,
   ClearTextButton,
 } from './SearchInput.styled';
-import {
-  SearchCollection,
-  getSearchCollections,
-} from '../../services/collections';
-import { DEFAULT_COLLECTION } from '../../utils/constants';
+import { SearchCollection } from '../../services/collections';
+import { SearchUser } from '../../services/users';
+import { getFromApi } from '../../utils/browser-fetch';
 import { ReactComponent as MagnifyingIcon } from '../../public/icon-light-search-24-px.svg';
 import { ReactComponent as CloseIcon } from '../../public/icon-light-close-16-px.svg';
 
@@ -20,9 +18,10 @@ type Props = {
   closeMobileSearch: () => void;
 };
 
-const defaultSearchCollection: SearchCollection = {
-  name: DEFAULT_COLLECTION,
-  img: '',
+type SearchResponse = {
+  index: string;
+  keys: string[];
+  result: (SearchCollection | SearchUser)[];
 };
 
 const SearchInput = ({
@@ -39,7 +38,8 @@ const SearchInput = ({
   );
   const [searchCollections, setSearchCollections] = useState<
     SearchCollection[]
-  >([defaultSearchCollection]);
+  >([]);
+  const [searchUsers, setSearchUsers] = useState<SearchUser[]>([]);
 
   useEffect(() => {
     const removeInputFocusStyle = (e: MouseEvent) => {
@@ -63,12 +63,29 @@ const SearchInput = ({
 
   useEffect(() => {
     (async () => {
-      if (isSearchInputActive) {
-        const collections = await getSearchCollections();
-        setSearchCollections(collections);
+      if (isSearchInputActive && input) {
+        const res = await getFromApi<{ [account: string]: string }>(
+          `/api/search?query=${input}`
+        );
+        if (res.success) {
+          const result = (res.message as unknown) as SearchResponse[];
+          const collections =
+            result
+              .find((obj) => obj.index === 'market_collections')
+              ?.result.slice(0, 3) || [];
+          const users =
+            result
+              .find((obj) => obj.index === 'market_authors')
+              ?.result.slice(0, 3) || [];
+          setSearchCollections(collections as SearchCollection[]);
+          setSearchUsers(users as SearchUser[]);
+        }
+      } else if (!input) {
+        setSearchCollections([]);
+        setSearchUsers([]);
       }
     })();
-  }, [isSearchInputActive]);
+  }, [input, isSearchInputActive]);
 
   const updateText = (e: ChangeEvent<HTMLInputElement>) =>
     setInput(e.target.value);
@@ -123,13 +140,6 @@ const SearchInput = ({
     }
   };
 
-  const collections = searchCollections
-    .filter(({ name }) => {
-      const isFragment = name.toLowerCase().includes(input.toLowerCase());
-      return isFragment;
-    })
-    .slice(0, 5);
-
   return (
     <InputContainer
       tabIndex={-1}
@@ -155,10 +165,11 @@ const SearchInput = ({
         onKeyDown={handleClearTextButtonKeyDown}>
         <CloseIcon />
       </ClearTextButton>
-      {input && collections.length !== 0 && (
+      {input && searchCollections.length !== 0 && (
         <SearchInputResultsList
           input={input}
-          collections={collections}
+          collections={searchCollections}
+          users={searchUsers}
           inputRef={inputRef}
           resultsListRef={resultsListRef}
           clearTextButtonRef={clearTextButtonRef}
