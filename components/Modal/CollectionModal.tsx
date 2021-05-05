@@ -105,13 +105,24 @@ const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
     }
   };
 
+  const updateImage = async (): Promise<string> => {
+    if (!uploadedFile) {
+      return updatedImage;
+    }
+
+    try {
+      const ipfsImage = await uploadToIPFS(uploadedFile);
+      setUpdatedImage(ipfsImage);
+      fileReader((img) => setUpdatedImage(img), uploadedFile);
+      return ipfsImage;
+    } catch (err) {
+      throw new Error(err.message);
+    }
+  };
+
   const update = async () => {
     try {
-      if (uploadedFile) {
-        const ipfsImage = await uploadToIPFS(uploadedFile);
-        setUpdatedImage(ipfsImage);
-        fileReader((img) => setUpdatedImage(img), uploadedFile);
-      }
+      const image = await updateImage();
 
       const {
         defaultRoyalties,
@@ -126,7 +137,7 @@ const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
         collection_name: name,
         description,
         display_name: displayName,
-        image: updatedImage,
+        image,
         market_fee: hasUpdatedRoytalies
           ? (parseInt(royalties) / 100).toFixed(6)
           : '',
