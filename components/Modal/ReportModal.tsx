@@ -43,6 +43,7 @@ export const ReportModal = (): JSX.Element => {
           <Link>Community Guidelines</Link>.
         </Description>
         <TextArea
+          maxLength={1000}
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder={`Please provide details on why you are concened about this ${type.toLowerCase()}.`}
