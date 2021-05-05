@@ -11,6 +11,7 @@ export const AssetDisplayContainer = styled(FadeInImageContainer)`
 
   > div {
     width: 100%;
+    max-height: 100%;
   }
 
   ${breakpoint.tablet`
