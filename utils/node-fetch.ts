@@ -26,7 +26,7 @@ class NodeFetch<T = void> {
         'Content-Type': 'application/json',
       };
       const isValidBody = body && Object.keys(body).length > 0;
-      const fetchOptions: RequestInit = {
+      const fetchOptions = {
         headers,
         body: isValidBody ? body : null,
         method: method || 'GET',
