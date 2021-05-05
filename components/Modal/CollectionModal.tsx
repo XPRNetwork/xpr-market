@@ -288,6 +288,16 @@ const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
             value={description}
             setFormError={setFormError}
             setValue={setDescription}
+            checkIfIsValid={(input: string) => {
+              const isValid = input.length === 0 || input.length <= 1000;
+              setIsInvalid(!isValid);
+              const errorMessage =
+                'Description is required and can only be a maximum of 1000 characters';
+              return {
+                isValid,
+                errorMessage,
+              };
+            }}
           />
           <InputField
             mt="16px"
