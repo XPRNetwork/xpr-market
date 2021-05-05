@@ -1,5 +1,7 @@
 import { MouseEvent } from 'react';
-import { useAuthContext, useModalContext } from '../Provider';
+import { useModalContext } from '../Provider';
+import { ReportProps } from '../Provider/ModalProvider';
+import { useState } from 'react';
 import {
   Background,
   ModalBox,
@@ -8,17 +10,17 @@ import {
   Title,
   Description,
   HalfButton,
+  TextArea,
+  Link,
 } from './Modal.styled';
-import InputField from '../InputField';
 import { ReactComponent as CloseIcon } from '../../public/close.svg';
 import { useWindowSize } from '../../hooks';
 
 export const ReportModal = (): JSX.Element => {
-  const {
-    currentUser: { actor },
-  } = useAuthContext();
   const { isMobile } = useWindowSize();
   const { closeModal, modalProps } = useModalContext();
+  const { type } = modalProps as ReportProps;
+  const [input, setInput] = useState<string>('');
 
   const handleBackgroundClick = (e: MouseEvent) => {
     if (e.target === e.currentTarget) {
@@ -30,22 +32,25 @@ export const ReportModal = (): JSX.Element => {
     <Background onClick={handleBackgroundClick}>
       <ModalBox>
         <Section>
-          <Title>Report</Title>
+          <Title>Report this {type}?</Title>
           <CloseIconContainer role="button" onClick={closeModal}>
             <CloseIcon />
           </CloseIconContainer>
         </Section>
         <Description>
-          Are you sure you want to burn this NFT? This action will permanently
-          delete the NFT and cannot be undone.
+          We take reports of harm and abuse seriously. To learn more about our
+          standards for member behavior, you can read our{' '}
+          <Link>Community Guidelines</Link>.
         </Description>
-        <InputField value={'Report'} disabled mb="24px" />
+        <TextArea
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder={`Please provide details on why you are concened about this ${type.toLowerCase()}.`}
+        />
         <HalfButton
           fullWidth={isMobile}
-          color="#f94e6c"
-          hoverColor="#ff778e"
           margin="0 0 12px"
-          onClick={() => console.log('report')}>
+          onClick={() => console.log('report: ', input)}>
           Report
         </HalfButton>
       </ModalBox>

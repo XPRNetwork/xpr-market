@@ -41,7 +41,7 @@ const PageHeader = ({
   isLightKYCVerified,
 }: PageHeaderProps): JSX.Element => {
   const { currentUser } = useAuthContext();
-  const { openModal } = useModalContext();
+  const { openModal, setModalProps } = useModalContext();
   const [shareActive, setShareActive] = useState<boolean>(false);
   const shareRef = useRef(null);
   useClickAway(shareRef, () => setShareActive(false));
@@ -79,7 +79,10 @@ const PageHeader = ({
     <RoundButton
       size="40px"
       margin="0 0 0 8px"
-      onClick={() => openModal(MODAL_TYPES.REPORT)}>
+      onClick={() => {
+        setModalProps({ type: type === 'user' ? 'creator' : 'collection' });
+        openModal(MODAL_TYPES.REPORT);
+      }}>
       <ReportIcon />
     </RoundButton>
   );

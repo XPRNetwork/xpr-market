@@ -122,6 +122,7 @@ const AssetFormPopupMenu = ({
       isHidden: isTemplateCreator,
       name: 'Report',
       onClick: () => {
+        setModalProps({ type: 'NFT' });
         setIsOpen(false);
         openModal(MODAL_TYPES.REPORT);
       },
