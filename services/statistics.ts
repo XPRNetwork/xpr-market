@@ -40,9 +40,9 @@ const getTotalVolumeAndSales = async (): Promise<{
   }
 };
 
-const getTodaysTotalSales = async (): Promise<number> => {
+const getDailyTotalSales = async (): Promise<number> => {
   const d = new Date();
-  const midnightDate = d.setUTCHours(0, 0, 0, 0);
+  const utcDateTime = d.setUTCHours(d.getUTCHours() - 24);
   const limit = 100;
   let page = 1;
   let salesToday = 0;
@@ -56,7 +56,7 @@ const getTodaysTotalSales = async (): Promise<number> => {
         sort: 'volumes',
         page,
         limit,
-        after: midnightDate,
+        after: utcDateTime,
       };
       const queryParams = toQueryString(queryObject);
 
@@ -125,7 +125,7 @@ export const getStatistics = async (): Promise<Statistics> => {
     transactions = isNaN(parseInt(sales)) ? 0 : parseInt(sales);
     totalSales = isNaN(parseInt(volume)) ? 0 : parseInt(volume);
 
-    salesToday = await getTodaysTotalSales();
+    salesToday = await getDailyTotalSales();
     nftsCreated = await getNFTsCreatedCount();
 
     return {
