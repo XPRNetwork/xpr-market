@@ -15,7 +15,7 @@ const MarketPlace = (): JSX.Element => {
       <ExploreCard />
       <HomepageStatistics />
       <Title>New &amp; Noteworthy</Title>
-      <Grid items={featuredTemplates || []} />
+      <Grid items={featuredTemplates} />
     </PageLayout>
   );
 };

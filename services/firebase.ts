@@ -9,14 +9,13 @@ const { publicRuntimeConfig } = getConfig();
 const initializeFirebase = async () => {
   try {
     firebase.initializeApp(publicRuntimeConfig.firebase);
-    firebase.auth().signInAnonymously();
+    await firebase.auth().signInAnonymously();
+    return firebase.firestore();
   } catch (err) {
     if (!/already exists/.test(err.message)) {
       console.error('Firebase initialization error', err.stack);
     }
   }
-
-  return firebase.firestore();
 };
 
 export const useFirebaseFeaturedTemplates = (): Template[] => {
