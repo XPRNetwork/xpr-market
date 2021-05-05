@@ -58,6 +58,7 @@ const SaleModal = ({
   const { closeModal } = useModalContext();
   const { currentUser } = useAuthContext();
   const { isMobile } = useWindowSize();
+  const isInvalid = !amount || amount === 'NaN';
 
   useEffect(() => {
     const fee = fees.calculateFee({
@@ -94,12 +95,12 @@ const SaleModal = ({
         <PriceInput
           amount={amount}
           setAmount={setAmount}
-          submit={amount ? onButtonClick : null}
+          submit={isInvalid ? null : onButtonClick}
           placeholder={`Enter amount in ${TOKEN_SYMBOL}`}
         />
         {getFee()}
         <HalfButton
-          disabled={!amount}
+          disabled={isInvalid}
           fullWidth={isMobile}
           margin="24px 0 0"
           onClick={onButtonClick}>
