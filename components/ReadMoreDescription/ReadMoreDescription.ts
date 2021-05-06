@@ -4,15 +4,16 @@ type DescriptionProps = {
   mb: string;
   maxWidth: string;
   textAlign: string;
+  fontColor: string;
 };
 
 export const Description = styled.span<DescriptionProps>`
   margin-bottom: ${({ mb }) => mb};
   max-width: ${({ maxWidth }) => maxWidth};
   text-align: ${({ textAlign }) => textAlign};
+  color: ${({ fontColor }) => fontColor};
   font-size: 14px;
   line-height: 24px;
-  color: #1a1a1a;
 `;
 
 export const More = styled.span`

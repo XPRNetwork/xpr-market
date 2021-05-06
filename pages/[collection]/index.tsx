@@ -163,7 +163,6 @@ const CollectionPage = (): JSX.Element => {
 
     const {
       name,
-      collection_name,
       img,
       data: { description },
     } = collectionData;
@@ -173,7 +172,6 @@ const CollectionPage = (): JSX.Element => {
         <PageHeader
           image={img}
           name={name || collection}
-          subName={collection_name}
           description={description}
           type="collection"
           hasEditFunctionality={isEditButtonVisible}
