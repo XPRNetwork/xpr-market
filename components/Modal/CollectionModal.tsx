@@ -307,6 +307,7 @@ const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
             max={15}
             step={1}
             value={royalties}
+            setFormError={setFormError}
             setValue={setRoyalties}
             placeholder="Royalties"
             tooltip="A percentage of gross revenues derived from the use of an asset sold"
