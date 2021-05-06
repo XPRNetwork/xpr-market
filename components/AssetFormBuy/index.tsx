@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import Button from '../Button';
-import AssetDescription from '../AssetDescription';
+import ReadMoreDescription from '../ReadMoreDescription';
 import { useAuthContext } from '../Provider';
 import {
   ErrorMessage,
@@ -82,7 +82,7 @@ export const AssetFormBuy = ({
 
   return (
     <>
-      {description ? <AssetDescription description={description} /> : ''}
+      {description ? <ReadMoreDescription description={description} /> : ''}
       <Row>
         <General>Lowest Market Price</General>
         <General>Edition Size</General>
