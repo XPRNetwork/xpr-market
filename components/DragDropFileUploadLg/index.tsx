@@ -33,11 +33,15 @@ import { fileReader } from '../../utils';
 type Props = {
   setTemplateUploadedFile: Dispatch<SetStateAction<File>>;
   templateUploadedFile: File;
+  setUploadedFilePreview: Dispatch<SetStateAction<string>>;
+  uploadedFilePreview: string;
 };
 
 const DragDropFileUploadLg = ({
   setTemplateUploadedFile,
   templateUploadedFile,
+  uploadedFilePreview,
+  setUploadedFilePreview,
 }: Props): JSX.Element => {
   const onDrop = useCallback((acceptedFiles) => {
     setUploadError('');
@@ -45,9 +49,9 @@ const DragDropFileUploadLg = ({
     const isAcceptedFileType = LG_FILE_UPLOAD_TYPES[file.type] || false;
     const isAcceptedFileSize = file.size <= LG_FILE_SIZE_UPLOAD_LIMIT; // 30MB
     if (isAcceptedFileType && isAcceptedFileSize) {
-      setUploadPreview(null);
+      setUploadedFilePreview(null);
       setTemplateUploadedFile(file);
-      fileReader((result) => setUploadPreview(result), file);
+      fileReader((result) => setUploadedFilePreview(result), file);
     } else {
       setUploadError(
         'Unable to upload, please double check your file size or file type.'
@@ -55,7 +59,6 @@ const DragDropFileUploadLg = ({
     }
   }, []);
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
-  const [uploadPreview, setUploadPreview] = useState<string>('');
   const [uploadError, setUploadError] = useState<string>('');
 
   const extToMime = {
@@ -72,16 +75,10 @@ const DragDropFileUploadLg = ({
   const accept =
     Object.values(extToMime).join(',') + ',' + Object.keys(extToMime).join(',');
 
-  useEffect(() => {
-    if (templateUploadedFile && !uploadPreview) {
-      fileReader((result) => setUploadPreview(result), templateUploadedFile);
-    }
-  }, [templateUploadedFile, uploadPreview]);
-
   return (
     <Container {...getRootProps()} isDragActive={isDragActive}>
       <input {...getInputProps()} accept={accept} />
-      {templateUploadedFile && uploadPreview ? (
+      {templateUploadedFile && uploadedFilePreview ? (
         <Preview>
           <ImageInfo>
             <PreviewImageContainer>
@@ -91,7 +88,7 @@ const DragDropFileUploadLg = ({
                   height="64"
                   muted
                   playsInline
-                  src={`${uploadPreview}`}
+                  src={`${uploadedFilePreview}`}
                 />
               ) : (
                 <Image
@@ -99,7 +96,7 @@ const DragDropFileUploadLg = ({
                   height="64px"
                   objectFit="contain"
                   alt={templateUploadedFile.name}
-                  src={uploadPreview}
+                  src={uploadedFilePreview}
                 />
               )}
             </PreviewImageContainer>
@@ -115,7 +112,7 @@ const DragDropFileUploadLg = ({
             onClick={(e) => {
               e.stopPropagation();
               setTemplateUploadedFile(null);
-              setUploadPreview('');
+              setUploadedFilePreview('');
             }}>
             <CloseIcon />
           </RemovePreviewIcon>
