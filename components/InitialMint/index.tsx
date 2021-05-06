@@ -151,7 +151,10 @@ const InitialMint = ({
         )}
       </Button>
       <BackButton
-        onClick={() => setPageState(CREATE_PAGE_STATES.CREATE_TEMPLATE)}>
+        onClick={() => {
+          setMintAmount('');
+          setPageState(CREATE_PAGE_STATES.CREATE_TEMPLATE);
+        }}>
         Back
       </BackButton>
     </>

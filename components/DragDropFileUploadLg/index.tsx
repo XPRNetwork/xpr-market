@@ -1,5 +1,11 @@
 /* eslint-disable jsx-a11y/media-has-caption */
-import { useCallback, useState, Dispatch, SetStateAction } from 'react';
+import {
+  useCallback,
+  useState,
+  useEffect,
+  Dispatch,
+  SetStateAction,
+} from 'react';
 import { useDropzone } from 'react-dropzone';
 import { Image } from '../../styles/index.styled';
 import {
@@ -65,6 +71,12 @@ const DragDropFileUploadLg = ({
   };
   const accept =
     Object.values(extToMime).join(',') + ',' + Object.keys(extToMime).join(',');
+
+  useEffect(() => {
+    if (templateUploadedFile && !uploadPreview) {
+      fileReader((result) => setUploadPreview(result), templateUploadedFile);
+    }
+  }, [templateUploadedFile, uploadPreview]);
 
   return (
     <Container {...getRootProps()} isDragActive={isDragActive}>

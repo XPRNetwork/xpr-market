@@ -89,6 +89,13 @@ const CreateTemplate = ({
     goToMint();
   };
 
+  const resetTemplatePage = () => {
+    setTemplateUploadedFile(null);
+    setTemplateName('');
+    setTemplateDescription('');
+    setMaxSupply('');
+  };
+
   return (
     <>
       <Step>Step 2 of 3</Step>
@@ -139,7 +146,10 @@ const CreateTemplate = ({
       {formError ? <ErrorMessage>{formError}</ErrorMessage> : null}
       <Button onClick={validateAndProceed}>Continue</Button>
       <BackButton
-        onClick={() => setPageState(CREATE_PAGE_STATES.CHOOSE_COLLECTION)}>
+        onClick={() => {
+          resetTemplatePage();
+          setPageState(CREATE_PAGE_STATES.CHOOSE_COLLECTION);
+        }}>
         Back
       </BackButton>
     </>
