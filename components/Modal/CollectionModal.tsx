@@ -288,6 +288,16 @@ const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
             value={description}
             setFormError={setFormError}
             setValue={setDescription}
+            checkIfIsValid={(input: string) => {
+              const isValid = input.length === 0 || input.length <= 1000;
+              setIsInvalid(!isValid);
+              const errorMessage =
+                'Description is required (1000 characters or less)';
+              return {
+                isValid,
+                errorMessage,
+              };
+            }}
           />
           <InputField
             mt="16px"
@@ -297,6 +307,7 @@ const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
             max={15}
             step={1}
             value={royalties}
+            setFormError={setFormError}
             setValue={setRoyalties}
             placeholder="Royalties"
             tooltip="A percentage of gross revenues derived from the use of an asset sold"

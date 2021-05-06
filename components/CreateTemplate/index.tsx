@@ -15,6 +15,8 @@ import { LG_FILE_UPLOAD_TYPES_TEXT } from '../../utils/constants';
 
 type Props = {
   goToMint: () => void;
+  setUploadedFilePreview: Dispatch<SetStateAction<string>>;
+  uploadedFilePreview: string;
   setTemplateUploadedFile: Dispatch<SetStateAction<File>>;
   templateUploadedFile: File;
   templateName: string;
@@ -37,6 +39,8 @@ const CreateTemplate = ({
   maxSupply,
   setMaxSupply,
   setPageState,
+  setUploadedFilePreview,
+  uploadedFilePreview,
 }: Props): JSX.Element => {
   const [formError, setFormError] = useState<string>('');
 
@@ -89,6 +93,14 @@ const CreateTemplate = ({
     goToMint();
   };
 
+  const resetTemplatePage = () => {
+    setTemplateUploadedFile(null);
+    setUploadedFilePreview('');
+    setTemplateName('');
+    setTemplateDescription('');
+    setMaxSupply('');
+  };
+
   return (
     <>
       <Step>Step 2 of 3</Step>
@@ -102,6 +114,8 @@ const CreateTemplate = ({
       <DragDropFileUploadLg
         setTemplateUploadedFile={setTemplateUploadedFile}
         templateUploadedFile={templateUploadedFile}
+        setUploadedFilePreview={setUploadedFilePreview}
+        uploadedFilePreview={uploadedFilePreview}
       />
       <InputField
         mt="16px"
@@ -139,7 +153,10 @@ const CreateTemplate = ({
       {formError ? <ErrorMessage>{formError}</ErrorMessage> : null}
       <Button onClick={validateAndProceed}>Continue</Button>
       <BackButton
-        onClick={() => setPageState(CREATE_PAGE_STATES.CHOOSE_COLLECTION)}>
+        onClick={() => {
+          resetTemplatePage();
+          setPageState(CREATE_PAGE_STATES.CHOOSE_COLLECTION);
+        }}>
         Back
       </BackButton>
     </>

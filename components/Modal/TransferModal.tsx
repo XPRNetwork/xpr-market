@@ -18,6 +18,7 @@ import {
 import InputField from '../InputField';
 import { useWindowSize } from '../../hooks';
 import ProtonSDK from '../../services/proton';
+import proton from '../../services/proton-rpc';
 import { ReactComponent as CloseIcon } from '../../public/close.svg';
 
 export const TransferModal = (): JSX.Element => {
@@ -32,15 +33,26 @@ export const TransferModal = (): JSX.Element => {
   const [memo, setMemo] = useState<string>('');
   const [error, setError] = useState<string>('');
   const { isMobile } = useWindowSize();
+  const [isValid, setIsValid] = useState<boolean>(false);
 
   const transfer = async () => {
     try {
-      if (recipient.length == 0 || recipient.length > 12) {
+      if (recipient.length < 4 || recipient.length > 12 || !isValid) {
         return;
       }
+
+      const user = await proton.getUserByChainAccount({
+        account: recipient,
+      });
+
+      if (!user) {
+        setError('Invalid user. Please try again.');
+        return;
+      }
+
       const res = await ProtonSDK.transfer({
         sender: currentUser ? currentUser.actor : '',
-        recipient: recipient,
+        recipient,
         asset_id: assetId,
         memo,
       });
@@ -84,10 +96,14 @@ export const TransferModal = (): JSX.Element => {
             setFormError={setError}
             placeholder="Receiver name"
             mb="16px"
-            checkIfIsValid={(input) => {
-              const isValid = (input as string).length < 13;
+            checkIfIsValid={(input: string) => {
+              const isValid =
+                input.length >= 4 &&
+                input.length < 13 &&
+                !!input.match(/^[a-z1-5]+$/);
+              setIsValid(isValid);
               const errorMessage =
-                "Error: Recipient's name must be 12 characters or less.";
+                "Recipient's name must be 4-12 characters and only contain the numbers 1-5 or lowercase letters a-z";
               return {
                 isValid,
                 errorMessage,
@@ -101,7 +117,11 @@ export const TransferModal = (): JSX.Element => {
             placeholder="Memo"
             mb="24px"
           />
-          <HalfButton fullWidth={isMobile} onClick={transfer} margin="0">
+          <HalfButton
+            fullWidth={isMobile}
+            onClick={transfer}
+            margin="0"
+            disabled={!isValid}>
             Transfer
           </HalfButton>
           {error ? <ErrorMessage>{error}</ErrorMessage> : null}

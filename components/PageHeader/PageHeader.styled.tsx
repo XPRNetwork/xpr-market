@@ -20,7 +20,7 @@ export const ImageContainer = styled.div`
   width: 120px;
   height: 120px;
   border-radius: 100%;
-  margin-bottom: 32px;
+  margin-bottom: 16px;
   overflow: hidden;
 
   ${breakpoint.mobile`
@@ -31,8 +31,8 @@ export const ImageContainer = styled.div`
 `;
 
 export const Name = styled.p`
-  font-size: 48px;
-  line-height: 1.17;
+  font-size: 40px;
+  line-height: 56px;
   color: #1a1a1a;
   text-align: center;
 
@@ -43,26 +43,15 @@ export const Name = styled.p`
 `;
 
 export const SubName = styled.p`
-  line-height: 1.43;
-  font-size: 28px;
-  color: #752eeb;
-  margin-bottom: 16px;
+  line-height: 24px;
+  font-size: 18px;
+  color: #808080;
+  margin-bottom: 24px;
 
   ${breakpoint.mobile`
     font-size: 21px;
     line-height: 1.52;
   `}
-`;
-
-export const Description = styled.p`
-  font-size: 14px;
-  line-height: 1.71;
-  color: #1a1a1a;
-  margin-bottom: 8px;
-  max-width: 660px;
-  width: 100%;
-  overflow-wrap: break-word;
-  text-align: center;
 `;
 
 export const RoundButton = styled.button<RoundButtonProps>`

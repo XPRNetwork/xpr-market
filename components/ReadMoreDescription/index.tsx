@@ -1,22 +1,32 @@
 import { useState } from 'react';
-import { Description, More } from './AssetDescription.styled';
+import { Description, More } from './ReadMoreDescription';
 
 type Props = {
   description: string;
+  mb: string;
+  maxWidth: string;
+  textAlign: string;
+  fontColor: string;
+  maxDescriptionLength: number;
 };
 
-const MAX_DESCRIPTION_LENGTH = 170;
-
-export const AssetDescription = ({ description }: Props): JSX.Element => {
+const ReadMoreDescription = ({
+  description,
+  mb,
+  maxWidth,
+  textAlign,
+  fontColor,
+  maxDescriptionLength,
+}: Props): JSX.Element => {
   const words = description.split(' ');
   const [isDescriptionActive, setIsDescriptionActive] = useState(false);
 
   const getDescriptionSnippet = () => {
-    if (description.length <= MAX_DESCRIPTION_LENGTH) {
+    if (description.length <= maxDescriptionLength) {
       return description;
     }
 
-    let maxCharacters = MAX_DESCRIPTION_LENGTH;
+    let maxCharacters = maxDescriptionLength;
     for (let index = 0; index < words.length; index++) {
       const word = words[index];
       maxCharacters -= word.length + 1;
@@ -43,9 +53,13 @@ export const AssetDescription = ({ description }: Props): JSX.Element => {
   };
 
   return (
-    <Description>
+    <Description
+      mb={mb}
+      maxWidth={maxWidth}
+      textAlign={textAlign}
+      fontColor={fontColor}>
       {renderedDescription}
-      {description.length > MAX_DESCRIPTION_LENGTH ? (
+      {description.length > maxDescriptionLength ? (
         <>
           {isDescriptionActive ? ' ' : '... '}
           <More onClick={handleDescription}>
@@ -59,4 +73,13 @@ export const AssetDescription = ({ description }: Props): JSX.Element => {
   );
 };
 
-export default AssetDescription;
+ReadMoreDescription.defaultProps = {
+  description: '',
+  mb: '32px',
+  maxWidth: '424px',
+  textAlign: 'left',
+  fontColor: '1a1a1a',
+  maxDescriptionLength: 170,
+};
+
+export default ReadMoreDescription;

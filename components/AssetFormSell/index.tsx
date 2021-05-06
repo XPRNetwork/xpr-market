@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from 'react';
 import Button from '../Button';
-import AssetDescription from '../AssetDescription';
+import ReadMoreDescription from '../ReadMoreDescription';
 import {
   DropdownMenu,
   General,
@@ -40,7 +40,7 @@ export const AssetFormSell = ({
 
   return (
     <>
-      {description ? <AssetDescription description={description} /> : ''}
+      {description ? <ReadMoreDescription description={description} /> : ''}
       <Row>
         <General>Lowest Market Price</General>
         <General>Edition Size</General>

@@ -83,8 +83,15 @@ export const useWindowSize = (): {
   return { windowWidth, isMobile, isTablet, isLaptop, isDesktop };
 };
 
-export const useNavigatorUserAgent = (): { isDesktop: boolean } => {
+export const useNavigatorUserAgent = (): {
+  isDesktop: boolean;
+  isBrowserVideoCompatible: boolean;
+} => {
   const [isDesktop, setIsDesktop] = useState<boolean>();
+  const [
+    isBrowserVideoCompatible,
+    setIsBrowserVideoCompatible,
+  ] = useState<boolean>(true);
 
   const checkIfDesktop = () => {
     const isMobile =
@@ -107,7 +114,14 @@ export const useNavigatorUserAgent = (): { isDesktop: boolean } => {
     };
   }, []);
 
-  return { isDesktop };
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const isFirefox = navigator.userAgent.toLowerCase().includes('firefox');
+      setIsBrowserVideoCompatible(!isFirefox);
+    }
+  }, []);
+
+  return { isDesktop, isBrowserVideoCompatible };
 };
 
 export const useEscapeKeyClose = (close: () => void): void => {
