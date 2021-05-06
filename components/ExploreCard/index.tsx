@@ -40,7 +40,6 @@ const ExploreCard = (): JSX.Element => {
         </ButtonWrapper>
       </Content>
       <ImageContainer>
-        {' '}
         <Image
           width="100%"
           height="100%"
