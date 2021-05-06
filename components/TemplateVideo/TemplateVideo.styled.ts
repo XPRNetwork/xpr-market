@@ -36,3 +36,18 @@ export const Video = styled.video`
   outline: none;
   z-index: 1;
 `;
+
+export const VideoError = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  border-radius: 16px;
+  padding: 20px;
+  font-size: 16px;
+  line-height: 24px;
+  z-index: 1;
+  background: #e6e6e6;
+`;
