@@ -33,10 +33,11 @@ export const TransferModal = (): JSX.Element => {
   const [memo, setMemo] = useState<string>('');
   const [error, setError] = useState<string>('');
   const { isMobile } = useWindowSize();
+  const [isValid, setIsValid] = useState<boolean>(false);
 
   const transfer = async () => {
     try {
-      if (recipient.length < 4 || recipient.length > 12) {
+      if (recipient.length < 4 || recipient.length > 12 || !isValid) {
         return;
       }
 
@@ -96,9 +97,13 @@ export const TransferModal = (): JSX.Element => {
             placeholder="Receiver name"
             mb="16px"
             checkIfIsValid={(input: string) => {
-              const isValid = input.length >= 4 && input.length < 13;
+              const isValid =
+                input.length >= 4 &&
+                input.length < 13 &&
+                !!input.match(/^[a-z1-5]+$/);
+              setIsValid(isValid);
               const errorMessage =
-                "Error: Recipient's name must be 4-12 characters";
+                "Recipient's name must be 4-12 characters and only contain the numbers 1-5 or lowercase letters a-z";
               return {
                 isValid,
                 errorMessage,
@@ -112,7 +117,11 @@ export const TransferModal = (): JSX.Element => {
             placeholder="Memo"
             mb="24px"
           />
-          <HalfButton fullWidth={isMobile} onClick={transfer} margin="0">
+          <HalfButton
+            fullWidth={isMobile}
+            onClick={transfer}
+            margin="0"
+            disabled={!isValid}>
             Transfer
           </HalfButton>
           {error ? <ErrorMessage>{error}</ErrorMessage> : null}
