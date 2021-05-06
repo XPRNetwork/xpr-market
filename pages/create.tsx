@@ -68,6 +68,7 @@ const Create = (): JSX.Element => {
   const [templateUploadedFile, setTemplateUploadedFile] = useState<File | null>(
     null
   );
+  const [uploadedFilePreview, setUploadedFilePreview] = useState<string>('');
   const [collectionsList, setCollectionsList] = useState<Collection[]>([]);
   const [createNftError, setCreateNftError] = useState<string>('');
   const [mintFee, setMintFee] = useState<MintFee>(MintFeeInitial);
@@ -226,6 +227,8 @@ const Create = (): JSX.Element => {
               maxSupply={maxSupply}
               setMaxSupply={setMaxSupply}
               setPageState={setPageState}
+              uploadedFilePreview={uploadedFilePreview}
+              setUploadedFilePreview={setUploadedFilePreview}
             />
           </CreatePageLayout>
         );
