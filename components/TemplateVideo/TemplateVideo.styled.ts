@@ -49,5 +49,6 @@ export const VideoError = styled.div`
   font-size: 16px;
   line-height: 24px;
   z-index: 1;
+  color: #808080;
   background: #e6e6e6;
 `;
