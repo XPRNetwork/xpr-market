@@ -41,8 +41,9 @@ const ExploreCard = (): JSX.Element => {
       <ImageContainer>
         {isMobile ? (
           <Image
-            width="875px"
-            height="430px"
+            width="100%"
+            height="100%"
+            objectFit="cover"
             alt="ExploreMobile"
             src="/ExploreMobile.png"
           />
