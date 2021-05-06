@@ -181,9 +181,14 @@ const DesktopNavRoutes = () => {
       {routes.map(({ name, path }) => {
         const isActive = router.pathname.split('/')[1] === path.split('/')[1];
         const isHidden = !currentUser;
+        const refreshPage = () => router.reload();
         return isHidden ? null : (
           <Link href={path} passHref key={name}>
-            <DesktopNavLink isActive={isActive}>{name}</DesktopNavLink>
+            <DesktopNavLink
+              isActive={isActive}
+              onClick={isActive ? refreshPage : null}>
+              {name}
+            </DesktopNavLink>
           </Link>
         );
       })}
