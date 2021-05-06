@@ -98,6 +98,7 @@ const PageHeader = ({
           description={description}
           mb="8px"
           maxWidth="660px"
+          textAlign="center"
           maxDescriptionLength={640}
         />
       ) : null}

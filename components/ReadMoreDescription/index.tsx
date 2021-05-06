@@ -5,6 +5,7 @@ type Props = {
   description: string;
   mb: string;
   maxWidth: string;
+  textAlign: string;
   maxDescriptionLength: number;
 };
 
@@ -12,6 +13,7 @@ const ReadMoreDescription = ({
   description,
   mb,
   maxWidth,
+  textAlign,
   maxDescriptionLength,
 }: Props): JSX.Element => {
   const words = description.split(' ');
@@ -49,7 +51,7 @@ const ReadMoreDescription = ({
   };
 
   return (
-    <Description mb={mb} maxWidth={maxWidth}>
+    <Description mb={mb} maxWidth={maxWidth} textAlign={textAlign}>
       {renderedDescription}
       {description.length > maxDescriptionLength ? (
         <>
@@ -69,6 +71,7 @@ ReadMoreDescription.defaultProps = {
   description: '',
   mb: '32px',
   maxWidth: '424px',
+  textAlign: 'left',
   maxDescriptionLength: 170,
 };
 
