@@ -21,6 +21,7 @@ const TemplateVideo = ({
           autoPlay={autoPlay}
           controls={controls}
           loop
+          poster={src}
           src={src}
           onClick={(e) => e.stopPropagation()}
         />
