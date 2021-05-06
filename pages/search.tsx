@@ -111,14 +111,9 @@ const Search = (): JSX.Element => {
       );
     }
 
-    const numberOfTemplatesString =
-      renderedTemplates.length === 1
-        ? `${renderedTemplates.length} result`
-        : `${renderedTemplates.length} results`;
-
     const title = searchTerm ? (
       <>
-        {numberOfTemplatesString} for “<PurpleSpan>{searchTerm}</PurpleSpan>”
+        Search results for “<PurpleSpan>{searchTerm}</PurpleSpan>”
       </>
     ) : (
       'No results found'
