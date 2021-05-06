@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import Button from '../Button';
 import { Image } from '../../styles/index.styled';
-import { useWindowSize } from '../../hooks';
+import { useNavigatorUserAgent, useWindowSize } from '../../hooks';
 import { useAuthContext } from '../Provider';
 import {
   Container,
@@ -14,8 +14,9 @@ import {
 
 const ExploreCard = (): JSX.Element => {
   const router = useRouter();
-  const { isMobile } = useWindowSize();
   const { currentUser, login } = useAuthContext();
+  const { isDesktop } = useNavigatorUserAgent();
+  const { isMobile } = useWindowSize();
 
   const handleGetStartedClick = currentUser
     ? () => router.push('/create')
@@ -32,29 +33,21 @@ const ExploreCard = (): JSX.Element => {
           <Button
             fullWidth
             margin="0"
-            smallSize={isMobile}
+            smallSize={isMobile || !isDesktop}
             onClick={handleGetStartedClick}>
             Get Started
           </Button>
         </ButtonWrapper>
       </Content>
       <ImageContainer>
-        {isMobile ? (
-          <Image
-            width="100%"
-            height="100%"
-            objectFit="cover"
-            alt="ExploreMobile"
-            src="/ExploreMobile.png"
-          />
-        ) : (
-          <Image
-            width="672px"
-            height="320px"
-            alt="Explore"
-            src="/Explore.png"
-          />
-        )}
+        {' '}
+        <Image
+          width="100%"
+          height="100%"
+          objectFit="cover"
+          alt="Explore"
+          src={isMobile || !isDesktop ? '/ExploreMobile.png' : 'Explore.png'}
+        />
       </ImageContainer>
     </Container>
   );
