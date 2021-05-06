@@ -6,7 +6,6 @@ import {
   RoundButton,
   Name,
   SubName,
-  Description,
   ButtonContainer,
 } from './PageHeader.styled';
 import { ReactComponent as MoreIcon } from '../../public/more.svg';
@@ -14,6 +13,7 @@ import ShareOnSocial from '../ShareOnSocial';
 import { useClickAway } from '../../hooks';
 import { IPFS_RESOLVER_IMAGE, RESIZER_IMAGE } from '../../utils/constants';
 import { useModalContext, MODAL_TYPES } from '../Provider';
+import ReadMoreDescription from '../ReadMoreDescription';
 
 type PageHeaderProps = {
   image?: string;
@@ -93,7 +93,14 @@ const PageHeader = ({
         {subNameIcon}
         {subName}
       </SubName>
-      {description ? <Description>{description}</Description> : null}
+      {description ? (
+        <ReadMoreDescription
+          description={description}
+          mb="8px"
+          maxWidth="660px"
+          maxDescriptionLength={640}
+        />
+      ) : null}
       {buttons}
     </PageHeaderContainer>
   );
