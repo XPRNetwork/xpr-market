@@ -145,24 +145,22 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
     }
   };
 
-  const checkSerialAndRefetch = async (lastAssetMintNumber: string) => {
+  const checkSerialAndRefetch = async () => {
     const owner = currentUser ? currentUser.actor : '';
-    let lastAssetTemplateMint = lastAssetMintNumber;
+    let lastAssetTemplateMint = '0';
 
-    if (lastAssetTemplateMint === '0') {
-      setIsRefetching(true);
-      while (lastAssetTemplateMint === '0') {
-        await delay(10000);
-        const refetchedAssets = await getAllUserAssetsByTemplate(
-          owner,
-          templateId
-        );
-        lastAssetTemplateMint =
-          refetchedAssets[refetchedAssets.length - 1].template_mint;
-      }
-      fetchPageData();
-      setIsRefetching(false);
+    setIsRefetching(true);
+    while (lastAssetTemplateMint === '0') {
+      await delay(10000);
+      const refetchedAssets = await getAllUserAssetsByTemplate(
+        owner,
+        templateId
+      );
+      lastAssetTemplateMint =
+        refetchedAssets[refetchedAssets.length - 1].template_mint;
     }
+    fetchPageData();
+    setIsRefetching(false);
   };
 
   useEffect(() => {
