@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import DetailsLayout from '../../../../components/DetailsLayout';
@@ -12,12 +13,14 @@ import {
 } from '../../../../components/Provider';
 import { getTemplateDetails, Template } from '../../../../services/templates';
 import {
+  getAllUserAssetsByTemplate,
   getUserTemplateAssets,
   Asset,
   FullSaleDataByAssetId,
 } from '../../../../services/assets';
 import fees from '../../../../services/fees';
 import { TAB_TYPES, RouterQuery } from '../../../../utils/constants';
+import { delay } from '../../../../utils';
 
 const emptyTemplateDetails = {
   lowestPrice: '',
@@ -68,6 +71,7 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
   const [assetIds, setAssetIds] = useState<string[]>([]);
   const [saleIds, setSaleIds] = useState<string[]>();
   const [activeTab, setActiveTab] = useState<string>(TAB_TYPES.ITEM);
+  const [isRefetching, setIsRefetching] = useState<boolean>(false);
 
   const isSelectedAssetBeingSold =
     saleDataByAssetId[currentAsset.asset_id] &&
@@ -91,10 +95,15 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
 
       const templateDetails = await getTemplateDetails(collection, templateId);
 
-      const { assets, saleData } = await getUserTemplateAssets(
-        owner,
-        templateId
-      );
+      let { assets, saleData } = await getUserTemplateAssets(owner, templateId);
+
+      const lastAssetTemplateMint =
+        assets.length > 0 ? assets[assets.length - 1].template_mint : '1';
+      if (lastAssetTemplateMint === '0') {
+        assets = assets.filter((asset) => asset.template_mint !== '0');
+        // await left out purposefully so that refetch runs in background
+        checkSerialAndRefetch();
+      }
 
       const assetIds = assets
         .filter(({ asset_id }) => !saleData[asset_id])
@@ -126,7 +135,6 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
           saleId: saleData[asset_id] ? saleData[asset_id].saleId : '',
         }));
       }
-
       setAssetIds(assetIds);
       setSaleIds(saleIds);
       setTemplateAssets(assets);
@@ -136,6 +144,24 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
     } catch (e) {
       setError(e.message);
     }
+  };
+
+  const checkSerialAndRefetch = async () => {
+    const owner = currentUser ? currentUser.actor : '';
+    let lastAssetTemplateMint = '0';
+
+    setIsRefetching(true);
+    while (lastAssetTemplateMint === '0') {
+      await delay(10000);
+      const refetchedAssets = await getAllUserAssetsByTemplate(
+        owner,
+        templateId
+      );
+      lastAssetTemplateMint =
+        refetchedAssets[refetchedAssets.length - 1].template_mint;
+    }
+    fetchPageData();
+    setIsRefetching(false);
   };
 
   useEffect(() => {
@@ -225,6 +251,7 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
           maxSupply={max_supply}
           buttonText={buttonText}
           assetId={currentAsset.asset_id}
+          isRefetchingAssets={isRefetching}
           handleButtonClick={handleButtonClick}
           setCurrentAsset={setCurrentAsset}
         />
