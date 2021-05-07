@@ -5,10 +5,11 @@ import { Template } from '../../services/templates';
 import { Container } from './Grid.styled';
 
 type Props = {
+  isLoadingPrices: boolean;
   items: Template[];
 };
 
-const Grid = ({ items }: Props): JSX.Element => {
+const Grid = ({ isLoadingPrices, items }: Props): JSX.Element => {
   const router = useRouter();
   const { currentUser } = useAuthContext();
   const isUsersTemplates =
@@ -56,6 +57,7 @@ const Grid = ({ items }: Props): JSX.Element => {
               templateImage={image}
               createdAt={created_at_time}
               price={lowestPrice}
+              hasShimmer={isLoadingPrices}
               hasMultiple={ownerHasMultiple || hasMultiple}
             />
           );
@@ -67,6 +69,7 @@ const Grid = ({ items }: Props): JSX.Element => {
 
 Grid.defaultProps = {
   items: [],
+  isLoadingPrices: false,
 };
 
 export default Grid;
