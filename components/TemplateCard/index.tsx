@@ -175,7 +175,7 @@ const TemplateCard = ({
           <Text>{collectionDisplayName || collectionName}</Text>
         </CollectionNameButton>
       </Row>
-      <LazyLoad height="100%" offset={100} once>
+      <LazyLoad height="100%" offset={200} once>
         {templateVideo ? (
           <TemplateVideo
             src={templateVideoSrc}
