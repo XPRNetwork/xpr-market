@@ -1,4 +1,7 @@
+import { useRef } from 'react';
+import LazyLoad from 'react-lazyload';
 import { ImageContainer, DefaultImage, Image } from './TemplateImage.styled';
+import { PlaceholderAsset } from '../TemplateCard/TemplateCard.styled';
 
 type Props = {
   templateImgSrc?: string;
@@ -16,18 +19,29 @@ const TemplateImageChild = ({
   templateImgSrc: string;
   fallbackImgSrc: string;
 }): JSX.Element => {
+  const refPlaceholder = useRef<HTMLDivElement>();
+
+  const removePlaceholder = () => refPlaceholder.current.remove();
+
   if (!templateImgSrc) {
     return <DefaultImage src={fallbackImgSrc} alt={templateName} />;
   }
 
   return (
-    <Image
-      src={templateImgSrc}
-      onError={(e) => {
-        e.currentTarget.onerror = null;
-        e.currentTarget.src = fallbackImgSrc;
-      }}
-    />
+    <>
+      <PlaceholderAsset ref={refPlaceholder} />
+      <LazyLoad height="100%" offset={100} once>
+        <Image
+          src={templateImgSrc}
+          onError={(e) => {
+            e.currentTarget.onerror = null;
+            e.currentTarget.src = fallbackImgSrc;
+            removePlaceholder();
+          }}
+          onLoad={removePlaceholder}
+        />
+      </LazyLoad>
+    </>
   );
 };
 

@@ -40,7 +40,7 @@ const CreatePageLayout = ({
             collectionName={selectedCollection.collection_name}
             maxSupply={maxSupply}
             noHoverEffect
-            noIpfsConversion
+            isCreatePreview
             isStatic
             autoPlay
             hasPlaceholderIcon={!selectedCollection.name}

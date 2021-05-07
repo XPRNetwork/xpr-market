@@ -19,7 +19,7 @@ import TemplateVideo from '../TemplateVideo';
 import {
   IPFS_RESOLVER_VIDEO,
   IPFS_RESOLVER_IMAGE,
-  RESIZER_IMAGE,
+  RESIZER_IMAGE_SM,
 } from '../../utils/constants';
 import {
   useCreateAssetContext,
@@ -43,7 +43,7 @@ type Props = {
   noHoverEffect?: boolean;
   imageHoverEffect?: boolean;
   isStatic?: boolean;
-  noIpfsConversion?: boolean;
+  isCreatePreview?: boolean;
   autoPlay?: boolean;
   hasPlaceholderIcon?: boolean;
   createdAt?: string;
@@ -65,7 +65,7 @@ const TemplateCard = ({
   price,
   noHoverEffect,
   hasMultiple,
-  noIpfsConversion,
+  isCreatePreview,
   isStatic,
   autoPlay,
   hasPlaceholderIcon,
@@ -93,15 +93,15 @@ const TemplateCard = ({
         }, cachedNewlyCreatedAssets[templateImage]);
       }
     } else {
-      const videoSrc = noIpfsConversion
+      const videoSrc = isCreatePreview
         ? templateVideo
         : `${IPFS_RESOLVER_VIDEO}${templateVideo}`;
       const imageSrc =
-        noIpfsConversion || !templateImage
+        isCreatePreview || !templateImage
           ? templateImage
-          : `${RESIZER_IMAGE}${IPFS_RESOLVER_IMAGE}${templateImage}`;
+          : `${RESIZER_IMAGE_SM}${IPFS_RESOLVER_IMAGE}${templateImage}`;
       const fallbackImageSrc =
-        !noIpfsConversion && templateImage
+        !isCreatePreview && templateImage
           ? `${IPFS_RESOLVER_IMAGE}${templateImage}`
           : '';
 
@@ -203,6 +203,7 @@ TemplateCard.defaultProps = {
   maxSupply: 0,
   hasMultiple: false,
   hasShimmer: false,
+  isCreatePreview: false,
 };
 
 export default TemplateCard;
