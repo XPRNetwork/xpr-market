@@ -1,5 +1,6 @@
 import { KeyboardEvent, MouseEvent, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import LazyLoad from 'react-lazyload';
 import {
   Card,
   Row,
@@ -174,20 +175,22 @@ const TemplateCard = ({
           <Text>{collectionDisplayName || collectionName}</Text>
         </CollectionNameButton>
       </Row>
-      {templateVideo ? (
-        <TemplateVideo
-          src={templateVideoSrc}
-          priceTag={priceTag}
-          autoPlay={autoPlay}
-        />
-      ) : (
-        <TemplateImage
-          templateImgSrc={templateImgSrc}
-          fallbackImgSrc={fallbackImgSrc}
-          templateName={templateName}
-          priceTag={priceTag}
-        />
-      )}
+      <LazyLoad height="100%" offset={100} once>
+        {templateVideo ? (
+          <TemplateVideo
+            src={templateVideoSrc}
+            priceTag={priceTag}
+            autoPlay={autoPlay}
+          />
+        ) : (
+          <TemplateImage
+            templateImgSrc={templateImgSrc}
+            fallbackImgSrc={fallbackImgSrc}
+            templateName={templateName}
+            priceTag={priceTag}
+          />
+        )}
+      </LazyLoad>
       <Title>{templateName}</Title>
       <GreyText>
         Edition size: {maxSupply === '0' ? 'Unlimited' : maxSupply}
