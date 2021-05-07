@@ -1,6 +1,5 @@
 import { KeyboardEvent, MouseEvent, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import LazyLoad from 'react-lazyload';
 import {
   Card,
   Row,
@@ -20,7 +19,7 @@ import TemplateVideo from '../TemplateVideo';
 import {
   IPFS_RESOLVER_VIDEO,
   IPFS_RESOLVER_IMAGE,
-  RESIZER_IMAGE,
+  RESIZER_IMAGE_SM,
 } from '../../utils/constants';
 import {
   useCreateAssetContext,
@@ -100,7 +99,7 @@ const TemplateCard = ({
       const imageSrc =
         noIpfsConversion || !templateImage
           ? templateImage
-          : `${RESIZER_IMAGE}${IPFS_RESOLVER_IMAGE}${templateImage}`;
+          : `${RESIZER_IMAGE_SM}${IPFS_RESOLVER_IMAGE}${templateImage}`;
       const fallbackImageSrc =
         !noIpfsConversion && templateImage
           ? `${IPFS_RESOLVER_IMAGE}${templateImage}`
@@ -175,22 +174,20 @@ const TemplateCard = ({
           <Text>{collectionDisplayName || collectionName}</Text>
         </CollectionNameButton>
       </Row>
-      <LazyLoad height="100%" offset={200} once>
-        {templateVideo ? (
-          <TemplateVideo
-            src={templateVideoSrc}
-            priceTag={priceTag}
-            autoPlay={autoPlay}
-          />
-        ) : (
-          <TemplateImage
-            templateImgSrc={templateImgSrc}
-            fallbackImgSrc={fallbackImgSrc}
-            templateName={templateName}
-            priceTag={priceTag}
-          />
-        )}
-      </LazyLoad>
+      {templateVideo ? (
+        <TemplateVideo
+          src={templateVideoSrc}
+          priceTag={priceTag}
+          autoPlay={autoPlay}
+        />
+      ) : (
+        <TemplateImage
+          templateImgSrc={templateImgSrc}
+          fallbackImgSrc={fallbackImgSrc}
+          templateName={templateName}
+          priceTag={priceTag}
+        />
+      )}
       <Title>{templateName}</Title>
       <GreyText>
         Edition size: {maxSupply === '0' ? 'Unlimited' : maxSupply}
