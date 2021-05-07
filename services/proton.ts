@@ -450,6 +450,12 @@ class ProtonSDK {
     const hasEnoughAccountRam = mintFee.accountRamFee.raw === 0;
     const hasEnoughContractRam = mintFee.specialMintFee.raw === 0;
 
+    console.log(
+      'generateRamActions ',
+      hasInitializedStorage,
+      hasEnoughAccountRam,
+      hasEnoughContractRam
+    );
     return [
       hasInitializedStorage
         ? undefined
@@ -543,6 +549,8 @@ class ProtonSDK {
       author,
       mintFee,
     });
+
+    console.log('createNft Ram Actions: ', JSON.stringify(ramActions));
 
     const default_template = {
       series: '1',
@@ -668,11 +676,19 @@ class ProtonSDK {
     ];
 
     try {
+      console.log('createNft, session? ', this.session);
       if (!this.session) {
         throw new Error(
           'Unable to create and mint a collection, schema, template, and assets without logging in.'
         );
       }
+
+      console.log(
+        'createNft actions: ',
+        JSON.stringify({
+          actions: [...ramActions, ...actions],
+        })
+      );
 
       const result = await this.session.transact(
         {
@@ -688,6 +704,7 @@ class ProtonSDK {
         transactionId: result.processed.id,
       };
     } catch (e) {
+      console.log('createNft Error: ', JSON.stringify(e));
       return {
         success: false,
         error:
@@ -867,6 +884,7 @@ class ProtonSDK {
       mintFee,
     });
 
+    console.log('createTemplateAssets ramActions: ', ramActions);
     const default_template = {
       series: '1',
       name: template_name,
@@ -952,11 +970,17 @@ class ProtonSDK {
     ];
 
     try {
+      console.log('createTemplateAssets this.session?', this.session);
       if (!this.session) {
         throw new Error(
           'Unable to create a template and mint assets without logging in.'
         );
       }
+
+      console.log(
+        'createTemplateAssets transact :',
+        JSON.stringify({ actions: [...ramActions, ...actions] })
+      );
       const result = await this.session.transact(
         { actions: [...ramActions, ...actions] },
         { broadcast: true }
@@ -969,6 +993,7 @@ class ProtonSDK {
         transactionId: result.processed.id,
       };
     } catch (e) {
+      console.log('createTemplateAssets error', JSON.stringify(e));
       return {
         success: false,
         error:
