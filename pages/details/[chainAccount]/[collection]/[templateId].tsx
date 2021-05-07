@@ -101,7 +101,7 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
         assets.length > 0 ? assets[assets.length - 1].template_mint : '1';
       if (lastAssetTemplateMint === '0') {
         assets = assets.filter((asset) => asset.template_mint !== '0');
-        checkSerialAndRefetch(lastAssetTemplateMint);
+        checkSerialAndRefetch();
       }
 
       const assetIds = assets
