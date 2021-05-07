@@ -10,6 +10,7 @@ import {
   CollectionNameButton,
   PlaceholderPrice,
   PlaceholderIcon,
+  ShimmerBlock,
 } from './TemplateCard.styled';
 import CollectionIcon, { IconContainer } from '../CollectionIcon';
 import { fileReader } from '../../utils';
@@ -46,6 +47,7 @@ type Props = {
   autoPlay?: boolean;
   hasPlaceholderIcon?: boolean;
   createdAt?: string;
+  hasShimmer?: boolean;
 };
 
 const TemplateCard = ({
@@ -69,6 +71,7 @@ const TemplateCard = ({
   hasPlaceholderIcon,
   imageHoverEffect,
   createdAt,
+  hasShimmer,
 }: Props): JSX.Element => {
   const { cachedNewlyCreatedAssets } = useCreateAssetContext();
   const { currentUser } = useAuthContext();
@@ -148,6 +151,14 @@ const TemplateCard = ({
     />
   );
 
+  const priceSection = hasShimmer ? (
+    <ShimmerBlock aria-hidden />
+  ) : price ? (
+    <Text>{price}</Text>
+  ) : (
+    <PlaceholderPrice aria-hidden />
+  );
+
   return (
     <Card
       tabIndex={0}
@@ -181,7 +192,7 @@ const TemplateCard = ({
       <GreyText>
         Edition size: {maxSupply === '0' ? 'Unlimited' : maxSupply}
       </GreyText>
-      {price ? <Text>{price}</Text> : <PlaceholderPrice aria-hidden />}
+      {priceSection}
     </Card>
   );
 };
@@ -191,6 +202,7 @@ TemplateCard.defaultProps = {
   templateName: 'Name',
   maxSupply: 0,
   hasMultiple: false,
+  hasShimmer: false,
 };
 
 export default TemplateCard;
