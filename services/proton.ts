@@ -683,9 +683,12 @@ class ProtonSDK {
         );
       }
 
-      console.log('createNft actions: ', {
-        actions: [...ramActions, ...actions],
-      });
+      console.log(
+        'createNft actions: ',
+        JSON.stringify({
+          actions: [...ramActions, ...actions],
+        })
+      );
 
       const result = await this.session.transact(
         {
