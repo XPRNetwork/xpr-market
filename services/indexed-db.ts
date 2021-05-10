@@ -20,7 +20,7 @@ class ProtonMarketIDB {
   init = () => {
     if (!window.indexedDB) {
       console.error(
-        "Your browser doesn't support a stable version of IndexedDB. Newly created NFTs will not load until they are 15 mins old."
+        "Your browser doesn't support a stable version of IndexedDB. Newly created NFTs will not load until they are 10 mins old."
       );
       return;
     }
