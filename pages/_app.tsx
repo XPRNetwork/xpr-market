@@ -13,6 +13,8 @@ import {
   ModalProvider,
   CreateAssetProvider,
 } from '../components/Provider';
+import * as Sentry from '@sentry/react';
+import { Integrations } from '@sentry/tracing';
 import '../styles/customprogress.css';
 import * as gtag from '../utils/gtag';
 
@@ -21,6 +23,17 @@ NProgress.configure({
   easing: 'ease',
   speed: 800,
   showSpinner: false,
+});
+
+Sentry.init({
+  dsn:
+    'https://f72460aedd07419198ddd6f5f7f642e2@o594028.ingest.sentry.io/5741865',
+  integrations: [new Integrations.BrowserTracing()],
+
+  // Set tracesSampleRate to 1.0 to capture 100%
+  // of transactions for performance monitoring.
+  // We recommend adjusting this value in production
+  tracesSampleRate: 1.0,
 });
 
 function MyApp({ Component, pageProps }: AppProps): JSX.Element {
