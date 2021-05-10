@@ -110,7 +110,7 @@ class ProtonMarketIDB {
 
   removeOldAssets = (): TxResponse =>
     this.connectDatabaseAndTransact((db) => {
-      const fifteenMinutesInMilliseconds = 2 * 60 * 1000;
+      const fifteenMinutesInMilliseconds = 15 * 60 * 1000;
       const last15Mins = Date.now() - fifteenMinutesInMilliseconds;
 
       const tx = db
