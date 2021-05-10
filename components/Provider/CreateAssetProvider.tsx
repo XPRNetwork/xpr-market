@@ -1,12 +1,17 @@
-import { createContext, useState, useContext, useMemo } from 'react';
+import { createContext, useState, useContext, useMemo, useEffect } from 'react';
+import protonMarketIDB, {
+  CachedAssets,
+  CachedAsset,
+} from '../../services/indexed-db';
 
-type CachedAssets = {
-  [key: string]: File;
+const emptyCachedAsset = {
+  ipfsHash: '',
+  file: undefined,
 };
 
 interface CreateAssetContext {
   cachedNewlyCreatedAssets: CachedAssets;
-  updateCachedNewlyCreatedAssets: (updatedAsset: CachedAssets) => void;
+  updateCachedNewlyCreatedAssets: ({ ipfsHash, file }: CachedAsset) => void;
 }
 
 interface Props {
@@ -28,16 +33,42 @@ export const CreateAssetProvider = ({ children }: Props): JSX.Element => {
     cachedNewlyCreatedAssets,
     setCachedNewlyCreatedAssets,
   ] = useState<CachedAssets>({});
+  const [assetToAddToIDB, setAssetToAddToIDB] = useState<CachedAsset>(
+    emptyCachedAsset
+  );
 
-  const updateCachedNewlyCreatedAssets = async (
-    newCachedAsset: CachedAssets
-  ) => {
-    const updatedCachedAssets = Object.assign(
-      {},
-      cachedNewlyCreatedAssets,
-      newCachedAsset
-    );
-    setCachedNewlyCreatedAssets(updatedCachedAssets);
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      protonMarketIDB.getAllAssets(setCachedNewlyCreatedAssets);
+    }
+
+    return () => {
+      if (typeof window !== 'undefined') {
+        protonMarketIDB.removeOldAssets();
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const { ipfsHash, file } = assetToAddToIDB;
+      if (ipfsHash && file) {
+        protonMarketIDB.addAsset({ ipfsHash, file });
+        setAssetToAddToIDB(emptyCachedAsset);
+      }
+    }
+  }, [assetToAddToIDB]);
+
+  const updateCachedNewlyCreatedAssets = async ({
+    ipfsHash,
+    file,
+  }: CachedAsset) => {
+    setCachedNewlyCreatedAssets((prevAssets) => ({
+      ...prevAssets,
+      [ipfsHash]: file,
+    }));
+
+    setAssetToAddToIDB({ ipfsHash, file });
   };
 
   const value = useMemo<CreateAssetContext>(

@@ -119,7 +119,8 @@ const Create = (): JSX.Element => {
     try {
       const templateIpfsImage = await uploadToIPFS(templateUploadedFile);
       updateCachedNewlyCreatedAssets({
-        [templateIpfsImage]: templateUploadedFile,
+        ipfsHash: templateIpfsImage,
+        file: templateUploadedFile,
       });
 
       let isVideo = false;
