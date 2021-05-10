@@ -9,7 +9,10 @@ import {
   getAllTemplatesForUserWithAssetCount,
   getUserCreatedTemplates,
 } from '../../services/templates';
-import { Template } from '../../services/templates';
+import {
+  Template,
+  getLowestPricesByTemplateId,
+} from '../../services/templates';
 import LoadingPage from '../../components/LoadingPage';
 import {
   PAGINATION_LIMIT,
@@ -48,7 +51,10 @@ const Collection = (): JSX.Element => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isLoadingNextPage, setIsLoadingNextPage] = useState<boolean>(true);
   const [isProfileLoading, setIsProfileLoading] = useState<boolean>(true);
-  const [isTemplatesLoading, setIsTemplatesLoading] = useState<boolean>(true);
+  const [isLoadingPrices, setIsLoadingPrices] = useState<boolean>(true);
+  const [isInitialPageLoading, setIsInitialPageLoading] = useState<boolean>(
+    true
+  );
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [userName, setUserName] = useState<string>('');
   const [userAvatar, setUserAvatar] = useState<string>('/default-avatar.png');
@@ -114,15 +120,16 @@ const Collection = (): JSX.Element => {
     (async () => {
       if (chainAccount) {
         try {
-          setIsTemplatesLoading(true);
+          setIsInitialPageLoading(true);
           setIsLoadingNextPage(true);
           router.prefetch('/');
 
-          const items = await getAllTemplatesForUserWithAssetCount(
-            chainAccount
-          );
-          setAllItems(items);
-          setRenderedItems(items.slice(0, PAGINATION_LIMIT));
+          const {
+            templates,
+            collectionNames,
+          } = await getAllTemplatesForUserWithAssetCount(chainAccount);
+          setAllItems(templates);
+          setRenderedItems(templates.slice(0, PAGINATION_LIMIT));
 
           const initialCreations = await getUserCreatedTemplates(
             chainAccount,
@@ -136,13 +143,28 @@ const Collection = (): JSX.Element => {
           );
           setRenderedCreations(initialCreations);
           setPrefetchedCreations(creations);
+
+          setIsLoading(false);
+          setIsInitialPageLoading(false);
+          setIsLoadingNextPage(false);
+
+          const prices = await getLowestPricesByTemplateId(collectionNames);
+          const templatesWithPrices = templates.map((template) => ({
+            ...template,
+            lowestPrice: prices[template.template_id],
+          }));
+          setAllItems(templatesWithPrices);
+          setRenderedItems(templatesWithPrices.slice(0, PAGINATION_LIMIT));
+
+          setIsLoadingPrices(false);
         } catch (e) {
           setErrorMessage(e.message);
+          setIsLoading(false);
+          setIsInitialPageLoading(false);
+          setIsLoadingNextPage(false);
+          setIsLoadingPrices(false);
         }
       }
-      setIsLoading(false);
-      setIsTemplatesLoading(false);
-      setIsLoadingNextPage(false);
     })();
   }, [chainAccount]);
 
@@ -158,7 +180,7 @@ const Collection = (): JSX.Element => {
   }, [currentUser, chainAccount]);
 
   const getContentItems = () => {
-    if (isTemplatesLoading || isLoadingUser) {
+    if (isInitialPageLoading || isLoadingUser) {
       return <LoadingPage margin="10% 0" />;
     }
 
@@ -192,6 +214,7 @@ const Collection = (): JSX.Element => {
 
     return (
       <Grid
+        isLoadingPrices={isLoadingPrices}
         items={
           activeTab === TAB_TYPES.ITEMS ? renderedItems : renderedCreations
         }

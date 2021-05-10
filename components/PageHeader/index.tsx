@@ -85,6 +85,7 @@ const PageHeader = ({
           height="120px"
           src={displayImg}
           onError={onImageError}
+          objectFit="cover"
         />
       </ImageContainer>
       <Name>{name}</Name>

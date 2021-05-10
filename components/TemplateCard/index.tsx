@@ -10,6 +10,7 @@ import {
   CollectionNameButton,
   PlaceholderPrice,
   PlaceholderIcon,
+  ShimmerBlock,
 } from './TemplateCard.styled';
 import CollectionIcon, { IconContainer } from '../CollectionIcon';
 import { fileReader } from '../../utils';
@@ -18,7 +19,7 @@ import TemplateVideo from '../TemplateVideo';
 import {
   IPFS_RESOLVER_VIDEO,
   IPFS_RESOLVER_IMAGE,
-  RESIZER_IMAGE,
+  RESIZER_IMAGE_SM,
 } from '../../utils/constants';
 import {
   useCreateAssetContext,
@@ -42,10 +43,11 @@ type Props = {
   noHoverEffect?: boolean;
   imageHoverEffect?: boolean;
   isStatic?: boolean;
-  noIpfsConversion?: boolean;
+  isCreatePreview?: boolean;
   autoPlay?: boolean;
   hasPlaceholderIcon?: boolean;
   createdAt?: string;
+  hasShimmer?: boolean;
 };
 
 const TemplateCard = ({
@@ -63,12 +65,13 @@ const TemplateCard = ({
   price,
   noHoverEffect,
   hasMultiple,
-  noIpfsConversion,
+  isCreatePreview,
   isStatic,
   autoPlay,
   hasPlaceholderIcon,
   imageHoverEffect,
   createdAt,
+  hasShimmer,
 }: Props): JSX.Element => {
   const { cachedNewlyCreatedAssets } = useCreateAssetContext();
   const { currentUser } = useAuthContext();
@@ -90,15 +93,15 @@ const TemplateCard = ({
         }, cachedNewlyCreatedAssets[templateImage]);
       }
     } else {
-      const videoSrc = noIpfsConversion
+      const videoSrc = isCreatePreview
         ? templateVideo
         : `${IPFS_RESOLVER_VIDEO}${templateVideo}`;
       const imageSrc =
-        noIpfsConversion || !templateImage
+        isCreatePreview || !templateImage
           ? templateImage
-          : `${RESIZER_IMAGE}${IPFS_RESOLVER_IMAGE}${templateImage}`;
+          : `${RESIZER_IMAGE_SM}${IPFS_RESOLVER_IMAGE}${templateImage}`;
       const fallbackImageSrc =
-        !noIpfsConversion && templateImage
+        !isCreatePreview && templateImage
           ? `${IPFS_RESOLVER_IMAGE}${templateImage}`
           : '';
 
@@ -148,6 +151,14 @@ const TemplateCard = ({
     />
   );
 
+  const priceSection = hasShimmer ? (
+    <ShimmerBlock aria-hidden />
+  ) : price ? (
+    <Text>{price}</Text>
+  ) : (
+    <PlaceholderPrice aria-hidden />
+  );
+
   return (
     <Card
       tabIndex={0}
@@ -181,7 +192,7 @@ const TemplateCard = ({
       <GreyText>
         Edition size: {maxSupply === '0' ? 'Unlimited' : maxSupply}
       </GreyText>
-      {price ? <Text>{price}</Text> : <PlaceholderPrice aria-hidden />}
+      {priceSection}
     </Card>
   );
 };
@@ -191,6 +202,8 @@ TemplateCard.defaultProps = {
   templateName: 'Name',
   maxSupply: 0,
   hasMultiple: false,
+  hasShimmer: false,
+  isCreatePreview: false,
 };
 
 export default TemplateCard;

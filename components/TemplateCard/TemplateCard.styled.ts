@@ -1,5 +1,26 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { IconContainer } from '../CollectionIcon/CollectionIcon.styled';
+
+const placeHolderShimmer = keyframes`
+  0% {
+    background-position: -500px 0
+  }
+  100% {
+    background-position: 500px 0
+  }
+`;
+
+const loadingAsset = keyframes`
+  0% {
+    background-color: #ffffff;
+  }
+  50% {
+    background-color: #eaeaea;
+  }
+  100% {
+    background-color: #ffffff;
+  }
+`;
 
 type CardProps = {
   hasMultiple: boolean;
@@ -137,4 +158,19 @@ export const PlaceholderIcon = styled(IconContainer).attrs({ as: 'div' })`
   background-color: #e6e6e6;
   width: ${({ width }) => width || '32px'};
   height: ${({ width }) => width || '32px'};
+`;
+
+export const ShimmerBlock = styled(PlaceholderPrice)`
+  animation: ${placeHolderShimmer} 1s linear infinite;
+  background: linear-gradient(to right, #eeeeee 8%, #e7e7e7 18%, #eeeeee 33%);
+  background-size: 1000px 18px;
+`;
+
+export const PlaceholderAsset = styled.div`
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  animation: ${loadingAsset} 1s infinite;
 `;

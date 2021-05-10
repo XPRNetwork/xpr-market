@@ -5,7 +5,7 @@ export const TOKEN_PRECISION = 6;
 export const SHORTENED_TOKEN_PRECISION = 2;
 export const DEFAULT_COLLECTION = 'monsters';
 export const PRICE_OF_RAM_IN_XPR = 0.0222;
-export const PAGINATION_LIMIT = 12;
+export const PAGINATION_LIMIT = 8;
 export const LG_FILE_UPLOAD_TYPES_TEXT =
   'PNG, GIF, JPG, WEBP, or MP4. Max 30 MB.';
 export const SM_FILE_UPLOAD_TYPES_TEXT = 'PNG, GIF, JPG, or WEBP. Max 5 MB.';
@@ -29,6 +29,7 @@ export const SM_FILE_UPLOAD_TYPES = {
 export const LG_FILE_SIZE_UPLOAD_LIMIT = 30 * 1000000; // 30 MB
 export const SM_FILE_SIZE_UPLOAD_LIMIT = 5 * 1000000; // 5 MB
 export const RESIZER_IMAGE = 'https://bloks.io/cdn-cgi/image/width=500/';
+export const RESIZER_IMAGE_SM = 'https://bloks.io/cdn-cgi/image/width=250/';
 export const IPFS_RESOLVER_IMAGE = 'https://ipfs.io/ipfs/';
 export const IPFS_RESOLVER_VIDEO = 'https://ipfs.io/ipfs/';
 export const DEFAULT_SCHEMA = {

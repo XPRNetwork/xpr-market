@@ -2,7 +2,6 @@
 import {
   useCallback,
   useState,
-  useEffect,
   Dispatch,
   SetStateAction,
 } from 'react';
@@ -53,6 +52,8 @@ const DragDropFileUploadLg = ({
       setTemplateUploadedFile(file);
       fileReader((result) => setUploadedFilePreview(result), file);
     } else {
+      setTemplateUploadedFile(null);
+      setUploadedFilePreview('');
       setUploadError(
         'Unable to upload, please double check your file size or file type.'
       );
