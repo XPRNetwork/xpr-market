@@ -50,7 +50,7 @@ class ProtonMarketIDB {
   };
 
   connectDatabaseAndTransact = (
-    transanctionCallback: (db: IDBDatabase) => TxResponse
+    transactionCallback: (db: IDBDatabase) => TxResponse
   ): TxResponse => {
     const connection = window.indexedDB.open('ProtonMarketIDB', 1);
 
@@ -60,7 +60,7 @@ class ProtonMarketIDB {
 
     connection.onsuccess = () => {
       const db = connection.result;
-      transanctionCallback(db);
+      transactionCallback(db);
     };
   };
 
