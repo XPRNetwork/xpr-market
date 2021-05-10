@@ -26,8 +26,7 @@ NProgress.configure({
 });
 
 Sentry.init({
-  dsn:
-    'https://f72460aedd07419198ddd6f5f7f642e2@o594028.ingest.sentry.io/5741865',
+  dsn: process.env.SENTRY_DSN,
   integrations: [new Integrations.BrowserTracing()],
 
   // Set tracesSampleRate to 1.0 to capture 100%
