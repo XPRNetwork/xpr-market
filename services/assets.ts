@@ -1,7 +1,7 @@
 import { Schema, Template } from './templates';
 import { Collection } from './collections';
 import { getAssetSale, getAllTemplateSales } from './sales';
-import { addPrecisionDecimal, toQueryString, delay } from '../utils';
+import { addPrecisionDecimal, toQueryString } from '../utils';
 import { getFromApi } from '../utils/browser-fetch';
 import { getUserOffers } from './offers';
 
