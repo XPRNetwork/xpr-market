@@ -11,7 +11,7 @@ const emptyCachedAsset = {
 
 interface CreateAssetContext {
   cachedNewlyCreatedAssets: CachedAssets;
-  updateCachedNewlyCreatedAssets: ({ ipfsHash, file }: CachedAsset) => void;
+  updateCachedNewlyCreatedAssets: (asset: CachedAsset) => void;
 }
 
 interface Props {

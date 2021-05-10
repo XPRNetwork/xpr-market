@@ -9,7 +9,10 @@ import {
   getAllTemplatesForUserWithAssetCount,
   getUserCreatedTemplates,
 } from '../../services/templates';
-import { Template, getLowestPricesByTemplateId } from '../../services/templates';
+import {
+  Template,
+  getLowestPricesByTemplateId,
+} from '../../services/templates';
 import LoadingPage from '../../components/LoadingPage';
 import {
   PAGINATION_LIMIT,
