@@ -42,7 +42,7 @@ const TemplateVideo = ({
     <VideoContainer onClick={(e) => e.stopPropagation()}>
       <CenterContainer>
         {isBrowserVideoCompatible ? (
-          <>
+          <div>
             <PlaceholderAsset ref={refPlaceholder} />
             <LazyLoad height="100%" offset={100} once>
               <Video
@@ -55,7 +55,7 @@ const TemplateVideo = ({
                 onError={removePlaceholder}
               />
             </LazyLoad>
-          </>
+          </div>
         ) : (
           <IncompatibleVideoError />
         )}
