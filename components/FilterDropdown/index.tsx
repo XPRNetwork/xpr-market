@@ -2,11 +2,13 @@ import { useState } from 'react';
 import {
   MenuContainer,
   MenuButton,
+  MenuButtonText,
   Menu,
   MenuItem,
   TransparentBackground,
 } from './FilterDropdown.styled';
-import { ReactComponent as DownArrow } from '../../public/down-arrow.svg';
+import { ReactComponent as DownArrow } from '../../public/down-arrow-sm.svg';
+import { ReactComponent as Checkmark } from '../../public/icon-light-check-24-px.svg';
 import { useScrollLock, useEscapeKeyClose } from '../../hooks';
 import { capitalize } from '../../utils';
 import { FILTER_TYPES } from '../../utils/constants';
@@ -34,7 +36,8 @@ const FilterDropdown = ({
   return (
     <MenuContainer>
       <MenuButton onClick={togglePopupMenu}>
-        Sort by <DownArrow />
+        <MenuButtonText>Sort by</MenuButtonText>
+        <DownArrow />
       </MenuButton>
       <Menu isOpen={isOpen}>
         {filters.map((name) => (
@@ -46,7 +49,7 @@ const FilterDropdown = ({
               closePopupMenu();
             }}>
             <span>{formatFilterName(name)}</span>
-            <span>{activeFilter === name && 'checkmark'}</span>
+            <span>{activeFilter === name && <Checkmark />}</span>
           </MenuItem>
         ))}
       </Menu>

@@ -37,6 +37,10 @@ export const MenuButton = styled.button`
   }
 `;
 
+export const MenuButtonText = styled.span`
+  margin-right: 4px;
+`;
+
 export const Menu = styled.ul<MenuProps>`
   display: ${({ isOpen }) => (isOpen ? 'flex' : 'none')};
   flex-direction: column;
