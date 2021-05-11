@@ -4,7 +4,14 @@ import PageLayout from '../../components/PageLayout';
 import PaginationButton from '../../components/PaginationButton';
 import ErrorComponent from '../../components/Error';
 import Grid from '../../components/Grid';
+import FilterDropdown from '../../components/FilterDropdown';
+import LoadingPage from '../../components/LoadingPage';
+import Banner from '../../components/Banner';
+import ProfileTabs from '../../components/ProfileTabs';
+import PageHeader from '../../components/PageHeader';
+import EmptyUserContent from '../../components/EmptyUserContent';
 import { MODAL_TYPES, useAuthContext } from '../../components/Provider';
+import { Row } from '../../styles/index.styled';
 import {
   getAllTemplatesForUserWithAssetCount,
   getUserCreatedTemplates,
@@ -13,18 +20,14 @@ import {
   Template,
   getLowestPricesByTemplateId,
 } from '../../services/templates';
-import LoadingPage from '../../components/LoadingPage';
 import {
   PAGINATION_LIMIT,
   TAB_TYPES,
+  FILTER_TYPES,
   RouterQuery,
   CARD_RENDER_TYPES,
 } from '../../utils/constants';
-import Banner from '../../components/Banner';
-import ProfileTabs from '../../components/ProfileTabs';
-import PageHeader from '../../components/PageHeader';
 import proton from '../../services/proton-rpc';
-import EmptyUserContent from '../../components/EmptyUserContent';
 
 const Collection = (): JSX.Element => {
   const router = useRouter();
@@ -35,7 +38,12 @@ const Collection = (): JSX.Element => {
     ? caseSensitiveChainAccount.toLowerCase()
     : '';
   const { currentUser, isLoadingUser } = useAuthContext();
-  const [allItems, setAllItems] = useState<Template[]>([]);
+  const [allItems, setAllItems] = useState<{
+    [type: string]: Template[];
+  }>({
+    [FILTER_TYPES.NAME]: [],
+    [FILTER_TYPES.RECENTLY_CREATED]: [],
+  });
   const [renderedItems, setRenderedItems] = useState<Template[]>([]);
   const [
     prefetchItemsPageNumber,
@@ -60,6 +68,8 @@ const Collection = (): JSX.Element => {
   const [isLightKYCVerified, setIsLightKYCVerified] = useState<boolean>(false);
   const [userName, setUserName] = useState<string>('');
   const [userAvatar, setUserAvatar] = useState<string>('/default-avatar.png');
+  const [itemsFilter, setItemsFilter] = useState<string>(FILTER_TYPES.NAME);
+  const isUsersPage = currentUser && currentUser.actor === chainAccount;
 
   const getTitle = () => {
     return !currentUser || (currentUser && currentUser.actor !== chainAccount)
@@ -72,15 +82,21 @@ const Collection = (): JSX.Element => {
     { title: 'Creations', type: TAB_TYPES.CREATIONS },
   ];
   const [activeTab, setActiveTab] = useState<string>(tabs[0].type);
-  const isUsersPage = currentUser && currentUser.actor === chainAccount;
+
+  const handleItemsFilterClick = (filter: string) => {
+    setItemsFilter(filter);
+    const pageOneItems = allItems[filter].slice(0, PAGINATION_LIMIT);
+    setRenderedItems(pageOneItems);
+    setPrefetchItemsPageNumber(pageOneItems.length < PAGINATION_LIMIT ? -1 : 2);
+  };
 
   const showNextItemsPage = async () => {
-    const numNextPageItems = allItems.slice(
+    const numNextPageItems = allItems[itemsFilter].slice(
       (prefetchItemsPageNumber - 1) * PAGINATION_LIMIT,
       prefetchItemsPageNumber * PAGINATION_LIMIT
     ).length;
     setRenderedItems(
-      allItems.slice(0, prefetchItemsPageNumber * PAGINATION_LIMIT)
+      allItems[itemsFilter].slice(0, prefetchItemsPageNumber * PAGINATION_LIMIT)
     );
     setPrefetchItemsPageNumber((prevPageNumber) =>
       numNextPageItems < PAGINATION_LIMIT ? -1 : prevPageNumber + 1
@@ -130,8 +146,19 @@ const Collection = (): JSX.Element => {
             templates,
             collectionNames,
           } = await getAllTemplatesForUserWithAssetCount(chainAccount);
-          setAllItems(templates);
-          setRenderedItems(templates.slice(0, PAGINATION_LIMIT));
+          const allItemsByFilter = {
+            [FILTER_TYPES.NAME]: templates
+              .slice()
+              .sort((a, b) =>
+                a.name.toLowerCase().localeCompare(b.name.toLowerCase())
+              ),
+            [FILTER_TYPES.RECENTLY_CREATED]: templates,
+          };
+
+          setAllItems(allItemsByFilter);
+          setRenderedItems(
+            allItemsByFilter[itemsFilter].slice(0, PAGINATION_LIMIT)
+          );
 
           const initialCreations = await getUserCreatedTemplates(
             chainAccount,
@@ -158,8 +185,19 @@ const Collection = (): JSX.Element => {
             ...template,
             lowestPrice: prices[template.template_id],
           }));
-          setAllItems(templatesWithPrices);
-          setRenderedItems(templatesWithPrices.slice(0, PAGINATION_LIMIT));
+          const allItemsByFilterWithPrices = {
+            [FILTER_TYPES.NAME]: templatesWithPrices
+              .slice()
+              .sort((a, b) =>
+                a.name.toLowerCase().localeCompare(b.name.toLowerCase())
+              ),
+            [FILTER_TYPES.RECENTLY_CREATED]: templatesWithPrices,
+          };
+
+          setAllItems(allItemsByFilterWithPrices);
+          setRenderedItems(
+            allItemsByFilterWithPrices[itemsFilter].slice(0, PAGINATION_LIMIT)
+          );
 
           setIsLoadingPrices(false);
         } catch (e) {
@@ -269,6 +307,20 @@ const Collection = (): JSX.Element => {
       );
     }
 
+    const isItemsTabOpen = activeTab === TAB_TYPES.ITEMS;
+    const filterDropdownProps = isItemsTabOpen
+      ? {
+          filters: [FILTER_TYPES.NAME, FILTER_TYPES.RECENTLY_CREATED],
+          activeFilter: itemsFilter,
+          handleFilterClick: handleItemsFilterClick,
+        }
+      : {
+          // TODO: Add creations FilterDropdown props
+          filters: [],
+          activeFilter: '',
+          handleFilterClick: () => {},
+        };
+
     return (
       <>
         <PageHeader
@@ -278,11 +330,14 @@ const Collection = (): JSX.Element => {
           isLightKYCVerified={isLightKYCVerified}
           type="user"
         />
-        <ProfileTabs
-          tabList={tabs}
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-        />
+        <Row>
+          <ProfileTabs
+            tabList={tabs}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+          />
+          {isItemsTabOpen && <FilterDropdown {...filterDropdownProps} />}
+        </Row>
         {getContentItems()}
         {getPaginationButton()}
       </>
