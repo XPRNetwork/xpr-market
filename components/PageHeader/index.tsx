@@ -97,7 +97,7 @@ const PageHeader = ({
           maxWidth="684px"
           textAlign="center"
           fontColor="#808080"
-          maxDescriptionLength={190}
+          maxDescriptionLength={183}
         />
       ) : null}
       {buttons}
