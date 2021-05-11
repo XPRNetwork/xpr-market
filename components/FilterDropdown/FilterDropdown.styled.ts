@@ -10,7 +10,7 @@ type MenuProps = {
 
 export const MenuContainer = styled.div`
   position: relative;
-  width: 184px;
+  min-width: 184px;
   height: 24px;
 `;
 

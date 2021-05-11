@@ -1,20 +1,8 @@
 import styled from 'styled-components';
-import { breakpoint } from '../../styles/Breakpoints';
 
 type TabProps = {
   isActive: boolean;
 };
-
-export const Row = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: flex-start;
-  margin-bottom: 40px;
-
-  ${breakpoint.tablet`
-    justify-content: center;
-  `}
-`;
 
 export const Tab = styled.p<TabProps>`
   font-family: CircularStdBold;

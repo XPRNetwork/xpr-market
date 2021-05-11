@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction } from 'react';
-import { Row, Tab } from './ProfileTabs.styled';
+import { Tab } from './ProfileTabs.styled';
+import { Row } from '../../styles/index.styled';
 
 type Tab = {
   title: string;
@@ -18,7 +19,7 @@ export const ProfileTabs = ({
   setActiveTab,
 }: Props): JSX.Element => {
   return (
-    <Row>
+    <Row justifyContent="flex-start" margin="0 0 40px 0">
       {tabList.map(({ title, type }) => {
         return (
           <Tab
