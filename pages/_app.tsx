@@ -15,12 +15,24 @@ import {
 } from '../components/Provider';
 import '../styles/customprogress.css';
 import * as gtag from '../utils/gtag';
+import * as Sentry from '@sentry/react';
+import { Integrations } from '@sentry/tracing';
 
 NProgress.configure({
   minimum: 0.3,
   easing: 'ease',
   speed: 800,
   showSpinner: false,
+});
+
+Sentry.init({
+  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+  integrations: [new Integrations.BrowserTracing()],
+
+  // Set tracesSampleRate to 1.0 to capture 100%
+  // of transactions for performance monitoring.
+  // We recommend adjusting this value in production
+  tracesSampleRate: 1.0,
 });
 
 function MyApp({ Component, pageProps }: AppProps): JSX.Element {

@@ -16,6 +16,8 @@
     "@netlify/plugin-nextjs": "3.2.2",
     "@proton/js": "^22.0.64",
     "@proton/web-sdk": "^2.7.23",
+    "@sentry/react": "^6.3.6",
+    "@sentry/tracing": "^6.3.6",
     "dayjs": "^1.10.4",
     "firebase": "^8.4.3",
     "form-data": "^4.0.0",
