@@ -77,6 +77,7 @@ const SearchInput = ({
       } else if (!input) {
         setSearchCollections([]);
         setSearchAuthors([]);
+        setSearchTemplates([]);
       }
     })();
 
@@ -145,7 +146,12 @@ const SearchInput = ({
     }
 
     const isDownArrow = e.key === 'ArrowDown';
-    if (isDownArrow) {
+    if (
+      isDownArrow &&
+      (searchCollections.length ||
+        searchTemplates.length ||
+        searchAuthors.length)
+    ) {
       e.preventDefault();
       const firstResultItem = resultsListRef.current
         .childNodes[1] as HTMLElement;
@@ -185,18 +191,17 @@ const SearchInput = ({
         onKeyDown={handleClearTextButtonKeyDown}>
         <CloseIcon />
       </ClearTextButton>
-      {input && (
-        <SearchInputResultsList
-          input={input}
-          collections={searchCollections}
-          authors={searchAuthors}
-          templates={searchTemplates}
-          inputRef={inputRef}
-          resultsListRef={resultsListRef}
-          clearTextButtonRef={clearTextButtonRef}
-          setInput={setInput}
-        />
-      )}
+      <SearchInputResultsList
+        input={input}
+        search={search}
+        collections={searchCollections}
+        authors={searchAuthors}
+        templates={searchTemplates}
+        inputRef={inputRef}
+        resultsListRef={resultsListRef}
+        clearTextButtonRef={clearTextButtonRef}
+        setInput={setInput}
+      />
     </InputContainer>
   );
 };

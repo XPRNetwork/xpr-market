@@ -40,6 +40,7 @@ const TemplateIcon = ({
       muted
       playsInline
       src={isIpfs ? `${IPFS_RESOLVER_VIDEO}${video}` : video}
+      poster={isIpfs ? `${IPFS_RESOLVER_VIDEO}${video}` : video}
     />;
   } else {
     return (

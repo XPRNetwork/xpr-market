@@ -9,6 +9,7 @@ import {
   ResultListTitle,
   ResultItem,
   ResultItemName,
+  SeeAllLink,
 } from './SearchInputResultsList.styled';
 import {
   SearchCollection,
@@ -29,6 +30,7 @@ type Props = {
   resultsListRef: MutableRefObject<HTMLUListElement>;
   clearTextButtonRef: MutableRefObject<HTMLButtonElement>;
   setInput: Dispatch<SetStateAction<string>>;
+  search: (string) => void;
 };
 
 const SearchInputResultsList = ({
@@ -39,6 +41,7 @@ const SearchInputResultsList = ({
   inputRef,
   resultsListRef,
   clearTextButtonRef,
+  search,
   setInput,
 }: Props): JSX.Element => {
   const router = useRouter();
@@ -113,6 +116,10 @@ const SearchInputResultsList = ({
         break;
     }
   };
+
+  if (!input || (!collections.length && !authors.length && !templates.length)) {
+    return <></>;
+  }
 
   return (
     <ResultsList ref={resultsListRef}>
@@ -198,6 +205,15 @@ const SearchInputResultsList = ({
           <ResultItemName>{name || acc}</ResultItemName>
         </ResultItem>
       ))}
+      <SeeAllLink
+        onClick={() => search(input)}
+        onKeyDown={(e) => {
+          e.preventDefault();
+          if (e.key === 'ArrowUp') navigatePrevious(e);
+          if (e.key === 'Enter') search(input);
+        }}>
+        See all search results
+      </SeeAllLink>
     </ResultsList>
   );
 };

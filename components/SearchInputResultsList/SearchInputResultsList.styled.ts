@@ -21,8 +21,22 @@ export const ResultListTitle = styled.h3`
   font-family: CircularStdBold;
   font-size: 14px;
   line-height: 24px;
-  color: #808080;
+  color: #1a1a1a;
   margin: 0 8px 8px;
+`;
+
+export const SeeAllLink = styled.button`
+  background-color: transparent;
+  border: none;
+  font-size: 14px;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.71;
+  letter-spacing: normal;
+  color: #752eeb;
+  margin-top: 15px;
+  cursor: pointer;
 `;
 
 export const ResultItem = styled.li`
