@@ -8,9 +8,14 @@ import {
   ResultsList,
   ResultListTitle,
   ResultItem,
+  ResultItemName,
 } from './SearchInputResultsList.styled';
-import { SearchCollection } from '../../services/collections';
-import { SearchUser } from '../../services/users';
+import {
+  SearchCollection,
+  SearchAuthor,
+  SearchTemplate,
+} from '../../services/search';
+import TemplateIcon from '../TemplateIcon';
 import CollectionIcon from '../CollectionIcon';
 import AvatarIcon from '../AvatarIcon';
 import { useRouter } from 'next/router';
@@ -18,22 +23,22 @@ import { useRouter } from 'next/router';
 type Props = {
   input: string;
   collections?: SearchCollection[];
-  users?: SearchUser[];
+  templates?: SearchTemplate[];
+  authors?: SearchAuthor[];
   inputRef: MutableRefObject<HTMLInputElement>;
   resultsListRef: MutableRefObject<HTMLUListElement>;
   clearTextButtonRef: MutableRefObject<HTMLButtonElement>;
-  search: (type: string) => void;
   setInput: Dispatch<SetStateAction<string>>;
 };
 
 const SearchInputResultsList = ({
   input,
   collections,
-  users,
+  authors,
+  templates,
   inputRef,
   resultsListRef,
   clearTextButtonRef,
-  search,
   setInput,
 }: Props): JSX.Element => {
   const router = useRouter();
@@ -81,7 +86,10 @@ const SearchInputResultsList = ({
       case 'Enter':
         if ((e.target as HTMLElement).className.includes('collection')) {
           setInput('');
-          search((e.target as HTMLElement).getAttribute('data-key'));
+          router.push(`/${element.getAttribute('data-key')}`);
+        } else if ((e.target as HTMLElement).className.includes('template')) {
+          setInput('');
+          router.push(`/${element.getAttribute('data-key')}`);
         } else {
           setInput('');
           router.push(`/user/${element.getAttribute('data-key')}`);
@@ -108,6 +116,33 @@ const SearchInputResultsList = ({
 
   return (
     <ResultsList ref={resultsListRef}>
+      {templates.length ? <ResultListTitle>NFTs</ResultListTitle> : null}
+      {templates.map(({ name, id, collection, img, video }, i) => (
+        <ResultItem
+          className="template"
+          onKeyDown={
+            i === 0 ? handleFirstResultItemKeyDown : handleResultItemKeyDown
+          }
+          onClick={() => {
+            setInput('');
+            router.push(`/${collection}/${id}`);
+          }}
+          onTouchStart={() => {
+            setInput('');
+            router.push(`/${collection}/${id}`);
+          }}
+          tabIndex={0}
+          data-key={`${collection}/${id}`}
+          key={name}>
+          <TemplateIcon
+            name={name}
+            image={img}
+            video={video}
+            margin="0 12px 0 0"
+          />
+          <ResultItemName>{name}</ResultItemName>
+        </ResultItem>
+      ))}
       {collections.length ? (
         <ResultListTitle>Collection</ResultListTitle>
       ) : null}
@@ -115,28 +150,39 @@ const SearchInputResultsList = ({
         <ResultItem
           className="collection"
           onKeyDown={
-            i === 0 ? handleFirstResultItemKeyDown : handleResultItemKeyDown
+            i + templates.length === 0
+              ? handleFirstResultItemKeyDown
+              : handleResultItemKeyDown
           }
           onClick={() => {
-            setInput(name);
-            search(collection_name);
+            setInput('');
+            router.push(`/${collection_name}`);
           }}
           onTouchStart={() => {
-            setInput(name);
-            search(collection_name);
+            setInput('');
+            router.push(`/${collection_name}`);
           }}
           tabIndex={0}
           data-key={collection_name}
           key={`${author} - ${collection_name}`}>
-          <CollectionIcon name={name} image={img} margin="0 16px 0 0" />
-          <span>{name}</span>
+          <CollectionIcon
+            name={name}
+            image={img}
+            margin="0 12px 0 0"
+            width="24px"
+          />
+          <ResultItemName>{name || collection_name}</ResultItemName>
         </ResultItem>
       ))}
-      {users.length ? <ResultListTitle>Members</ResultListTitle> : null}
-      {users.map(({ name, avatar, acc }) => (
+      {authors.length ? <ResultListTitle>Members</ResultListTitle> : null}
+      {authors.map(({ name, avatar, acc }, i) => (
         <ResultItem
           className="user"
-          onKeyDown={handleResultItemKeyDown}
+          onKeyDown={
+            i + templates.length + collections.length === 0
+              ? handleFirstResultItemKeyDown
+              : handleResultItemKeyDown
+          }
           onClick={() => {
             setInput('');
             router.push(`/user/${acc}`);
@@ -148,8 +194,8 @@ const SearchInputResultsList = ({
           tabIndex={0}
           data-key={acc}
           key={acc}>
-          <AvatarIcon avatar={avatar} size="24px" />
-          <span>{name || acc}</span>
+          <AvatarIcon avatar={avatar} size="24px" margin="0 12px 0 0" />
+          <ResultItemName>{name || acc}</ResultItemName>
         </ResultItem>
       ))}
     </ResultsList>

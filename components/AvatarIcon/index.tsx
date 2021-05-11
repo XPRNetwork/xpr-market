@@ -4,11 +4,12 @@ import { AvatarImage } from './AvatarIcon.styled';
 type AvatarIconProps = {
   avatar: string;
   size: string;
+  margin?: string;
 };
 
-const AvatarIcon = ({ avatar, size }: AvatarIconProps): JSX.Element => {
+const AvatarIcon = ({ avatar, size, margin }: AvatarIconProps): JSX.Element => {
   return (
-    <AvatarImage size={size}>
+    <AvatarImage size={size} margin={margin}>
       <Image
         width={size || '32px'}
         height={size || '32px'}

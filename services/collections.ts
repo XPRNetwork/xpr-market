@@ -39,16 +39,6 @@ export const emptyCollection: Collection = {
   },
 };
 
-export type SearchCollection = {
-  author: string;
-  authorized_accounts: string[];
-  collection_name: string;
-  contract: string;
-  created: string;
-  img?: string | null;
-  name?: string;
-};
-
 export const getCollection = async (
   collectionName: string
 ): Promise<Collection> => {

@@ -7,8 +7,11 @@ import {
   MagnifyingIconButton,
   ClearTextButton,
 } from './SearchInput.styled';
-import { SearchCollection } from '../../services/collections';
-import { SearchUser } from '../../services/users';
+import {
+  SearchCollection,
+  SearchAuthor,
+  SearchTemplate,
+} from '../../services/search';
 import { getFromApi } from '../../utils/browser-fetch';
 import { ReactComponent as MagnifyingIcon } from '../../public/icon-light-search-24-px.svg';
 import { ReactComponent as CloseIcon } from '../../public/icon-light-close-16-px.svg';
@@ -21,8 +24,10 @@ type Props = {
 type SearchResponse = {
   index: string;
   keys: string[];
-  result: (SearchCollection | SearchUser)[];
+  result: (SearchCollection | SearchAuthor | SearchTemplate)[];
 };
+
+let debounceTimer;
 
 const SearchInput = ({
   isMobileSearchOpen,
@@ -39,7 +44,8 @@ const SearchInput = ({
   const [searchCollections, setSearchCollections] = useState<
     SearchCollection[]
   >([]);
-  const [searchUsers, setSearchUsers] = useState<SearchUser[]>([]);
+  const [searchTemplates, setSearchTemplates] = useState<SearchTemplate[]>([]);
+  const [searchAuthors, setSearchAuthors] = useState<SearchAuthor[]>([]);
 
   useEffect(() => {
     const removeInputFocusStyle = (e: MouseEvent) => {
@@ -64,28 +70,42 @@ const SearchInput = ({
   useEffect(() => {
     (async () => {
       if (isSearchInputActive && input) {
-        const res = await getFromApi<{ [account: string]: string }>(
-          `/api/search?query=${input}`
-        );
-        if (res.success) {
-          const result = (res.message as unknown) as SearchResponse[];
-          const collections =
-            result
-              .find((obj) => obj.index === 'market_collections')
-              ?.result.slice(0, 3) || [];
-          const users =
-            result
-              .find((obj) => obj.index === 'market_authors')
-              ?.result.slice(0, 3) || [];
-          setSearchCollections(collections as SearchCollection[]);
-          setSearchUsers(users as SearchUser[]);
-        }
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+          getSearchResults();
+        }, 300);
       } else if (!input) {
         setSearchCollections([]);
-        setSearchUsers([]);
+        setSearchAuthors([]);
       }
     })();
+
+    return () => clearTimeout(debounceTimer);
   }, [input, isSearchInputActive]);
+
+  const getSearchResults = async (): Promise<void> => {
+    const res = await getFromApi<{ [account: string]: string }>(
+      `/api/search?query=${input}`
+    );
+    if (res.success) {
+      const result = (res.message as unknown) as SearchResponse[];
+      const collections =
+        result
+          .find((obj) => obj.index === 'market_collections')
+          ?.result.slice(0, 3) || [];
+      const users =
+        result
+          .find((obj) => obj.index === 'market_authors')
+          ?.result.slice(0, 3) || [];
+      const templates =
+        result
+          .find((obj) => obj.index === 'market_templates')
+          ?.result.slice(0, 3) || [];
+      setSearchCollections(collections as SearchCollection[]);
+      setSearchAuthors(users as SearchAuthor[]);
+      setSearchTemplates(templates as SearchTemplate[]);
+    }
+  };
 
   const updateText = (e: ChangeEvent<HTMLInputElement>) =>
     setInput(e.target.value);
@@ -165,15 +185,15 @@ const SearchInput = ({
         onKeyDown={handleClearTextButtonKeyDown}>
         <CloseIcon />
       </ClearTextButton>
-      {input && searchCollections.length !== 0 && (
+      {input && (
         <SearchInputResultsList
           input={input}
           collections={searchCollections}
-          users={searchUsers}
+          authors={searchAuthors}
+          templates={searchTemplates}
           inputRef={inputRef}
           resultsListRef={resultsListRef}
           clearTextButtonRef={clearTextButtonRef}
-          search={search}
           setInput={setInput}
         />
       )}

@@ -43,3 +43,13 @@ export const ResultItem = styled.li`
     color: #752eeb;
   }
 `;
+
+export const ResultItemName = styled.span`
+  font-size: 14px;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.71;
+  letter-spacing: normal;
+  color: #1a1a1a;
+`;
