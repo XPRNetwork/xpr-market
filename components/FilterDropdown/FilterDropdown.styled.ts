@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { breakpoint } from '../../styles/Breakpoints';
 import {
   GradientBackgroundProps,
   GradientBackground,
@@ -52,10 +51,6 @@ export const Menu = styled.ul<MenuProps>`
   box-shadow: 0 12px 20px -4px rgba(0, 0, 0, 0.1), 0 0 8px 0 rgba(0, 0, 0, 0.08);
   width: 100%;
   z-index: 2;
-
-  ${breakpoint.tablet`
-    left: -235px;
-  `}
 `;
 
 export const MenuItem = styled.li`
