@@ -54,8 +54,8 @@ export const TAB_TYPES = {
 };
 
 export const FILTER_TYPES = {
-  NAME: 'NAME',
-  RECENTLY_CREATED: 'RECENTLY_CREATED',
+  NAME: 'Name',
+  RECENTLY_CREATED: 'Recently created',
 };
 
 export const FEATURED_HOMEPAGE_COLLECTIONS = [

@@ -10,15 +10,11 @@ import {
 import { ReactComponent as DownArrow } from '../../public/down-arrow-sm.svg';
 import { ReactComponent as Checkmark } from '../../public/icon-light-check-24-px.svg';
 import { useScrollLock, useEscapeKeyClose } from '../../hooks';
+import { capitalize } from '../../utils';
 import { FILTER_TYPES } from '../../utils/constants';
 
-type Filter = {
-  type: string;
-  label: string;
-};
-
 type Props = {
-  filters: Filter[];
+  filters: string[];
   activeFilter: string;
   handleFilterClick: (filter: string) => void;
 };
@@ -41,16 +37,16 @@ const FilterDropdown = ({
         <DownArrow />
       </MenuButton>
       <Menu isOpen={isOpen}>
-        {filters.map(({ type, label }) => (
+        {filters.map((name) => (
           <MenuItem
-            key={type}
+            key={name}
             tabIndex={0}
             onClick={() => {
-              handleFilterClick(type);
+              handleFilterClick(name);
               closePopupMenu();
             }}>
-            <span>{label}</span>
-            <span>{activeFilter === type && <Checkmark />}</span>
+            <span>{name}</span>
+            <span>{activeFilter === name && <Checkmark />}</span>
           </MenuItem>
         ))}
       </Menu>
@@ -60,10 +56,7 @@ const FilterDropdown = ({
 };
 
 FilterDropdown.defaultProps = {
-  filters: [
-    { type: FILTER_TYPES.NAME, label: 'Name' },
-    { type: FILTER_TYPES.RECENTLY_CREATED, label: 'Recently created' },
-  ],
+  filters: [FILTER_TYPES.NAME, FILTER_TYPES.RECENTLY_CREATED],
   activeFilter: FILTER_TYPES.NAME,
   handleFilterClick: () => {},
 };
