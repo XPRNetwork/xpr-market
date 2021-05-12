@@ -1,26 +1,26 @@
-import { Dispatch, SetStateAction } from 'react';
+import { memo, Dispatch, SetStateAction } from 'react';
 import { Tab } from './ProfileTabs.styled';
 import { Row } from '../../styles/index.styled';
 
-type Tab = {
+export type Tab = {
   title: string;
   type: string;
 };
 
-type Props = {
-  tabList: Tab[];
+export interface ProfileTabsProps {
+  tabs: Tab[];
   activeTab: string;
   setActiveTab: Dispatch<SetStateAction<string>>;
-};
+}
 
 export const ProfileTabs = ({
-  tabList,
+  tabs,
   activeTab,
   setActiveTab,
-}: Props): JSX.Element => {
+}: ProfileTabsProps): JSX.Element => {
   return (
     <Row justifyContent="flex-start" margin="0 0 40px 0">
-      {tabList.map(({ title, type }) => {
+      {tabs.map(({ title, type }) => {
         return (
           <Tab
             key={type}
@@ -34,4 +34,4 @@ export const ProfileTabs = ({
   );
 };
 
-export default ProfileTabs;
+export default memo(ProfileTabs);
