@@ -1,6 +1,6 @@
+import { memo } from 'react';
 export { ProfileTabSectionItems } from './ProfileTabSectionItems';
 export { ProfileTabSectionCreations } from './ProfileTabSectionCreations';
-import { memo } from 'react';
 import PaginationButton from '../PaginationButton';
 import Grid from '../Grid';
 import EmptyUserContent from '../EmptyUserContent';

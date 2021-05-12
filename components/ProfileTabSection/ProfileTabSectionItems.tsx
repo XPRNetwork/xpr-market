@@ -16,6 +16,15 @@ import {
   TAB_TYPES,
 } from '../../utils/constants';
 
+interface AllItems {
+  [filterType: string]: Template[];
+}
+
+const defaultAllItems = {
+  [FILTER_TYPES.NAME]: [],
+  [FILTER_TYPES.RECENTLY_CREATED]: [],
+};
+
 export const ProfileTabSectionItems = ({
   chainAccount,
   tabs,
@@ -23,12 +32,7 @@ export const ProfileTabSectionItems = ({
   setActiveTab,
 }: ProfileTabSectionContainerProps): JSX.Element => {
   const { currentUser } = useAuthContext();
-  const [allItems, setAllItems] = useState<{
-    [type: string]: Template[];
-  }>({
-    [FILTER_TYPES.NAME]: [],
-    [FILTER_TYPES.RECENTLY_CREATED]: [],
-  });
+  const [allItems, setAllItems] = useState<AllItems>(defaultAllItems);
   const [renderedItems, setRenderedItems] = useState<Template[]>([]);
   const [prefetchPageNumber, setPrefetchPageNumber] = useState<number>(2);
   const [isLoadingPrices, setIsLoadingPrices] = useState<boolean>(true);
