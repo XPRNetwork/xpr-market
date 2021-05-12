@@ -32,7 +32,6 @@ const Search = (): JSX.Element => {
   const [prefetchPageNumber, setPrefetchPageNumber] = useState<number>(2);
   const [isLoadingNextPage, setIsLoadingNextPage] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string>('');
-
   const prefetchNextPage = async () => {
     const prefetchedResult = await getTemplatesByCollection({
       type: searchTerm,
@@ -122,7 +121,7 @@ const Search = (): JSX.Element => {
     return (
       <>
         <Title>{title}</Title>
-        <Grid items={renderedTemplates} />
+        <Grid items={renderedTemplates} isTemplate={true} />
         <PaginationButton
           onClick={showNextPage}
           isHidden={renderedTemplates.length < PAGINATION_LIMIT}

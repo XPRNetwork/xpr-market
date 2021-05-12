@@ -215,6 +215,7 @@ const Collection = (): JSX.Element => {
     return (
       <Grid
         isLoadingPrices={isLoadingPrices}
+        isTemplate={true}
         items={
           activeTab === TAB_TYPES.ITEMS ? renderedItems : renderedCreations
         }

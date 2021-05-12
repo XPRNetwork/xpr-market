@@ -68,7 +68,7 @@ const FeaturedCarousel = ({
         </CarouselContainer>
       );
     } else {
-      return <Grid items={templates} />;
+      return <Grid items={templates} isTemplate={true} />;
     }
   };
 

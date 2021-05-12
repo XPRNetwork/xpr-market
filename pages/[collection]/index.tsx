@@ -176,7 +176,7 @@ const CollectionPage = (): JSX.Element => {
           type="collection"
           hasEditFunctionality={isEditButtonVisible}
         />
-        <Grid items={renderedTemplates} />
+        <Grid items={renderedTemplates} isTemplate={true} />
         <PaginationButton
           onClick={showNextPage}
           isHidden={renderedTemplates.length < PAGINATION_LIMIT}
