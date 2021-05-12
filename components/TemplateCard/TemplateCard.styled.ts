@@ -24,9 +24,6 @@ const loadingAsset = keyframes`
 
 type CardProps = {
   hasMultiple: boolean;
-  noHoverEffect: boolean;
-  isStatic?: boolean;
-  imageHoverEffect?: boolean;
 };
 
 type GreyTextProps = {
@@ -48,24 +45,6 @@ export const Card = styled.article<CardProps>`
   padding: 0 24px 24px;
   position: relative;
   transition: 0.3s;
-
-  :hover .template-image-container img,
-  :focus-visible .template-image-container img {
-    transition: 0.1s;
-    transform: ${({ imageHoverEffect }) =>
-      imageHoverEffect ? 'scale(1.03)' : 'none'};
-  }
-
-  ${({ isStatic }) => (isStatic ? '' : 'cursor: pointer')};
-  :hover {
-    transform: ${({ noHoverEffect }) =>
-      noHoverEffect ? 'none' : 'scale(1.02)'};
-  }
-
-  :focus-visible {
-    transform: ${({ noHoverEffect }) =>
-      noHoverEffect ? 'none' : 'scale(1.02)'};
-  }
 
   ${({ hasMultiple }) =>
     hasMultiple &&

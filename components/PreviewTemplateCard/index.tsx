@@ -11,7 +11,7 @@ import {
   PlaceholderPrice,
   PlaceholderIcon,
   ShimmerBlock,
-} from './TemplateCard.styled';
+} from '../TemplateCard/TemplateCard.styled';
 import CollectionIcon, { IconContainer } from '../CollectionIcon';
 import { fileReader } from '../../utils';
 import TemplateImage from '../TemplateImage';
@@ -25,34 +25,54 @@ import {
   useCreateAssetContext,
   useAuthContext,
 } from '../../components/Provider';
-import { Template } from '../../services/templates';
 
 type Props = {
-  template: Template;
-  redirectPath?: string;
-  hasMultiple?: boolean;
+  collectionName: string;
+  collectionDisplayName?: string;
+  templateName: string;
+  maxSupply: string;
   isUsersTemplates?: boolean;
+  redirectPath?: string;
+  totalAssets?: string;
+  assetsForSale?: string;
+  collectionImage?: string;
+  templateVideo?: string;
+  templateImage?: string;
+  price?: string;
+  hasMultiple?: boolean;
+  noHoverEffect?: boolean;
+  imageHoverEffect?: boolean;
+  isStatic?: boolean;
+  isCreatePreview?: boolean;
+  autoPlay?: boolean;
+  hasPlaceholderIcon?: boolean;
+  createdAt?: string;
   hasShimmer?: boolean;
 };
 
 const TemplateCard = ({
-  template,
+  collectionName,
+  templateName,
+  maxSupply,
   redirectPath,
-  hasMultiple,
   isUsersTemplates,
+  collectionDisplayName,
+  totalAssets,
+  assetsForSale,
+  collectionImage,
+  templateVideo,
+  templateImage,
+  price,
+  noHoverEffect,
+  hasMultiple,
+  isCreatePreview,
+  isStatic,
+  autoPlay,
+  hasPlaceholderIcon,
+  imageHoverEffect,
+  createdAt,
   hasShimmer,
 }: Props): JSX.Element => {
-  const {
-    name,
-    collection: { collection_name, img, name: collectionDisplayName },
-    immutable_data: { image, video },
-    max_supply,
-    lowestPrice,
-    totalAssets,
-    assetsForSale,
-    created_at_time,
-  } = template;
-
   const { cachedNewlyCreatedAssets } = useCreateAssetContext();
   const { currentUser } = useAuthContext();
   const [templateVideoSrc, setTemplateVideoSrc] = useState<string>('');
@@ -60,45 +80,54 @@ const TemplateCard = ({
   const [fallbackImgSrc, setFallbackImgSrc] = useState<string>('');
 
   useEffect(() => {
-    if (Date.now() - 600000 < Number(created_at_time) && isMyTemplate) {
+    if (Date.now() - 600000 < Number(createdAt) && isMyTemplate) {
       // created within the last 10 minutes to deal with propagation lag
-      if (cachedNewlyCreatedAssets[video]) {
+      if (cachedNewlyCreatedAssets[templateVideo]) {
         fileReader((result) => {
           setTemplateVideoSrc(result);
-        }, cachedNewlyCreatedAssets[video]);
+        }, cachedNewlyCreatedAssets[templateVideo]);
       }
-      if (cachedNewlyCreatedAssets[image]) {
+      if (cachedNewlyCreatedAssets[templateImage]) {
         fileReader((result) => {
           setTemplateImgSrc(result);
-        }, cachedNewlyCreatedAssets[image]);
+        }, cachedNewlyCreatedAssets[templateImage]);
       }
     } else {
-      const videoSrc = `${IPFS_RESOLVER_VIDEO}${video}`;
-      const imageSrc = !image
-        ? image
-        : `${RESIZER_IMAGE_SM}${IPFS_RESOLVER_IMAGE}${image}`;
-      const fallbackImageSrc = image ? `${IPFS_RESOLVER_IMAGE}${image}` : '';
+      const videoSrc = isCreatePreview
+        ? templateVideo
+        : `${IPFS_RESOLVER_VIDEO}${templateVideo}`;
+      const imageSrc =
+        isCreatePreview || !templateImage
+          ? templateImage
+          : `${RESIZER_IMAGE_SM}${IPFS_RESOLVER_IMAGE}${templateImage}`;
+      const fallbackImageSrc =
+        !isCreatePreview && templateImage
+          ? `${IPFS_RESOLVER_IMAGE}${templateImage}`
+          : '';
 
       setTemplateVideoSrc(videoSrc);
       setTemplateImgSrc(imageSrc);
       setFallbackImgSrc(fallbackImageSrc);
     }
-  }, [video, image]);
+  }, [templateVideo, templateImage]);
 
   const router = useRouter();
   const isMyTemplate =
     currentUser && router.query.chainAccount === currentUser.actor;
   const openDetailPage = () => {
-    router.push(redirectPath);
+    if (!isStatic) {
+      router.push(redirectPath);
+    }
   };
-
   const openCollectionPage = (e: MouseEvent) => {
-    e.stopPropagation();
-    router.push(`/${collection_name}`);
+    if (!isStatic) {
+      e.stopPropagation();
+      router.push(`/${collectionName}`);
+    }
   };
 
   const handleEnterKey = (e: KeyboardEvent) => {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && !isStatic) {
       openDetailPage();
     }
   };
@@ -110,10 +139,22 @@ const TemplateCard = ({
       </Tag>
     ) : null;
 
+  const collectionIcon = hasPlaceholderIcon ? (
+    <IconContainer margin="24px 16px 24px 0">
+      <PlaceholderIcon />
+    </IconContainer>
+  ) : (
+    <CollectionIcon
+      name={collectionName}
+      image={collectionImage}
+      margin="24px 16px 24px 0"
+    />
+  );
+
   const priceSection = hasShimmer ? (
     <ShimmerBlock aria-hidden />
-  ) : lowestPrice ? (
-    <Text>{lowestPrice}</Text>
+  ) : price ? (
+    <Text>{price}</Text>
   ) : (
     <PlaceholderPrice aria-hidden />
   );
@@ -122,35 +163,34 @@ const TemplateCard = ({
     <Card
       tabIndex={0}
       hasMultiple={hasMultiple}
+      noHoverEffect={noHoverEffect}
+      imageHoverEffect={imageHoverEffect}
       onClick={redirectPath ? openDetailPage : null}
-      onKeyDown={redirectPath ? handleEnterKey : null}>
+      onKeyDown={redirectPath ? handleEnterKey : null}
+      isStatic={isStatic}>
       <Row>
-        <CollectionNameButton onClick={openCollectionPage}>
-          <CollectionIcon
-            name={collection_name}
-            image={img}
-            margin="24px 16px 24px 0"
-          />
-          <Text>{collectionDisplayName || collection_name}</Text>
+        <CollectionNameButton isStatic={isStatic} onClick={openCollectionPage}>
+          {collectionIcon}
+          <Text>{collectionDisplayName || collectionName}</Text>
         </CollectionNameButton>
       </Row>
-      {video ? (
+      {templateVideo ? (
         <TemplateVideo
           src={templateVideoSrc}
           priceTag={priceTag}
-          autoPlay={false}
+          autoPlay={autoPlay}
         />
       ) : (
         <TemplateImage
           templateImgSrc={templateImgSrc}
           fallbackImgSrc={fallbackImgSrc}
-          templateName={name}
+          templateName={templateName}
           priceTag={priceTag}
         />
       )}
-      <Title>{name}</Title>
+      <Title>{templateName}</Title>
       <GreyText>
-        Edition size: {max_supply === '0' ? 'Unlimited' : max_supply}
+        Edition size: {maxSupply === '0' ? 'Unlimited' : maxSupply}
       </GreyText>
       {priceSection}
     </Card>
