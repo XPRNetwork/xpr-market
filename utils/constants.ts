@@ -52,6 +52,12 @@ export const TAB_TYPES = {
   ITEMS: 'ITEMS',
   CREATIONS: 'CREATIONS',
 };
+
+export const FILTER_TYPES = {
+  NAME: 'Name',
+  RECENTLY_CREATED: 'Recently created',
+};
+
 export const FEATURED_HOMEPAGE_COLLECTIONS = [
   { name: 'boardtodeath', displayName: 'Board To Death' },
   { name: 'restingbface', displayName: 'RBF' },
