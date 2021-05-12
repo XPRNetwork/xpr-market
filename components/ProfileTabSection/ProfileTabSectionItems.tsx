@@ -36,7 +36,9 @@ export const ProfileTabSectionItems = ({
   const [isInitialPageLoading, setIsInitialPageLoading] = useState<boolean>(
     true
   );
-  const [itemsFilter, setItemsFilter] = useState<string>(FILTER_TYPES.NAME);
+  const [itemsFilter, setItemsFilter] = useState<string>(
+    FILTER_TYPES.RECENTLY_CREATED
+  );
 
   const isUsersPage = currentUser && currentUser.actor === chainAccount;
 
