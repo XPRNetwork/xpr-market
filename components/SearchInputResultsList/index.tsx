@@ -87,10 +87,10 @@ const SearchInputResultsList = ({
     const name = element.innerText;
     switch (e.key) {
       case 'Enter':
-        if ((e.target as HTMLElement).className.includes('collection')) {
+        if (element.className.includes('collection')) {
           setInput('');
           router.push(`/${element.getAttribute('data-key')}`);
-        } else if ((e.target as HTMLElement).className.includes('template')) {
+        } else if (element.className.includes('template')) {
           setInput('');
           router.push(`/${element.getAttribute('data-key')}`);
         } else {

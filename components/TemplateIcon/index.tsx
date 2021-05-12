@@ -35,13 +35,18 @@ const TemplateIcon = ({
   };
 
   if (video) {
-    <VideoIcon
-      size={size}
-      muted
-      playsInline
-      src={isIpfs ? `${IPFS_RESOLVER_VIDEO}${video}` : video}
-      poster={isIpfs ? `${IPFS_RESOLVER_VIDEO}${video}` : video}
-    />;
+    return (
+      <VideoIcon
+        size={size}
+        muted
+        autoPlay
+        loop
+        playsInline
+        margin={margin}
+        src={isIpfs ? `${IPFS_RESOLVER_VIDEO}${video}` : video}
+        poster={isIpfs ? `${IPFS_RESOLVER_VIDEO}${video}` : video}
+      />
+    );
   } else {
     return (
       <ImageIcon

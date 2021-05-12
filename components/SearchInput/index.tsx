@@ -88,6 +88,7 @@ const SearchInput = ({
     const res = await getFromApi<{ [account: string]: string }>(
       `/api/search?query=${input}`
     );
+
     if (res.success) {
       const result = (res.message as unknown) as SearchResponse[];
       const collections =
