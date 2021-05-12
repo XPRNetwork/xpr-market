@@ -10,7 +10,6 @@ import {
 import { ReactComponent as DownArrow } from '../../public/down-arrow-sm.svg';
 import { ReactComponent as Checkmark } from '../../public/icon-light-check-24-px.svg';
 import { useScrollLock, useEscapeKeyClose } from '../../hooks';
-import { capitalize } from '../../utils';
 import { FILTER_TYPES } from '../../utils/constants';
 
 type Props = {
