@@ -91,9 +91,6 @@ const Collection = (): JSX.Element => {
       ...prevCreations,
       ...prefetchedCreations,
     ]);
-    setPrefetchCreationsPageNumber((prevPageNumber) =>
-      prefetchedCreations.length < PAGINATION_LIMIT ? -1 : prevPageNumber + 1
-    );
     setIsLoadingNextPage(true);
     const creations = await getUserCreatedTemplates(
       chainAccount,
@@ -102,6 +99,9 @@ const Collection = (): JSX.Element => {
     );
     setPrefetchedCreations(creations);
     setIsLoadingNextPage(false);
+    setPrefetchCreationsPageNumber((prevPageNumber) =>
+      creations.length < PAGINATION_LIMIT ? -1 : prevPageNumber + 1
+    );
   };
 
   const getUser = async (chainAccount: string): Promise<void> => {
@@ -139,11 +139,14 @@ const Collection = (): JSX.Element => {
           );
           const creations = await getUserCreatedTemplates(
             chainAccount,
-            prefetchCreationsPageNumber,
+            2,
             !isUsersPage
           );
           setRenderedCreations(initialCreations);
           setPrefetchedCreations(creations);
+          setPrefetchCreationsPageNumber(
+            creations.length < PAGINATION_LIMIT ? -1 : 3
+          );
 
           setIsLoading(false);
           setIsInitialPageLoading(false);
