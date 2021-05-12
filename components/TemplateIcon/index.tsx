@@ -39,8 +39,6 @@ const TemplateIcon = ({
       <VideoIcon
         size={size}
         muted
-        autoPlay
-        loop
         playsInline
         margin={margin}
         src={isIpfs ? `${IPFS_RESOLVER_VIDEO}${video}` : video}
