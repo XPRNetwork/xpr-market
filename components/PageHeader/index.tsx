@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, memo } from 'react';
 import { Image } from '../../styles/index.styled';
 import {
   PageHeaderContainer,
@@ -7,8 +7,11 @@ import {
   Name,
   SubName,
   ButtonContainer,
+  VerifiedIconContainer,
+  PageHeaderAvatarContainer,
 } from './PageHeader.styled';
 import { ReactComponent as MoreIcon } from '../../public/more.svg';
+import { ReactComponent as VerifiedIcon } from '../../public/icon-light-verified-24-px.svg';
 import ShareOnSocial from '../ShareOnSocial';
 import { useClickAway } from '../../hooks';
 import { IPFS_RESOLVER_IMAGE, RESIZER_IMAGE } from '../../utils/constants';
@@ -22,6 +25,7 @@ type PageHeaderProps = {
   subName?: string;
   type: 'user' | 'collection';
   hasEditFunctionality?: boolean;
+  isLightKYCVerified?: boolean;
 };
 
 const PageHeader = ({
@@ -31,6 +35,7 @@ const PageHeader = ({
   subName,
   type,
   hasEditFunctionality,
+  isLightKYCVerified,
 }: PageHeaderProps): JSX.Element => {
   const { openModal } = useModalContext();
   const [shareActive, setShareActive] = useState<boolean>(false);
@@ -79,15 +84,22 @@ const PageHeader = ({
 
   return (
     <PageHeaderContainer>
-      <ImageContainer>
-        <Image
-          width="120px"
-          height="120px"
-          src={displayImg}
-          onError={onImageError}
-          objectFit="cover"
-        />
-      </ImageContainer>
+      <PageHeaderAvatarContainer>
+        <ImageContainer>
+          <Image
+            width="120px"
+            height="120px"
+            src={displayImg}
+            onError={onImageError}
+            objectFit="cover"
+          />
+        </ImageContainer>
+        {isLightKYCVerified && (
+          <VerifiedIconContainer>
+            <VerifiedIcon />
+          </VerifiedIconContainer>
+        )}
+      </PageHeaderAvatarContainer>
       <Name>{name}</Name>
       {subName ? <SubName>@{subName}</SubName> : null}
       {description ? (
@@ -105,4 +117,4 @@ const PageHeader = ({
   );
 };
 
-export default PageHeader;
+export default memo(PageHeader);

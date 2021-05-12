@@ -16,6 +16,10 @@ export const PageHeaderContainer = styled.div`
   padding-bottom: 50px;
 `;
 
+export const PageHeaderAvatarContainer = styled.div`
+  position: relative;
+`;
+
 export const ImageContainer = styled.div`
   width: 120px;
   height: 120px;
@@ -28,6 +32,12 @@ export const ImageContainer = styled.div`
     height: 112px;
     margin-bottom: 24px;
   `}
+`;
+
+export const VerifiedIconContainer = styled.div`
+  position: absolute;
+  bottom: 12px;
+  right: 0;
 `;
 
 export const Name = styled.p`
