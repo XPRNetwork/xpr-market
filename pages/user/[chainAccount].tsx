@@ -56,6 +56,7 @@ const Collection = (): JSX.Element => {
     true
   );
   const [errorMessage, setErrorMessage] = useState<string>('');
+  const [isLightKYCVerified, setIsLightKYCVerified] = useState<boolean>(false);
   const [userName, setUserName] = useState<string>('');
   const [userAvatar, setUserAvatar] = useState<string>('/default-avatar.png');
 
@@ -107,9 +108,9 @@ const Collection = (): JSX.Element => {
     setIsProfileLoading(true);
 
     if (chainAccount) {
-      const user = await proton.getUserByChainAccount({
-        account: chainAccount,
-      });
+      const user = await proton.getUserByChainAccount(chainAccount);
+      const isVerified = await proton.isAccountLightKYCVerified(chainAccount);
+      setIsLightKYCVerified(isVerified);
       const { name, avatar } = user;
       setUserName(name);
       setUserAvatar(avatar);
@@ -269,6 +270,7 @@ const Collection = (): JSX.Element => {
           image={userAvatar}
           name={userName}
           subName={chainAccount}
+          isLightKYCVerified={isLightKYCVerified}
           type="user"
         />
         <ProfileTabs
