@@ -87,8 +87,8 @@ const PageHeader = ({
       <PageHeaderAvatarContainer>
         <ImageContainer>
           <Image
-            width="120px"
-            height="120px"
+            width="100%"
+            height="100%"
             src={displayImg}
             onError={onImageError}
             objectFit="cover"

@@ -38,6 +38,10 @@ export const VerifiedIconContainer = styled.div`
   position: absolute;
   bottom: 12px;
   right: 0;
+
+  ${breakpoint.mobile`
+    bottom: 20px;
+  `}
 `;
 
 export const Name = styled.p`
