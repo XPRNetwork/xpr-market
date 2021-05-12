@@ -40,9 +40,10 @@ const TemplateIcon = ({
         size={size}
         muted
         playsInline
+        autoPlay
+        loop
         margin={margin}
         src={isIpfs ? `${IPFS_RESOLVER_VIDEO}${video}` : video}
-        poster={isIpfs ? `${IPFS_RESOLVER_VIDEO}${video}` : video}
       />
     );
   } else {

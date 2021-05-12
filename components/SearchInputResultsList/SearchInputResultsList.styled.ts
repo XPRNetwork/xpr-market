@@ -29,11 +29,7 @@ export const SeeAllLink = styled.button`
   background-color: transparent;
   border: none;
   font-size: 14px;
-  font-weight: normal;
-  font-stretch: normal;
-  font-style: normal;
   line-height: 1.71;
-  letter-spacing: normal;
   color: #752eeb;
   margin-top: 15px;
   cursor: pointer;
@@ -60,10 +56,6 @@ export const ResultItem = styled.li`
 
 export const ResultItemName = styled.span`
   font-size: 14px;
-  font-weight: normal;
-  font-stretch: normal;
-  font-style: normal;
   line-height: 1.71;
-  letter-spacing: normal;
   color: #1a1a1a;
 `;
