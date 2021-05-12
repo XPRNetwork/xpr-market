@@ -1,27 +1,27 @@
 import { useEffect, useState } from 'react';
-import ProfileTabSection from './index';
-import ProfileTabs, { ProfileTabsProps } from '../../components/ProfileTabs';
+import ProfileTabSection, { ProfileTabSectionContainerProps } from './';
+import ProfileTabs from '../../components/ProfileTabs';
 import FilterDropdown from '../../components/FilterDropdown';
 import LoadingPage from '../../components/LoadingPage';
 import { useAuthContext } from '../Provider';
-import { Row } from '../../styles/index.styled';
+import { Row, Section } from '../../styles/index.styled';
 import { getAllTemplatesForUserWithAssetCount } from '../../services/templates';
 import {
   Template,
   getLowestPricesByTemplateId,
 } from '../../services/templates';
-import { PAGINATION_LIMIT, FILTER_TYPES } from '../../utils/constants';
-
-interface Props extends ProfileTabsProps {
-  chainAccount: string;
-}
+import {
+  PAGINATION_LIMIT,
+  FILTER_TYPES,
+  TAB_TYPES,
+} from '../../utils/constants';
 
 export const ProfileTabSectionItems = ({
   chainAccount,
   tabs,
   activeTab,
   setActiveTab,
-}: Props): JSX.Element => {
+}: ProfileTabSectionContainerProps): JSX.Element => {
   const { currentUser } = useAuthContext();
   const [allItems, setAllItems] = useState<{
     [type: string]: Template[];
@@ -120,12 +120,8 @@ export const ProfileTabSectionItems = ({
     setPrefetchPageNumber(pageOneItems.length < PAGINATION_LIMIT ? -1 : 2);
   };
 
-  if (isInitialPageLoading) {
-    return <LoadingPage margin="10% 0" />;
-  }
-
   return (
-    <>
+    <Section isHidden={activeTab !== TAB_TYPES.ITEMS}>
       <Row>
         <ProfileTabs
           tabs={tabs}
@@ -137,20 +133,24 @@ export const ProfileTabSectionItems = ({
           handleFilterClick={handleItemsFilterClick}
         />
       </Row>
-      <ProfileTabSection
-        showNextPage={showNextItemsPage}
-        isLoadingPrices={isLoadingPrices}
-        isFetching={isFetching}
-        rendered={renderedItems}
-        prefetchPageNumber={prefetchPageNumber}
-        emptyContent={{
-          subtitle: isUsersPage
-            ? 'Looks like you have not bought any NFT’s yet. Come back when you do!'
-            : 'Looks like this user has not bought any NFT’s yet.',
-          buttonTitle: 'Explore NFTs',
-          link: '/',
-        }}
-      />
-    </>
+      {isInitialPageLoading ? (
+        <LoadingPage margin="10% 0" />
+      ) : (
+        <ProfileTabSection
+          showNextPage={showNextItemsPage}
+          isLoadingPrices={isLoadingPrices}
+          isFetching={isFetching}
+          rendered={renderedItems}
+          prefetchPageNumber={prefetchPageNumber}
+          emptyContent={{
+            subtitle: isUsersPage
+              ? 'Looks like you have not bought any NFT’s yet. Come back when you do!'
+              : 'Looks like this user has not bought any NFT’s yet.',
+            buttonTitle: 'Explore NFTs',
+            link: '/',
+          }}
+        />
+      )}
+    </Section>
   );
 };

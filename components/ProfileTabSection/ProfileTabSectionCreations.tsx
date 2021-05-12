@@ -1,23 +1,19 @@
 import { useEffect, useState } from 'react';
-import ProfileTabSection from './index';
-import ProfileTabs, { ProfileTabsProps } from '../../components/ProfileTabs';
+import ProfileTabSection, { ProfileTabSectionContainerProps } from './';
+import ProfileTabs from '../../components/ProfileTabs';
 import LoadingPage from '../../components/LoadingPage';
 import { useAuthContext } from '../Provider';
-import { Row } from '../../styles/index.styled';
+import { Row, Section } from '../../styles/index.styled';
 import { getUserCreatedTemplates } from '../../services/templates';
 import { Template } from '../../services/templates';
-import { PAGINATION_LIMIT } from '../../utils/constants';
-
-interface Props extends ProfileTabsProps {
-  chainAccount: string;
-}
+import { PAGINATION_LIMIT, TAB_TYPES } from '../../utils/constants';
 
 export const ProfileTabSectionCreations = ({
   chainAccount,
   tabs,
   activeTab,
   setActiveTab,
-}: Props): JSX.Element => {
+}: ProfileTabSectionContainerProps): JSX.Element => {
   const { currentUser } = useAuthContext();
   const [renderedCreations, setRenderedCreations] = useState<Template[]>([]);
   const [prefetchedCreations, setPrefetchedCreations] = useState<Template[]>(
@@ -85,12 +81,8 @@ export const ProfileTabSectionCreations = ({
     setIsFetching(false);
   };
 
-  if (isInitialPageLoading) {
-    return <LoadingPage margin="10% 0" />;
-  }
-
   return (
-    <>
+    <Section isHidden={activeTab !== TAB_TYPES.CREATIONS}>
       <Row>
         <ProfileTabs
           tabs={tabs}
@@ -98,19 +90,23 @@ export const ProfileTabSectionCreations = ({
           setActiveTab={setActiveTab}
         />
       </Row>
-      <ProfileTabSection
-        showNextPage={showNextCreationsPage}
-        isFetching={isFetching}
-        rendered={renderedCreations}
-        prefetchPageNumber={prefetchPageNumber}
-        emptyContent={{
-          subtitle: isUsersPage
-            ? 'Looks like you have not created any NFT’s yet. Come back when you do!'
-            : 'Looks like this user does not have any creations yet.',
-          buttonTitle: 'Create NFT',
-          link: '/create',
-        }}
-      />
-    </>
+      {isInitialPageLoading ? (
+        <LoadingPage margin="10% 0" />
+      ) : (
+        <ProfileTabSection
+          showNextPage={showNextCreationsPage}
+          isFetching={isFetching}
+          rendered={renderedCreations}
+          prefetchPageNumber={prefetchPageNumber}
+          emptyContent={{
+            subtitle: isUsersPage
+              ? 'Looks like you have not created any NFT’s yet. Come back when you do!'
+              : 'Looks like this user does not have any creations yet.',
+            buttonTitle: 'Create NFT',
+            link: '/create',
+          }}
+        />
+      )}
+    </Section>
   );
 };

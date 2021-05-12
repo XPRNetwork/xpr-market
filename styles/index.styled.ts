@@ -12,6 +12,10 @@ type RowProps = {
   margin?: string;
 };
 
+type SectionProps = {
+  isHidden: boolean;
+};
+
 export const Image = styled.img<ImgProps>`
   width: ${({ width }) => width || '270px'};
   height: ${({ height }) => height || '270px'};
@@ -24,4 +28,8 @@ export const Row = styled.div<RowProps>`
   align-items: ${({ alignItems }) => alignItems || 'flex-start'};
   margin: ${({ margin }) => margin || 0};
   width: 100%;
+`;
+
+export const Section = styled.section<SectionProps>`
+  display: ${({ isHidden }) => (isHidden ? 'none' : 'block')};
 `;

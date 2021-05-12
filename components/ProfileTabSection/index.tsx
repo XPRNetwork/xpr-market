@@ -1,11 +1,16 @@
 export { ProfileTabSectionItems } from './ProfileTabSectionItems';
 export { ProfileTabSectionCreations } from './ProfileTabSectionCreations';
 import { memo } from 'react';
-import PaginationButton from '../../components/PaginationButton';
-import Grid from '../../components/Grid';
-import EmptyUserContent from '../../components/EmptyUserContent';
+import PaginationButton from '../PaginationButton';
+import Grid from '../Grid';
+import EmptyUserContent from '../EmptyUserContent';
+import { ProfileTabsProps } from '../ProfileTabs';
 import { Template } from '../../services/templates';
 import { PAGINATION_LIMIT } from '../../utils/constants';
+
+export interface ProfileTabSectionContainerProps extends ProfileTabsProps {
+  chainAccount: string;
+}
 
 type Props = {
   showNextPage: () => Promise<void>;
