@@ -20,7 +20,6 @@ const CollectionBox = ({
     <BoxContainer active={active}>
       <CollectionIcon name={collection_name} image={img} width="40px" />
       <CollectionName>{name || collection_name}</CollectionName>
-      <CollectionSubName>#{collection_name}</CollectionSubName>
     </BoxContainer>
   );
 };
