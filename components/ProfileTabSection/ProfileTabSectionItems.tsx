@@ -33,7 +33,7 @@ export const ProfileTabSectionItems = ({
   const [prefetchPageNumber, setPrefetchPageNumber] = useState<number>(2);
   const [isLoadingPrices, setIsLoadingPrices] = useState<boolean>(true);
   const [isFetching, setIsFetching] = useState<boolean>(true);
-  const [isInitialPageLoading, setIsInitialPageLoading] = useState<boolean>(
+  const [isLoadingInitialMount, setIsLoadingInitialMount] = useState<boolean>(
     true
   );
   const [itemsFilter, setItemsFilter] = useState<string>(
@@ -45,11 +45,11 @@ export const ProfileTabSectionItems = ({
   useEffect(() => {
     (async () => {
       if (chainAccount) {
-        try {
-          setIsFetching(true);
-          setIsLoadingPrices(true);
-          setIsInitialPageLoading(true);
+        setIsFetching(true);
+        setIsLoadingPrices(true);
+        setIsLoadingInitialMount(true);
 
+        try {
           const {
             templates,
             collectionNames,
@@ -68,7 +68,7 @@ export const ProfileTabSectionItems = ({
             allItemsByFilter[itemsFilter].slice(0, PAGINATION_LIMIT)
           );
           setIsFetching(false);
-          setIsInitialPageLoading(false);
+          setIsLoadingInitialMount(false);
 
           const prices = await getLowestPricesByTemplateId(collectionNames);
           const templatesWithPrices = templates.map((template) => ({
@@ -93,7 +93,7 @@ export const ProfileTabSectionItems = ({
           console.warn(e.message);
           setIsFetching(false);
           setIsLoadingPrices(false);
-          setIsInitialPageLoading(false);
+          setIsLoadingInitialMount(false);
         }
       }
     })();
@@ -133,7 +133,7 @@ export const ProfileTabSectionItems = ({
           handleFilterClick={handleItemsFilterClick}
         />
       </Row>
-      {isInitialPageLoading ? (
+      {isLoadingInitialMount ? (
         <LoadingPage margin="10% 0" />
       ) : (
         <ProfileTabSection

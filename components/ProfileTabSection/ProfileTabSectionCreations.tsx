@@ -21,7 +21,7 @@ export const ProfileTabSectionCreations = ({
   );
   const [prefetchPageNumber, setPrefetchPageNumber] = useState<number>(2);
   const [isFetching, setIsFetching] = useState<boolean>(true);
-  const [isInitialPageLoading, setIsInitialPageLoading] = useState<boolean>(
+  const [isLoadingInitialMount, setIsLoadingInitialMount] = useState<boolean>(
     true
   );
 
@@ -30,10 +30,9 @@ export const ProfileTabSectionCreations = ({
   useEffect(() => {
     (async () => {
       if (chainAccount) {
+        setIsFetching(true);
+        setIsLoadingInitialMount(true);
         try {
-          setIsFetching(true);
-          setIsInitialPageLoading(true);
-
           const initialCreations = await getUserCreatedTemplates(
             chainAccount,
             1,
@@ -48,15 +47,11 @@ export const ProfileTabSectionCreations = ({
           setRenderedCreations(initialCreations);
           setPrefetchedCreations(creations);
           setPrefetchPageNumber(creations.length < PAGINATION_LIMIT ? -1 : 3);
-
-          setIsFetching(false);
-          setIsInitialPageLoading(false);
         } catch (e) {
           console.warn(e.message);
-
-          setIsFetching(false);
-          setIsInitialPageLoading(false);
         }
+        setIsFetching(false);
+        setIsLoadingInitialMount(false);
       }
     })();
   }, [chainAccount]);
@@ -90,7 +85,7 @@ export const ProfileTabSectionCreations = ({
           setActiveTab={setActiveTab}
         />
       </Row>
-      {isInitialPageLoading ? (
+      {isLoadingInitialMount ? (
         <LoadingPage margin="10% 0" />
       ) : (
         <ProfileTabSection
