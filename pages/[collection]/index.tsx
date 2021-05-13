@@ -16,7 +16,11 @@ import {
   Collection,
   emptyCollection,
 } from '../../services/collections';
-import { PAGINATION_LIMIT, RouterQuery } from '../../utils/constants';
+import {
+  PAGINATION_LIMIT,
+  RouterQuery,
+  CARD_RENDER_TYPES,
+} from '../../utils/constants';
 import Banner from '../../components/Banner';
 import PageHeader from '../../components/PageHeader';
 import {
@@ -176,7 +180,7 @@ const CollectionPage = (): JSX.Element => {
           type="collection"
           hasEditFunctionality={isEditButtonVisible}
         />
-        <Grid items={renderedTemplates} />
+        <Grid items={renderedTemplates} type={CARD_RENDER_TYPES.TEMPLATE} />
         <PaginationButton
           onClick={showNextPage}
           isHidden={renderedTemplates.length < PAGINATION_LIMIT}

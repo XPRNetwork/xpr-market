@@ -1,10 +1,5 @@
 /* eslint-disable jsx-a11y/media-has-caption */
-import {
-  useCallback,
-  useState,
-  Dispatch,
-  SetStateAction,
-} from 'react';
+import { useCallback, useState, Dispatch, SetStateAction } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { Image } from '../../styles/index.styled';
 import {
