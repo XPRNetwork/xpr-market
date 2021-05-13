@@ -25,7 +25,7 @@ type PageHeaderProps = {
   subName?: string;
   type: 'user' | 'collection';
   hasEditFunctionality?: boolean;
-  isLightKYCVerified?: boolean;
+  isVerified?: boolean;
 };
 
 const PageHeader = ({
@@ -35,7 +35,7 @@ const PageHeader = ({
   subName,
   type,
   hasEditFunctionality,
-  isLightKYCVerified,
+  isVerified,
 }: PageHeaderProps): JSX.Element => {
   const { openModal } = useModalContext();
   const [shareActive, setShareActive] = useState<boolean>(false);
@@ -94,7 +94,7 @@ const PageHeader = ({
             objectFit="cover"
           />
         </ImageContainer>
-        {isLightKYCVerified && (
+        {isVerified && (
           <VerifiedIconContainer>
             <VerifiedIcon />
           </VerifiedIconContainer>

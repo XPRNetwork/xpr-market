@@ -106,7 +106,7 @@ const Collection = (): JSX.Element => {
           image={avatar}
           name={name}
           subName={chainAccount}
-          isLightKYCVerified={isVerified}
+          isVerified={isVerified}
           type="user"
         />
         <TabSectionUserProfileItems

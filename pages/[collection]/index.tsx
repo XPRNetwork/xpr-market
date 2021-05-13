@@ -29,6 +29,7 @@ import {
   useModalContext,
 } from '../../components/Provider';
 import { useNavigatorUserAgent, usePrevious } from '../../hooks';
+import proton from '../../services/proton-rpc';
 
 const CollectionPage = (): JSX.Element => {
   const router = useRouter();
@@ -50,6 +51,7 @@ const CollectionPage = (): JSX.Element => {
   );
   const [prefetchPageNumber, setPrefetchPageNumber] = useState<number>(2);
   const [isLoadingNextPage, setIsLoadingNextPage] = useState<boolean>(true);
+  const [isCreatorVerified, setIsCreatorVerified] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [collectionData, setCollectionData] = useState<Collection>(
     emptyCollection
@@ -91,6 +93,11 @@ const CollectionPage = (): JSX.Element => {
       setIsLoading(true);
       const collectionResult = await getCollection(collection);
       setCollectionData(collectionResult);
+
+      const isVerified = await proton.isAccountLightKYCVerified(
+        collectionResult.author
+      );
+      setIsCreatorVerified(isVerified);
 
       const templates = await getTemplatesByCollection({
         type: collection,
@@ -183,6 +190,7 @@ const CollectionPage = (): JSX.Element => {
           name={name || collection}
           description={description}
           type="collection"
+          isVerified={isCreatorVerified}
           hasEditFunctionality={isEditButtonVisible}
         />
         <Grid items={renderedTemplates} type={CARD_RENDER_TYPES.TEMPLATE} />
