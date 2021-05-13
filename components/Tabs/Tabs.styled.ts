@@ -27,6 +27,6 @@ export const Tab = styled.p<TabProps>`
 export const Row = styled(StyledRow)`
   ${breakpoint.mobile`
     border-bottom: 1px solid #e6e6e6;
-    margin-bottom: 12px;
+    margin-bottom: 24px;
   `}
 `;
