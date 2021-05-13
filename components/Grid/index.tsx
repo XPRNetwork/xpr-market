@@ -56,14 +56,12 @@ const Grid = ({ isLoadingPrices, items, type }: Props): JSX.Element => {
         break;
       case CARD_RENDER_TYPES.COLLECTION:
         {
-          return items.map((collection) => {
-            return (
-              <CollectionCard
-                key={collection.collection_name}
-                cardContent={collection}
-              />
-            );
-          });
+          return items.map((collection) => (
+            <CollectionCard
+              key={collection.collection_name}
+              cardContent={collection}
+            />
+          ));
         }
         break;
       // case default: {
