@@ -15,6 +15,36 @@ const Test = (): JSX.Element => {
       name: 'Lite Monsters',
       description: '',
     },
+    {
+      author: 'protonsea',
+      authorized_accounts: ['protonsea'],
+      collection_name: 'litemonsters',
+      contract: 'atomicassets',
+      created: '1617056132500',
+      img: 'QmRZ2eYNStoXGVXhzHjPk9CRxyUFPJsJKwG1xQzJBPb3BH',
+      name: 'Lite Monsters',
+      description: '',
+    },
+    {
+      author: 'protonsea',
+      authorized_accounts: ['protonsea'],
+      collection_name: 'litemonsters',
+      contract: 'atomicassets',
+      created: '1617056132500',
+      img: 'QmRZ2eYNStoXGVXhzHjPk9CRxyUFPJsJKwG1xQzJBPb3BH',
+      name: 'Lite Monsters',
+      description: '',
+    },
+    {
+      author: 'protonsea',
+      authorized_accounts: ['protonsea'],
+      collection_name: 'litemonsters',
+      contract: 'atomicassets',
+      created: '1617056132500',
+      img: 'QmRZ2eYNStoXGVXhzHjPk9CRxyUFPJsJKwG1xQzJBPb3BH',
+      name: 'Lite Monsters',
+      description: '',
+    },
   ];
 
   return (

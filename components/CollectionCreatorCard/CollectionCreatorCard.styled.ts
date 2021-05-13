@@ -46,6 +46,7 @@ export const Blur = styled.div<BlurProps>`
   -webkit-filter: blur(10px);
   filter: blur(10px);
   background-color: rgba(230, 230, 230, 0.3);
+  backface-visibility: hidden;
 `;
 
 export const BottomSection = styled.div`
