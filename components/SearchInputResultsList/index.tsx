@@ -122,6 +122,11 @@ const SearchInputResultsList = ({
     }
   };
 
+  const handleClick = (link) => {
+    setInput('');
+    router.push(link);
+  };
+
   if (isSearching) {
     return (
       <LoadingSearchBox>
@@ -137,87 +142,78 @@ const SearchInputResultsList = ({
   return (
     <ResultsList ref={resultsListRef}>
       {templates.length ? <ResultListTitle>NFTs</ResultListTitle> : null}
-      {templates.map(({ name, id, collection, img, video }, i) => (
-        <ResultItem
-          className="template"
-          onKeyDown={
-            i === 0 ? handleFirstResultItemKeyDown : handleResultItemKeyDown
-          }
-          onClick={() => {
-            setInput('');
-            router.push(`/${collection}/${id}`);
-          }}
-          onTouchStart={() => {
-            setInput('');
-            router.push(`/${collection}/${id}`);
-          }}
-          tabIndex={0}
-          data-key={`/${collection}/${id}`}
-          key={name}>
-          <TemplateIcon
-            name={name}
-            image={img}
-            video={video}
-            margin="0 12px 0 0"
-          />
-          <ResultItemName>{name}</ResultItemName>
-        </ResultItem>
-      ))}
+      {templates.map(({ name, id, collection, img, video }, i) => {
+        const link = `/${collection}/${id}`;
+        return (
+          <ResultItem
+            className="template"
+            onKeyDown={
+              i === 0 ? handleFirstResultItemKeyDown : handleResultItemKeyDown
+            }
+            onClick={() => handleClick(link)}
+            onTouchStart={() => handleClick(link)}
+            tabIndex={0}
+            data-key={link}
+            key={name}>
+            <TemplateIcon
+              name={name}
+              image={img}
+              video={video}
+              margin="0 12px 0 0"
+            />
+            <ResultItemName>{name}</ResultItemName>
+          </ResultItem>
+        );
+      })}
       {collections.length ? (
         <ResultListTitle>Collection</ResultListTitle>
       ) : null}
-      {collections.map(({ name, img, collection_name, author }, i) => (
-        <ResultItem
-          className="collection"
-          onKeyDown={
-            i + templates.length === 0
-              ? handleFirstResultItemKeyDown
-              : handleResultItemKeyDown
-          }
-          onClick={() => {
-            setInput('');
-            router.push(`/${collection_name}`);
-          }}
-          onTouchStart={() => {
-            setInput('');
-            router.push(`/${collection_name}`);
-          }}
-          tabIndex={0}
-          data-key={`/${collection_name}`}
-          key={`${author} - ${collection_name}`}>
-          <CollectionIcon
-            name={name}
-            image={img}
-            margin="0 12px 0 0"
-            width="24px"
-          />
-          <ResultItemName>{name || collection_name}</ResultItemName>
-        </ResultItem>
-      ))}
+      {collections.map(({ name, img, collection_name, author }, i) => {
+        const link = `/${collection_name}`;
+        return (
+          <ResultItem
+            className="collection"
+            onKeyDown={
+              i + templates.length === 0
+                ? handleFirstResultItemKeyDown
+                : handleResultItemKeyDown
+            }
+            onClick={() => handleClick(link)}
+            onTouchStart={() => handleClick(link)}
+            tabIndex={0}
+            data-key={link}
+            key={`${author} - ${collection_name}`}>
+            <CollectionIcon
+              name={name}
+              image={img}
+              margin="0 12px 0 0"
+              width="24px"
+            />
+            <ResultItemName>{name || collection_name}</ResultItemName>
+          </ResultItem>
+        );
+      })}
       {authors.length ? <ResultListTitle>Members</ResultListTitle> : null}
-      {authors.map(({ name, avatar, acc }, i) => (
-        <ResultItem
-          className="user"
-          onKeyDown={
-            i + templates.length + collections.length === 0
-              ? handleFirstResultItemKeyDown
-              : handleResultItemKeyDown
-          }
-          onClick={() => {
-            setInput('');
-            router.push(`/user/${acc}`);
-          }}
-          onTouchStart={() => {
-            setInput('');
-            router.push(`/user/${acc}`);
-          }}
-          tabIndex={0}
-          data-key={`/user/${acc}`}
-          key={acc}>
-          <AvatarIcon avatar={avatar} size="24px" margin="0 12px 0 0" />
-          <ResultItemName>{name || acc}</ResultItemName>
-        </ResultItem>
-      ))}
+      {authors.map(({ name, avatar, acc }, i) => {
+        const link = `/user/${acc}`;
+        return (
+          <ResultItem
+            className="user"
+            onKeyDown={
+              i + templates.length + collections.length === 0
+                ? handleFirstResultItemKeyDown
+                : handleResultItemKeyDown
+            }
+            onClick={() => handleClick(link)}
+            onTouchStart={() => handleClick(link)}
+            tabIndex={0}
+            data-key={link}
+            key={acc}>
+            <AvatarIcon avatar={avatar} size="24px" margin="0 12px 0 0" />
+            <ResultItemName>{name || acc}</ResultItemName>
+          </ResultItem>
+        );
+      })}
       <SeeAllLink
         onClick={() => search(input)}
         onKeyDown={(e) => {
