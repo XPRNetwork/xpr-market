@@ -17,17 +17,10 @@ const handler = async (
       break;
     default: {
       try {
-        const result = await fetch(
+        const rawResult = await fetch(
           `https://api-dev.protonchain.com/v1/chain/market/search?q=${query}`
-        )
-          .then((res) => {
-            if (res.ok) {
-              return res.json();
-            } else {
-              throw new Error('Error retrieving search results');
-            }
-          })
-          .then((res) => res);
+        );
+        const result = await rawResult.json();
         res.status(200).send({ success: true, message: result });
       } catch (e) {
         res.status(500).send({

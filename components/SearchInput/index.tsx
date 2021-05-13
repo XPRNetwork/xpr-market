@@ -46,6 +46,7 @@ const SearchInput = ({
   >([]);
   const [searchTemplates, setSearchTemplates] = useState<SearchTemplate[]>([]);
   const [searchAuthors, setSearchAuthors] = useState<SearchAuthor[]>([]);
+  const [isSearching, setIsSearching] = useState<boolean>(false);
 
   useEffect(() => {
     const removeInputFocusStyle = (e: MouseEvent) => {
@@ -75,37 +76,48 @@ const SearchInput = ({
           getSearchResults();
         }, 300);
       } else if (!input) {
-        setSearchCollections([]);
-        setSearchAuthors([]);
-        setSearchTemplates([]);
+        clearSearchResults();
       }
     })();
 
     return () => clearTimeout(debounceTimer);
   }, [input, isSearchInputActive]);
 
-  const getSearchResults = async (): Promise<void> => {
-    const res = await getFromApi<{ [account: string]: string }>(
-      `/api/search?query=${input}`
-    );
+  const clearSearchResults = () => {
+    setSearchCollections([]);
+    setSearchAuthors([]);
+    setSearchTemplates([]);
+  };
 
-    if (res.success) {
-      const result = (res.message as unknown) as SearchResponse[];
-      const collections =
-        result
-          .find((obj) => obj.index === 'market_collections')
-          ?.result.slice(0, 3) || [];
-      const users =
-        result
-          .find((obj) => obj.index === 'market_authors')
-          ?.result.slice(0, 3) || [];
-      const templates =
-        result
-          .find((obj) => obj.index === 'market_templates')
-          ?.result.slice(0, 3) || [];
-      setSearchCollections(collections as SearchCollection[]);
-      setSearchAuthors(users as SearchAuthor[]);
-      setSearchTemplates(templates as SearchTemplate[]);
+  const getSearchResults = async (): Promise<void> => {
+    try {
+      setIsSearching(true);
+      const res = await getFromApi<SearchResponse[]>(
+        `/api/search?query=${input}`
+      );
+
+      if (res.success) {
+        const result = res.message;
+        const collections =
+          result
+            .find((obj) => obj.index === 'market_collections')
+            .result.slice(0, 3) || [];
+        const users =
+          result
+            .find((obj) => obj.index === 'market_authors')
+            .result.slice(0, 3) || [];
+        const templates =
+          result
+            .find((obj) => obj.index === 'market_templates')
+            .result.slice(0, 3) || [];
+        setSearchCollections(collections as SearchCollection[]);
+        setSearchAuthors(users as SearchAuthor[]);
+        setSearchTemplates(templates as SearchTemplate[]);
+        setIsSearching(false);
+      }
+    } catch (e) {
+      setIsSearching(false);
+      clearSearchResults();
     }
   };
 
@@ -147,12 +159,12 @@ const SearchInput = ({
     }
 
     const isDownArrow = e.key === 'ArrowDown';
-    if (
-      isDownArrow &&
-      (searchCollections.length ||
-        searchTemplates.length ||
-        searchAuthors.length)
-    ) {
+    const hasResults =
+      searchCollections.length ||
+      searchTemplates.length ||
+      searchAuthors.length;
+
+    if (isDownArrow && hasResults) {
       e.preventDefault();
       const firstResultItem = resultsListRef.current
         .childNodes[1] as HTMLElement;
@@ -193,6 +205,7 @@ const SearchInput = ({
         <CloseIcon />
       </ClearTextButton>
       <SearchInputResultsList
+        isSearching={isSearching}
         input={input}
         search={search}
         collections={searchCollections}

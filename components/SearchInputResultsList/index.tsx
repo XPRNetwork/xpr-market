@@ -10,6 +10,7 @@ import {
   ResultItem,
   ResultItemName,
   SeeAllLink,
+  LoadingSearchBox,
 } from './SearchInputResultsList.styled';
 import {
   SearchCollection,
@@ -20,6 +21,7 @@ import TemplateIcon from '../TemplateIcon';
 import CollectionIcon from '../CollectionIcon';
 import AvatarIcon from '../AvatarIcon';
 import { useRouter } from 'next/router';
+import Spinner from '../Spinner';
 
 type Props = {
   input: string;
@@ -31,6 +33,7 @@ type Props = {
   clearTextButtonRef: MutableRefObject<HTMLButtonElement>;
   setInput: Dispatch<SetStateAction<string>>;
   search: (string) => void;
+  isSearching: boolean;
 };
 
 const SearchInputResultsList = ({
@@ -43,28 +46,30 @@ const SearchInputResultsList = ({
   clearTextButtonRef,
   search,
   setInput,
+  isSearching,
 }: Props): JSX.Element => {
   const router = useRouter();
   const navigatePrevious: KeyboardEventHandler<HTMLElement> = (e) => {
     e.preventDefault();
     const target = e.target as HTMLElement;
-    if (
-      target.previousSibling &&
-      target.previousElementSibling.tagName === 'H3'
-    ) {
-      (target.previousSibling.previousSibling as HTMLElement).focus();
-    } else if (target.previousSibling) {
-      (target.previousSibling as HTMLElement).focus();
+    const previousSibling = target.previousElementSibling as HTMLElement;
+
+    if (previousSibling && previousSibling.tagName === 'H3') {
+      (previousSibling.previousElementSibling as HTMLElement).focus();
+    } else if (previousSibling) {
+      previousSibling.focus();
     }
   };
 
   const navigateNext: KeyboardEventHandler<HTMLElement> = (e) => {
     e.preventDefault();
     const target = e.target as HTMLElement;
-    if (target.nextSibling && target.nextElementSibling.tagName === 'H3') {
-      (target.nextSibling.nextSibling as HTMLElement).focus();
-    } else if (target.nextSibling) {
-      (target.nextSibling as HTMLElement).focus();
+    const nextSibling = target.nextElementSibling as HTMLElement;
+
+    if (nextSibling && nextSibling.tagName === 'H3') {
+      (nextSibling.nextElementSibling as HTMLElement).focus();
+    } else if (nextSibling) {
+      nextSibling.focus();
     }
   };
 
@@ -89,13 +94,13 @@ const SearchInputResultsList = ({
       case 'Enter':
         if (element.className.includes('collection')) {
           setInput('');
-          router.push(`/${element.getAttribute('data-key')}`);
+          router.push(`${element.getAttribute('data-key')}`);
         } else if (element.className.includes('template')) {
           setInput('');
-          router.push(`/${element.getAttribute('data-key')}`);
+          router.push(`${element.getAttribute('data-key')}`);
         } else {
           setInput('');
-          router.push(`/user/${element.getAttribute('data-key')}`);
+          router.push(`${element.getAttribute('data-key')}`);
         }
         break;
       case 'ArrowUp':
@@ -116,6 +121,14 @@ const SearchInputResultsList = ({
         break;
     }
   };
+
+  if (isSearching) {
+    return (
+      <LoadingSearchBox>
+        <Spinner size="45px" />
+      </LoadingSearchBox>
+    );
+  }
 
   if (!input || (!collections.length && !authors.length && !templates.length)) {
     return <></>;
@@ -139,7 +152,7 @@ const SearchInputResultsList = ({
             router.push(`/${collection}/${id}`);
           }}
           tabIndex={0}
-          data-key={`${collection}/${id}`}
+          data-key={`/${collection}/${id}`}
           key={name}>
           <TemplateIcon
             name={name}
@@ -170,7 +183,7 @@ const SearchInputResultsList = ({
             router.push(`/${collection_name}`);
           }}
           tabIndex={0}
-          data-key={collection_name}
+          data-key={`/${collection_name}`}
           key={`${author} - ${collection_name}`}>
           <CollectionIcon
             name={name}
@@ -199,7 +212,7 @@ const SearchInputResultsList = ({
             router.push(`/user/${acc}`);
           }}
           tabIndex={0}
-          data-key={acc}
+          data-key={`/user/${acc}`}
           key={acc}>
           <AvatarIcon avatar={avatar} size="24px" margin="0 12px 0 0" />
           <ResultItemName>{name || acc}</ResultItemName>
