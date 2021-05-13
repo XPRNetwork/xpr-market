@@ -1,7 +1,7 @@
 import { SRLWrapper, useLightbox } from 'simple-react-lightbox';
 import { Image } from './AssetDisplay.styled';
 import { IPFS_RESOLVER_IMAGE, RESIZER_IMAGE } from '../../utils/constants';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const lightboxOptions = {
   thumbnails: {
@@ -40,6 +40,10 @@ const AssetImage = ({
   };
   const onImageClick = (_) => lightbox && openLightbox();
   const lightboxElements = [{ src: highResSrc, width: 'auto', height: 'auto' }];
+
+  useEffect(() => {
+    setSrc(resizedSrc);
+  }, [image, templateName]);
 
   return (
     <div>

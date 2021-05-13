@@ -11,6 +11,7 @@ import { getAllTemplateSales, SaleAsset } from '../../services/sales';
 import ProtonSDK from '../../services/proton';
 import * as gtag from '../../utils/gtag';
 import { TAB_TYPES, RouterQuery } from '../../utils/constants';
+import { usePrevious } from '../../hooks';
 
 const emptyTemplateDetails = {
   lowestPrice: '',
@@ -45,6 +46,7 @@ const MarketplaceTemplateDetail = (): JSX.Element => {
     login,
   } = useAuthContext();
 
+  const previousTemplateId = usePrevious(templateId);
   const [templateAssets, setTemplateAssets] = useState<SaleAsset[]>([]);
   const [formattedPricesBySaleId, setFormattedPricesBySaleId] = useState<{
     [templateMint: string]: string;
@@ -81,6 +83,10 @@ const MarketplaceTemplateDetail = (): JSX.Element => {
   useEffect(() => {
     if (!templateId) {
       return;
+    }
+
+    if (templateId !== previousTemplateId) {
+      setTemplate(emptyTemplateDetails);
     }
 
     const loadTemplate = async () => {
