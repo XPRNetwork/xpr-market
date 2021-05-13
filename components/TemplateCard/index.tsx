@@ -121,8 +121,8 @@ const TemplateCard = ({
     <Card
       tabIndex={0}
       hasMultiple={hasMultiple}
-      onClick={redirectPath ? openDetailPage : null}
-      onKeyDown={redirectPath ? handleEnterKey : null}>
+      onClick={openDetailPage}
+      onKeyDown={handleEnterKey}>
       <Row>
         <CollectionNameButton onClick={openCollectionPage}>
           <CollectionIcon
