@@ -13,21 +13,17 @@ export interface TabsProps {
   setActiveTab: Dispatch<SetStateAction<string>>;
 }
 
-const Tabs = ({ tabs, activeTab, setActiveTab }: TabsProps): JSX.Element => {
-  return (
-    <Row justifyContent="flex-start" margin="0 0 40px 0">
-      {tabs.map(({ title, type }) => {
-        return (
-          <Tab
-            key={type}
-            onClick={() => setActiveTab(type)}
-            isActive={activeTab === type}>
-            {title}
-          </Tab>
-        );
-      })}
-    </Row>
-  );
-};
+const Tabs = ({ tabs, activeTab, setActiveTab }: TabsProps): JSX.Element => (
+  <Row justifyContent="flex-start" margin="0 0 40px 0">
+    {tabs.map(({ title, type }) => (
+      <Tab
+        key={type}
+        onClick={() => setActiveTab(type)}
+        isActive={activeTab === type}>
+        {title}
+      </Tab>
+    ))}
+  </Row>
+);
 
 export default memo(Tabs);
