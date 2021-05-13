@@ -18,6 +18,7 @@ import {
   PAGINATION_LIMIT,
   TAB_TYPES,
   RouterQuery,
+  CARD_RENDER_TYPES,
 } from '../../utils/constants';
 import Banner from '../../components/Banner';
 import ProfileTabs from '../../components/ProfileTabs';
@@ -215,7 +216,7 @@ const Collection = (): JSX.Element => {
     return (
       <Grid
         isLoadingPrices={isLoadingPrices}
-        isTemplate={true}
+        type={CARD_RENDER_TYPES.TEMPLATE}
         items={
           activeTab === TAB_TYPES.ITEMS ? renderedItems : renderedCreations
         }

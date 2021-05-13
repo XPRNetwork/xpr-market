@@ -13,7 +13,7 @@ import {
   formatTemplatesWithPriceData,
   getLowestPricesForAllCollectionTemplates,
 } from '../services/templates';
-import { PAGINATION_LIMIT } from '../utils/constants';
+import { PAGINATION_LIMIT, CARD_RENDER_TYPES } from '../utils/constants';
 
 const Search = (): JSX.Element => {
   const router = useRouter();
@@ -121,7 +121,7 @@ const Search = (): JSX.Element => {
     return (
       <>
         <Title>{title}</Title>
-        <Grid items={renderedTemplates} isTemplate={true} />
+        <Grid items={renderedTemplates} type={CARD_RENDER_TYPES.TEMPLATE} />
         <PaginationButton
           onClick={showNextPage}
           isHidden={renderedTemplates.length < PAGINATION_LIMIT}

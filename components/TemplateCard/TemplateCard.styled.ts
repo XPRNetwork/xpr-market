@@ -25,14 +25,6 @@ type CardProps = {
   hasMultiple: boolean;
 };
 
-type GreyTextProps = {
-  price?: string;
-};
-
-type CollectionNameButtonProps = {
-  isStatic?: boolean;
-};
-
 export const Card = styled.article<CardProps>`
   display: flex;
   flex-direction: column;
@@ -116,7 +108,7 @@ export const CollectionNameButton = styled.button<CollectionNameButtonProps>`
   cursor: pointer;
 `;
 
-export const GreyText = styled(Text)<GreyTextProps>`
+export const GreyText = styled(Text)`
   color: #808080;
   margin-bottom: 8px;
 `;

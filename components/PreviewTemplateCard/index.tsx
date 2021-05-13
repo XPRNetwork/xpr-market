@@ -20,7 +20,6 @@ type Props = {
   collectionDisplayName?: string;
   collectionName: string;
   maxSupply: string;
-  noHoverEffect?: boolean;
   hasPlaceholderIcon?: boolean;
 };
 
@@ -84,9 +83,6 @@ PreviewTemplateCard.defaultProps = {
   collectionName: 'Collection',
   templateName: 'Name',
   maxSupply: null,
-  hasMultiple: false,
-  hasShimmer: false,
-  isCreatePreview: false,
 };
 
 export default PreviewTemplateCard;

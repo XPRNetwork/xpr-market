@@ -6,6 +6,7 @@ import HomepageStatistics from '../components/HomepageStatistics';
 import { MODAL_TYPES } from '../components/Provider';
 import { useFirebaseFeaturedTemplates } from '../services/firebase';
 import Grid from '../components/Grid';
+import { CARD_RENDER_TYPES } from '../utils/constants';
 
 const MarketPlace = (): JSX.Element => {
   const featuredTemplates = useFirebaseFeaturedTemplates();
@@ -15,7 +16,7 @@ const MarketPlace = (): JSX.Element => {
       <ExploreCard />
       <HomepageStatistics />
       <Title>New &amp; Noteworthy</Title>
-      <Grid items={featuredTemplates} isTemplate={true} />
+      <Grid items={featuredTemplates} type={CARD_RENDER_TYPES.TEMPLATE} />
     </PageLayout>
   );
 };

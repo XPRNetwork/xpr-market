@@ -76,6 +76,11 @@ export const META = {
     'Start creating and selling your own NFTs! The best way to monetize your talent. Free to get started.',
 };
 
+export const CARD_RENDER_TYPES = {
+  TEMPLATE: 'TEMPLATE',
+  COLLECTION: 'COLLECTION',
+  CREATOR: 'CREATOR',
+};
 export interface RouterQuery {
   [query: string]: string;
 }
