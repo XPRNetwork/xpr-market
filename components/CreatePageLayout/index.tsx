@@ -40,8 +40,6 @@ const CreatePageLayout = ({
             collectionName={selectedCollection.collection_name}
             maxSupply={maxSupply}
             noHoverEffect
-            isStatic
-            autoPlay
             hasPlaceholderIcon={!selectedCollection.name}
           />
         </RightColumn>

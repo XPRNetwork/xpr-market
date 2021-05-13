@@ -1,143 +1,47 @@
-import { KeyboardEvent, MouseEvent, useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 import {
   Card,
   Row,
   Title,
   Text,
-  GreyText,
-  Tag,
   CollectionNameButton,
-  PlaceholderPrice,
   PlaceholderIcon,
-  ShimmerBlock,
-} from '../TemplateCard/TemplateCard.styled';
+} from './PreviewTemplateCard.styled';
 import CollectionIcon, { IconContainer } from '../CollectionIcon';
-import { fileReader } from '../../utils';
 import TemplateImage from '../TemplateImage';
 import TemplateVideo from '../TemplateVideo';
-import {
-  IPFS_RESOLVER_VIDEO,
-  IPFS_RESOLVER_IMAGE,
-  RESIZER_IMAGE_SM,
-} from '../../utils/constants';
-import {
-  useCreateAssetContext,
-  useAuthContext,
-} from '../../components/Provider';
 
 type Props = {
-  collectionName: string;
-  collectionDisplayName?: string;
-  templateName: string;
-  maxSupply: string;
-  isUsersTemplates?: boolean;
-  redirectPath?: string;
-  totalAssets?: string;
-  assetsForSale?: string;
-  collectionImage?: string;
   templateVideo?: string;
   templateImage?: string;
-  price?: string;
-  hasMultiple?: boolean;
+  templateName: string;
+  collectionImage?: string;
+  collectionDisplayName?: string;
+  collectionName: string;
+  maxSupply: string;
   noHoverEffect?: boolean;
-  imageHoverEffect?: boolean;
-  isStatic?: boolean;
-  isCreatePreview?: boolean;
-  autoPlay?: boolean;
   hasPlaceholderIcon?: boolean;
-  createdAt?: string;
-  hasShimmer?: boolean;
 };
 
 const TemplateCard = ({
   collectionName,
   templateName,
   maxSupply,
-  redirectPath,
-  isUsersTemplates,
   collectionDisplayName,
-  totalAssets,
-  assetsForSale,
   collectionImage,
   templateVideo,
   templateImage,
-  price,
-  noHoverEffect,
-  hasMultiple,
-  isCreatePreview,
-  isStatic,
-  autoPlay,
   hasPlaceholderIcon,
-  imageHoverEffect,
-  createdAt,
-  hasShimmer,
 }: Props): JSX.Element => {
-  const { cachedNewlyCreatedAssets } = useCreateAssetContext();
-  const { currentUser } = useAuthContext();
-  const [templateVideoSrc, setTemplateVideoSrc] = useState<string>('');
-  const [templateImgSrc, setTemplateImgSrc] = useState<string>('');
-  const [fallbackImgSrc, setFallbackImgSrc] = useState<string>('');
+  const [templateVideoSrc, setTemplateVideoSrc] = useState<string>(
+    templateVideo
+  );
+  const [templateImgSrc, setTemplateImgSrc] = useState<string>(templateImage);
 
   useEffect(() => {
-    if (Date.now() - 600000 < Number(createdAt) && isMyTemplate) {
-      // created within the last 10 minutes to deal with propagation lag
-      if (cachedNewlyCreatedAssets[templateVideo]) {
-        fileReader((result) => {
-          setTemplateVideoSrc(result);
-        }, cachedNewlyCreatedAssets[templateVideo]);
-      }
-      if (cachedNewlyCreatedAssets[templateImage]) {
-        fileReader((result) => {
-          setTemplateImgSrc(result);
-        }, cachedNewlyCreatedAssets[templateImage]);
-      }
-    } else {
-      const videoSrc = isCreatePreview
-        ? templateVideo
-        : `${IPFS_RESOLVER_VIDEO}${templateVideo}`;
-      const imageSrc =
-        isCreatePreview || !templateImage
-          ? templateImage
-          : `${RESIZER_IMAGE_SM}${IPFS_RESOLVER_IMAGE}${templateImage}`;
-      const fallbackImageSrc =
-        !isCreatePreview && templateImage
-          ? `${IPFS_RESOLVER_IMAGE}${templateImage}`
-          : '';
-
-      setTemplateVideoSrc(videoSrc);
-      setTemplateImgSrc(imageSrc);
-      setFallbackImgSrc(fallbackImageSrc);
-    }
+    setTemplateVideoSrc(templateVideo);
+    setTemplateImgSrc(templateImage);
   }, [templateVideo, templateImage]);
-
-  const router = useRouter();
-  const isMyTemplate =
-    currentUser && router.query.chainAccount === currentUser.actor;
-  const openDetailPage = () => {
-    if (!isStatic) {
-      router.push(redirectPath);
-    }
-  };
-  const openCollectionPage = (e: MouseEvent) => {
-    if (!isStatic) {
-      e.stopPropagation();
-      router.push(`/${collectionName}`);
-    }
-  };
-
-  const handleEnterKey = (e: KeyboardEvent) => {
-    if (e.key === 'Enter' && !isStatic) {
-      openDetailPage();
-    }
-  };
-
-  const priceTag =
-    isUsersTemplates && assetsForSale && totalAssets ? (
-      <Tag>
-        {assetsForSale}/{totalAssets} FOR SALE
-      </Tag>
-    ) : null;
 
   const collectionIcon = hasPlaceholderIcon ? (
     <IconContainer margin="24px 16px 24px 0">
@@ -151,48 +55,26 @@ const TemplateCard = ({
     />
   );
 
-  const priceSection = hasShimmer ? (
-    <ShimmerBlock aria-hidden />
-  ) : price ? (
-    <Text>{price}</Text>
-  ) : (
-    <PlaceholderPrice aria-hidden />
-  );
-
   return (
-    <Card
-      tabIndex={0}
-      hasMultiple={hasMultiple}
-      noHoverEffect={noHoverEffect}
-      imageHoverEffect={imageHoverEffect}
-      onClick={redirectPath ? openDetailPage : null}
-      onKeyDown={redirectPath ? handleEnterKey : null}
-      isStatic={isStatic}>
+    <Card tabIndex={0}>
       <Row>
-        <CollectionNameButton isStatic={isStatic} onClick={openCollectionPage}>
+        <CollectionNameButton>
           {collectionIcon}
           <Text>{collectionDisplayName || collectionName}</Text>
         </CollectionNameButton>
       </Row>
       {templateVideo ? (
-        <TemplateVideo
-          src={templateVideoSrc}
-          priceTag={priceTag}
-          autoPlay={autoPlay}
-        />
+        <TemplateVideo src={templateVideoSrc} autoPlay={true} />
       ) : (
         <TemplateImage
           templateImgSrc={templateImgSrc}
-          fallbackImgSrc={fallbackImgSrc}
           templateName={templateName}
-          priceTag={priceTag}
         />
       )}
       <Title>{templateName}</Title>
       <GreyText>
         Edition size: {maxSupply === '0' ? 'Unlimited' : maxSupply}
       </GreyText>
-      {priceSection}
     </Card>
   );
 };
