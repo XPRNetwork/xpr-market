@@ -92,16 +92,8 @@ const SearchInputResultsList = ({
     const name = element.innerText;
     switch (e.key) {
       case 'Enter':
-        if (element.className.includes('collection')) {
-          setInput('');
-          router.push(`${element.getAttribute('data-key')}`);
-        } else if (element.className.includes('template')) {
-          setInput('');
-          router.push(`${element.getAttribute('data-key')}`);
-        } else {
-          setInput('');
-          router.push(`${element.getAttribute('data-key')}`);
-        }
+        setInput('');
+        router.push(element.getAttribute('data-key'));
         break;
       case 'ArrowUp':
         navigatePrevious(e);
