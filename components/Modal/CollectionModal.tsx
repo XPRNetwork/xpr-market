@@ -5,7 +5,11 @@ import {
   useRef,
   useEffect,
 } from 'react';
-import { useAuthContext, useModalContext } from '../Provider';
+import {
+  useAuthContext,
+  useModalContext,
+  useCreateAssetContext,
+} from '../Provider';
 import { CreateCollectionProps, UpdateCollectionProps } from '../Provider';
 import DragDropFileUploadSm from '../DragDropFileUploadSm';
 import InputField from '../InputField';
@@ -42,6 +46,7 @@ type Props = {
 };
 
 const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
+  const { updateCachedNewlyCreatedAssets } = useCreateAssetContext();
   const { currentUser } = useAuthContext();
   const { isMobile } = useWindowSize();
   const { closeModal } = useModalContext();
@@ -113,6 +118,10 @@ const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
 
     try {
       const ipfsImage = await uploadToIPFS(uploadedFile);
+      updateCachedNewlyCreatedAssets({
+        ipfsHash: ipfsImage,
+        file: uploadedFile,
+      });
       setUpdatedImage(ipfsImage);
       fileReader((img) => setUpdatedImage(img), uploadedFile);
       return ipfsImage;

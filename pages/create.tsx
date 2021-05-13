@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import PageLayout from '../components/PageLayout';
 import MobileCreatePagePlaceholder from '../components/MobileCreatePagePlaceholder';
-import { useAuthContext } from '../components/Provider';
+import { useAuthContext, useCreateAssetContext } from '../components/Provider';
 import { Collection } from '../services/collections';
 import ProtonSDK from '../services/proton';
 import uploadToIPFS from '../services/upload';
@@ -19,7 +19,6 @@ import ChooseCollection from '../components/ChooseCollection';
 import CreateTemplate from '../components/CreateTemplate';
 import InitialMint from '../components/InitialMint';
 import { SHORTENED_TOKEN_PRECISION } from '../utils/constants';
-import { useCreateAssetContext } from '../components/Provider';
 import fees, { MintFee } from '../services/fees';
 
 const MintFeeInitial = {
