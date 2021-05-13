@@ -15,6 +15,7 @@ import {
 import { getFromApi } from '../../utils/browser-fetch';
 import { ReactComponent as MagnifyingIcon } from '../../public/icon-light-search-24-px.svg';
 import { ReactComponent as CloseIcon } from '../../public/icon-light-close-16-px.svg';
+import { useClickAway } from '../../hooks';
 
 type Props = {
   isMobileSearchOpen: boolean;
@@ -48,25 +49,11 @@ const SearchInput = ({
   const [searchAuthors, setSearchAuthors] = useState<SearchAuthor[]>([]);
   const [isSearching, setIsSearching] = useState<boolean>(false);
 
-  useEffect(() => {
-    const removeInputFocusStyle = (e: MouseEvent) => {
-      if (
-        !['INPUT', 'BUTTON', 'svg', 'path'].includes(
-          (e.target as HTMLInputElement).nodeName
-        )
-      ) {
-        setInput('');
-        setIsSearchInputActive(false);
-        closeMobileSearch();
-      }
-    };
-    window.addEventListener('click', removeInputFocusStyle);
-    window.addEventListener('touchstart', removeInputFocusStyle);
-    return () => {
-      window.removeEventListener('click', removeInputFocusStyle);
-      window.removeEventListener('touchstart', removeInputFocusStyle);
-    };
-  }, []);
+  useClickAway(resultsListRef, () => {
+    setInput('');
+    setIsSearchInputActive(false);
+    closeMobileSearch();
+  });
 
   useEffect(() => {
     (async () => {

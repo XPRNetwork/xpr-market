@@ -15,6 +15,11 @@ const SearchBoxCSS = css`
   ${breakpoint.tablet`
     top: 48px;
   `}
+
+  ${breakpoint.mobile`
+    max-height: 80vh;
+    overflow: scroll;
+  `}
 `;
 
 export const LoadingSearchBox = styled.div`
@@ -36,6 +41,10 @@ export const ResultListTitle = styled.h3`
   line-height: 24px;
   color: #1a1a1a;
   margin: 0 8px 8px;
+
+  :not(:first-child) {
+    margin-top: 15px;
+  }
 `;
 
 export const SeeAllLink = styled.button`

@@ -143,7 +143,6 @@ const SearchInputResultsList = ({
               i === 0 ? handleFirstResultItemKeyDown : handleResultItemKeyDown
             }
             onClick={() => handleClick(link)}
-            onTouchStart={() => handleClick(link)}
             tabIndex={0}
             data-key={link}
             key={name}>
@@ -171,7 +170,6 @@ const SearchInputResultsList = ({
                 : handleResultItemKeyDown
             }
             onClick={() => handleClick(link)}
-            onTouchStart={() => handleClick(link)}
             tabIndex={0}
             data-key={link}
             key={`${author} - ${collection_name}`}>
@@ -197,7 +195,6 @@ const SearchInputResultsList = ({
                 : handleResultItemKeyDown
             }
             onClick={() => handleClick(link)}
-            onTouchStart={() => handleClick(link)}
             tabIndex={0}
             data-key={link}
             key={acc}>
