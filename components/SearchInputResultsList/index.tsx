@@ -8,44 +8,68 @@ import {
   ResultsList,
   ResultListTitle,
   ResultItem,
+  ResultItemName,
+  SeeAllLink,
+  LoadingSearchBox,
 } from './SearchInputResultsList.styled';
+import {
+  SearchCollection,
+  SearchAuthor,
+  SearchTemplate,
+} from '../../services/search';
+import TemplateIcon from '../TemplateIcon';
 import CollectionIcon from '../CollectionIcon';
+import AvatarIcon from '../AvatarIcon';
+import { useRouter } from 'next/router';
+import Spinner from '../Spinner';
 
 type Props = {
   input: string;
-  collections: Array<{
-    name: string;
-    img: string | null;
-  }>;
+  collections?: SearchCollection[];
+  templates?: SearchTemplate[];
+  authors?: SearchAuthor[];
   inputRef: MutableRefObject<HTMLInputElement>;
   resultsListRef: MutableRefObject<HTMLUListElement>;
   clearTextButtonRef: MutableRefObject<HTMLButtonElement>;
-  search: (type: string) => void;
   setInput: Dispatch<SetStateAction<string>>;
+  search: (string) => void;
+  isSearching: boolean;
 };
 
 const SearchInputResultsList = ({
   input,
   collections,
+  authors,
+  templates,
   inputRef,
   resultsListRef,
   clearTextButtonRef,
   search,
   setInput,
+  isSearching,
 }: Props): JSX.Element => {
+  const router = useRouter();
   const navigatePrevious: KeyboardEventHandler<HTMLElement> = (e) => {
     e.preventDefault();
     const target = e.target as HTMLElement;
-    if (target.previousSibling) {
-      (target.previousSibling as HTMLElement).focus();
+    const previousSibling = target.previousElementSibling as HTMLElement;
+
+    if (previousSibling && previousSibling.tagName === 'H3') {
+      (previousSibling.previousElementSibling as HTMLElement).focus();
+    } else if (previousSibling) {
+      previousSibling.focus();
     }
   };
 
   const navigateNext: KeyboardEventHandler<HTMLElement> = (e) => {
     e.preventDefault();
     const target = e.target as HTMLElement;
-    if (target.nextSibling) {
-      (target.nextSibling as HTMLElement).focus();
+    const nextSibling = target.nextElementSibling as HTMLElement;
+
+    if (nextSibling && nextSibling.tagName === 'H3') {
+      (nextSibling.nextElementSibling as HTMLElement).focus();
+    } else if (nextSibling) {
+      nextSibling.focus();
     }
   };
 
@@ -64,11 +88,12 @@ const SearchInputResultsList = ({
   };
 
   const handleResultItemKeyDown: KeyboardEventHandler<HTMLElement> = (e) => {
-    const name = (e.target as HTMLElement).innerText;
+    const element = e.target as HTMLElement;
+    const name = element.innerText;
     switch (e.key) {
       case 'Enter':
-        setInput(name);
-        search(name);
+        setInput('');
+        router.push(element.getAttribute('data-key'));
         break;
       case 'ArrowUp':
         navigatePrevious(e);
@@ -89,28 +114,107 @@ const SearchInputResultsList = ({
     }
   };
 
+  const handleClick = (link) => {
+    setInput('');
+    router.push(link);
+  };
+
+  if (isSearching) {
+    return (
+      <LoadingSearchBox>
+        <Spinner size="45px" />
+      </LoadingSearchBox>
+    );
+  }
+
+  if (!input || (!collections.length && !authors.length && !templates.length)) {
+    return <></>;
+  }
+
   return (
     <ResultsList ref={resultsListRef}>
-      <ResultListTitle>Collection</ResultListTitle>
-      {collections.map(({ name, img }, i) => (
-        <ResultItem
-          onKeyDown={
-            i === 0 ? handleFirstResultItemKeyDown : handleResultItemKeyDown
-          }
-          onClick={() => {
-            setInput(name);
-            search(name);
-          }}
-          onTouchStart={() => {
-            setInput(name);
-            search(name);
-          }}
-          tabIndex={0}
-          key={name}>
-          <CollectionIcon name={name} image={img} margin="0 16px 0 0" />
-          <span>{name}</span>
-        </ResultItem>
-      ))}
+      {templates.length ? <ResultListTitle>NFTs</ResultListTitle> : null}
+      {templates.map(({ name, id, collection, img, video }, i) => {
+        const link = `/${collection}/${id}`;
+        return (
+          <ResultItem
+            className="template"
+            onKeyDown={
+              i === 0 ? handleFirstResultItemKeyDown : handleResultItemKeyDown
+            }
+            onClick={() => handleClick(link)}
+            onTouchStart={() => handleClick(link)}
+            tabIndex={0}
+            data-key={link}
+            key={name}>
+            <TemplateIcon
+              name={name}
+              image={img}
+              video={video}
+              margin="0 12px 0 0"
+            />
+            <ResultItemName>{name}</ResultItemName>
+          </ResultItem>
+        );
+      })}
+      {collections.length ? (
+        <ResultListTitle>Collection</ResultListTitle>
+      ) : null}
+      {collections.map(({ name, img, collection_name, author }, i) => {
+        const link = `/${collection_name}`;
+        return (
+          <ResultItem
+            className="collection"
+            onKeyDown={
+              i + templates.length === 0
+                ? handleFirstResultItemKeyDown
+                : handleResultItemKeyDown
+            }
+            onClick={() => handleClick(link)}
+            onTouchStart={() => handleClick(link)}
+            tabIndex={0}
+            data-key={link}
+            key={`${author} - ${collection_name}`}>
+            <CollectionIcon
+              name={name}
+              image={img}
+              margin="0 12px 0 0"
+              width="24px"
+            />
+            <ResultItemName>{name || collection_name}</ResultItemName>
+          </ResultItem>
+        );
+      })}
+      {authors.length ? <ResultListTitle>Members</ResultListTitle> : null}
+      {authors.map(({ name, avatar, acc }, i) => {
+        const link = `/user/${acc}`;
+        return (
+          <ResultItem
+            className="user"
+            onKeyDown={
+              i + templates.length + collections.length === 0
+                ? handleFirstResultItemKeyDown
+                : handleResultItemKeyDown
+            }
+            onClick={() => handleClick(link)}
+            onTouchStart={() => handleClick(link)}
+            tabIndex={0}
+            data-key={link}
+            key={acc}>
+            <AvatarIcon avatar={avatar} size="24px" margin="0 12px 0 0" />
+            <ResultItemName>{name || acc}</ResultItemName>
+          </ResultItem>
+        );
+      })}
+      <SeeAllLink
+        onClick={() => search(input)}
+        onKeyDown={(e) => {
+          e.preventDefault();
+          if (e.key === 'ArrowUp') navigatePrevious(e);
+          if (e.key === 'Enter') search(input);
+        }}>
+        See all search results
+      </SeeAllLink>
     </ResultsList>
   );
 };

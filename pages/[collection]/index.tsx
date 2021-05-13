@@ -28,7 +28,7 @@ import {
   useAuthContext,
   useModalContext,
 } from '../../components/Provider';
-import { useNavigatorUserAgent } from '../../hooks';
+import { useNavigatorUserAgent, usePrevious } from '../../hooks';
 
 const CollectionPage = (): JSX.Element => {
   const router = useRouter();
@@ -39,6 +39,7 @@ const CollectionPage = (): JSX.Element => {
   const collection = caseSensitiveCollection
     ? caseSensitiveCollection.toLowerCase()
     : '';
+  const previousCollection = usePrevious(collection);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [lowestPrices, setLowestPrices] = useState<{ [id: string]: string }>(
     {}
@@ -87,6 +88,7 @@ const CollectionPage = (): JSX.Element => {
 
   const fetchCollection = async () => {
     try {
+      setIsLoading(true);
       const collectionResult = await getCollection(collection);
       setCollectionData(collectionResult);
 
@@ -117,7 +119,10 @@ const CollectionPage = (): JSX.Element => {
 
   useEffect(() => {
     (async () => {
-      if (collection && !renderedTemplates.length) {
+      if (
+        collection &&
+        (!renderedTemplates.length || collection !== previousCollection)
+      ) {
         fetchCollection();
       }
     })();

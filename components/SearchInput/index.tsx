@@ -9,9 +9,10 @@ import {
 } from './SearchInput.styled';
 import {
   SearchCollection,
-  getSearchCollections,
-} from '../../services/collections';
-import { DEFAULT_COLLECTION } from '../../utils/constants';
+  SearchAuthor,
+  SearchTemplate,
+} from '../../services/search';
+import { getFromApi } from '../../utils/browser-fetch';
 import { ReactComponent as MagnifyingIcon } from '../../public/icon-light-search-24-px.svg';
 import { ReactComponent as CloseIcon } from '../../public/icon-light-close-16-px.svg';
 
@@ -20,10 +21,13 @@ type Props = {
   closeMobileSearch: () => void;
 };
 
-const defaultSearchCollection: SearchCollection = {
-  name: DEFAULT_COLLECTION,
-  img: '',
+type SearchResponse = {
+  index: string;
+  keys: string[];
+  result: (SearchCollection | SearchAuthor | SearchTemplate)[];
 };
+
+let debounceTimer;
 
 const SearchInput = ({
   isMobileSearchOpen,
@@ -39,7 +43,10 @@ const SearchInput = ({
   );
   const [searchCollections, setSearchCollections] = useState<
     SearchCollection[]
-  >([defaultSearchCollection]);
+  >([]);
+  const [searchTemplates, setSearchTemplates] = useState<SearchTemplate[]>([]);
+  const [searchAuthors, setSearchAuthors] = useState<SearchAuthor[]>([]);
+  const [isSearching, setIsSearching] = useState<boolean>(false);
 
   useEffect(() => {
     const removeInputFocusStyle = (e: MouseEvent) => {
@@ -63,12 +70,56 @@ const SearchInput = ({
 
   useEffect(() => {
     (async () => {
-      if (isSearchInputActive) {
-        const collections = await getSearchCollections();
-        setSearchCollections(collections);
+      if (isSearchInputActive && input) {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+          getSearchResults();
+        }, 300);
+      } else if (!input) {
+        clearSearchResults();
       }
     })();
-  }, [isSearchInputActive]);
+
+    return () => clearTimeout(debounceTimer);
+  }, [input, isSearchInputActive]);
+
+  const clearSearchResults = () => {
+    setSearchCollections([]);
+    setSearchAuthors([]);
+    setSearchTemplates([]);
+  };
+
+  const getSearchResults = async (): Promise<void> => {
+    try {
+      setIsSearching(true);
+      const res = await getFromApi<SearchResponse[]>(
+        `/api/search?query=${input}`
+      );
+
+      if (res.success) {
+        const result = res.message;
+        const collections =
+          result
+            .find((obj) => obj.index === 'market_collections')
+            .result.slice(0, 3) || [];
+        const users =
+          result
+            .find((obj) => obj.index === 'market_authors')
+            .result.slice(0, 3) || [];
+        const templates =
+          result
+            .find((obj) => obj.index === 'market_templates')
+            .result.slice(0, 3) || [];
+        setSearchCollections(collections as SearchCollection[]);
+        setSearchAuthors(users as SearchAuthor[]);
+        setSearchTemplates(templates as SearchTemplate[]);
+        setIsSearching(false);
+      }
+    } catch (e) {
+      setIsSearching(false);
+      clearSearchResults();
+    }
+  };
 
   const updateText = (e: ChangeEvent<HTMLInputElement>) =>
     setInput(e.target.value);
@@ -108,7 +159,12 @@ const SearchInput = ({
     }
 
     const isDownArrow = e.key === 'ArrowDown';
-    if (isDownArrow) {
+    const hasResults =
+      searchCollections.length ||
+      searchTemplates.length ||
+      searchAuthors.length;
+
+    if (isDownArrow && hasResults) {
       e.preventDefault();
       const firstResultItem = resultsListRef.current
         .childNodes[1] as HTMLElement;
@@ -122,13 +178,6 @@ const SearchInput = ({
       clearTextButtonRef.current.focus();
     }
   };
-
-  const collections = searchCollections
-    .filter(({ name }) => {
-      const isFragment = name.toLowerCase().includes(input.toLowerCase());
-      return isFragment;
-    })
-    .slice(0, 5);
 
   return (
     <InputContainer
@@ -155,17 +204,18 @@ const SearchInput = ({
         onKeyDown={handleClearTextButtonKeyDown}>
         <CloseIcon />
       </ClearTextButton>
-      {input && collections.length !== 0 && (
-        <SearchInputResultsList
-          input={input}
-          collections={collections}
-          inputRef={inputRef}
-          resultsListRef={resultsListRef}
-          clearTextButtonRef={clearTextButtonRef}
-          search={search}
-          setInput={setInput}
-        />
-      )}
+      <SearchInputResultsList
+        isSearching={isSearching}
+        input={input}
+        search={search}
+        collections={searchCollections}
+        authors={searchAuthors}
+        templates={searchTemplates}
+        inputRef={inputRef}
+        resultsListRef={resultsListRef}
+        clearTextButtonRef={clearTextButtonRef}
+        setInput={setInput}
+      />
     </InputContainer>
   );
 };

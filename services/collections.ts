@@ -39,57 +39,6 @@ export const emptyCollection: Collection = {
   },
 };
 
-export type SearchCollection = {
-  name: string;
-  img: string | null;
-};
-
-/**
- * Get all collection names
- * Mostly fetching collection names for the marketplace search
- * @return {SearchCollection}     Returns indexable object of collection names
- */
-
-export const getSearchCollections = async (): Promise<SearchCollection[]> => {
-  try {
-    const limit = 100;
-    const collectionsByName: {
-      [name: string]: SearchCollection;
-    } = {};
-    let hasResults = true;
-    let page = 1;
-
-    while (hasResults) {
-      const result = await getFromApi<Collection[]>(
-        `${process.env.NEXT_PUBLIC_NFT_ENDPOINT}/atomicassets/v1/collections?limit=${limit}&page=${page}`
-      );
-
-      if (!result.success) {
-        throw new Error((result.message as unknown) as string);
-      }
-
-      const collections = result.data as Collection[];
-      if (collections.length < limit) {
-        hasResults = false;
-      }
-
-      for (const collection of collections) {
-        const { collection_name, img } = collection;
-        collectionsByName[collection_name] = {
-          name: collection_name,
-          img,
-        };
-      }
-
-      page += 1;
-    }
-
-    return Object.values(collectionsByName);
-  } catch (e) {
-    throw new Error(e);
-  }
-};
-
 export const getCollection = async (
   collectionName: string
 ): Promise<Collection> => {

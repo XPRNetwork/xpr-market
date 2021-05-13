@@ -1,7 +1,7 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { breakpoint } from '../../styles/Breakpoints';
 
-export const ResultsList = styled.ul`
+const SearchBoxCSS = css`
   position: absolute;
   width: inherit;
   max-width: 600px;
@@ -17,12 +17,35 @@ export const ResultsList = styled.ul`
   `}
 `;
 
+export const LoadingSearchBox = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: inherit;
+  height: 200px;
+  ${SearchBoxCSS};
+`;
+
+export const ResultsList = styled.ul`
+  ${SearchBoxCSS};
+`;
+
 export const ResultListTitle = styled.h3`
   font-family: CircularStdBold;
   font-size: 14px;
   line-height: 24px;
-  color: #808080;
+  color: #1a1a1a;
   margin: 0 8px 8px;
+`;
+
+export const SeeAllLink = styled.button`
+  background-color: transparent;
+  border: none;
+  font-size: 14px;
+  line-height: 1.71;
+  color: #752eeb;
+  margin-top: 15px;
+  cursor: pointer;
 `;
 
 export const ResultItem = styled.li`
@@ -42,4 +65,10 @@ export const ResultItem = styled.li`
   :focus-visible {
     color: #752eeb;
   }
+`;
+
+export const ResultItemName = styled.span`
+  font-size: 14px;
+  line-height: 1.71;
+  color: #1a1a1a;
 `;
