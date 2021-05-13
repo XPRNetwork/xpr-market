@@ -6,7 +6,7 @@ import Grid from '../Grid';
 import EmptyUserContent from '../EmptyUserContent';
 import { ProfileTabsProps } from '../ProfileTabs';
 import { Template } from '../../services/templates';
-import { PAGINATION_LIMIT } from '../../utils/constants';
+import { PAGINATION_LIMIT, CARD_RENDER_TYPES } from '../../utils/constants';
 
 export interface ProfileTabSectionContainerProps extends ProfileTabsProps {
   chainAccount: string;
@@ -45,7 +45,13 @@ const ProfileTabSection = ({
       );
     }
 
-    return <Grid isLoadingPrices={isLoadingPrices} items={rendered} />;
+    return (
+      <Grid
+        type={CARD_RENDER_TYPES.TEMPLATE}
+        isLoadingPrices={isLoadingPrices}
+        items={rendered}
+      />
+    );
   };
 
   return (
