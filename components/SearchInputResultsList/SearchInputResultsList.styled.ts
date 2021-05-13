@@ -22,7 +22,7 @@ const SearchBoxCSS = css`
   `}
 `;
 
-export const LoadingSearchBox = styled.div`
+export const LoadingSearchBox = styled.ul`
   display: flex;
   align-items: center;
   justify-content: center;

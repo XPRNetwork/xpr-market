@@ -15,7 +15,7 @@ import {
 import { getFromApi } from '../../utils/browser-fetch';
 import { ReactComponent as MagnifyingIcon } from '../../public/icon-light-search-24-px.svg';
 import { ReactComponent as CloseIcon } from '../../public/icon-light-close-16-px.svg';
-import { useClickAway } from '../../hooks';
+import { useClickAway, useScrollLock } from '../../hooks';
 
 type Props = {
   isMobileSearchOpen: boolean;
@@ -52,8 +52,10 @@ const SearchInput = ({
   useClickAway(resultsListRef, () => {
     setInput('');
     setIsSearchInputActive(false);
+    setIsSearching(false);
     closeMobileSearch();
   });
+  useScrollLock(isSearchInputActive);
 
   useEffect(() => {
     (async () => {

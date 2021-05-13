@@ -121,7 +121,7 @@ const SearchInputResultsList = ({
 
   if (isSearching) {
     return (
-      <LoadingSearchBox>
+      <LoadingSearchBox ref={resultsListRef}>
         <Spinner size="45px" />
       </LoadingSearchBox>
     );
