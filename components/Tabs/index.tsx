@@ -1,6 +1,5 @@
 import { memo, Dispatch, SetStateAction } from 'react';
-import { Tab } from './Tabs.styled';
-import { Row } from '../../styles/index.styled';
+import { Tab, Row } from './Tabs.styled';
 
 export type Tab = {
   title: string;

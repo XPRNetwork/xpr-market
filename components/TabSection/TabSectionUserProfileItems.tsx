@@ -4,7 +4,7 @@ import Tabs from '../Tabs';
 import FilterDropdown from '../FilterDropdown';
 import LoadingPage from '../LoadingPage';
 import { useAuthContext } from '../Provider';
-import { Row, Section } from '../../styles/index.styled';
+import { Row, Section } from './TabSection.styled';
 import { getAllTemplatesForUserWithAssetCount } from '../../services/templates';
 import {
   Template,

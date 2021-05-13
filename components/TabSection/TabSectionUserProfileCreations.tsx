@@ -3,7 +3,7 @@ import TabSection, { SectionContainerProps } from '.';
 import Tabs from '../Tabs';
 import LoadingPage from '../LoadingPage';
 import { useAuthContext } from '../Provider';
-import { Row, Section } from '../../styles/index.styled';
+import { Row, Section } from './TabSection.styled';
 import { getUserCreatedTemplates } from '../../services/templates';
 import { Template } from '../../services/templates';
 import { PAGINATION_LIMIT, TAB_TYPES } from '../../utils/constants';
