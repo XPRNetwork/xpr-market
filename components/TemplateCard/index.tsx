@@ -9,10 +9,9 @@ import {
   Tag,
   CollectionNameButton,
   PlaceholderPrice,
-  PlaceholderIcon,
   ShimmerBlock,
 } from './TemplateCard.styled';
-import CollectionIcon, { IconContainer } from '../CollectionIcon';
+import CollectionIcon from '../CollectionIcon';
 import { fileReader } from '../../utils';
 import TemplateImage from '../TemplateImage';
 import TemplateVideo from '../TemplateVideo';

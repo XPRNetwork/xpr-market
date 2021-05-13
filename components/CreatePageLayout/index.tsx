@@ -1,4 +1,4 @@
-import TemplateCard from '../TemplateCard';
+import PreviewTemplateCard from '../PreviewTemplateCard';
 import {
   Container,
   Row,
@@ -31,7 +31,7 @@ const CreatePageLayout = ({
         <LeftColumn>{children}</LeftColumn>
         <RightColumn>
           <ElementTitle>Preview</ElementTitle>
-          <TemplateCard
+          <PreviewTemplateCard
             templateVideo={templateVideo}
             templateImage={templateImage}
             templateName={templateName}
@@ -39,7 +39,6 @@ const CreatePageLayout = ({
             collectionDisplayName={selectedCollection.name}
             collectionName={selectedCollection.collection_name}
             maxSupply={maxSupply}
-            noHoverEffect
             hasPlaceholderIcon={!selectedCollection.name}
           />
         </RightColumn>

@@ -45,20 +45,13 @@ export const CollectionNameButton = styled.button`
   z-index: 1;
 `;
 
-export const PlaceholderPrice = styled.div`
-  height: 8px;
-`;
-
 export const PlaceholderIcon = styled(IconContainer).attrs({ as: 'div' })`
   background-color: #e6e6e6;
   width: ${({ width }) => width || '32px'};
   height: ${({ width }) => width || '32px'};
 `;
 
-export const PlaceholderAsset = styled.div`
-  position: absolute;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
+export const GreyText = styled(Text)`
+  color: #808080;
+  margin-bottom: 8px;
 `;

@@ -4,6 +4,7 @@ import {
   Row,
   Title,
   Text,
+  GreyText,
   CollectionNameButton,
   PlaceholderIcon,
 } from './PreviewTemplateCard.styled';
@@ -23,7 +24,7 @@ type Props = {
   hasPlaceholderIcon?: boolean;
 };
 
-const TemplateCard = ({
+const PreviewTemplateCard = ({
   collectionName,
   templateName,
   maxSupply,
@@ -79,13 +80,13 @@ const TemplateCard = ({
   );
 };
 
-TemplateCard.defaultProps = {
+PreviewTemplateCard.defaultProps = {
   collectionName: 'Collection',
   templateName: 'Name',
-  maxSupply: 0,
+  maxSupply: null,
   hasMultiple: false,
   hasShimmer: false,
   isCreatePreview: false,
 };
 
-export default TemplateCard;
+export default PreviewTemplateCard;

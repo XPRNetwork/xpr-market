@@ -1,5 +1,4 @@
 import styled, { keyframes } from 'styled-components';
-import { IconContainer } from '../CollectionIcon/CollectionIcon.styled';
 
 const placeHolderShimmer = keyframes`
   0% {
@@ -46,12 +45,6 @@ export const Card = styled.article<CardProps>`
   position: relative;
   transition: 0.3s;
   cursor: pointer;
-
-  :hover .template-image-container img,
-  :focus-visible .template-image-container img {
-    transition: 0.1s;
-    transform: scale(1.03);
-  }
 
   :hover {
     transform: scale(1.02);
@@ -152,4 +145,13 @@ export const ShimmerBlock = styled(PlaceholderPrice)`
   animation: ${placeHolderShimmer} 1s linear infinite;
   background: linear-gradient(to right, #eeeeee 8%, #e7e7e7 18%, #eeeeee 33%);
   background-size: 1000px 18px;
+`;
+
+export const PlaceholderAsset = styled.div`
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  animation: ${loadingAsset} 1s infinite;
 `;
