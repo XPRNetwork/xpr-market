@@ -98,7 +98,7 @@ export const Text = styled.span`
   text-overflow: ellipsis;
 `;
 
-export const CollectionNameButton = styled.button<CollectionNameButtonProps>`
+export const CollectionNameButton = styled.button`
   display: flex;
   align-items: center;
   background-color: transparent;
