@@ -7,9 +7,9 @@ import Banner from '../../components/Banner';
 import PageHeader from '../../components/PageHeader';
 import { MODAL_TYPES, useAuthContext } from '../../components/Provider';
 import {
-  ProfileTabSectionItems,
-  ProfileTabSectionCreations,
-} from '../../components/ProfileTabSection';
+  TabSectionUserProfileItems,
+  TabSectionUserProfileCreations,
+} from '../../components/TabSection';
 import { TAB_TYPES, RouterQuery } from '../../utils/constants';
 import proton from '../../services/proton-rpc';
 
@@ -94,7 +94,7 @@ const Collection = (): JSX.Element => {
       { title: 'Creations', type: TAB_TYPES.CREATIONS },
     ];
 
-    const profileTabsProps = {
+    const tabsProps = {
       tabs,
       activeTab,
       setActiveTab,
@@ -109,13 +109,13 @@ const Collection = (): JSX.Element => {
           isLightKYCVerified={isVerified}
           type="user"
         />
-        <ProfileTabSectionItems
+        <TabSectionUserProfileItems
           chainAccount={chainAccount}
-          {...profileTabsProps}
+          {...tabsProps}
         />
-        <ProfileTabSectionCreations
+        <TabSectionUserProfileCreations
           chainAccount={chainAccount}
-          {...profileTabsProps}
+          {...tabsProps}
         />
       </>
     );

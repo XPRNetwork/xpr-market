@@ -1,19 +1,17 @@
 import { useEffect, useState } from 'react';
-import ProfileTabSection, { ProfileTabSectionContainerProps } from './';
-import ProfileTabs from '../../components/ProfileTabs';
-import LoadingPage from '../../components/LoadingPage';
+import TabSection, { SectionContainerProps } from '.';
+import Tabs from '../Tabs';
+import LoadingPage from '../LoadingPage';
 import { useAuthContext } from '../Provider';
 import { Row, Section } from '../../styles/index.styled';
 import { getUserCreatedTemplates } from '../../services/templates';
 import { Template } from '../../services/templates';
 import { PAGINATION_LIMIT, TAB_TYPES } from '../../utils/constants';
 
-export const ProfileTabSectionCreations = ({
+export const TabSectionUserProfileCreations = ({
   chainAccount,
-  tabs,
-  activeTab,
-  setActiveTab,
-}: ProfileTabSectionContainerProps): JSX.Element => {
+  ...tabsProps
+}: SectionContainerProps): JSX.Element => {
   const { currentUser } = useAuthContext();
   const [renderedCreations, setRenderedCreations] = useState<Template[]>([]);
   const [prefetchedCreations, setPrefetchedCreations] = useState<Template[]>(
@@ -30,28 +28,34 @@ export const ProfileTabSectionCreations = ({
   useEffect(() => {
     (async () => {
       if (chainAccount) {
-        setIsFetching(true);
-        setIsLoadingInitialMount(true);
         try {
+          setIsFetching(true);
+          setIsLoadingInitialMount(true);
+
           const initialCreations = await getUserCreatedTemplates(
             chainAccount,
             1,
             !isUsersPage
           );
-          const creations = await getUserCreatedTemplates(
+          setIsLoadingInitialMount(false);
+
+          const initialPrefetchedCreations = await getUserCreatedTemplates(
             chainAccount,
             2,
             !isUsersPage
           );
+          setIsFetching(false);
 
           setRenderedCreations(initialCreations);
-          setPrefetchedCreations(creations);
-          setPrefetchPageNumber(creations.length < PAGINATION_LIMIT ? -1 : 3);
+          setPrefetchedCreations(initialPrefetchedCreations);
+          setPrefetchPageNumber(
+            initialPrefetchedCreations.length < PAGINATION_LIMIT ? -1 : 3
+          );
         } catch (e) {
           console.warn(e.message);
+          setIsFetching(false);
+          setIsLoadingInitialMount(false);
         }
-        setIsFetching(false);
-        setIsLoadingInitialMount(false);
       }
     })();
   }, [chainAccount]);
@@ -77,22 +81,18 @@ export const ProfileTabSectionCreations = ({
   };
 
   return (
-    <Section isHidden={activeTab !== TAB_TYPES.CREATIONS}>
+    <Section isHidden={tabsProps.activeTab !== TAB_TYPES.CREATIONS}>
       <Row>
-        <ProfileTabs
-          tabs={tabs}
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-        />
+        <Tabs {...tabsProps} />
       </Row>
       {isLoadingInitialMount ? (
         <LoadingPage margin="10% 0" />
       ) : (
-        <ProfileTabSection
+        <TabSection
           showNextPage={showNextCreationsPage}
           isFetching={isFetching}
           rendered={renderedCreations}
-          prefetchPageNumber={prefetchPageNumber}
+          nextPageNumber={prefetchPageNumber}
           emptyContent={{
             subtitle: isUsersPage
               ? 'Looks like you have not created any NFT’s yet. Come back when you do!'

@@ -1,5 +1,5 @@
 import { memo, Dispatch, SetStateAction } from 'react';
-import { Tab } from './ProfileTabs.styled';
+import { Tab } from './Tabs.styled';
 import { Row } from '../../styles/index.styled';
 
 export type Tab = {
@@ -7,17 +7,13 @@ export type Tab = {
   type: string;
 };
 
-export interface ProfileTabsProps {
+export interface TabsProps {
   tabs: Tab[];
   activeTab: string;
   setActiveTab: Dispatch<SetStateAction<string>>;
 }
 
-export const ProfileTabs = ({
-  tabs,
-  activeTab,
-  setActiveTab,
-}: ProfileTabsProps): JSX.Element => {
+const Tabs = ({ tabs, activeTab, setActiveTab }: TabsProps): JSX.Element => {
   return (
     <Row justifyContent="flex-start" margin="0 0 40px 0">
       {tabs.map(({ title, type }) => {
@@ -34,4 +30,4 @@ export const ProfileTabs = ({
   );
 };
 
-export default memo(ProfileTabs);
+export default memo(Tabs);
