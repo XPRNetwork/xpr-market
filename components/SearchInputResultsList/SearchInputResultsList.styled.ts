@@ -1,26 +1,7 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { breakpoint } from '../../styles/Breakpoints';
 
-export const LoadingSearchBox = styled.div`
-  position: absolute;
-  top: 80px;
-  background: #ffffff;
-  border: 1px solid #f2f2f2;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: inherit;
-  max-width: 600px;
-  box-shadow: 0 12px 20px -4px rgba(0, 0, 0, 0.1), 0 0 8px 0 rgba(0, 0, 0, 0.08);
-  height: 200px;
-
-  ${breakpoint.tablet`
-    top: 48px;
-  `}
-`;
-
-export const ResultsList = styled.ul`
+const SearchBoxCSS = css`
   position: absolute;
   width: inherit;
   max-width: 600px;
@@ -34,6 +15,19 @@ export const ResultsList = styled.ul`
   ${breakpoint.tablet`
     top: 48px;
   `}
+`;
+
+export const LoadingSearchBox = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: inherit;
+  height: 200px;
+  ${SearchBoxCSS};
+`;
+
+export const ResultsList = styled.ul`
+  ${SearchBoxCSS};
 `;
 
 export const ResultListTitle = styled.h3`
