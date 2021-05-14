@@ -135,7 +135,7 @@ const CreateTemplate = ({
     setTemplateName('');
     setTemplateDescription('');
     setMaxSupply('');
-    setMintAmount(null);
+    setMintAmount('');
     setMintError('');
     setCreateNftError('');
   };
