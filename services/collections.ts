@@ -39,17 +39,6 @@ export const emptyCollection: Collection = {
   },
 };
 
-export type ElasticSearchCollection = {
-  author: string;
-  authorized_accounts: string[];
-  collection_name: string;
-  contract: string;
-  created: string;
-  img: string;
-  name: string;
-  description?: string;
-};
-
 export const getCollection = async (
   collectionName: string
 ): Promise<Collection> => {

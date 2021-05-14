@@ -4,6 +4,10 @@ type BlurProps = {
   img: string;
 };
 
+type BottomSectionProps = {
+  height: string;
+};
+
 export const Card = styled.article`
   display: flex;
   flex-direction: column;
@@ -49,8 +53,8 @@ export const Blur = styled.div<BlurProps>`
   backface-visibility: hidden;
 `;
 
-export const BottomSection = styled.div`
-  height: 224px;
+export const BottomSection = styled.div<BottomSectionProps>`
+  height: ${({ height }) => height};
   padding: 66px 24px 0;
 `;
 
@@ -81,4 +85,10 @@ export const Description = styled.p`
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+`;
+
+export const PurpleName = styled.p`
+  font-size: 16px;
+  line-height: 1.5;
+  color: #752eeb;
 `;
