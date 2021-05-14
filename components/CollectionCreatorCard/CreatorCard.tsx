@@ -27,7 +27,7 @@ const CreatorCard = ({ cardContent }: Props): JSX.Element => {
   return (
     <Card onClick={openUsersPage}>
       <BlurContainer>
-        <Blur img={avatar || ''} />
+        <Blur img={avatar || '/default-avatar.png'} />
       </BlurContainer>
       <BottomSection height="184px">
         <IconContainer>
