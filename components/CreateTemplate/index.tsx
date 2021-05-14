@@ -225,7 +225,6 @@ const CreateTemplate = ({
       />
       <InputField
         mt="16px"
-        mb="30px"
         inputType="number"
         min={0}
         step={1}
@@ -245,23 +244,18 @@ const CreateTemplate = ({
         }}
         numberOfTooltipLines={3}
       />
-
-      <ElementTitle>Initial Mint</ElementTitle>
-      <SubTitle>
-        Now you are ready to mint your NFT. Choose an initial mint amount (first
-        10 are for free). Minting takes a bit of time, so we recommend no more
-        than 50 tokens in your initial mint.
-      </SubTitle>
       <InputField
         inputType="number"
         min={1}
         max={50}
         step={1}
-        mt="8px"
+        mt="16px"
         value={mintAmount}
         disabled={!maxSupply}
         setValue={setMintAmount}
         placeholder="Enter mint amount"
+        tooltip="Choose an initial mint amount (first 10 are for free). Minting takes a bit of time, so we recommend no more than 50 tokens in your initial mint."
+        numberOfTooltipLines={5}
         submit={isValid ? null : createNft}
         checkIfIsValid={checkMintAmountValidity}
       />
