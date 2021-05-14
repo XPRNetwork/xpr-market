@@ -88,7 +88,7 @@ const CreateTemplate = ({
       errors.push('set an initial mint amount (minimum 1)');
     }
 
-    if (mintAmount > maxSupply) {
+    if (parseInt(mintAmount) > parseInt(maxSupply)) {
       errors.push('set an initial mint amount less than the edition size');
     }
 
