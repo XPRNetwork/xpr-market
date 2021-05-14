@@ -6,7 +6,7 @@ import { useAuthContext } from '../Provider';
 import { Row, Section } from './TabSection.styled';
 import { getUserCreatedTemplates } from '../../services/templates';
 import { Template } from '../../services/templates';
-import { PAGINATION_LIMIT, TAB_TYPES } from '../../utils/constants';
+import { PAGINATION_LIMIT, TAB_TYPES, CARD_RENDER_TYPES } from '../../utils/constants';
 
 export const TabSectionUserProfileCreations = ({
   chainAccount,
@@ -90,6 +90,7 @@ export const TabSectionUserProfileCreations = ({
         <LoadingPage margin="10% 0" />
       ) : (
         <TabSection
+          type={CARD_RENDER_TYPES.TEMPLATE}
           showNextPage={showNextCreationsPage}
           isFetching={isFetching}
           rendered={renderedCreations}

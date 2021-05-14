@@ -14,6 +14,7 @@ import {
   PAGINATION_LIMIT,
   FILTER_TYPES,
   TAB_TYPES,
+  CARD_RENDER_TYPES,
 } from '../../utils/constants';
 
 interface AllItems {
@@ -136,6 +137,7 @@ const TabSectionSearchTemplates = ({
       ) : (
         <TabSection
           showNextPage={showNextItemsPage}
+          type={CARD_RENDER_TYPES.TEMPLATE}
           isLoadingPrices={isLoadingPrices}
           isFetching={isFetching}
           rendered={renderedItems}
