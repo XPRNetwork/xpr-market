@@ -1,8 +1,4 @@
-import {
-  BoxContainer,
-  CollectionName,
-  CollectionSubName,
-} from './CollectionBox.styled';
+import { BoxContainer, CollectionName } from './CollectionBox.styled';
 import CollectionIcon from '../CollectionIcon';
 import { CarouselCollection } from '../CollectionsCarousel';
 

@@ -60,9 +60,8 @@ const CreateTemplate = ({
   createNftError,
   setCreateNftError,
 }: Props): JSX.Element => {
-  const [templateFormError, setTemplateFormError] = useState<string>('');
+  const [error, setError] = useState<string>('');
   const { currentUser } = useAuthContext();
-  const [mintError, setMintError] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isValid, setIsValid] = useState<boolean>(false);
 
@@ -85,13 +84,21 @@ const CreateTemplate = ({
       );
     }
 
+    if (!mintAmount) {
+      errors.push('set an initial mint amount (minimum 1)');
+    }
+
+    if (mintAmount > maxSupply) {
+      errors.push('set an initial mint amount less than the edition size');
+    }
+
     if (errors.length === 1) {
-      setTemplateFormError(`Please ${errors[0]}.`);
+      setError(`Please ${errors[0]}.`);
       return;
     }
 
     if (errors.length === 2) {
-      setTemplateFormError(`Please ${errors[0]} and ${errors[1]}.`);
+      setError(`Please ${errors[0]} and ${errors[1]}.`);
       return;
     }
 
@@ -107,26 +114,18 @@ const CreateTemplate = ({
         errorMessage += `, ${errors[i]}`;
       }
 
-      setTemplateFormError(errorMessage);
+      setError(errorMessage);
       return;
     }
 
-    setTemplateFormError('');
-
-    if (!mintAmount) {
-      setMintError('Please fill in an initial mint amount (minimum 1).');
-    } else if (mintAmount > maxSupply) {
-      setMintError('You cannot mint more than the set edition size');
-    } else {
-      setMintError('');
-      setIsLoading(true);
-      try {
-        await createNft();
-      } catch (e) {
-        setMintError(e);
-      }
-      setIsLoading(false);
+    setError('');
+    setIsLoading(true);
+    try {
+      await createNft();
+    } catch (e) {
+      setError(e);
     }
+    setIsLoading(false);
   };
 
   const resetTemplatePage = () => {
@@ -136,15 +135,15 @@ const CreateTemplate = ({
     setTemplateDescription('');
     setMaxSupply('');
     setMintAmount('');
-    setMintError('');
+    setError('');
     setCreateNftError('');
   };
 
   useEffect(() => {
     if (createNftError) {
-      setMintError(createNftError);
+      setError(createNftError);
     } else {
-      setMintError('');
+      setError('');
     }
   }, [createNftError]);
 
@@ -179,7 +178,7 @@ const CreateTemplate = ({
         valid = true;
       }
     } else {
-      errorMessage = 'You can mint 1-50 assets at a time';
+      errorMessage = 'You can mint up to 50 assets at a time';
     }
 
     setIsValid(valid);
@@ -246,13 +245,7 @@ const CreateTemplate = ({
         }}
         numberOfTooltipLines={3}
       />
-      {templateFormError ? (
-        <ErrorMessage>{templateFormError}</ErrorMessage>
-      ) : null}
 
-      {
-        // initial mint
-      }
       <ElementTitle>Initial Mint</ElementTitle>
       <SubTitle>
         Now you are ready to mint your NFT. Choose an initial mint amount (first
@@ -290,7 +283,7 @@ const CreateTemplate = ({
         plagiarization is not allowed and will be subject to removal.
       </Terms>
       <br />
-      {mintError ? <ErrorMessage>{mintError}</ErrorMessage> : null}
+      {error ? <ErrorMessage>{error}</ErrorMessage> : null}
       <Button
         onClick={isLoading ? null : validateAndCreate}
         disabled={!isValid || isLoading || !allFieldsFilled}
