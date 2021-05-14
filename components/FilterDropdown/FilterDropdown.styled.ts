@@ -30,6 +30,7 @@ export const MenuButton = styled.button`
   align-items: center;
   width: 100%;
 
+  :focus,
   :hover,
   :focus-visible {
     color: #1a1a1a;
