@@ -51,6 +51,9 @@ export const TAB_TYPES = {
   GLOBAL: 'GLOBAL',
   ITEMS: 'ITEMS',
   CREATIONS: 'CREATIONS',
+  NFTS: 'NFTs',
+  CREATORS: 'CREATORS',
+  COLLECTIONS: 'COLLECTIONS',
 };
 
 export const FILTER_TYPES = {
