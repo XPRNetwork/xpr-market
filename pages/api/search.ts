@@ -18,7 +18,7 @@ const handler = async (
     default: {
       try {
         const rawResult = await fetch(
-          `https://api-dev.protonchain.com/v1/chain/market/search?q=${query}`
+          `${process.env.NEXT_PUBLIC_BACKEND_ENDPOINT}/chain/market/search?q=${query}`
         );
         const result = await rawResult.json();
         res.status(200).send({ success: true, message: result });

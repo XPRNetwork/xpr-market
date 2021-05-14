@@ -76,7 +76,7 @@ const ChooseCollection = ({
 
   return (
     <>
-      <Step>Step 1 of 3</Step>
+      <Step>Step 1 of 2</Step>
       <Title>Choose a collection</Title>
       <SubTitle>
         A small fee per NFT may be charged reflecting network costs.
