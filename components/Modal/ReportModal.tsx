@@ -60,7 +60,7 @@ export const ReportModal = (): JSX.Element => {
           .
         </Description>
         <TextArea
-          maxLength={1000}
+          maxLength={250}
           value={input}
           onKeyPress={onEnterKey}
           onChange={(e) => setInput(e.target.value.trim())}
