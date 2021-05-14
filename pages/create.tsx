@@ -17,7 +17,6 @@ import NftCreateSuccess from '../components/NftCreateSuccess';
 import CreatePageLayout from '../components/CreatePageLayout';
 import ChooseCollection from '../components/ChooseCollection';
 import CreateTemplate from '../components/CreateTemplate';
-import InitialMint from '../components/InitialMint';
 import { SHORTENED_TOKEN_PRECISION } from '../utils/constants';
 import fees, { MintFee } from '../services/fees';
 
@@ -38,7 +37,6 @@ const MintFeeInitial = {
 export const CREATE_PAGE_STATES = {
   CHOOSE_COLLECTION: 'CHOOSE_COLLECTION',
   CREATE_TEMPLATE: 'CREATE_TEMPLATE',
-  MINT_ASSETS: 'MINT_ASSETS',
   SUCCESS: 'SUCCESS',
 };
 
@@ -62,8 +60,8 @@ const Create = (): JSX.Element => {
   const [templateDescription, setTemplateDescription] = useState<string>('');
   const [templateImage, setTemplateImage] = useState<string>('');
   const [templateVideo, setTemplateVideo] = useState<string>('');
-  const [maxSupply, setMaxSupply] = useState<string>();
-  const [mintAmount, setMintAmount] = useState<string>();
+  const [maxSupply, setMaxSupply] = useState<string>('');
+  const [mintAmount, setMintAmount] = useState<string>('');
   const [templateUploadedFile, setTemplateUploadedFile] = useState<File | null>(
     null
   );
@@ -219,7 +217,6 @@ const Create = (): JSX.Element => {
             <CreateTemplate
               setTemplateUploadedFile={setTemplateUploadedFile}
               templateUploadedFile={templateUploadedFile}
-              goToMint={() => setPageState(CREATE_PAGE_STATES.MINT_ASSETS)}
               templateName={templateName}
               setTemplateName={setTemplateName}
               templateDescription={templateDescription}
@@ -229,26 +226,13 @@ const Create = (): JSX.Element => {
               setPageState={setPageState}
               uploadedFilePreview={uploadedFilePreview}
               setUploadedFilePreview={setUploadedFilePreview}
-            />
-          </CreatePageLayout>
-        );
-      case CREATE_PAGE_STATES.MINT_ASSETS:
-        return (
-          <CreatePageLayout
-            templateVideo={templateVideo}
-            templateImage={templateImage}
-            templateName={templateName}
-            selectedCollection={selectedCollection}
-            maxSupply={maxSupply}>
-            <InitialMint
               mintAmount={mintAmount}
               setMintFee={setMintFee}
               mintFee={mintFee}
               setMintAmount={setMintAmount}
               createNft={createNft}
               createNftError={createNftError}
-              setPageState={setPageState}
-              maxSupply={maxSupply}
+              setCreateNftError={setCreateNftError}
             />
           </CreatePageLayout>
         );
