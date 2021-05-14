@@ -32,8 +32,8 @@ const CreatorCard = ({ cardContent }: Props): JSX.Element => {
       <BottomSection height="184px">
         <IconContainer>
           <Image
-            width="88px"
-            height="88px"
+            width="82px"
+            height="82px"
             src={avatar || '/default-avatar.png'}
             alt={name}
           />

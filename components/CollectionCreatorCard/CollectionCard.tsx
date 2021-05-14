@@ -48,7 +48,7 @@ const CollectionCard = ({ cardContent }: Props): JSX.Element => {
         setCollectionImgSrc(`${RESIZER_IMAGE}${IPFS_RESOLVER_IMAGE}${img}`);
       }
     } else {
-      setCollectionImgSrc('/icon-monsters.png');
+      setCollectionImgSrc('/icon-blank-collection.png');
     }
   }, [img]);
 
@@ -66,8 +66,8 @@ const CollectionCard = ({ cardContent }: Props): JSX.Element => {
       <BottomSection height="224px">
         <IconContainer>
           <Image
-            width="88px"
-            height="88px"
+            width="82px"
+            height="82px"
             src={collectionImgSrc}
             onError={(e) => {
               e.currentTarget.onerror = null;

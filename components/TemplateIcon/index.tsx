@@ -25,7 +25,7 @@ const TemplateIcon = ({
     (video && video.slice(0, 4).toLowerCase() !== 'data');
   const imageSrc = isIpfs
     ? `${RESIZER_IMAGE}${IPFS_RESOLVER_IMAGE}${image}`
-    : image || '/icon-monsters.png';
+    : image || '/icon-blank-collection.png';
 
   const onImageError = (e) => {
     e.currentTarget.onerror = null;

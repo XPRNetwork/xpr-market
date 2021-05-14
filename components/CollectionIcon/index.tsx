@@ -14,7 +14,7 @@ const CollectionIcon = ({ name, image, margin, width }: Props): JSX.Element => {
   const isIpfs = image && image.slice(0, 4).toLowerCase() !== 'data';
   const imageSrc = isIpfs
     ? `${RESIZER_IMAGE}${IPFS_RESOLVER_IMAGE}${image}`
-    : image || '/icon-monsters.png';
+    : image || '/icon-blank-collection.png';
   const onImageError = (e) => {
     e.currentTarget.onerror = null;
     if (isIpfs) {
