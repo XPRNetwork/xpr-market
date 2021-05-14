@@ -11,12 +11,12 @@ import {
   IconContainer,
 } from './CollectionCreatorCard.styled';
 import { Image } from '../../styles/index.styled';
-import { ElasticSearchCollection } from '../../services/collections';
+import { SearchCollection } from '../../services/search';
 import { RESIZER_IMAGE, IPFS_RESOLVER_IMAGE } from '../../utils/constants';
 import { fileReader } from '../../utils';
 
 type Props = {
-  cardContent: ElasticSearchCollection;
+  cardContent: SearchCollection;
 };
 
 const CollectionCard = ({ cardContent }: Props): JSX.Element => {
@@ -36,15 +36,19 @@ const CollectionCard = ({ cardContent }: Props): JSX.Element => {
   const fallbackImgSrc = `${IPFS_RESOLVER_IMAGE}${img}`;
 
   useEffect(() => {
-    if (Date.now() - 600000 < Number(created) && isMyCollection) {
-      // created within the last 10 minutes to deal with propagation lag
-      if (cachedNewlyCreatedAssets[img]) {
-        fileReader((result) => {
-          setCollectionImgSrc(result);
-        }, cachedNewlyCreatedAssets[img]);
+    if (img) {
+      if (Date.now() - 600000 < Number(created) && isMyCollection) {
+        // created within the last 10 minutes to deal with propagation lag
+        if (cachedNewlyCreatedAssets[img]) {
+          fileReader((result) => {
+            setCollectionImgSrc(result);
+          }, cachedNewlyCreatedAssets[img]);
+        }
+      } else {
+        setCollectionImgSrc(`${RESIZER_IMAGE}${IPFS_RESOLVER_IMAGE}${img}`);
       }
     } else {
-      setCollectionImgSrc(`${RESIZER_IMAGE}${IPFS_RESOLVER_IMAGE}${img}`);
+      setCollectionImgSrc('/icon-monsters.png');
     }
   }, [img]);
 
@@ -59,7 +63,7 @@ const CollectionCard = ({ cardContent }: Props): JSX.Element => {
       <BlurContainer>
         <Blur img={collectionImgSrc} />
       </BlurContainer>
-      <BottomSection>
+      <BottomSection height="224px">
         <IconContainer>
           <Image
             width="88px"

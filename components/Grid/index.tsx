@@ -5,11 +5,12 @@ import { Template } from '../../services/templates';
 import { Container } from './Grid.styled';
 import { CARD_RENDER_TYPES } from '../../utils/constants';
 import CollectionCard from '../CollectionCreatorCard/CollectionCard';
-import { ElasticSearchCollection } from '../../services/collections';
+import CreatorCard from '../CollectionCreatorCard/CreatorCard';
+import { SearchCollection, SearchAuthor } from '../../services/search';
 
 type Props = {
   isLoadingPrices: boolean;
-  items: Template[] | ElasticSearchCollection[];
+  items: Template[] | SearchCollection[] | SearchAuthor[];
   type: string;
 };
 
@@ -61,6 +62,13 @@ const Grid = ({ isLoadingPrices, items, type }: Props): JSX.Element => {
               key={collection.collection_name}
               cardContent={collection}
             />
+          ));
+        }
+        break;
+      case CARD_RENDER_TYPES.CREATOR:
+        {
+          return items.map((creator) => (
+            <CreatorCard key={creator.acc} cardContent={creator} />
           ));
         }
         break;

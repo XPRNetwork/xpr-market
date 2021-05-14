@@ -17,6 +17,7 @@ export type SearchCollection = {
   created: string;
   img?: string | null;
   name?: string;
+  description?: string;
 };
 
 export type SearchTemplate = {
