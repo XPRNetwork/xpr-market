@@ -28,20 +28,17 @@ import { Template } from '../../services/templates';
 
 type Props = {
   template: Template;
-  redirectPath?: string;
-  hasMultiple?: boolean;
   isUsersTemplates?: boolean;
   hasShimmer?: boolean;
 };
 
 const TemplateCard = ({
   template,
-  redirectPath,
-  hasMultiple,
   isUsersTemplates,
   hasShimmer,
 }: Props): JSX.Element => {
   const {
+    template_id,
     name,
     collection: { collection_name, img, name: collectionDisplayName },
     immutable_data: { image, video },
@@ -49,6 +46,7 @@ const TemplateCard = ({
     lowestPrice,
     totalAssets,
     assetsForSale,
+    issued_supply,
     created_at_time,
   } = template;
 
@@ -87,6 +85,16 @@ const TemplateCard = ({
   const router = useRouter();
   const isMyTemplate =
     currentUser && router.query.chainAccount === currentUser.actor;
+  const redirectPath = isMyTemplate
+    ? `/details/${currentUser.actor}/${collection_name}/${template_id}`
+    : `/${collection_name}/${template_id}`;
+  const ownerHasMultiple =
+    totalAssets && !isNaN(parseInt(totalAssets)) && parseInt(totalAssets) > 1;
+  const hasMultiple =
+    !totalAssets && !isNaN(parseInt(issued_supply))
+      ? parseInt(issued_supply) > 1
+      : false;
+
   const openDetailPage = () => {
     router.push(redirectPath);
   };
@@ -120,7 +128,7 @@ const TemplateCard = ({
   return (
     <Card
       tabIndex={0}
-      hasMultiple={hasMultiple}
+      hasMultiple={ownerHasMultiple || hasMultiple}
       onClick={openDetailPage}
       onKeyDown={handleEnterKey}>
       <Row>
@@ -160,7 +168,6 @@ TemplateCard.defaultProps = {
   collectionName: 'Collection',
   templateName: 'Name',
   maxSupply: 0,
-  hasMultiple: false,
   hasShimmer: false,
   isCreatePreview: false,
 };

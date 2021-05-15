@@ -9,7 +9,7 @@ import { Template } from '../../services/templates';
 import { PAGINATION_LIMIT } from '../../utils/constants';
 
 export interface SectionContainerProps extends TabsProps {
-  chainAccount: string;
+  chainAccount?: string;
 }
 
 type Props = {

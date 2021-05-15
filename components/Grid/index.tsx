@@ -24,31 +24,12 @@ const Grid = ({ isLoadingPrices, items, type }: Props): JSX.Element => {
     switch (type) {
       case CARD_RENDER_TYPES.TEMPLATE: {
         return items.map((template) => {
-          const {
-            template_id,
-            collection: { collection_name },
-            issued_supply,
-            totalAssets,
-          } = template;
-          const redirectPath = isUsersTemplates
-            ? `/details/${currentUser.actor}/${collection_name}/${template_id}`
-            : `/${collection_name}/${template_id}`;
-          const ownerHasMultiple =
-            totalAssets &&
-            !isNaN(parseInt(totalAssets)) &&
-            parseInt(totalAssets) > 1;
-          const hasMultiple =
-            !totalAssets && !isNaN(parseInt(issued_supply))
-              ? parseInt(issued_supply) > 1
-              : false;
           return (
             <TemplateCard
-              key={template_id}
+              key={template.template_id}
               template={template}
               isUsersTemplates={isUsersTemplates}
-              redirectPath={redirectPath}
               hasShimmer={isLoadingPrices}
-              hasMultiple={ownerHasMultiple || hasMultiple}
             />
           );
         });

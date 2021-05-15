@@ -16,6 +16,7 @@ import {
   TAB_TYPES,
   CARD_RENDER_TYPES,
 } from '../../utils/constants';
+import { getFromApi } from '../../utils/browser-fetch';
 
 interface AllItems {
   [filterType: string]: Template[];
@@ -26,126 +27,84 @@ const defaultAllItems = {
   [FILTER_TYPES.RECENTLY_CREATED]: [],
 };
 
+interface Props extends SectionContainerProps {
+  query: string;
+}
+
+type TemplateSearchResponse = {};
+
 const TabSectionSearchTemplates = ({
-  chainAccount,
+  query,
   ...tabsProps
-}: SectionContainerProps): JSX.Element => {
-  const { currentUser } = useAuthContext();
-  const [allItems, setAllItems] = useState<AllItems>(defaultAllItems);
+}: Props): JSX.Element => {
   const [renderedItems, setRenderedItems] = useState<Template[]>([]);
-  const [nextPageNumber, setNextPageNumber] = useState<number>(2);
+  const [prefetchedItems, setPrefetchedItems] = useState<Template[]>([]);
   const [isLoadingPrices, setIsLoadingPrices] = useState<boolean>(true);
   const [isFetching, setIsFetching] = useState<boolean>(true);
   const [isLoadingInitialMount, setIsLoadingInitialMount] = useState<boolean>(
     true
   );
-  const [itemsFilter, setItemsFilter] = useState<string>(
-    FILTER_TYPES.RECENTLY_CREATED
-  );
-
-  const isUsersPage = currentUser && currentUser.actor === chainAccount;
+  const [prefetchPageNumber, setPrefetchPageNumber] = useState<number>(3);
 
   useEffect(() => {
     (async () => {
-      if (chainAccount) {
+      if (query) {
         setIsFetching(true);
         setIsLoadingPrices(true);
         setIsLoadingInitialMount(true);
 
         try {
-          const {
-            templates,
-            collectionNames,
-          } = await getAllTemplatesForUserWithAssetCount(chainAccount);
-          const allItemsByFilter = {
-            [FILTER_TYPES.NAME]: templates
-              .slice()
-              .sort((a, b) =>
-                a.name.toLowerCase().localeCompare(b.name.toLowerCase())
-              ),
-            [FILTER_TYPES.RECENTLY_CREATED]: templates,
-          };
-
-          setAllItems(allItemsByFilter);
-          setRenderedItems(
-            allItemsByFilter[itemsFilter].slice(0, PAGINATION_LIMIT)
+          const res = await getFromApi(
+            `/api/search-by/templates?query=${query}&page=1`
           );
-          setIsFetching(false);
+
+          if (!res.success) throw new Error(res.message);
+          setRenderedItems(res.message.contents);
           setIsLoadingInitialMount(false);
-
-          const prices = await getLowestPricesByTemplateId(collectionNames);
-          const templatesWithPrices = templates.map((template) => ({
-            ...template,
-            lowestPrice: prices[template.template_id],
-          }));
-          const allItemsByFilterWithPrices = {
-            [FILTER_TYPES.NAME]: templatesWithPrices
-              .slice()
-              .sort((a, b) =>
-                a.name.toLowerCase().localeCompare(b.name.toLowerCase())
-              ),
-            [FILTER_TYPES.RECENTLY_CREATED]: templatesWithPrices,
-          };
-
           setIsLoadingPrices(false);
-          setAllItems(allItemsByFilterWithPrices);
-          setRenderedItems(
-            allItemsByFilterWithPrices[itemsFilter].slice(0, PAGINATION_LIMIT)
-          );
+          await fetchNextPage();
         } catch (e) {
-          console.warn(e.message);
           setIsFetching(false);
-          setIsLoadingPrices(false);
           setIsLoadingInitialMount(false);
         }
       }
     })();
-  }, [chainAccount]);
+  }, [query]);
 
-  const showNextItemsPage = async () => {
-    const numNextPageItems = allItems[itemsFilter].slice(
-      (nextPageNumber - 1) * PAGINATION_LIMIT,
-      nextPageNumber * PAGINATION_LIMIT
-    ).length;
-
-    setRenderedItems(
-      allItems[itemsFilter].slice(0, nextPageNumber * PAGINATION_LIMIT)
-    );
-    setNextPageNumber((prevPageNumber) =>
-      numNextPageItems < PAGINATION_LIMIT ? -1 : prevPageNumber + 1
-    );
+  const showNextNFTSearchPage = async () => {
+    setRenderedItems((prevItems) => [...prevItems, ...prefetchedItems]);
+    await fetchNextPage();
   };
 
-  const handleItemsFilterClick = (filter: string) => {
-    setItemsFilter(filter);
-    const pageOneItems = allItems[filter].slice(0, PAGINATION_LIMIT);
-    setRenderedItems(pageOneItems);
-    setNextPageNumber(pageOneItems.length < PAGINATION_LIMIT ? -1 : 2);
+  const fetchNextPage = async () => {
+    if (prefetchPageNumber > 0) {
+      setIsFetching(true);
+      const result = await getFromApi(
+        `/api/search-by/templates?query=${query}&page=${prefetchPageNumber}`
+      );
+      setPrefetchedItems(result.message.contents);
+      setPrefetchPageNumber((prevPageNumber) => prefetchPageNumber >= result.message.totalPages ? -1 : prevPageNumber + 1);
+      setIsFetching(false);
+    }
   };
 
   return (
-    <Section isHidden={tabsProps.activeTab !== TAB_TYPES.ITEMS}>
+    <Section isHidden={tabsProps.activeTab !== TAB_TYPES.NFTS}>
       <Row>
         <Tabs {...tabsProps} />
-        <FilterDropdown
-          activeFilter={itemsFilter}
-          handleFilterClick={handleItemsFilterClick}
-        />
       </Row>
       {isLoadingInitialMount ? (
         <LoadingPage margin="10% 0" />
       ) : (
         <TabSection
-          showNextPage={showNextItemsPage}
-          type={CARD_RENDER_TYPES.TEMPLATE}
+          showNextPage={showNextNFTSearchPage}
+          type={CARD_RENDER_TYPES.SEARCH_TEMPLATE}
           isLoadingPrices={isLoadingPrices}
           isFetching={isFetching}
           rendered={renderedItems}
-          nextPageNumber={nextPageNumber}
+          nextPageNumber={prefetchPageNumber}
           emptyContent={{
-            subtitle: isUsersPage
-              ? 'Looks like you have not bought any NFT’s yet. Come back when you do!'
-              : 'Looks like this user has not bought any NFT’s yet.',
+            subtitle: 'No search results!',
             buttonTitle: 'Explore NFTs',
             link: '/',
           }}

@@ -4,45 +4,37 @@ import PageLayout from '../components/PageLayout';
 import Grid from '../components/Grid';
 import PaginationButton from '../components/PaginationButton';
 import ErrorComponent from '../components/Error';
-import { Title, PurpleSpan } from '../styles/Title.styled';
+import { Title } from '../styles/Title.styled';
 import { useAuthContext } from '../components/Provider';
-import { PAGINATION_LIMIT, CARD_RENDER_TYPES } from '../utils/constants';
+import { PAGINATION_LIMIT, CARD_RENDER_TYPES, TAB_TYPES } from '../utils/constants';
+import TabSectionSearchTemplates from '../components/TabSection/TabSectionSearchTemplates';
 
 const Search = (): JSX.Element => {
   const router = useRouter();
   const { isLoadingUser } = useAuthContext();
+  const [activeTab, setActiveTab] = useState<string>(TAB_TYPES.NFTS);
   const searchTerm = router.query.keywords
     ? (router.query.keywords as string).toLowerCase()
     : '';
 
-  const getContent = () => {
-    if (errorMessage) {
-      return (
-        <ErrorComponent
-          errorMessage={errorMessage}
-          buttonText="Try again"
-          buttonOnClick={() => router.reload()}
-        />
-      );
-    }
+  const tabs = [
+    { title: 'NFTs', type: TAB_TYPES.NFTS },
+    { title: 'Creators', type: TAB_TYPES.CREATORS },
+    { title: 'Collections', type: TAB_TYPES.COLLECTIONS },
+  ];
 
-    const title = searchTerm ? (
-      <>
-        Search results for “<PurpleSpan>{searchTerm}</PurpleSpan>”
-      </>
-    ) : (
-      'No results found'
-    );
-
-    return (
-      <>
-        <Title>{title}</Title>
-        <TabSectionSearchTemplates />
-      </>
-    );
+  const tabsProps = {
+    tabs,
+    activeTab,
+    setActiveTab,
   };
 
-  return <PageLayout title="Search Results">{getContent()}</PageLayout>;
+  return (
+    <PageLayout title={`${searchTerm} - Search`}>
+      <Title>Search results for “{searchTerm}”</Title>
+      <TabSectionSearchTemplates {...tabsProps} query={searchTerm} />
+    </PageLayout>
+  );
 };
 
 export default Search;
