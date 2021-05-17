@@ -49,7 +49,7 @@ export const TabSectionUserProfileCreations = ({
           const initialRenderedCreations = await getPaginatedCreationsByCreator(
             {
               chainAccount,
-              hasAssets: !isUsersPage,
+              onlyFetchTemplatesWithAssets: !isUsersPage,
               page: 1,
             }
           );
@@ -61,7 +61,7 @@ export const TabSectionUserProfileCreations = ({
 
           const creations = await getAllCreationsByCreator({
             chainAccount,
-            hasAssets: !isUsersPage,
+            onlyFetchTemplatesWithAssets: !isUsersPage,
           });
 
           const allCreationsByFilter = {
