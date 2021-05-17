@@ -7,6 +7,7 @@ import { CARD_RENDER_TYPES } from '../../utils/constants';
 import CollectionCard from '../CollectionCreatorCard/CollectionCard';
 import CreatorCard from '../CollectionCreatorCard/CreatorCard';
 import { SearchCollection, SearchAuthor } from '../../services/search';
+import SearchTemplateCard from '../SearchTemplateCard';
 
 type Props = {
   isLoadingPrices: boolean;
@@ -23,13 +24,21 @@ const Grid = ({ isLoadingPrices, items, type }: Props): JSX.Element => {
   const getGridContent = () => {
     switch (type) {
       case CARD_RENDER_TYPES.TEMPLATE: {
+        return items.map((template) => (
+          <TemplateCard
+            key={template.template_id}
+            template={template}
+            isUsersTemplates={isUsersTemplates}
+            hasShimmer={isLoadingPrices}
+          />
+        ));
+      }
+      case CARD_RENDER_TYPES.SEARCH_TEMPLATE: {
         return items.map((template) => {
           return (
-            <TemplateCard
+            <SearchTemplateCard
               key={template.template_id}
               template={template}
-              isUsersTemplates={isUsersTemplates}
-              hasShimmer={isLoadingPrices}
             />
           );
         });

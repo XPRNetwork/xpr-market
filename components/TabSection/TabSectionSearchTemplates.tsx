@@ -60,6 +60,7 @@ const TabSectionSearchTemplates = ({
 
           if (!res.success) throw new Error(res.message);
           setRenderedItems(res.message.contents);
+          console.log(res.message.contents);
           setIsLoadingInitialMount(false);
           setIsLoadingPrices(false);
           await fetchNextPage();
