@@ -465,12 +465,11 @@ export const getTemplatesFromTemplateIds = async (
 ): Promise<Template[]> => {
   // Organize pagination with an object (key: page number, value: array of templateIds)
   const pages: { [page: number]: string[] } = {};
-  for (let i = 1; i <= Math.ceil(templateIds.length / 100); i++) {
-    const startIdx = i - 1 + (i - 1) * 100;
-    const endIdx = i * 100;
-    pages[i] = templateIds.slice(startIdx, endIdx);
+  for (let i = 0; i <= Math.ceil(templateIds.length / 100) - 1; i++) {
+    const startIdx = i * 100;
+    const endIdx = (i + 1) * 100;
+    pages[i + 1] = templateIds.slice(startIdx, endIdx);
   }
-
   let templates = [];
   let page = 1;
   let hasResults = true;
