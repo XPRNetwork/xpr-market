@@ -1,6 +1,8 @@
 import { MouseEvent, KeyboardEvent } from 'react';
 import { useModalContext } from '../Provider';
 import { ReportProps } from '../Provider/ModalProvider';
+import { useAuthContext } from '../Provider';
+import { useRouter } from 'next/router';
 import { useState } from 'react';
 import {
   Background,
@@ -12,15 +14,26 @@ import {
   HalfButton,
   TextArea,
   Link,
+  ErrorMessage,
 } from './Modal.styled';
 import { ReactComponent as CloseIcon } from '../../public/close.svg';
 import { useWindowSize } from '../../hooks';
+import { capitalize } from '../../utils';
+import { REPORT_TYPE_TO_REFTYPE, REPORT_TYPE } from '../../utils/constants';
+import Spinner from '../Spinner';
 
 export const ReportModal = (): JSX.Element => {
+  const [hasReported, setHasReported] = useState<boolean>(false);
   const { isMobile } = useWindowSize();
   const { closeModal, modalProps } = useModalContext();
   const { type } = modalProps as ReportProps;
   const [input, setInput] = useState<string>('');
+  const router = useRouter();
+  const { query } = router;
+  const { currentUser, isLoadingUser } = useAuthContext();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
+  const actor = currentUser ? currentUser.actor : '';
 
   const handleBackgroundClick = (e: MouseEvent) => {
     if (e.target === e.currentTarget) {
@@ -28,9 +41,58 @@ export const ReportModal = (): JSX.Element => {
     }
   };
 
-  const submit = () => {
-    // TODO: replace with backend report support endpoint
-    console.log('Report: ', input);
+  const getRefId = () => {
+    let refId;
+
+    switch (type) {
+      case REPORT_TYPE.CREATOR: {
+        refId = query.chainAccount;
+        break;
+      }
+      case REPORT_TYPE.COLLECTION: {
+        refId = query.collection;
+        break;
+      }
+      case REPORT_TYPE.NFT: {
+        refId = query.templateId;
+        break;
+      }
+    }
+
+    return refId;
+  };
+
+  const submit = async () => {
+    if (!isLoadingUser && actor) {
+      setIsLoading(true);
+      setError('');
+      const reportBody = {
+        reportingAccount: actor,
+        refType: REPORT_TYPE_TO_REFTYPE[type],
+        refId: getRefId() || '',
+        reason: input.trim(),
+        url: window.location.href,
+      };
+
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_ENDPOINT}/internal/market/reports`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(reportBody),
+          }
+        );
+        console.log('res: ', res);
+        setHasReported(true);
+        setTimeout(() => closeModal(), 1500);
+      } catch (e) {
+        setError('An error occurred while reporting. Please try again.');
+      }
+      setIsLoading(false);
+    }
   };
 
   const onEnterKey = (e: KeyboardEvent) => {
@@ -43,7 +105,7 @@ export const ReportModal = (): JSX.Element => {
     <Background onClick={handleBackgroundClick}>
       <ModalBox>
         <Section>
-          <Title>Report this {type}?</Title>
+          <Title>Report this {capitalize(type.toLowerCase())}?</Title>
           <CloseIconContainer role="button" onClick={closeModal}>
             <CloseIcon />
           </CloseIconContainer>
@@ -63,15 +125,18 @@ export const ReportModal = (): JSX.Element => {
           maxLength={250}
           value={input}
           onKeyPress={onEnterKey}
-          onChange={(e) => setInput(e.target.value.trim())}
+          onChange={(e) => setInput(e.target.value)}
           placeholder={`Please provide details on why you are concened about this ${type.toLowerCase()}.`}
         />
-        <HalfButton
-          disabled={!input}
-          fullWidth={isMobile}
-          margin="0 0 12px"
-          onClick={submit}>
-          Report
+        <ErrorMessage>{error}</ErrorMessage>
+        <HalfButton disabled={!input} fullWidth={isMobile} onClick={submit}>
+          {isLoading ? (
+            <Spinner size="25px" radius="15" hasBackground />
+          ) : hasReported ? (
+            'Reported!'
+          ) : (
+            'Report'
+          )}
         </HalfButton>
       </ModalBox>
     </Background>

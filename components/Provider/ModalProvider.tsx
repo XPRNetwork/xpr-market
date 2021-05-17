@@ -68,7 +68,7 @@ export interface CreateCollectionProps {
 }
 
 export interface ReportProps {
-  type: 'NFT' | 'creator' | 'collection';
+  type: string;
 }
 export interface UpdateCollectionProps extends GeneralModalProps {
   collectionName: string;

@@ -114,6 +114,9 @@ export const ModalButton = styled(StyledButton)`
 `;
 
 export const HalfButton = styled(StyledButton)<HalfButtonProps>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   min-width: 144px;
   align-self: flex-end;
   padding: ${({ padding }) => padding || '11px 16px 13px'};

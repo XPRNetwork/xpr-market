@@ -15,6 +15,7 @@ import {
 } from '../Provider';
 import { useScrollLock, useEscapeKeyClose } from '../../hooks';
 import proton from '../../services/proton-rpc';
+import { REPORT_TYPE } from '../../utils/constants';
 
 type Props = {
   setCurrentAssetAsModalProps?: () => void;
@@ -31,9 +32,8 @@ const AssetFormPopupMenu = ({
   isTemplateCreator,
   isMyTemplate,
 }: Props): JSX.Element => {
-  const {
-    currentUser: { actor },
-  } = useAuthContext();
+  const { currentUser } = useAuthContext();
+  const actor = currentUser ? currentUser.actor : '';
   const { openModal, modalProps, setModalProps } = useModalContext();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isModalWithFeeOpen, setIsModalWithFeeOpen] = useState<boolean>(false);
@@ -122,7 +122,7 @@ const AssetFormPopupMenu = ({
       isHidden: isTemplateCreator,
       name: 'Report',
       onClick: () => {
-        setModalProps({ type: 'NFT' });
+        setModalProps({ type: REPORT_TYPE.NFT });
         setIsOpen(false);
         openModal(MODAL_TYPES.REPORT);
       },

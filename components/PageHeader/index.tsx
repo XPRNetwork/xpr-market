@@ -18,6 +18,7 @@ import { useClickAway } from '../../hooks';
 import { IPFS_RESOLVER_IMAGE, RESIZER_IMAGE } from '../../utils/constants';
 import ReadMoreDescription from '../ReadMoreDescription';
 import { ReactComponent as ReportIcon } from '../../public/report.svg';
+import { REPORT_TYPE } from '../../utils/constants';
 
 type PageHeaderProps = {
   image?: string;
@@ -80,7 +81,9 @@ const PageHeader = ({
       size="40px"
       margin="0 0 0 8px"
       onClick={() => {
-        setModalProps({ type: type === 'user' ? 'creator' : 'collection' });
+        setModalProps({
+          type: type === 'user' ? REPORT_TYPE.CREATOR : REPORT_TYPE.COLLECTION,
+        });
         openModal(MODAL_TYPES.REPORT);
       }}>
       <ReportIcon />
