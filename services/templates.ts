@@ -505,15 +505,19 @@ export const getTemplatesFromTemplateIds = async (
   return templates;
 };
 
-export const getUserCreatedTemplates = async (
-  account: string,
-  page?: number,
-  hasAssets?: boolean
-): Promise<Template[]> => {
+export const getPaginatedCreationsByCreator = async ({
+  chainAccount,
+  hasAssets,
+  page,
+}: {
+  chainAccount: string;
+  hasAssets: boolean;
+  page?: number;
+}): Promise<Template[]> => {
   try {
     const pageParam = page || 1;
     const templatesQueryObject = {
-      authorized_account: account,
+      authorized_account: chainAccount,
       sort: 'updated',
       order: 'desc',
       page: pageParam,
@@ -531,6 +535,52 @@ export const getUserCreatedTemplates = async (
     }
 
     return templatesResponse.data;
+  } catch (e) {
+    throw new Error(e);
+  }
+};
+
+export const getAllCreationsByCreator = async ({
+  chainAccount,
+  hasAssets,
+}: {
+  chainAccount: string;
+  hasAssets: boolean;
+}): Promise<Template[]> => {
+  try {
+    const limit = 100;
+    let templates = [];
+    let hasResults = true;
+    let page = 1;
+
+    while (hasResults) {
+      const templatesQueryObject = {
+        authorized_account: chainAccount,
+        sort: 'updated',
+        order: 'desc',
+        page,
+        limit,
+        has_assets: Boolean(hasAssets),
+      };
+
+      const templatesQueryParams = toQueryString(templatesQueryObject);
+      const templatesResponse = await getFromApi<Template[]>(
+        `${process.env.NEXT_PUBLIC_NFT_ENDPOINT}/atomicassets/v1/templates?${templatesQueryParams}`
+      );
+
+      if (!templatesResponse.success) {
+        throw new Error((templatesResponse.message as unknown) as string);
+      }
+
+      if (templatesResponse.data.length < limit) {
+        hasResults = false;
+      }
+
+      templates = templates.concat(templatesResponse.data);
+      page += 1;
+    }
+
+    return templates;
   } catch (e) {
     throw new Error(e);
   }

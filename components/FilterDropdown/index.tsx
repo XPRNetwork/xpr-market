@@ -12,8 +12,8 @@ import { ReactComponent as Checkmark } from '../../public/icon-light-check-24-px
 import { useScrollLock, useEscapeKeyClose } from '../../hooks';
 import { FILTER_TYPES } from '../../utils/constants';
 
-type Props = {
-  filters: string[];
+export type FilterDropdownProps = {
+  filters?: string[];
   activeFilter: string;
   handleFilterClick: (filter: string) => void;
 };
@@ -22,7 +22,7 @@ const FilterDropdown = ({
   filters,
   activeFilter,
   handleFilterClick,
-}: Props): JSX.Element => {
+}: FilterDropdownProps): JSX.Element => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const togglePopupMenu = () => setIsOpen(!isOpen);
   const closePopupMenu = () => setIsOpen(false);
