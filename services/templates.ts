@@ -512,7 +512,7 @@ export const getUserCreatedTemplates = async (
   hasAssets?: boolean
 ): Promise<Template[]> => {
   try {
-    const pageParam = page ? page : 1;
+    const pageParam = page || 1;
     const templatesQueryObject = {
       authorized_account: account,
       sort: 'updated',

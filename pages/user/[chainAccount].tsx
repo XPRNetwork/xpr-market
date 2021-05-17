@@ -19,9 +19,15 @@ interface ProfileUser {
   isVerified: boolean;
 }
 
+const defaultUser = {
+  name: '',
+  avatar: '/default-avatar.png',
+  isVerified: false,
+};
+
 const getUser = async (chainAccount: string): Promise<ProfileUser> => {
   if (!chainAccount) {
-    return { name: '', avatar: '', isVerified: false };
+    return defaultUser;
   }
 
   try {
@@ -47,11 +53,7 @@ const Collection = (): JSX.Element => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [activeTab, setActiveTab] = useState<string>(TAB_TYPES.ITEMS);
-  const [user, setUser] = useState<ProfileUser>({
-    name: '',
-    avatar: '/default-avatar.png',
-    isVerified: false,
-  });
+  const [user, setUser] = useState<ProfileUser>(defaultUser);
 
   const getTitle = () => {
     return !currentUser || (currentUser && currentUser.actor !== chainAccount)
