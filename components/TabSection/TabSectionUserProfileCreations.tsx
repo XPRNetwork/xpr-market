@@ -61,6 +61,10 @@ export const TabSectionUserProfileCreations = ({
   }, [chainAccount]);
 
   const showNextCreationsPage = async () => {
+    setPrefetchPageNumber((prevPageNumber) =>
+      prefetchedCreations.length < PAGINATION_LIMIT ? -1 : prevPageNumber + 1
+    );
+
     setRenderedCreations((prevCreations) => [
       ...prevCreations,
       ...prefetchedCreations,
@@ -74,9 +78,6 @@ export const TabSectionUserProfileCreations = ({
     );
 
     setPrefetchedCreations(creations);
-    setPrefetchPageNumber((prevPageNumber) =>
-      creations.length < PAGINATION_LIMIT ? -1 : prevPageNumber + 1
-    );
     setIsFetching(false);
   };
 
