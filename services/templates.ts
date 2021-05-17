@@ -518,7 +518,7 @@ export const getPaginatedCreationsByCreator = async ({
     const pageParam = page || 1;
     const templatesQueryObject = {
       authorized_account: chainAccount,
-      sort: 'updated',
+      sort: 'created',
       order: 'desc',
       page: pageParam,
       limit: PAGINATION_LIMIT,
@@ -556,7 +556,7 @@ export const getAllCreationsByCreator = async ({
     while (hasResults) {
       const templatesQueryObject = {
         authorized_account: chainAccount,
-        sort: 'updated',
+        sort: 'created',
         order: 'desc',
         page,
         limit,
