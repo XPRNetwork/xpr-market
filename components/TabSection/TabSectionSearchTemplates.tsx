@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react';
 import TabSection, { SectionContainerProps } from '.';
-import Tabs from '../Tabs';
 import LoadingPage from '../LoadingPage';
-import { Row, Section } from '../../styles/index.styled';
+import { Section } from '../../styles/index.styled';
 import { SearchResultsByType, SearchTemplate } from '../../services/search';
-import { Template } from '../../services/templates';
 import { TAB_TYPES, CARD_RENDER_TYPES } from '../../utils/constants';
 import { getFromApi } from '../../utils/browser-fetch';
 
@@ -73,9 +71,6 @@ const TabSectionSearchTemplates = ({
 
   return (
     <Section isHidden={tabsProps.activeTab !== TAB_TYPES.NFTS}>
-      <Row>
-        <Tabs {...tabsProps} />
-      </Row>
       {isLoadingInitialMount ? (
         <LoadingPage margin="10% 0" />
       ) : (
@@ -86,6 +81,7 @@ const TabSectionSearchTemplates = ({
           isFetching={isFetching}
           rendered={renderedItems}
           nextPageNumber={prefetchPageNumber}
+          tabsProps={tabsProps}
           emptyContent={{
             subtitle: 'No search results!',
             buttonTitle: 'Explore NFTs',

@@ -27,12 +27,12 @@ export const defaultSectionContentByFilter = {
 
 type Props = {
   showNextPage: () => Promise<void>;
+  tabsProps?: TabsProps;
+  filterDropdownProps?: FilterDropdownProps;
   isLoadingPrices?: boolean;
   isFetching: boolean;
   rendered: Template[] | SearchTemplate[];
   nextPageNumber: number;
-  tabsProps: TabsProps;
-  filterDropdownProps: FilterDropdownProps;
   emptyContent: {
     subtitle: string;
     buttonTitle: string;
@@ -43,11 +43,6 @@ type Props = {
 
 const TabSection: FC<Props> = ({
   showNextPage = async () => {},
-  isLoadingPrices = false,
-  isFetching = true,
-  rendered = [],
-  nextPageNumber = -1,
-  type = '',
   tabsProps = {
     tabs: [],
     activeTab: '',
@@ -58,6 +53,11 @@ const TabSection: FC<Props> = ({
     activeFilter: '',
     handleFilterClick: () => {},
   },
+  isLoadingPrices = false,
+  isFetching = true,
+  rendered = [],
+  nextPageNumber = -1,
+  type = '',
   emptyContent = {
     subtitle: '',
     buttonTitle: '',
