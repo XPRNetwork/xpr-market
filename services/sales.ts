@@ -269,7 +269,7 @@ export const getLowestPriceAsset = async (
 
     const saleRes = await getFromApi<Sale[]>(
       `https://proton.api.atomicassets.io/atomicmarket/v1/sales?${queryString}`
-    );
+    ); // FOR RICKY TESTING, must revert to env when deploying
 
     if (!saleRes.success) {
       throw new Error((saleRes.message as unknown) as string);
