@@ -6,7 +6,6 @@ import {
   Title,
   Text,
   GreyText,
-  Tag,
   CollectionNameButton,
   PlaceholderPrice,
   ShimmerBlock,
@@ -25,6 +24,7 @@ import {
   useAuthContext,
 } from '../../components/Provider';
 import { SearchTemplate } from '../../services/search';
+import { getTemplateDetails, Template } from '../../services/templates';
 
 type Props = {
   template: SearchTemplate;
@@ -47,6 +47,11 @@ const SearchTemplateCard = ({ template }: Props): JSX.Element => {
   const [templateVideoSrc, setTemplateVideoSrc] = useState<string>('');
   const [templateImgSrc, setTemplateImgSrc] = useState<string>('');
   const [fallbackImgSrc, setFallbackImgSrc] = useState<string>('');
+  const [templateDetail, setTemplateDetail] = useState<Template>({});
+  const [
+    isLoadingTemplateDetails,
+    setIsLoadingTemplateDetails,
+  ] = useState<boolean>(true);
 
   useEffect(() => {
     if (Date.now() - 600000 < Number(created) && isMyTemplate) {
@@ -74,14 +79,21 @@ const SearchTemplateCard = ({ template }: Props): JSX.Element => {
     }
   }, [video, img]);
 
+  useEffect(() => {
+    (async () => {
+      const templateDetail = await getTemplateDetails(collection, id);
+      setTemplateDetail(templateDetail);
+      setIsLoadingTemplateDetails(false);
+    })();
+  }, []);
+
   const router = useRouter();
   const isMyTemplate =
     currentUser && router.query.chainAccount === currentUser.actor;
   const redirectPath = `/${collection}/${id}`;
-  const hasMultiple =
-    !issued_supply && !isNaN(parseInt(issued_supply))
-      ? parseInt(issued_supply) > 1
-      : false;
+  const hasMultiple = !isNaN(parseInt(issued_supply))
+    ? parseInt(issued_supply) > 1
+    : false;
 
   const openDetailPage = () => {
     router.push(redirectPath);
@@ -98,10 +110,10 @@ const SearchTemplateCard = ({ template }: Props): JSX.Element => {
     }
   };
 
-  const priceSection = isLoadingLowestPrice ? (
+  const priceSection = isLoadingTemplateDetails ? (
     <ShimmerBlock aria-hidden />
-  ) : lowestPrice ? (
-    <Text>{lowestPrice}</Text>
+  ) : templateDetail.lowestPrice ? (
+    <Text>{templateDetail.lowestPrice}</Text>
   ) : (
     <PlaceholderPrice aria-hidden />
   );
@@ -116,10 +128,18 @@ const SearchTemplateCard = ({ template }: Props): JSX.Element => {
         <CollectionNameButton onClick={openCollectionPage}>
           <CollectionIcon
             name={collection}
-            image={img}
+            image={
+              templateDetail &&
+              templateDetail.collection &&
+              templateDetail.collection.img
+            }
             margin="24px 16px 24px 0"
           />
-          <Text>{collectionDisplayName || collection}</Text>
+          {isLoadingTemplateDetails ? (
+            <ShimmerBlock aria-hidden />
+          ) : (
+            <Text>{templateDetail.collection.name || collection}</Text>
+          )}
         </CollectionNameButton>
       </Row>
       {video ? (
@@ -138,14 +158,6 @@ const SearchTemplateCard = ({ template }: Props): JSX.Element => {
       {priceSection}
     </Card>
   );
-};
-
-SearchTemplateCard.defaultProps = {
-  collectionName: 'Collection',
-  templateName: 'Name',
-  maxSupply: 0,
-  hasShimmer: false,
-  isCreatePreview: false,
 };
 
 export default SearchTemplateCard;

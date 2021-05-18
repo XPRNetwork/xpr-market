@@ -20,10 +20,7 @@ import {
   IPFS_RESOLVER_IMAGE,
   RESIZER_IMAGE_SM,
 } from '../../utils/constants';
-import {
-  useCreateAssetContext,
-  useAuthContext,
-} from '../Provider';
+import { useCreateAssetContext, useAuthContext } from '../Provider';
 import { Template } from '../../services/templates';
 
 type Props = {

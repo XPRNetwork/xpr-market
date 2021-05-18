@@ -8,7 +8,7 @@ const handler = async (
 ): Promise<void> => {
   const {
     method,
-    query: { type, query, page, pageSize, },
+    query: { type, query, page, pageSize },
   } = req;
   switch (method) {
     case 'POST':
