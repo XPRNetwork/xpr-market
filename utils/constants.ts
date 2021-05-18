@@ -4,7 +4,7 @@ export const TOKEN_CONTRACT = 'xtokens';
 export const TOKEN_PRECISION = 6;
 export const SHORTENED_TOKEN_PRECISION = 2;
 export const DEFAULT_COLLECTION = 'monsters';
-export const PRICE_OF_RAM_IN_XPR = 0.0222;
+export const PRICE_OF_RAM_IN_XPR = 0.0111;
 export const PAGINATION_LIMIT = 8;
 export const LG_FILE_UPLOAD_TYPES_TEXT =
   'PNG, GIF, JPG, WEBP, or MP4. Max 30 MB.';
