@@ -76,11 +76,12 @@ export const ReportModal = (): JSX.Element => {
 
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_ENDPOINT}/internal/market/reports`,
+          `${process.env.NEXT_PUBLIC_BACKEND_ENDPOINT}/market/reports`,
           {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
+              Authorization: `Bearer ${process.env.NEXT_PUBLIC_JWT_SECRET}`,
             },
             body: JSON.stringify(reportBody),
           }
