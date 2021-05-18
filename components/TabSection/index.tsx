@@ -7,6 +7,7 @@ import EmptyUserContent from '../EmptyUserContent';
 import { TabsProps } from '../Tabs';
 import { Template } from '../../services/templates';
 import { PAGINATION_LIMIT } from '../../utils/constants';
+import { SearchTemplate } from '../../services/search';
 
 export interface SectionContainerProps extends TabsProps {
   chainAccount?: string;
@@ -16,7 +17,7 @@ type Props = {
   showNextPage: () => Promise<void>;
   isLoadingPrices: boolean;
   isFetching: boolean;
-  rendered: Template[];
+  rendered: Template[] | SearchTemplate[];
   nextPageNumber: number;
   emptyContent: {
     subtitle: string;

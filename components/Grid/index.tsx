@@ -6,12 +6,16 @@ import { Container } from './Grid.styled';
 import { CARD_RENDER_TYPES } from '../../utils/constants';
 import CollectionCard from '../CollectionCreatorCard/CollectionCard';
 import CreatorCard from '../CollectionCreatorCard/CreatorCard';
-import { SearchCollection, SearchAuthor } from '../../services/search';
+import {
+  SearchCollection,
+  SearchAuthor,
+  SearchTemplate,
+} from '../../services/search';
 import SearchTemplateCard from '../SearchTemplateCard';
 
 type Props = {
   isLoadingPrices: boolean;
-  items: Template[] | SearchCollection[] | SearchAuthor[];
+  items: Template[] | SearchTemplate[] | SearchCollection[] | SearchAuthor[];
   type: string;
 };
 
@@ -35,12 +39,7 @@ const Grid = ({ isLoadingPrices, items, type }: Props): JSX.Element => {
       }
       case CARD_RENDER_TYPES.SEARCH_TEMPLATE: {
         return items.map((template) => {
-          return (
-            <SearchTemplateCard
-              key={template.template_id}
-              template={template}
-            />
-          );
+          return <SearchTemplateCard key={template.id} template={template} />;
         });
       }
       case CARD_RENDER_TYPES.COLLECTION: {

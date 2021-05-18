@@ -1,44 +1,23 @@
 import { useEffect, useState } from 'react';
 import TabSection, { SectionContainerProps } from '.';
 import Tabs from '../Tabs';
-import FilterDropdown from '../FilterDropdown';
 import LoadingPage from '../LoadingPage';
-import { useAuthContext } from '../Provider';
 import { Row, Section } from '../../styles/index.styled';
-import { getAllTemplatesForUserWithAssetCount } from '../../services/templates';
-import {
-  Template,
-  getLowestPricesByTemplateId,
-} from '../../services/templates';
-import {
-  PAGINATION_LIMIT,
-  FILTER_TYPES,
-  TAB_TYPES,
-  CARD_RENDER_TYPES,
-} from '../../utils/constants';
+import { SearchResultsByType, SearchTemplate } from '../../services/search';
+import { Template } from '../../services/templates';
+import { TAB_TYPES, CARD_RENDER_TYPES } from '../../utils/constants';
 import { getFromApi } from '../../utils/browser-fetch';
-
-interface AllItems {
-  [filterType: string]: Template[];
-}
-
-const defaultAllItems = {
-  [FILTER_TYPES.NAME]: [],
-  [FILTER_TYPES.RECENTLY_CREATED]: [],
-};
 
 interface Props extends SectionContainerProps {
   query: string;
 }
 
-type TemplateSearchResponse = {};
-
 const TabSectionSearchTemplates = ({
   query,
   ...tabsProps
 }: Props): JSX.Element => {
-  const [renderedItems, setRenderedItems] = useState<Template[]>([]);
-  const [prefetchedItems, setPrefetchedItems] = useState<Template[]>([]);
+  const [renderedItems, setRenderedItems] = useState<SearchTemplate[]>([]);
+  const [prefetchedItems, setPrefetchedItems] = useState<SearchTemplate[]>([]);
   const [isLoadingPrices, setIsLoadingPrices] = useState<boolean>(true);
   const [isFetching, setIsFetching] = useState<boolean>(true);
   const [isLoadingInitialMount, setIsLoadingInitialMount] = useState<boolean>(
@@ -54,13 +33,12 @@ const TabSectionSearchTemplates = ({
         setIsLoadingInitialMount(true);
 
         try {
-          const res = await getFromApi(
+          const res = await getFromApi<SearchResultsByType<SearchTemplate>>(
             `/api/search-by/templates?query=${query}&page=1`
           );
 
-          if (!res.success) throw new Error(res.message);
+          if (!res.success) throw new Error(res.error.message);
           setRenderedItems(res.message.contents);
-          console.log(res.message.contents);
           setIsLoadingInitialMount(false);
           setIsLoadingPrices(false);
           await fetchNextPage();
@@ -80,11 +58,15 @@ const TabSectionSearchTemplates = ({
   const fetchNextPage = async () => {
     if (prefetchPageNumber > 0) {
       setIsFetching(true);
-      const result = await getFromApi(
+      const result = await getFromApi<SearchResultsByType<SearchTemplate>>(
         `/api/search-by/templates?query=${query}&page=${prefetchPageNumber}`
       );
       setPrefetchedItems(result.message.contents);
-      setPrefetchPageNumber((prevPageNumber) => prefetchPageNumber >= result.message.totalPages ? -1 : prevPageNumber + 1);
+      setPrefetchPageNumber((prevPageNumber) =>
+        prefetchPageNumber >= result.message.totalPages
+          ? -1
+          : prevPageNumber + 1
+      );
       setIsFetching(false);
     }
   };
