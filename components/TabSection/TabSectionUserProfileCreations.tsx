@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import TabSection, {
   SectionContainerProps,
   SectionContentByFilter,
@@ -19,10 +19,10 @@ import {
   FILTER_TYPES,
 } from '../../utils/constants';
 
-export const TabSectionUserProfileCreations = ({
+export const TabSectionUserProfileCreations: FC<SectionContainerProps> = ({
   chainAccount,
   ...tabsProps
-}: SectionContainerProps): JSX.Element => {
+}) => {
   const { currentUser } = useAuthContext();
   const [allCreations, setAllCreations] = useState<SectionContentByFilter>(
     defaultSectionContentByFilter
@@ -49,7 +49,7 @@ export const TabSectionUserProfileCreations = ({
           const initialRenderedCreations = await getPaginatedCreationsByCreator(
             {
               chainAccount,
-              onlyFetchTemplatesWithAssets: !isUsersPage,
+              showZeroMints: isUsersPage,
               page: 1,
             }
           );
@@ -61,7 +61,7 @@ export const TabSectionUserProfileCreations = ({
 
           const creations = await getAllCreationsByCreator({
             chainAccount,
-            onlyFetchTemplatesWithAssets: !isUsersPage,
+            showZeroMints: isUsersPage,
           });
 
           const allCreationsByFilter = {
@@ -118,6 +118,7 @@ export const TabSectionUserProfileCreations = ({
           nextPageNumber={nextPageNumber}
           tabsProps={tabsProps}
           filterDropdownProps={{
+            filters: [FILTER_TYPES.NAME, FILTER_TYPES.RECENTLY_CREATED],
             activeFilter: creationsFilter,
             handleFilterClick: handleCreationsFilterClick,
           }}

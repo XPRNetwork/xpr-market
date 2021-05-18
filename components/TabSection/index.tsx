@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { FC, memo } from 'react';
 export { TabSectionUserProfileItems } from './TabSectionUserProfileItems';
 export { TabSectionUserProfileCreations } from './TabSectionUserProfileCreations';
 import Tabs from '../Tabs';
@@ -27,7 +27,7 @@ export const defaultSectionContentByFilter = {
 
 type Props = {
   showNextPage: () => Promise<void>;
-  isLoadingPrices: boolean;
+  isLoadingPrices?: boolean;
   isFetching: boolean;
   rendered: Template[] | SearchTemplate[];
   nextPageNumber: number;
@@ -41,17 +41,29 @@ type Props = {
   type: string;
 };
 
-const TabSection = ({
-  showNextPage,
-  isLoadingPrices,
-  isFetching,
-  rendered,
-  nextPageNumber,
-  type,
-  tabsProps,
-  filterDropdownProps,
-  emptyContent,
-}: Props): JSX.Element => {
+const TabSection: FC<Props> = ({
+  showNextPage = async () => {},
+  isLoadingPrices = false,
+  isFetching = true,
+  rendered = [],
+  nextPageNumber = -1,
+  type = '',
+  tabsProps = {
+    tabs: [],
+    activeTab: '',
+    setActiveTab: () => {},
+  },
+  filterDropdownProps = {
+    filters: [],
+    activeFilter: '',
+    handleFilterClick: () => {},
+  },
+  emptyContent = {
+    subtitle: '',
+    buttonTitle: '',
+    link: '',
+  },
+}) => {
   const getSectionContent = () => {
     if (!rendered.length) {
       const { subtitle, buttonTitle, link } = emptyContent;
@@ -69,11 +81,16 @@ const TabSection = ({
     );
   };
 
+  const tabs = tabsProps.tabs.length ? <Tabs {...tabsProps} /> : null;
+  const filterDropdown = filterDropdownProps.filters.length ? (
+    <FilterDropdown {...filterDropdownProps} />
+  ) : null;
+
   return (
     <>
       <Row>
-        <Tabs {...tabsProps} />
-        <FilterDropdown {...filterDropdownProps} />
+        {tabs}
+        {filterDropdown}
       </Row>
       {getSectionContent()}
       <PaginationButton
@@ -85,19 +102,6 @@ const TabSection = ({
       />
     </>
   );
-};
-
-TabSection.defaultProps = {
-  showNextPage: () => {},
-  isLoadingPrices: false,
-  isFetching: true,
-  rendered: [],
-  nextPageNumber: -1,
-  emptyContent: {
-    subtitle: '',
-    buttonTitle: '',
-    link: '',
-  },
 };
 
 export default memo(TabSection);

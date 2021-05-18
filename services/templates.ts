@@ -507,11 +507,11 @@ export const getTemplatesFromTemplateIds = async (
 
 export const getPaginatedCreationsByCreator = async ({
   chainAccount,
-  onlyFetchTemplatesWithAssets,
+  showZeroMints,
   page,
 }: {
   chainAccount: string;
-  onlyFetchTemplatesWithAssets: boolean;
+  showZeroMints: boolean;
   page?: number;
 }): Promise<Template[]> => {
   try {
@@ -522,7 +522,7 @@ export const getPaginatedCreationsByCreator = async ({
       order: 'desc',
       page: pageParam,
       limit: PAGINATION_LIMIT,
-      has_assets: Boolean(onlyFetchTemplatesWithAssets),
+      has_assets: Boolean(showZeroMints),
     };
 
     const templatesQueryParams = toQueryString(templatesQueryObject);
@@ -542,10 +542,10 @@ export const getPaginatedCreationsByCreator = async ({
 
 export const getAllCreationsByCreator = async ({
   chainAccount,
-  onlyFetchTemplatesWithAssets,
+  showZeroMints,
 }: {
   chainAccount: string;
-  onlyFetchTemplatesWithAssets: boolean;
+  showZeroMints: boolean;
 }): Promise<Template[]> => {
   try {
     const limit = 100;
@@ -560,7 +560,7 @@ export const getAllCreationsByCreator = async ({
         order: 'desc',
         page,
         limit,
-        has_assets: Boolean(onlyFetchTemplatesWithAssets),
+        has_assets: Boolean(showZeroMints),
       };
 
       const templatesQueryParams = toQueryString(templatesQueryObject);

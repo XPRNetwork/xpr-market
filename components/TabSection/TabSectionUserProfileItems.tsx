@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import TabSection, {
   SectionContainerProps,
   SectionContentByFilter,
@@ -19,10 +19,10 @@ import {
   CARD_RENDER_TYPES,
 } from '../../utils/constants';
 
-export const TabSectionUserProfileItems = ({
+export const TabSectionUserProfileItems: FC<SectionContainerProps> = ({
   chainAccount,
   ...tabsProps
-}: SectionContainerProps): JSX.Element => {
+}) => {
   const { currentUser } = useAuthContext();
   const [allItems, setAllItems] = useState<SectionContentByFilter>(
     defaultSectionContentByFilter
@@ -137,6 +137,7 @@ export const TabSectionUserProfileItems = ({
           nextPageNumber={nextPageNumber}
           tabsProps={tabsProps}
           filterDropdownProps={{
+            filters: [FILTER_TYPES.NAME, FILTER_TYPES.RECENTLY_CREATED],
             activeFilter: itemsFilter,
             handleFilterClick: handleItemsFilterClick,
           }}
