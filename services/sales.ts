@@ -268,8 +268,8 @@ export const getLowestPriceAsset = async (
     const queryString = toQueryString(queryObject);
 
     const saleRes = await getFromApi<Sale[]>(
-      `${process.env.NEXT_PUBLIC_NFT_ENDPOINT}/atomicmarket/v1/sales?${queryString}`
-    );
+      `https://proton.api.atomicassets.io/atomicmarket/v1/sales?${queryString}`
+    ); // FOR RICKY TESTING, must revert to env when deploying
 
     if (!saleRes.success) {
       throw new Error((saleRes.message as unknown) as string);

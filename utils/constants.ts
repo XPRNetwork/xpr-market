@@ -51,6 +51,9 @@ export const TAB_TYPES = {
   GLOBAL: 'GLOBAL',
   ITEMS: 'ITEMS',
   CREATIONS: 'CREATIONS',
+  NFTS: 'NFTS',
+  CREATORS: 'CREATORS',
+  COLLECTIONS: 'COLLECTIONS',
 };
 
 export const FILTER_TYPES = {
@@ -86,6 +89,7 @@ export const CARD_RENDER_TYPES = {
   TEMPLATE: 'TEMPLATE',
   COLLECTION: 'COLLECTION',
   CREATOR: 'CREATOR',
+  SEARCH_TEMPLATE: 'SEARCH_TEMPLATE',
 };
 export interface RouterQuery {
   [query: string]: string;
@@ -101,6 +105,8 @@ export interface QueryParams {
   limit?: string | number;
   sort?: string;
   order?: string;
-  page?: number;
+  page?: number | string;
   symbol?: string;
+  q?: string;
+  pageSize?: string;
 }

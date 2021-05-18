@@ -38,3 +38,11 @@ export type SearchTemplate = {
   stage?: string;
   skybox?: string;
 };
+
+export type SearchResultsByType<T> = {
+  contents?: T[];
+  numberOfElements?: number;
+  totalPages?: number;
+  pageSize?: number;
+  page?: number;
+};

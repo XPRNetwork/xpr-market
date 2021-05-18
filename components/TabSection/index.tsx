@@ -6,23 +6,25 @@ import Grid from '../Grid';
 import EmptyUserContent from '../EmptyUserContent';
 import { TabsProps } from '../Tabs';
 import { Template } from '../../services/templates';
-import { PAGINATION_LIMIT, CARD_RENDER_TYPES } from '../../utils/constants';
+import { PAGINATION_LIMIT } from '../../utils/constants';
+import { SearchTemplate } from '../../services/search';
 
 export interface SectionContainerProps extends TabsProps {
-  chainAccount: string;
+  chainAccount?: string;
 }
 
 type Props = {
   showNextPage: () => Promise<void>;
   isLoadingPrices: boolean;
   isFetching: boolean;
-  rendered: Template[];
+  rendered: Template[] | SearchTemplate[];
   nextPageNumber: number;
   emptyContent: {
     subtitle: string;
     buttonTitle: string;
     link: string;
   };
+  type: string;
 };
 
 const TabSection = ({
@@ -31,6 +33,7 @@ const TabSection = ({
   isFetching,
   rendered,
   nextPageNumber,
+  type,
   emptyContent,
 }: Props): JSX.Element => {
   const getSectionContent = () => {
@@ -46,11 +49,7 @@ const TabSection = ({
     }
 
     return (
-      <Grid
-        type={CARD_RENDER_TYPES.TEMPLATE}
-        isLoadingPrices={isLoadingPrices}
-        items={rendered}
-      />
+      <Grid type={type} isLoadingPrices={isLoadingPrices} items={rendered} />
     );
   };
 

@@ -137,6 +137,8 @@ export const ShimmerBlock = styled(PlaceholderPrice)`
   animation: ${placeHolderShimmer} 1s linear infinite;
   background: linear-gradient(to right, #eeeeee 8%, #e7e7e7 18%, #eeeeee 33%);
   background-size: 1000px 18px;
+  width: 200px;
+  height: 14px;
 `;
 
 export const PlaceholderAsset = styled.div`

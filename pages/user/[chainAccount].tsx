@@ -40,7 +40,7 @@ const getUser = async (chainAccount: string): Promise<ProfileUser> => {
   }
 };
 
-const Collection = (): JSX.Element => {
+const User = (): JSX.Element => {
   const { currentUser, isLoadingUser } = useAuthContext();
   const router = useRouter();
   const {
@@ -131,4 +131,4 @@ const Collection = (): JSX.Element => {
   );
 };
 
-export default Collection;
+export default User;

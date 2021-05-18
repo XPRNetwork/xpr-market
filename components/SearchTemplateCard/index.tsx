@@ -6,11 +6,10 @@ import {
   Title,
   Text,
   GreyText,
-  Tag,
   CollectionNameButton,
   PlaceholderPrice,
   ShimmerBlock,
-} from './TemplateCard.styled';
+} from '../TemplateCard/TemplateCard.styled';
 import CollectionIcon from '../CollectionIcon';
 import { fileReader } from '../../utils';
 import TemplateImage from '../TemplateImage';
@@ -20,31 +19,27 @@ import {
   IPFS_RESOLVER_IMAGE,
   RESIZER_IMAGE_SM,
 } from '../../utils/constants';
-import { useCreateAssetContext, useAuthContext } from '../Provider';
-import { Template } from '../../services/templates';
+import {
+  useCreateAssetContext,
+  useAuthContext,
+} from '../../components/Provider';
+import { SearchTemplate } from '../../services/search';
+import { getTemplateDetails, Template } from '../../services/templates';
 
 type Props = {
-  template: Template;
-  isUsersTemplates?: boolean;
-  hasShimmer?: boolean;
+  template: SearchTemplate;
 };
 
-const TemplateCard = ({
-  template,
-  isUsersTemplates,
-  hasShimmer,
-}: Props): JSX.Element => {
+const SearchTemplateCard = ({ template }: Props): JSX.Element => {
   const {
-    template_id,
+    id,
     name,
-    collection: { collection_name, img, name: collectionDisplayName },
-    immutable_data: { image, video },
-    max_supply,
-    lowestPrice,
-    totalAssets,
-    assetsForSale,
+    collection,
+    created,
+    img,
+    video,
     issued_supply,
-    created_at_time,
+    max_supply,
   } = template;
 
   const { cachedNewlyCreatedAssets } = useCreateAssetContext();
@@ -52,45 +47,53 @@ const TemplateCard = ({
   const [templateVideoSrc, setTemplateVideoSrc] = useState<string>('');
   const [templateImgSrc, setTemplateImgSrc] = useState<string>('');
   const [fallbackImgSrc, setFallbackImgSrc] = useState<string>('');
+  const [templateDetail, setTemplateDetail] = useState<Template>({});
+  const [
+    isLoadingTemplateDetails,
+    setIsLoadingTemplateDetails,
+  ] = useState<boolean>(true);
 
   useEffect(() => {
-    if (Date.now() - 600000 < Number(created_at_time) && isMyTemplate) {
+    if (Date.now() - 600000 < Number(created) && isMyTemplate) {
       // created within the last 10 minutes to deal with propagation lag
       if (cachedNewlyCreatedAssets[video]) {
         fileReader((result) => {
           setTemplateVideoSrc(result);
         }, cachedNewlyCreatedAssets[video]);
       }
-      if (cachedNewlyCreatedAssets[image]) {
+      if (cachedNewlyCreatedAssets[img]) {
         fileReader((result) => {
           setTemplateImgSrc(result);
-        }, cachedNewlyCreatedAssets[image]);
+        }, cachedNewlyCreatedAssets[img]);
       }
     } else {
       const videoSrc = `${IPFS_RESOLVER_VIDEO}${video}`;
-      const imageSrc = !image
-        ? image
-        : `${RESIZER_IMAGE_SM}${IPFS_RESOLVER_IMAGE}${image}`;
-      const fallbackImageSrc = image ? `${IPFS_RESOLVER_IMAGE}${image}` : '';
+      const imageSrc = !img
+        ? img
+        : `${RESIZER_IMAGE_SM}${IPFS_RESOLVER_IMAGE}${img}`;
+      const fallbackImageSrc = img ? `${IPFS_RESOLVER_IMAGE}${img}` : '';
 
       setTemplateVideoSrc(videoSrc);
       setTemplateImgSrc(imageSrc);
       setFallbackImgSrc(fallbackImageSrc);
     }
-  }, [video, image]);
+  }, [video, img]);
+
+  useEffect(() => {
+    (async () => {
+      const templateDetail = await getTemplateDetails(collection, id);
+      setTemplateDetail(templateDetail);
+      setIsLoadingTemplateDetails(false);
+    })();
+  }, []);
 
   const router = useRouter();
   const isMyTemplate =
     currentUser && router.query.chainAccount === currentUser.actor;
-  const redirectPath = isMyTemplate
-    ? `/details/${currentUser.actor}/${collection_name}/${template_id}`
-    : `/${collection_name}/${template_id}`;
-  const ownerHasMultiple =
-    totalAssets && !isNaN(parseInt(totalAssets)) && parseInt(totalAssets) > 1;
-  const hasMultiple =
-    !totalAssets && !isNaN(parseInt(issued_supply))
-      ? parseInt(issued_supply) > 1
-      : false;
+  const redirectPath = `/${collection}/${id}`;
+  const hasMultiple = !isNaN(parseInt(issued_supply))
+    ? parseInt(issued_supply) > 1
+    : false;
 
   const openDetailPage = () => {
     router.push(redirectPath);
@@ -98,7 +101,7 @@ const TemplateCard = ({
 
   const openCollectionPage = (e: MouseEvent) => {
     e.stopPropagation();
-    router.push(`/${collection_name}`);
+    router.push(`/${collection}`);
   };
 
   const handleEnterKey = (e: KeyboardEvent) => {
@@ -107,17 +110,10 @@ const TemplateCard = ({
     }
   };
 
-  const priceTag =
-    isUsersTemplates && assetsForSale && totalAssets ? (
-      <Tag>
-        {assetsForSale}/{totalAssets} FOR SALE
-      </Tag>
-    ) : null;
-
-  const priceSection = hasShimmer ? (
+  const priceSection = isLoadingTemplateDetails ? (
     <ShimmerBlock aria-hidden />
-  ) : lowestPrice ? (
-    <Text>{lowestPrice}</Text>
+  ) : templateDetail.lowestPrice ? (
+    <Text>{templateDetail.lowestPrice}</Text>
   ) : (
     <PlaceholderPrice aria-hidden />
   );
@@ -125,31 +121,34 @@ const TemplateCard = ({
   return (
     <Card
       tabIndex={0}
-      hasMultiple={ownerHasMultiple || hasMultiple}
+      hasMultiple={hasMultiple}
       onClick={openDetailPage}
       onKeyDown={handleEnterKey}>
       <Row>
         <CollectionNameButton onClick={openCollectionPage}>
           <CollectionIcon
-            name={collection_name}
-            image={img}
+            name={collection}
+            image={
+              templateDetail &&
+              templateDetail.collection &&
+              templateDetail.collection.img
+            }
             margin="24px 16px 24px 0"
           />
-          <Text>{collectionDisplayName || collection_name}</Text>
+          {isLoadingTemplateDetails ? (
+            <ShimmerBlock aria-hidden />
+          ) : (
+            <Text>{templateDetail.collection.name || collection}</Text>
+          )}
         </CollectionNameButton>
       </Row>
       {video ? (
-        <TemplateVideo
-          src={templateVideoSrc}
-          priceTag={priceTag}
-          autoPlay={false}
-        />
+        <TemplateVideo src={templateVideoSrc} autoPlay={false} />
       ) : (
         <TemplateImage
           templateImgSrc={templateImgSrc}
           fallbackImgSrc={fallbackImgSrc}
           templateName={name}
-          priceTag={priceTag}
         />
       )}
       <Title>{name}</Title>
@@ -161,12 +160,4 @@ const TemplateCard = ({
   );
 };
 
-TemplateCard.defaultProps = {
-  collectionName: 'Collection',
-  templateName: 'Name',
-  maxSupply: 0,
-  hasShimmer: false,
-  isCreatePreview: false,
-};
-
-export default TemplateCard;
+export default SearchTemplateCard;

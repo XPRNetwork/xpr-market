@@ -14,6 +14,7 @@ import {
   PAGINATION_LIMIT,
   FILTER_TYPES,
   TAB_TYPES,
+  CARD_RENDER_TYPES,
 } from '../../utils/constants';
 
 interface AllItems {
@@ -135,6 +136,7 @@ export const TabSectionUserProfileItems = ({
         <LoadingPage margin="10% 0" />
       ) : (
         <TabSection
+          type={CARD_RENDER_TYPES.TEMPLATE}
           showNextPage={showNextItemsPage}
           isLoadingPrices={isLoadingPrices}
           isFetching={isFetching}
