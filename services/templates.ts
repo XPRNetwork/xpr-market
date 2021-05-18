@@ -96,8 +96,8 @@ export const getTemplateDetails = async (
 
     const templatesQueryParams = toQueryString(templatesQueryObject);
     const templatesResponse = await getFromApi<Template[]>(
-      `https://proton.api.atomicassets.io/atomicassets/v1/templates?${templatesQueryParams}`
-    ); // FOR RICKY TESTING, must revert to env when deploying
+      `${process.env.NEXT_PUBLIC_NFT_ENDPOINT}/atomicassets/v1/templates?${templatesQueryParams}`
+    );
 
     if (!templatesResponse.success || !templatesResponse.data.length) {
       throw new Error('NFT not found');
