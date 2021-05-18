@@ -185,7 +185,7 @@ export const CreateSaleModal = (): JSX.Element => {
 
 export const CreateMultipleSalesModal = (): JSX.Element => {
   const { currentUser } = useAuthContext();
-  const { closeModal, modalProps } = useModalContext();
+  const { closeModal, modalProps, setModalProps } = useModalContext();
   const {
     assetIds,
     fetchPageData,
@@ -197,6 +197,7 @@ export const CreateMultipleSalesModal = (): JSX.Element => {
     raw: null,
   });
   const numSales = assetIds.length;
+  const maxNumSales = 100;
 
   const createMultipleSales = async () => {
     try {
@@ -209,28 +210,50 @@ export const CreateMultipleSalesModal = (): JSX.Element => {
       });
       const res = await ProtonSDK.createMultipleSales({
         seller: currentUser ? currentUser.actor : '',
-        assetIds,
+        assetIds: assetIds.slice(0, maxNumSales),
         price: `${formattedAmount} ${TOKEN_SYMBOL}`,
         currency: `${TOKEN_PRECISION},${TOKEN_SYMBOL}`,
         listing_fee: finalFee.raw,
       });
 
-      if (res.success) {
-        closeModal();
-        setIsModalWithFeeOpen(false);
-        fetchPageData();
+      if (!res.success) {
+        throw new Error('Unable to list items for sale. Please try again.');
       }
+
+      if (numSales > maxNumSales) {
+        setModalProps((prevModalProps) => ({
+          ...prevModalProps,
+          assetIds: assetIds.slice(maxNumSales),
+        }));
+        return;
+      }
+
+      closeModal();
+      setIsModalWithFeeOpen(false);
+      fetchPageData();
     } catch (err) {
       console.warn(err.message);
     }
   };
 
+  const description = `You have ${
+    numSales === 1 ? '1 item' : `${numSales} items`
+  } you can list for sale. ${
+    numSales > maxNumSales
+      ? `You can list ${maxNumSales} items for sale at a time due to network restrictions. `
+      : ''
+  }Enter the amount you want to sell ${
+    numSales === 1 ? 'your NFT' : 'each of your NFTs'
+  } for.`;
+
   return (
     <SaleModal
       numSales={numSales}
       title="Listing Price"
-      description={`You are putting up ${numSales} items for sale. Enter the amount you want to sell each of your NFTs for.`}
-      buttonText="Mark all for sale"
+      description={description}
+      buttonText={`Mark ${
+        numSales > maxNumSales ? `${maxNumSales} NFTs` : 'all'
+      } for sale`}
       amount={amount}
       listingFee={listingFee}
       setAmount={setAmount}
