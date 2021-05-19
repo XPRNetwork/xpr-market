@@ -130,7 +130,10 @@ export const ReportModal = (): JSX.Element => {
           placeholder={`Please provide details on why you are concened about this ${type.toLowerCase()}.`}
         />
         <ErrorMessage>{error}</ErrorMessage>
-        <HalfButton disabled={!input} fullWidth={isMobile} onClick={submit}>
+        <HalfButton
+          disabled={!input || !actor}
+          fullWidth={isMobile}
+          onClick={submit}>
           {isLoading ? (
             <Spinner size="25px" radius="15" hasBackground />
           ) : hasReported ? (
