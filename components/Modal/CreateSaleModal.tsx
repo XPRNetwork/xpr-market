@@ -1,4 +1,5 @@
 import {
+  FC,
   useEffect,
   useState,
   MouseEvent,
@@ -37,24 +38,27 @@ type Props = {
   description: string;
   buttonText: string;
   amount: string;
-  listingFee: ListingFee;
   numSales: number;
+  listingFee: ListingFee;
   onButtonClick: () => Promise<void>;
   setAmount: Dispatch<SetStateAction<string>>;
   setListingFee: Dispatch<SetStateAction<ListingFee>>;
 };
 
-const SaleModal = ({
+const SaleModal: FC<Props> = ({
   title,
   description,
   buttonText,
   amount,
-  listingFee,
   numSales,
+  listingFee = {
+    display: '0.00',
+    raw: null,
+  },
   setAmount,
   onButtonClick,
   setListingFee,
-}: Props): JSX.Element => {
+}) => {
   const { closeModal } = useModalContext();
   const { currentUser } = useAuthContext();
   const { isMobile } = useWindowSize();
@@ -132,7 +136,7 @@ const SaleModal = ({
   );
 };
 
-export const CreateSaleModal = (): JSX.Element => {
+export const CreateSaleModal: FC = () => {
   const { currentUser } = useAuthContext();
   const { closeModal, modalProps } = useModalContext();
   const { assetId, fetchPageData } = modalProps as CreateSaleModalProps;
@@ -183,7 +187,7 @@ export const CreateSaleModal = (): JSX.Element => {
   );
 };
 
-export const CreateMultipleSalesModal = (): JSX.Element => {
+export const CreateMultipleSalesModal: FC = () => {
   const { currentUser } = useAuthContext();
   const { closeModal, modalProps, setModalProps } = useModalContext();
   const {
@@ -246,14 +250,16 @@ export const CreateMultipleSalesModal = (): JSX.Element => {
     numSales === 1 ? 'your NFT' : 'each of your NFTs'
   } for.`;
 
+  const buttonText = `Mark ${
+    numSales > maxNumSales ? `${maxNumSales} NFTs` : 'all'
+  } for sale`;
+
   return (
     <SaleModal
       numSales={numSales}
       title="Listing Price"
       description={description}
-      buttonText={`Mark ${
-        numSales > maxNumSales ? `${maxNumSales} NFTs` : 'all'
-      } for sale`}
+      buttonText={buttonText}
       amount={amount}
       listingFee={listingFee}
       setAmount={setAmount}
@@ -261,8 +267,4 @@ export const CreateMultipleSalesModal = (): JSX.Element => {
       onButtonClick={createMultipleSales}
     />
   );
-};
-
-SaleModal.defaultProps = {
-  listingFee: 0,
 };
