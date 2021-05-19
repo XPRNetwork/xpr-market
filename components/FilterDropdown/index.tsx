@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { FC, useState } from 'react';
 import {
   MenuContainer,
   MenuButton,
@@ -10,19 +10,18 @@ import {
 import { ReactComponent as DownArrow } from '../../public/down-arrow-sm.svg';
 import { ReactComponent as Checkmark } from '../../public/icon-light-check-24-px.svg';
 import { useScrollLock, useEscapeKeyClose } from '../../hooks';
-import { FILTER_TYPES } from '../../utils/constants';
 
-type Props = {
+export type FilterDropdownProps = {
   filters: string[];
   activeFilter: string;
   handleFilterClick: (filter: string) => void;
 };
 
-const FilterDropdown = ({
-  filters,
-  activeFilter,
-  handleFilterClick,
-}: Props): JSX.Element => {
+const FilterDropdown: FC<FilterDropdownProps> = ({
+  filters = [],
+  activeFilter = '',
+  handleFilterClick = () => {},
+}) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const togglePopupMenu = () => setIsOpen(!isOpen);
   const closePopupMenu = () => setIsOpen(false);
@@ -52,12 +51,6 @@ const FilterDropdown = ({
       <TransparentBackground isOpen={isOpen} onClick={closePopupMenu} />
     </MenuContainer>
   );
-};
-
-FilterDropdown.defaultProps = {
-  filters: [FILTER_TYPES.NAME, FILTER_TYPES.RECENTLY_CREATED],
-  activeFilter: FILTER_TYPES.NAME,
-  handleFilterClick: () => {},
 };
 
 export default FilterDropdown;

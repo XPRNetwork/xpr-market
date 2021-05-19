@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react';
-import TabSection, { SectionContainerProps } from '.';
-import Tabs from '../Tabs';
-import FilterDropdown from '../FilterDropdown';
+import { FC, useEffect, useState } from 'react';
+import TabSection, {
+  SectionContainerProps,
+  SectionContentByFilter,
+  defaultSectionContentByFilter,
+} from '.';
 import LoadingPage from '../LoadingPage';
 import { useAuthContext } from '../Provider';
-import { Row, Section } from './TabSection.styled';
+import { Section } from './TabSection.styled';
 import { getAllTemplatesForUserWithAssetCount } from '../../services/templates';
 import {
   Template,
@@ -17,21 +19,14 @@ import {
   CARD_RENDER_TYPES,
 } from '../../utils/constants';
 
-interface AllItems {
-  [filterType: string]: Template[];
-}
-
-const defaultAllItems = {
-  [FILTER_TYPES.NAME]: [],
-  [FILTER_TYPES.RECENTLY_CREATED]: [],
-};
-
-export const TabSectionUserProfileItems = ({
+export const TabSectionUserProfileItems: FC<SectionContainerProps> = ({
   chainAccount,
   ...tabsProps
-}: SectionContainerProps): JSX.Element => {
+}) => {
   const { currentUser } = useAuthContext();
-  const [allItems, setAllItems] = useState<AllItems>(defaultAllItems);
+  const [allItems, setAllItems] = useState<SectionContentByFilter>(
+    defaultSectionContentByFilter
+  );
   const [renderedItems, setRenderedItems] = useState<Template[]>([]);
   const [nextPageNumber, setNextPageNumber] = useState<number>(2);
   const [isLoadingPrices, setIsLoadingPrices] = useState<boolean>(true);
@@ -89,8 +84,13 @@ export const TabSectionUserProfileItems = ({
 
           setIsLoadingPrices(false);
           setAllItems(allItemsByFilterWithPrices);
-          setRenderedItems(
-            allItemsByFilterWithPrices[itemsFilter].slice(0, PAGINATION_LIMIT)
+
+          const initialRenderedItems = allItemsByFilterWithPrices[
+            itemsFilter
+          ].slice(0, PAGINATION_LIMIT);
+          setRenderedItems(initialRenderedItems);
+          setNextPageNumber(
+            initialRenderedItems.length < PAGINATION_LIMIT ? -1 : 2
           );
         } catch (e) {
           console.warn(e.message);
@@ -125,13 +125,6 @@ export const TabSectionUserProfileItems = ({
 
   return (
     <Section isHidden={tabsProps.activeTab !== TAB_TYPES.ITEMS}>
-      <Row>
-        <Tabs {...tabsProps} />
-        <FilterDropdown
-          activeFilter={itemsFilter}
-          handleFilterClick={handleItemsFilterClick}
-        />
-      </Row>
       {isLoadingInitialMount ? (
         <LoadingPage margin="10% 0" />
       ) : (
@@ -142,6 +135,12 @@ export const TabSectionUserProfileItems = ({
           isFetching={isFetching}
           rendered={renderedItems}
           nextPageNumber={nextPageNumber}
+          tabsProps={tabsProps}
+          filterDropdownProps={{
+            filters: [FILTER_TYPES.NAME, FILTER_TYPES.RECENTLY_CREATED],
+            activeFilter: itemsFilter,
+            handleFilterClick: handleItemsFilterClick,
+          }}
           emptyContent={{
             subtitle: isUsersPage
               ? 'Looks like you have not bought any NFT’s yet. Come back when you do!'
