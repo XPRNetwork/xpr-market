@@ -26,16 +26,16 @@ import { ReportBody, ReportResponse } from '../../services/report';
 
 export const ReportModal = (): JSX.Element => {
   const [hasReported, setHasReported] = useState<boolean>(false);
-  const { isMobile } = useWindowSize();
-  const { closeModal, modalProps } = useModalContext();
-  const { type } = modalProps as ReportProps;
-  const [input, setInput] = useState<string>('');
-  const router = useRouter();
-  const { query } = router;
-  const { currentUser, isLoadingUser } = useAuthContext();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
+  const [input, setInput] = useState<string>('');
+  const { closeModal, modalProps } = useModalContext();
+  const { isMobile } = useWindowSize();
+  const { currentUser, isLoadingUser } = useAuthContext();
+  const router = useRouter();
+  const { query } = router;
   const actor = currentUser ? currentUser.actor : '';
+  const { type } = modalProps as ReportProps;
 
   const handleBackgroundClick = (e: MouseEvent) => {
     if (e.target === e.currentTarget) {
@@ -43,25 +43,21 @@ export const ReportModal = (): JSX.Element => {
     }
   };
 
-  const getRefId = () => {
-    let refId;
-
+  const getRefId = (): string => {
     switch (type) {
       case REPORT_TYPE.CREATOR: {
-        refId = query.chainAccount;
-        break;
+        return query.chainAccount as string;
       }
       case REPORT_TYPE.COLLECTION: {
-        refId = query.collection;
-        break;
+        return query.collection as string;
       }
       case REPORT_TYPE.NFT: {
-        refId = query.templateId;
-        break;
+        return query.templateId as string;
+      }
+      default: {
+        return '';
       }
     }
-
-    return refId;
   };
 
   const submit = async () => {
@@ -71,10 +67,16 @@ export const ReportModal = (): JSX.Element => {
       const reportBody: ReportBody = {
         reportingAccount: actor,
         refType: REPORT_TYPE_TO_REFTYPE[type],
-        refId: getRefId() || '',
+        refId: getRefId(),
         reason: input.trim(),
         url: window.location.href,
       };
+
+      if (!reportBody.refId) {
+        setIsLoading(false);
+        setError('Error: An error has occurred');
+        throw new Error('Report body is missing refId');
+      }
 
       try {
         const res = await sendToApi<ReportResponse, ReportBody>(
