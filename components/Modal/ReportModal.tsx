@@ -21,6 +21,8 @@ import { useWindowSize } from '../../hooks';
 import { capitalize } from '../../utils';
 import { REPORT_TYPE_TO_REFTYPE, REPORT_TYPE } from '../../utils/constants';
 import Spinner from '../Spinner';
+import { sendToApi } from '../../utils/browser-fetch';
+import { ReportBody, ReportResponse } from '../../services/report';
 
 export const ReportModal = (): JSX.Element => {
   const [hasReported, setHasReported] = useState<boolean>(false);
@@ -66,7 +68,7 @@ export const ReportModal = (): JSX.Element => {
     if (!isLoadingUser && actor) {
       setIsLoading(true);
       setError('');
-      const reportBody = {
+      const reportBody: ReportBody = {
         reportingAccount: actor,
         refType: REPORT_TYPE_TO_REFTYPE[type],
         refId: getRefId() || '',
@@ -75,22 +77,20 @@ export const ReportModal = (): JSX.Element => {
       };
 
       try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_ENDPOINT}/market/reports`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${process.env.NEXT_PUBLIC_JWT_SECRET}`,
-            },
-            body: JSON.stringify(reportBody),
-          }
+        const res = await sendToApi<ReportResponse, ReportBody>(
+          'POST',
+          '/api/report',
+          reportBody
         );
-        console.log('res: ', res);
+
+        if (!res.success) {
+          throw new Error((res.message as unknown) as string);
+        }
+
         setHasReported(true);
         setTimeout(() => closeModal(), 1500);
       } catch (e) {
-        setError('An error occurred while reporting. Please try again.');
+        setError(`Error: ${e.message || 'An error occured during the report'}`);
       }
       setIsLoading(false);
     }
