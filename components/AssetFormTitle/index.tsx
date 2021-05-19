@@ -35,8 +35,8 @@ const AssetFormTitle = ({
 }: Props): JSX.Element => {
   const router = useRouter();
   const { currentUser } = useAuthContext();
-  const isMyTemplate =
-    currentUser && router.query.chainAccount === currentUser.actor;
+  const actor = currentUser ? currentUser.actor : '';
+  const isMyTemplate = currentUser && router.query.chainAccount === actor;
   const redirectToAuthor = () => router.push(`/user/${collectionAuthor}`);
   const redirectToCollection = () => router.push(`/${collectionName}`);
 
@@ -52,15 +52,17 @@ const AssetFormTitle = ({
       </CollectionNameButton>
       <NameContainer>
         <Name>{templateName}</Name>
-        <AssetFormPopupMenu
-          setCurrentAssetAsModalProps={setCurrentAssetAsModalProps}
-          assetIds={assetIds}
-          saleIds={saleIds}
-          isMyTemplate={isMyTemplate}
-          isTemplateCreator={
-            currentUser && collectionAuthor === currentUser.actor
-          }
-        />
+        {actor && (
+          <AssetFormPopupMenu
+            setCurrentAssetAsModalProps={setCurrentAssetAsModalProps}
+            assetIds={assetIds}
+            saleIds={saleIds}
+            isMyTemplate={isMyTemplate}
+            isTemplateCreator={
+              currentUser && collectionAuthor === currentUser.actor
+            }
+          />
+        )}
       </NameContainer>
       <AuthorText>
         Created by{' '}
