@@ -4,7 +4,6 @@ import PageLayout from '../components/PageLayout';
 import { Title } from '../styles/Title.styled';
 import { TAB_TYPES } from '../utils/constants';
 import TabSectionSearch from '../components/TabSection/TabSectionSearch';
-import { CARD_RENDER_TYPES } from '../utils/constants';
 
 const Search = (): JSX.Element => {
   const router = useRouter();

@@ -35,7 +35,7 @@ type Props = {
   filterDropdownProps?: FilterDropdownProps;
   isLoadingPrices?: boolean;
   isFetching: boolean;
-  rendered: Template[] | SearchTemplate[] | SearchAuthor[] | SearchCollection[];
+  rendered: Template[] | (SearchTemplate | SearchAuthor | SearchCollection)[];
   nextPageNumber: number;
   emptyContent: {
     subtitle: string;

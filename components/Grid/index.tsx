@@ -15,7 +15,7 @@ import SearchTemplateCard from '../SearchTemplateCard';
 
 type Props = {
   isLoadingPrices: boolean;
-  items: Template[] | SearchTemplate[] | SearchCollection[] | SearchAuthor[];
+  items: Template[] | (SearchTemplate | SearchCollection | SearchAuthor)[];
   type: string;
 };
 
