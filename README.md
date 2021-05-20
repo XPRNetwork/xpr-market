@@ -43,6 +43,8 @@ For mainnet:
 NEXT_PUBLIC_CHAIN_ENDPOINTS='https://proton.eoscafeblock.com, https://proton.greymass.com'
 NEXT_PUBLIC_BLOCK_EXPLORER='https://proton.bloks.io/block/'
 NEXT_PUBLIC_NFT_ENDPOINT='https://proton.api.atomicassets.io'
+BACKEND_ENDPOINT = string;
+PROTON_MARKET_JWT_SECRET = string;
 
 ```
 
@@ -51,6 +53,8 @@ For testnet:
 NEXT_PUBLIC_CHAIN_ENDPOINTS='https://testnet.protonchain.com'
 NEXT_PUBLIC_BLOCK_EXPLORER='https://proton-test.bloks.io/block/'
 NEXT_PUBLIC_NFT_ENDPOINT='https://test.proton.api.atomicassets.io'
+BACKEND_ENDPOINT = string;
+PROTON_MARKET_JWT_SECRET = string;
 
 ```
 
