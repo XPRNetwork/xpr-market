@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import PageLayout from '../components/PageLayout';
 import { Title } from '../styles/Title.styled';
 import { TAB_TYPES } from '../utils/constants';
-import TabSectionSearchTemplates from '../components/TabSection/TabSectionSearchTemplates';
+import TabSectionSearch from '../components/TabSection/TabSectionSearch';
 
 const Search = (): JSX.Element => {
   const router = useRouter();
@@ -27,7 +27,21 @@ const Search = (): JSX.Element => {
   return (
     <PageLayout title={`${searchTerm} - Search`}>
       <Title>Search results for “{searchTerm}”</Title>
-      <TabSectionSearchTemplates {...tabsProps} query={searchTerm} />
+      <TabSectionSearch
+        searchContentType="templates"
+        {...tabsProps}
+        query={searchTerm}
+      />
+      <TabSectionSearch
+        searchContentType="authors"
+        {...tabsProps}
+        query={searchTerm}
+      />
+      <TabSectionSearch
+        searchContentType="collections"
+        {...tabsProps}
+        query={searchTerm}
+      />
     </PageLayout>
   );
 };
