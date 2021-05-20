@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, FC } from 'react';
+import Tooltip from '../Tooltip';
 import {
   MenuContainer,
   PopupMenuButton,
@@ -23,15 +24,17 @@ type Props = {
   saleIds?: string[];
   isTemplateCreator?: boolean;
   isMyTemplate: boolean;
+  isRefetchingAssets?: boolean;
 };
 
-const AssetFormPopupMenu = ({
+const AssetFormPopupMenu: FC<Props> = ({
   setCurrentAssetAsModalProps,
   assetIds,
   saleIds,
   isTemplateCreator,
   isMyTemplate,
-}: Props): JSX.Element => {
+  isRefetchingAssets,
+}) => {
   const { currentUser } = useAuthContext();
   const actor = currentUser ? currentUser.actor : '';
   const { openModal, modalProps, setModalProps } = useModalContext();
@@ -65,17 +68,26 @@ const AssetFormPopupMenu = ({
     {
       isHidden: !isMyTemplate || !assetIds || assetIds.length === 0,
       name: 'Mark all for sale',
-      onClick: () => {
-        setIsOpen(false);
-        setIsModalWithFeeOpen(true);
-        openModal(MODAL_TYPES.CREATE_MULTIPLE_SALES);
-        setModalProps((previousModalProps) => ({
-          ...previousModalProps,
-          accountRam,
-          conversionRate,
-          setIsModalWithFeeOpen,
-        }));
-      },
+      tooltip: isRefetchingAssets
+        ? {
+            text:
+              'Currently unable to mark all for sale while processing newly minted assets.',
+            numberOfLines: 3.25,
+          }
+        : undefined,
+      onClick: isRefetchingAssets
+        ? null
+        : () => {
+            setIsOpen(false);
+            setIsModalWithFeeOpen(true);
+            openModal(MODAL_TYPES.CREATE_MULTIPLE_SALES);
+            setModalProps((previousModalProps) => ({
+              ...previousModalProps,
+              accountRam,
+              conversionRate,
+              setIsModalWithFeeOpen,
+            }));
+          },
     },
     {
       isHidden: !isMyTemplate || isMintAssetModalHidden(),
@@ -135,11 +147,22 @@ const AssetFormPopupMenu = ({
         <Ellipsis />
       </PopupMenuButton>
       <Menu isOpen={isOpen}>
-        {popupMenuItems.map(({ isHidden, name, onClick }) => {
+        {popupMenuItems.map(({ isHidden, name, tooltip, onClick }) => {
           if (!isHidden) {
+            const menuItemContent = tooltip ? (
+              <Tooltip
+                text={tooltip.text}
+                numberOfLines={tooltip.numberOfLines}
+                isLeftAlignedToParent>
+                {name}
+              </Tooltip>
+            ) : (
+              name
+            );
+
             return (
               <MenuItem key={name} tabIndex={0} onClick={onClick}>
-                {name}
+                {menuItemContent}
               </MenuItem>
             );
           }
