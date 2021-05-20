@@ -41,7 +41,7 @@ export const useBlacklistContext = (): BlacklistContext => {
   return context;
 };
 
-export const BlacklistProvider: FC<Props> = ({ children }: Props) => {
+export const BlacklistProvider: FC<Props> = ({ children }) => {
   const [isLoadingList, setIsLoadingList] = useState<boolean>(true);
   const [templates, setTemplates] = useState<{ [template: string]: boolean }>(
     null
