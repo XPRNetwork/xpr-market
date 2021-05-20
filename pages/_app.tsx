@@ -12,6 +12,7 @@ import {
   AuthProvider,
   ModalProvider,
   CreateAssetProvider,
+  BlacklistProvider,
 } from '../components/Provider';
 import '../styles/customprogress.css';
 import * as gtag from '../utils/gtag';
@@ -65,11 +66,13 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
     <SimpleReactLightbox>
       <ModalProvider>
         <AuthProvider>
-          <CreateAssetProvider>
-            <NavBar />
-            <Component {...pageProps} />
-            <Footer />
-          </CreateAssetProvider>
+          <BlacklistProvider>
+            <CreateAssetProvider>
+              <NavBar />
+              <Component {...pageProps} />
+              <Footer />
+            </CreateAssetProvider>
+          </BlacklistProvider>
         </AuthProvider>
       </ModalProvider>
     </SimpleReactLightbox>
