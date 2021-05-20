@@ -15,12 +15,14 @@ import {
 } from '../Provider';
 import { useScrollLock, useEscapeKeyClose } from '../../hooks';
 import proton from '../../services/proton-rpc';
+import { REPORT_TYPE } from '../../utils/constants';
 
 type Props = {
   setCurrentAssetAsModalProps?: () => void;
   assetIds?: string[];
   saleIds?: string[];
   isTemplateCreator?: boolean;
+  isMyTemplate: boolean;
 };
 
 const AssetFormPopupMenu = ({
@@ -28,10 +30,10 @@ const AssetFormPopupMenu = ({
   assetIds,
   saleIds,
   isTemplateCreator,
+  isMyTemplate,
 }: Props): JSX.Element => {
-  const {
-    currentUser: { actor },
-  } = useAuthContext();
+  const { currentUser } = useAuthContext();
+  const actor = currentUser ? currentUser.actor : '';
   const { openModal, modalProps, setModalProps } = useModalContext();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isModalWithFeeOpen, setIsModalWithFeeOpen] = useState<boolean>(false);
@@ -61,7 +63,7 @@ const AssetFormPopupMenu = ({
 
   const popupMenuItems = [
     {
-      isHidden: !assetIds || assetIds.length === 0,
+      isHidden: !isMyTemplate || !assetIds || assetIds.length === 0,
       name: 'Mark all for sale',
       onClick: () => {
         setIsOpen(false);
@@ -76,7 +78,7 @@ const AssetFormPopupMenu = ({
       },
     },
     {
-      isHidden: isMintAssetModalHidden(),
+      isHidden: !isMyTemplate || isMintAssetModalHidden(),
       name: 'Mint more assets',
       onClick: () => {
         setIsOpen(false);
@@ -91,7 +93,7 @@ const AssetFormPopupMenu = ({
       },
     },
     {
-      isHidden: assetIds.length === 0,
+      isHidden: !isMyTemplate || assetIds.length === 0,
       name: 'Transfer NFT',
       onClick: () => {
         setIsOpen(false);
@@ -100,7 +102,7 @@ const AssetFormPopupMenu = ({
       },
     },
     {
-      isHidden: assetIds.length === 0,
+      isHidden: !isMyTemplate || assetIds.length === 0,
       name: 'Burn NFT',
       onClick: () => {
         setIsOpen(false);
@@ -109,11 +111,20 @@ const AssetFormPopupMenu = ({
       },
     },
     {
-      isHidden: !saleIds || saleIds.length === 0,
+      isHidden: !isMyTemplate || !saleIds || saleIds.length === 0,
       name: 'Cancel all sales',
       onClick: () => {
         setIsOpen(false);
         openModal(MODAL_TYPES.CANCEL_MULTIPLE_SALES);
+      },
+    },
+    {
+      isHidden: isTemplateCreator,
+      name: 'Report',
+      onClick: () => {
+        setModalProps({ type: REPORT_TYPE.NFT });
+        setIsOpen(false);
+        openModal(MODAL_TYPES.REPORT);
       },
     },
   ];

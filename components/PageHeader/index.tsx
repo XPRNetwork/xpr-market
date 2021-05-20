@@ -1,5 +1,6 @@
 import { useState, useRef, memo } from 'react';
 import { Image } from '../../styles/index.styled';
+import { useAuthContext, useModalContext, MODAL_TYPES } from '../Provider';
 import {
   PageHeaderContainer,
   ImageContainer,
@@ -15,8 +16,9 @@ import { ReactComponent as VerifiedIcon } from '../../public/icon-light-verified
 import ShareOnSocial from '../ShareOnSocial';
 import { useClickAway } from '../../hooks';
 import { IPFS_RESOLVER_IMAGE, RESIZER_IMAGE } from '../../utils/constants';
-import { useModalContext, MODAL_TYPES } from '../Provider';
 import ReadMoreDescription from '../ReadMoreDescription';
+import { ReactComponent as ReportIcon } from '../../public/report.svg';
+import { REPORT_TYPE } from '../../utils/constants';
 
 type PageHeaderProps = {
   image?: string;
@@ -24,6 +26,7 @@ type PageHeaderProps = {
   name?: string;
   subName?: string;
   type: 'user' | 'collection';
+  author?: string;
   hasEditFunctionality?: boolean;
   isLightKYCVerified?: boolean;
 };
@@ -34,13 +37,16 @@ const PageHeader = ({
   name,
   subName,
   type,
+  author,
   hasEditFunctionality,
   isLightKYCVerified,
 }: PageHeaderProps): JSX.Element => {
-  const { openModal } = useModalContext();
+  const { currentUser } = useAuthContext();
+  const { openModal, setModalProps } = useModalContext();
   const [shareActive, setShareActive] = useState<boolean>(false);
   const shareRef = useRef(null);
   useClickAway(shareRef, () => setShareActive(false));
+  const actor = currentUser ? currentUser.actor : '';
 
   const avatarImg = image
     ? `data:image/jpeg;base64,${image}`
@@ -50,6 +56,8 @@ const PageHeader = ({
     : '/proton.svg';
 
   const displayImg = type === 'user' ? avatarImg : collectionImg;
+
+  const isReportable = type === 'user' ? actor !== subName : actor !== author;
 
   const onImageError = (e) => {
     e.currentTarget.onerror = null;
@@ -68,9 +76,24 @@ const PageHeader = ({
     </RoundButton>
   );
 
+  const reportButton = (
+    <RoundButton
+      size="40px"
+      margin="0 0 0 8px"
+      onClick={() => {
+        setModalProps({
+          type: type === 'user' ? REPORT_TYPE.CREATOR : REPORT_TYPE.COLLECTION,
+        });
+        openModal(MODAL_TYPES.REPORT);
+      }}>
+      <ReportIcon />
+    </RoundButton>
+  );
+
   const buttons = hasEditFunctionality ? (
     <ButtonContainer>
       {shareButton}
+      {isReportable ? reportButton : null}
       <RoundButton
         onClick={() => openModal(MODAL_TYPES.UPDATE_COLLECTION)}
         padding="8px 16px"
@@ -79,7 +102,10 @@ const PageHeader = ({
       </RoundButton>
     </ButtonContainer>
   ) : (
-    shareButton
+    <ButtonContainer>
+      {shareButton}
+      {isReportable ? reportButton : null}
+    </ButtonContainer>
   );
 
   return (

@@ -173,6 +173,7 @@ const CollectionPage = (): JSX.Element => {
     const {
       name,
       img,
+      author,
       data: { description },
     } = collectionData;
 
@@ -184,6 +185,7 @@ const CollectionPage = (): JSX.Element => {
           description={description}
           type="collection"
           hasEditFunctionality={isEditButtonVisible}
+          author={author}
         />
         <Grid items={renderedTemplates} type={CARD_RENDER_TYPES.TEMPLATE} />
         <PaginationButton

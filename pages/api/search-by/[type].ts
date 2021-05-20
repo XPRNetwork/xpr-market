@@ -27,7 +27,7 @@ const handler = async (
 
         const queryString = toQueryString(queryParams);
         const rawResult = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_ENDPOINT}/chain/market/search/${type}?${queryString}`
+          `${process.env.BACKEND_ENDPOINT}/chain/market/search/${type}?${queryString}`
         );
         const result = await rawResult.json();
         res.status(200).send({ success: true, message: result });

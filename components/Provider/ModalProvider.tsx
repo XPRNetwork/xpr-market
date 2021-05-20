@@ -22,6 +22,7 @@ export const MODAL_TYPES = {
   UPDATE_COLLECTION: 'UPDATE_COLLECTION',
   MINT_ASSET: 'MINT_ASSET',
   BURN_ASSET: 'BURN_ASSET',
+  REPORT: 'REPORT',
 };
 
 type Props = {
@@ -66,6 +67,9 @@ export interface CreateCollectionProps {
   setIsUncreatedCollectionSelected: Dispatch<SetStateAction<boolean>>;
 }
 
+export interface ReportProps {
+  type: string;
+}
 export interface UpdateCollectionProps extends GeneralModalProps {
   collectionName: string;
   defaultDescription: string;
@@ -93,7 +97,8 @@ type ModalProps =
   | TransferOrBurnNFTModalProps
   | CreateCollectionProps
   | UpdateCollectionProps
-  | MintAssetModalProps;
+  | MintAssetModalProps
+  | ReportProps;
 
 type ModalContextValue = {
   modalType: string;

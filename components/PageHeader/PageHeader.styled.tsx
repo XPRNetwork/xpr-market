@@ -83,7 +83,7 @@ export const RoundButton = styled.button<RoundButtonProps>`
   cursor: pointer;
   outline: none;
   font-size: 16px;
-  lien-height: 24px;
+  line-height: 24px;
 
   :hover {
     background-color: rgba(230, 230, 230, 0.3);

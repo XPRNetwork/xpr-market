@@ -56,6 +56,18 @@ export const TAB_TYPES = {
   COLLECTIONS: 'COLLECTIONS',
 };
 
+export const REPORT_TYPE = {
+  CREATOR: 'CREATOR',
+  COLLECTION: 'COLLECTION',
+  NFT: 'NFT',
+};
+
+export const REPORT_TYPE_TO_REFTYPE = {
+  CREATOR: 'author',
+  COLLECTION: 'collection',
+  NFT: 'template',
+};
+
 export const FILTER_TYPES = {
   NAME: 'Name',
   RECENTLY_CREATED: 'Recently created',
