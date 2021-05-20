@@ -1,4 +1,11 @@
-import { createContext, useState, useContext, useEffect, useMemo } from 'react';
+import {
+  createContext,
+  useState,
+  useContext,
+  useEffect,
+  useMemo,
+  FC,
+} from 'react';
 import { getFromApi } from '../../utils/browser-fetch';
 import { useRouter } from 'next/router';
 
@@ -34,7 +41,9 @@ export const useBlacklistContext = (): BlacklistContext => {
   return context;
 };
 
-export const BlacklistProvider = ({ children }: Props): JSX.Element => {
+export const BlacklistProvider: FC<Props> = ({
+  children,
+}: Props): JSX.Element => {
   const [isLoadingList, setIsLoadingList] = useState<boolean>(true);
   const [templates, setTemplates] = useState<{ [template: string]: boolean }>(
     null
@@ -48,10 +57,10 @@ export const BlacklistProvider = ({ children }: Props): JSX.Element => {
   const getList = async () => {
     setIsLoadingList(true);
     const { success, message } = await getFromApi('/api/blacklist');
-    setIsLoadingList(false);
 
     if (!success) {
       // Will be caught by Sentry
+      setIsLoadingList(false);
       throw new Error(`Failed to grab blacklist: ${message}`);
     }
     const blacklist = message as Blacklist;
@@ -59,6 +68,7 @@ export const BlacklistProvider = ({ children }: Props): JSX.Element => {
     setTemplates(blacklist.templates);
     setAuthors(blacklist.authors);
     setCollections(blacklist.collections);
+    setIsLoadingList(false);
   };
 
   useEffect(() => {
