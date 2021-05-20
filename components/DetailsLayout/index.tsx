@@ -32,7 +32,7 @@ type Props = {
   assetIds?: string[];
   saleIds?: string[];
   activeTab: string;
-  isRefetchingAssets: boolean;
+  isRefetchingAssets?: boolean;
   setActiveTab: Dispatch<SetStateAction<string>>;
   setCurrentAssetAsModalProps?: () => void;
 };
