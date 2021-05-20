@@ -99,7 +99,10 @@ const TabSectionSearch = ({
   };
 
   return (
-    <Section isHidden={tabsProps.activeTab !== searchContent[searchContentType].activeTab}>
+    <Section
+      isHidden={
+        tabsProps.activeTab !== searchContent[searchContentType].activeTab
+      }>
       {isLoadingInitialMount ? (
         <LoadingPage margin="10% 0" />
       ) : (
