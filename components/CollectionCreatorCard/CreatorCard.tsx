@@ -20,22 +20,20 @@ const CreatorCard = ({ cardContent }: Props): JSX.Element => {
   const { acc, avatar, name } = cardContent;
 
   const openUsersPage = () => {
-    router.push(`/user/${name}`);
+    router.push(`/user/${acc}`);
   };
 
+  const avatarSrc = avatar
+    ? `data:image/jpeg;base64,${avatar}`
+    : '/default-avatar.png';
   return (
     <Card onClick={openUsersPage}>
       <BlurContainer>
-        <Blur img={avatar || '/default-avatar.png'} />
+        <Blur img={avatarSrc} />
       </BlurContainer>
       <BottomSection height="184px">
         <IconContainer>
-          <Image
-            width="82px"
-            height="82px"
-            src={avatar || '/default-avatar.png'}
-            alt={name}
-          />
+          <Image width="82px" height="82px" src={avatarSrc} alt={name} />
         </IconContainer>
         <Title>{name || acc}</Title>
         <PurpleName>@{acc}</PurpleName>
