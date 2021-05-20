@@ -57,7 +57,8 @@ const PageHeader = ({
 
   const displayImg = type === 'user' ? avatarImg : collectionImg;
 
-  const isReportable = type === 'user' ? actor !== subName : actor !== author;
+  const canReport =
+    actor && (type === 'user' ? actor !== subName : actor !== author);
 
   const onImageError = (e) => {
     e.currentTarget.onerror = null;
@@ -93,7 +94,7 @@ const PageHeader = ({
   const buttons = hasEditFunctionality ? (
     <ButtonContainer>
       {shareButton}
-      {isReportable ? reportButton : null}
+      {canReport ? reportButton : null}
       <RoundButton
         onClick={() => openModal(MODAL_TYPES.UPDATE_COLLECTION)}
         padding="8px 16px"
@@ -104,7 +105,7 @@ const PageHeader = ({
   ) : (
     <ButtonContainer>
       {shareButton}
-      {isReportable ? reportButton : null}
+      {canReport ? reportButton : null}
     </ButtonContainer>
   );
 
