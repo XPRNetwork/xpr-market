@@ -2,20 +2,46 @@ import { useEffect, useState } from 'react';
 import TabSection, { SectionContainerProps } from '.';
 import LoadingPage from '../LoadingPage';
 import { Section } from '../../styles/index.styled';
-import { SearchResultsByType, SearchTemplate } from '../../services/search';
+import {
+  SearchResultsByType,
+  SearchTemplate,
+  SearchAuthor,
+  SearchCollection,
+} from '../../services/search';
 import { TAB_TYPES, CARD_RENDER_TYPES } from '../../utils/constants';
 import { getFromApi } from '../../utils/browser-fetch';
 
 interface Props extends SectionContainerProps {
   query: string;
+  searchContentType: string;
 }
 
-const TabSectionSearchTemplates = ({
+const searchContent = {
+  templates: {
+    cardRenderType: CARD_RENDER_TYPES.SEARCH_TEMPLATE,
+    activeTab: TAB_TYPES.NFTS,
+  },
+  authors: {
+    cardRenderType: CARD_RENDER_TYPES.CREATOR,
+    activeTab: TAB_TYPES.CREATORS,
+  },
+  collections: {
+    cardRenderType: CARD_RENDER_TYPES.COLLECTION,
+    activeTab: TAB_TYPES.COLLECTIONS,
+  },
+};
+
+const TabSectionSearch = ({
   query,
+  searchContentType,
   ...tabsProps
 }: Props): JSX.Element => {
-  const [renderedItems, setRenderedItems] = useState<SearchTemplate[]>([]);
-  const [prefetchedItems, setPrefetchedItems] = useState<SearchTemplate[]>([]);
+  const [renderedItems, setRenderedItems] = useState<
+    (SearchTemplate | SearchAuthor | SearchCollection)[]
+  >([]);
+  const [prefetchedItems, setPrefetchedItems] = useState<
+    (SearchTemplate | SearchAuthor | SearchCollection)[]
+  >([]);
   const [isLoadingPrices, setIsLoadingPrices] = useState<boolean>(true);
   const [isFetching, setIsFetching] = useState<boolean>(true);
   const [isLoadingInitialMount, setIsLoadingInitialMount] = useState<boolean>(
@@ -31,10 +57,11 @@ const TabSectionSearchTemplates = ({
         setIsLoadingInitialMount(true);
 
         try {
-          const res = await getFromApi<SearchResultsByType<SearchTemplate>>(
-            `/api/search-by/templates?query=${query}&page=1`
-          );
-
+          const res = await getFromApi<
+            SearchResultsByType<
+              SearchTemplate | SearchAuthor | SearchCollection
+            >
+          >(`/api/search-by/${searchContentType}?query=${query}&page=1`);
           if (!res.success) throw new Error(res.error.message);
           setRenderedItems(res.message.contents);
           setIsLoadingInitialMount(false);
@@ -56,8 +83,10 @@ const TabSectionSearchTemplates = ({
   const fetchNextPage = async () => {
     if (prefetchPageNumber > 0) {
       setIsFetching(true);
-      const result = await getFromApi<SearchResultsByType<SearchTemplate>>(
-        `/api/search-by/templates?query=${query}&page=${prefetchPageNumber}`
+      const result = await getFromApi<
+        SearchResultsByType<SearchTemplate | SearchAuthor | SearchCollection>
+      >(
+        `/api/search-by/${searchContentType}?query=${query}&page=${prefetchPageNumber}`
       );
       setPrefetchedItems(result.message.contents);
       setPrefetchPageNumber((prevPageNumber) =>
@@ -70,13 +99,13 @@ const TabSectionSearchTemplates = ({
   };
 
   return (
-    <Section isHidden={tabsProps.activeTab !== TAB_TYPES.NFTS}>
+    <Section isHidden={tabsProps.activeTab !== searchContent[searchContentType].activeTab}>
       {isLoadingInitialMount ? (
         <LoadingPage margin="10% 0" />
       ) : (
         <TabSection
           showNextPage={showNextNFTSearchPage}
-          type={CARD_RENDER_TYPES.SEARCH_TEMPLATE}
+          type={searchContent[searchContentType].cardRenderType}
           isLoadingPrices={isLoadingPrices}
           isFetching={isFetching}
           rendered={renderedItems}
@@ -93,4 +122,4 @@ const TabSectionSearchTemplates = ({
   );
 };
 
-export default TabSectionSearchTemplates;
+export default TabSectionSearch;

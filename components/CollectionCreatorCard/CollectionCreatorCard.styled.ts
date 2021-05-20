@@ -74,6 +74,11 @@ export const Title = styled.h3`
   line-height: 1.43;
   color: #1a1a1a;
   margin-bottom: 4px;
+  overflow-wrap: break-word;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 `;
 
 export const Description = styled.p`
