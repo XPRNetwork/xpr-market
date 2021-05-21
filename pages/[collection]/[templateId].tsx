@@ -45,10 +45,7 @@ const MarketplaceTemplateDetail = (): JSX.Element => {
     currentUserBalance,
     login,
   } = useAuthContext();
-  const {
-    isLoadingBlacklist,
-    templates: templatesBlacklist,
-  } = useBlacklistContext();
+  const { isLoadingBlacklist, templatesBlacklist } = useBlacklistContext();
 
   const previousTemplateId = usePrevious(templateId);
   const [templateAssets, setTemplateAssets] = useState<SaleAsset[]>([]);

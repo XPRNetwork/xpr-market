@@ -9,7 +9,7 @@ import {
 import { getFromApi } from '../../utils/browser-fetch';
 import { useRouter } from 'next/router';
 
-interface Blacklist {
+interface BlacklistResponse {
   authors: {
     [author: string]: boolean;
   };
@@ -17,6 +17,18 @@ interface Blacklist {
     [template: string]: boolean;
   };
   collections: {
+    [collection: string]: boolean;
+  };
+}
+
+interface Blacklist {
+  authorsBlacklist: {
+    [author: string]: boolean;
+  };
+  templatesBlacklist: {
+    [template: string]: boolean;
+  };
+  collectionsBlacklist: {
     [collection: string]: boolean;
   };
 }
@@ -30,9 +42,9 @@ interface Props {
 }
 
 const BlacklistContext = createContext<BlacklistContext>({
-  authors: null,
-  templates: null,
-  collections: null,
+  authorsBlacklist: null,
+  templatesBlacklist: null,
+  collectionsBlacklist: null,
   isLoadingBlacklist: true,
 });
 
@@ -43,11 +55,13 @@ export const useBlacklistContext = (): BlacklistContext => {
 
 export const BlacklistProvider: FC<Props> = ({ children }) => {
   const [isLoadingBlacklist, setisLoadingBlacklist] = useState<boolean>(true);
-  const [templates, setTemplates] = useState<{ [template: string]: boolean }>(
-    null
-  );
-  const [authors, setAuthors] = useState<{ [author: string]: boolean }>(null);
-  const [collections, setCollections] = useState<{
+  const [templatesBlacklist, setTemplatesBlacklist] = useState<{
+    [template: string]: boolean;
+  }>(null);
+  const [authorsBlacklist, setAuthorsBlacklist] = useState<{
+    [author: string]: boolean;
+  }>(null);
+  const [collectionsBlacklist, setCollectionsBlacklist] = useState<{
     [collection: string]: boolean;
   }>(null);
   const { asPath: routerPath } = useRouter();
@@ -61,11 +75,11 @@ export const BlacklistProvider: FC<Props> = ({ children }) => {
       setisLoadingBlacklist(false);
       throw new Error(`Failed to grab blacklist: ${message}`);
     }
-    const blacklist = message as Blacklist;
+    const blacklist = message as BlacklistResponse;
 
-    setTemplates(blacklist.templates);
-    setAuthors(blacklist.authors);
-    setCollections(blacklist.collections);
+    setTemplatesBlacklist(blacklist.templates);
+    setAuthorsBlacklist(blacklist.authors);
+    setCollectionsBlacklist(blacklist.collections);
     setisLoadingBlacklist(false);
   };
 
@@ -81,12 +95,17 @@ export const BlacklistProvider: FC<Props> = ({ children }) => {
 
   const value = useMemo<BlacklistContext>(
     () => ({
-      authors,
-      collections,
-      templates,
+      authorsBlacklist,
+      collectionsBlacklist,
+      templatesBlacklist,
       isLoadingBlacklist,
     }),
-    [authors, collections, templates, isLoadingBlacklist]
+    [
+      authorsBlacklist,
+      collectionsBlacklist,
+      templatesBlacklist,
+      isLoadingBlacklist,
+    ]
   );
 
   return (

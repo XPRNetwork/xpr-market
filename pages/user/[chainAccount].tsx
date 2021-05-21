@@ -46,10 +46,7 @@ const getUser = async (chainAccount: string): Promise<ProfileUser> => {
 
 const User = (): JSX.Element => {
   const { currentUser, isLoadingUser } = useAuthContext();
-  const {
-    authors: authorsBlacklist,
-    isLoadingBlacklist,
-  } = useBlacklistContext();
+  const { authorsBlacklist, isLoadingBlacklist } = useBlacklistContext();
   const router = useRouter();
   const {
     chainAccount: caseSensitiveChainAccount,

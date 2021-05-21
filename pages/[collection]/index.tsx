@@ -37,10 +37,7 @@ const CollectionPage = (): JSX.Element => {
   const { isLoadingUser, currentUser } = useAuthContext();
   const { setModalProps } = useModalContext();
   const { isDesktop } = useNavigatorUserAgent();
-  const {
-    collections: collectionsBlacklist,
-    isLoadingBlacklist,
-  } = useBlacklistContext();
+  const { collectionsBlacklist, isLoadingBlacklist } = useBlacklistContext();
   const { collection: caseSensitiveCollection } = router.query as RouterQuery;
   const collection = caseSensitiveCollection
     ? caseSensitiveCollection.toLowerCase()

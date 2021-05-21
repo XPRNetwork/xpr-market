@@ -60,9 +60,9 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
   const { currentUser, isLoadingUser } = useAuthContext();
   const { openModal, setModalProps } = useModalContext();
   const {
-    authors: authorsBlacklist,
-    collections: collectionsBlacklist,
-    templates: templatesBlacklist,
+    authorsBlacklist,
+    collectionsBlacklist,
+    templatesBlacklist,
     isLoadingBlacklist,
   } = useBlacklistContext();
 
