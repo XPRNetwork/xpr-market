@@ -5,6 +5,7 @@ import Grid from '../../components/Grid';
 import PaginationButton from '../../components/PaginationButton';
 import ErrorComponent from '../../components/Error';
 import LoadingPage from '../../components/LoadingPage';
+import EmptySectionContent from '../../components/EmptySectionContent';
 import {
   Template,
   getTemplatesByCollection,
@@ -95,6 +96,7 @@ const CollectionPage = (): JSX.Element => {
       const templates = await getTemplatesByCollection({
         type: collection,
       });
+
       const lowestPricesResult = await getLowestPricesForAllCollectionTemplates(
         {
           type: collection,
@@ -164,12 +166,6 @@ const CollectionPage = (): JSX.Element => {
       );
     }
 
-    if (!renderedTemplates.length) {
-      return (
-        <ErrorComponent errorMessage="No templates were found for this collection type." />
-      );
-    }
-
     const {
       name,
       img,
@@ -187,14 +183,23 @@ const CollectionPage = (): JSX.Element => {
           hasEditFunctionality={isEditButtonVisible}
           author={author}
         />
-        <Grid items={renderedTemplates} type={CARD_RENDER_TYPES.TEMPLATE} />
-        <PaginationButton
-          onClick={showNextPage}
-          isHidden={renderedTemplates.length < PAGINATION_LIMIT}
-          isLoading={isLoadingNextPage}
-          disabled={prefetchPageNumber === -1}
-          autoLoad
-        />
+        {renderedTemplates.length ? (
+          <>
+            <Grid items={renderedTemplates} type={CARD_RENDER_TYPES.TEMPLATE} />
+            <PaginationButton
+              onClick={showNextPage}
+              isHidden={renderedTemplates.length < PAGINATION_LIMIT}
+              isLoading={isLoadingNextPage}
+              disabled={prefetchPageNumber === -1}
+              autoLoad
+            />
+          </>
+        ) : (
+          <EmptySectionContent
+            subtitle="No templates were found for this collection type."
+            hasTopBorder
+          />
+        )}
       </>
     );
   };

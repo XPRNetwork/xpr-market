@@ -5,7 +5,7 @@ import Tabs from '../Tabs';
 import FilterDropdown, { FilterDropdownProps } from '../FilterDropdown';
 import PaginationButton from '../PaginationButton';
 import Grid from '../Grid';
-import EmptyUserContent from '../EmptyUserContent';
+import EmptySectionContent from '../EmptySectionContent';
 import { TabsProps } from '../Tabs';
 import { Row } from './TabSection.styled';
 import { Template } from '../../services/templates';
@@ -72,7 +72,7 @@ const TabSection: FC<Props> = ({
     if (!rendered.length) {
       const { subtitle, buttonTitle, link } = emptyContent;
       return (
-        <EmptyUserContent
+        <EmptySectionContent
           subtitle={subtitle}
           buttonTitle={buttonTitle}
           link={link}
