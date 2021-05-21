@@ -242,6 +242,7 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
         assetIds={assetIds}
         saleIds={saleIds}
         activeTab={activeTab}
+        isRefetchingAssets={isRefetching}
         setActiveTab={setActiveTab}
         setCurrentAssetAsModalProps={setCurrentAssetAsModalProps}>
         <AssetFormSell

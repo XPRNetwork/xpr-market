@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { FC, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import CollectionIcon from '../CollectionIcon';
 import {
@@ -20,10 +20,11 @@ type Props = {
   collectionImage: string;
   assetIds?: string[];
   saleIds?: string[];
+  isRefetchingAssets?: boolean;
   setCurrentAssetAsModalProps?: () => void;
 };
 
-const AssetFormTitle = ({
+const AssetFormTitle: FC<Props> = ({
   templateName,
   collectionName,
   collectionDisplayName,
@@ -31,8 +32,9 @@ const AssetFormTitle = ({
   collectionImage,
   assetIds,
   saleIds,
+  isRefetchingAssets,
   setCurrentAssetAsModalProps,
-}: Props): JSX.Element => {
+}) => {
   const router = useRouter();
   const { currentUser } = useAuthContext();
   const actor = currentUser ? currentUser.actor : '';
@@ -58,6 +60,7 @@ const AssetFormTitle = ({
             assetIds={assetIds}
             saleIds={saleIds}
             isMyTemplate={isMyTemplate}
+            isRefetchingAssets={isRefetchingAssets}
             isTemplateCreator={
               currentUser && collectionAuthor === currentUser.actor
             }
