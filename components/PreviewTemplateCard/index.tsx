@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { FC } from 'react';
 import {
   Card,
   Row,
@@ -23,7 +23,7 @@ type Props = {
   hasPlaceholderIcon?: boolean;
 };
 
-const PreviewTemplateCard = ({
+const PreviewTemplateCard: FC<Props> = ({
   collectionName,
   templateName,
   maxSupply,
@@ -32,17 +32,7 @@ const PreviewTemplateCard = ({
   templateVideo,
   templateImage,
   hasPlaceholderIcon,
-}: Props): JSX.Element => {
-  const [templateVideoSrc, setTemplateVideoSrc] = useState<string>(
-    templateVideo
-  );
-  const [templateImgSrc, setTemplateImgSrc] = useState<string>(templateImage);
-
-  useEffect(() => {
-    setTemplateVideoSrc(templateVideo);
-    setTemplateImgSrc(templateImage);
-  }, [templateVideo, templateImage]);
-
+}) => {
   const collectionIcon = hasPlaceholderIcon ? (
     <IconContainer margin="24px 16px 24px 0">
       <PlaceholderIcon />
@@ -64,10 +54,10 @@ const PreviewTemplateCard = ({
         </CollectionNameButton>
       </Row>
       {templateVideo ? (
-        <TemplateVideo src={templateVideoSrc} autoPlay={true} />
+        <TemplateVideo src={templateVideo} autoPlay={true} />
       ) : (
         <TemplateImage
-          templateImgSrc={templateImgSrc}
+          templateImgSrc={templateImage}
           templateName={templateName}
         />
       )}

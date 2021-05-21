@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState, useEffect } from 'react';
+import { useState, useEffect, FC, Dispatch, SetStateAction } from 'react';
 import {
   Title,
   SubTitle,
@@ -13,83 +13,43 @@ import DragDropFileUploadLg from '../DragDropFileUploadLg';
 import InputField from '../InputField';
 import Button from '../Button';
 import { BackButton } from '../CreatePageLayout/CreatePageLayout.styled';
-import { CREATE_PAGE_STATES } from '../../pages/create';
-import { LG_FILE_UPLOAD_TYPES_TEXT } from '../../utils/constants';
 import Spinner from '../Spinner';
-import { useAuthContext } from '../../components/Provider';
-import fees, { MintFee } from '../../services/fees';
+import {
+  useAuthContext,
+  useCreateAssetContext,
+  CREATE_PAGE_STATES,
+} from '../../components/Provider';
+import fees from '../../services/fees';
 
-type Props = {
-  setUploadedFilePreview: Dispatch<SetStateAction<string>>;
-  uploadedFilePreview: string;
-  setTemplateUploadedFile: Dispatch<SetStateAction<File>>;
-  templateUploadedFile: File;
-  templateName: string;
-  setTemplateName: Dispatch<SetStateAction<string>>;
-  templateDescription: string;
-  setTemplateDescription: Dispatch<SetStateAction<string>>;
-  maxSupply: string;
-  setMaxSupply: Dispatch<SetStateAction<string>>;
+const CreateTemplate: FC<{
   setPageState: Dispatch<SetStateAction<string>>;
-  mintAmount: string;
-  setMintAmount: Dispatch<SetStateAction<string>>;
-  setMintFee: Dispatch<SetStateAction<MintFee>>;
-  mintFee: MintFee;
-  createNft: () => Promise<void>;
-  createNftError: string;
-  setCreateNftError: Dispatch<SetStateAction<string>>;
-};
-
-const CreateTemplate = ({
-  setTemplateUploadedFile,
-  templateUploadedFile,
-  templateName,
-  setTemplateName,
-  templateDescription,
-  setTemplateDescription,
-  maxSupply,
-  setMaxSupply,
-  setPageState,
-  setUploadedFilePreview,
-  uploadedFilePreview,
-  createNft,
-  setMintAmount,
-  setMintFee,
-  mintFee,
-  mintAmount,
-  createNftError,
-  setCreateNftError,
-}: Props): JSX.Element => {
-  const [error, setError] = useState<string>('');
+}> = ({ setPageState }) => {
   const { currentUser } = useAuthContext();
+  const {
+    setTemplateName,
+    setTemplateDescription,
+    setMaxSupply,
+    setMintAmount,
+    setTemplateUploadedFile,
+    setUploadedFilePreview,
+    setMintFee,
+    createNft,
+    templateName,
+    templateDescription,
+    maxSupply,
+    mintAmount,
+    templateUploadedFile,
+    uploadedFilePreview,
+    mintFee,
+  } = useCreateAssetContext();
+  const [error, setError] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isValid, setIsValid] = useState<boolean>(false);
 
-  const validateAndCreate = async () => {
-    const errors = [];
-    if (!templateUploadedFile) {
-      errors.push(`upload a ${LG_FILE_UPLOAD_TYPES_TEXT}`);
-    }
-    if (!templateName) {
-      errors.push('set a name');
-    }
-
-    if (!templateDescription) {
-      errors.push('set a description');
-    }
-
-    if (typeof maxSupply === 'undefined' || isNaN(parseInt(maxSupply))) {
-      errors.push(
-        "set the template's maximum edition size (0 for no maximum edition size)"
-      );
-    }
-
-    if (!mintAmount) {
-      errors.push('set an initial mint amount (minimum 1)');
-    }
-
-    if (parseInt(mintAmount) > parseInt(maxSupply)) {
-      errors.push('set an initial mint amount less than the edition size');
+  const setErrorMessages = (errors: string[]): void => {
+    if (errors.length === 1) {
+      setError(`Please ${errors[0]}.`);
+      return;
     }
 
     if (errors.length === 1) {
@@ -117,15 +77,20 @@ const CreateTemplate = ({
       setError(errorMessage);
       return;
     }
+  };
 
-    setError('');
+  const validateAndCreate = async () => {
     setIsLoading(true);
-    try {
-      await createNft();
-    } catch (e) {
-      setError(e);
-    }
+    setError('');
+
+    const errors = await createNft(currentUser ? currentUser.actor : '');
     setIsLoading(false);
+    if (errors.length) {
+      setErrorMessages(errors);
+      return;
+    }
+
+    setPageState(CREATE_PAGE_STATES.SUCCESS);
   };
 
   const resetTemplatePage = () => {
@@ -136,16 +101,7 @@ const CreateTemplate = ({
     setMaxSupply('');
     setMintAmount('');
     setError('');
-    setCreateNftError('');
   };
-
-  useEffect(() => {
-    if (createNftError) {
-      setError(createNftError);
-    } else {
-      setError('');
-    }
-  }, [createNftError]);
 
   useEffect(() => {
     if (mintAmount && !maxSupply) {
@@ -256,7 +212,7 @@ const CreateTemplate = ({
         placeholder="Enter mint amount"
         tooltip="Choose an initial mint amount (first 10 are for free). Minting takes a bit of time, so we recommend no more than 50 tokens in your initial mint."
         numberOfTooltipLines={5}
-        submit={isValid ? null : createNft}
+        submit={isLoading ? null : validateAndCreate}
         checkIfIsValid={checkMintAmountValidity}
       />
       <FeeLabel>
