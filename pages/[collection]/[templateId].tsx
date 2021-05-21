@@ -5,7 +5,7 @@ import ErrorComponent from '../../components/Error';
 import PageLayout from '../../components/PageLayout';
 import AssetFormBuy from '../../components/AssetFormBuy';
 import LoadingPage from '../../components/LoadingPage';
-import { useAuthContext } from '../../components/Provider';
+import { useAuthContext, useBlacklistContext } from '../../components/Provider';
 import { getTemplateDetails, Template } from '../../services/templates';
 import { getAllTemplateSales, SaleAsset } from '../../services/sales';
 import ProtonSDK from '../../services/proton';
@@ -45,6 +45,10 @@ const MarketplaceTemplateDetail = (): JSX.Element => {
     currentUserBalance,
     login,
   } = useAuthContext();
+  const {
+    isLoadingBlacklist,
+    templates: templatesBlacklist,
+  } = useBlacklistContext();
 
   const previousTemplateId = usePrevious(templateId);
   const [templateAssets, setTemplateAssets] = useState<SaleAsset[]>([]);
@@ -81,8 +85,12 @@ const MarketplaceTemplateDetail = (): JSX.Element => {
   } = template;
 
   useEffect(() => {
-    if (!templateId) {
+    if (!templateId || isLoadingBlacklist) {
       return;
+    }
+
+    if (templatesBlacklist[templateId]) {
+      router.push('/');
     }
 
     if (templateId !== previousTemplateId) {
@@ -114,7 +122,7 @@ const MarketplaceTemplateDetail = (): JSX.Element => {
     };
 
     loadTemplate();
-  }, [templateId]);
+  }, [templateId, isLoadingBlacklist]);
 
   useEffect(() => {
     setPurchasingError('');
@@ -165,7 +173,7 @@ const MarketplaceTemplateDetail = (): JSX.Element => {
       return <ErrorComponent errorMessage={error} />;
     }
 
-    if (isLoading || isLoadingUser) {
+    if (isLoading || isLoadingUser || isLoadingBlacklist) {
       return <LoadingPage />;
     }
 

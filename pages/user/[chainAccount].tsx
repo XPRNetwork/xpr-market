@@ -5,7 +5,11 @@ import ErrorComponent from '../../components/Error';
 import LoadingPage from '../../components/LoadingPage';
 import Banner from '../../components/Banner';
 import PageHeader from '../../components/PageHeader';
-import { MODAL_TYPES, useAuthContext } from '../../components/Provider';
+import {
+  MODAL_TYPES,
+  useAuthContext,
+  useBlacklistContext,
+} from '../../components/Provider';
 import {
   TabSectionUserProfileItems,
   TabSectionUserProfileCreations,
@@ -42,6 +46,10 @@ const getUser = async (chainAccount: string): Promise<ProfileUser> => {
 
 const User = (): JSX.Element => {
   const { currentUser, isLoadingUser } = useAuthContext();
+  const {
+    authors: authorsBlacklist,
+    isLoadingBlacklist,
+  } = useBlacklistContext();
   const router = useRouter();
   const {
     chainAccount: caseSensitiveChainAccount,
@@ -65,17 +73,24 @@ const User = (): JSX.Element => {
     (async () => {
       setIsLoading(true);
       try {
-        const profileUser = await getUser(chainAccount);
-        setUser(profileUser);
+        if (!isLoadingBlacklist) {
+          if (authorsBlacklist[chainAccount]) {
+            router.push('/');
+          } else {
+            const profileUser = await getUser(chainAccount);
+            setUser(profileUser);
+            setIsLoading(false);
+          }
+        }
       } catch (e) {
         setErrorMessage(e.message);
+        setIsLoading(false);
       }
-      setIsLoading(false);
     })();
-  }, [currentUser, chainAccount]);
+  }, [currentUser, chainAccount, isLoadingBlacklist]);
 
   const getContent = () => {
-    if (isLoading || isLoadingUser) {
+    if (isLoading || isLoadingUser || isLoadingBlacklist) {
       return <LoadingPage />;
     }
 

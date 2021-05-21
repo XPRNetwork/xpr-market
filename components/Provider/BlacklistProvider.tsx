@@ -22,7 +22,7 @@ interface Blacklist {
 }
 
 interface BlacklistContext extends Blacklist {
-  isLoadingList: boolean;
+  isLoadingBlacklist: boolean;
 }
 
 interface Props {
@@ -33,7 +33,7 @@ const BlacklistContext = createContext<BlacklistContext>({
   authors: null,
   templates: null,
   collections: null,
-  isLoadingList: true,
+  isLoadingBlacklist: true,
 });
 
 export const useBlacklistContext = (): BlacklistContext => {
@@ -42,7 +42,7 @@ export const useBlacklistContext = (): BlacklistContext => {
 };
 
 export const BlacklistProvider: FC<Props> = ({ children }) => {
-  const [isLoadingList, setIsLoadingList] = useState<boolean>(true);
+  const [isLoadingBlacklist, setisLoadingBlacklist] = useState<boolean>(true);
   const [templates, setTemplates] = useState<{ [template: string]: boolean }>(
     null
   );
@@ -53,12 +53,12 @@ export const BlacklistProvider: FC<Props> = ({ children }) => {
   const { asPath: routerPath } = useRouter();
 
   const getList = async () => {
-    setIsLoadingList(true);
+    setisLoadingBlacklist(true);
     const { success, message } = await getFromApi('/api/blacklist');
 
     if (!success) {
       // Will be caught by Sentry
-      setIsLoadingList(false);
+      setisLoadingBlacklist(false);
       throw new Error(`Failed to grab blacklist: ${message}`);
     }
     const blacklist = message as Blacklist;
@@ -66,7 +66,7 @@ export const BlacklistProvider: FC<Props> = ({ children }) => {
     setTemplates(blacklist.templates);
     setAuthors(blacklist.authors);
     setCollections(blacklist.collections);
-    setIsLoadingList(false);
+    setisLoadingBlacklist(false);
   };
 
   useEffect(() => {
@@ -84,9 +84,9 @@ export const BlacklistProvider: FC<Props> = ({ children }) => {
       authors,
       collections,
       templates,
-      isLoadingList,
+      isLoadingBlacklist,
     }),
-    [authors, collections, templates, isLoadingList]
+    [authors, collections, templates, isLoadingBlacklist]
   );
 
   return (

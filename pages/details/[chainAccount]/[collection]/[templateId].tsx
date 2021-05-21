@@ -10,6 +10,7 @@ import {
   useAuthContext,
   useModalContext,
   MODAL_TYPES,
+  useBlacklistContext,
 } from '../../../../components/Provider';
 import { getTemplateDetails, Template } from '../../../../services/templates';
 import {
@@ -58,6 +59,12 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
     : '';
   const { currentUser, isLoadingUser } = useAuthContext();
   const { openModal, setModalProps } = useModalContext();
+  const {
+    authors: authorsBlacklist,
+    collections: collectionsBlacklist,
+    templates: templatesBlacklist,
+    isLoadingBlacklist,
+  } = useBlacklistContext();
 
   const [templateAssets, setTemplateAssets] = useState<Asset[]>([]);
   const [
@@ -171,20 +178,27 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
   }, [collection, templateId]);
 
   useEffect(() => {
-    if (
-      chainAccount &&
-      collection &&
-      templateId &&
-      (!currentUser || currentUser.actor !== chainAccount)
-    ) {
-      router.push(`/${collection}/${templateId}`);
-    }
-    (async () => {
-      if (currentUser && currentUser.actor) {
-        await fees.refreshRamInfoForUser(currentUser.actor);
+    const queryValuesPresent = chainAccount && collection && templateId;
+    const isBlacklisted =
+      authorsBlacklist[chainAccount] ||
+      collectionsBlacklist[collection] ||
+      templatesBlacklist[templateId];
+    const isNotOwner = !currentUser || currentUser.actor !== chainAccount;
+
+    if (!isLoadingBlacklist) {
+      if (queryValuesPresent && isBlacklisted) {
+        router.push('/');
+      } else if (queryValuesPresent && isNotOwner) {
+        router.push(`/${collection}/${templateId}`);
+      } else {
+        (async () => {
+          if (currentUser && currentUser.actor) {
+            await fees.refreshRamInfoForUser(currentUser.actor);
+          }
+        })();
       }
-    })();
-  }, [chainAccount, collection, templateId, currentUser]);
+    }
+  }, [chainAccount, collection, templateId, currentUser, isLoadingBlacklist]);
 
   const setCurrentAssetAsModalProps = () => {
     setModalProps((previousModalProps) => ({
@@ -220,7 +234,7 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
       );
     }
 
-    if (isLoading || isLoadingUser) {
+    if (isLoading || isLoadingUser || isLoadingBlacklist) {
       return <LoadingPage />;
     }
 
