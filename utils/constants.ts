@@ -87,6 +87,11 @@ export const FILTER_TYPES = {
   },
 };
 
+export const FILTER_ORDER = {
+  ASC: 'asc',
+  DESC: 'desc',
+};
+
 export const FEATURED_HOMEPAGE_COLLECTIONS = [
   { name: 'boardtodeath', displayName: 'Board To Death' },
   { name: 'restingbface', displayName: 'RBF' },

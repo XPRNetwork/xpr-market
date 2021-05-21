@@ -8,7 +8,7 @@ const handler = async (
 ): Promise<void> => {
   const {
     method,
-    query: { type, query, page, pageSize },
+    query: { type, query, page, pageSize, sortKey, sortOrder },
   } = req;
   switch (method) {
     case 'POST':
@@ -23,6 +23,8 @@ const handler = async (
           q: query as string,
           page: (page as string) || '1',
           pageSize: (pageSize as string) || PAGINATION_LIMIT.toString(),
+          sortKey: (sortKey as string) || '',
+          sortOrder: (sortOrder as string) || 'desc',
         };
 
         const queryString = toQueryString(queryParams);

@@ -8,7 +8,13 @@ import {
   SearchAuthor,
   SearchCollection,
 } from '../../services/search';
-import { TAB_TYPES, CARD_RENDER_TYPES } from '../../utils/constants';
+import {
+  PAGINATION_LIMIT,
+  TAB_TYPES,
+  CARD_RENDER_TYPES,
+  FILTER_TYPES,
+  FILTER_ORDER,
+} from '../../utils/constants';
 import { getFromApi } from '../../utils/browser-fetch';
 
 interface Props extends SectionContainerProps {
@@ -48,6 +54,8 @@ const TabSectionSearch = ({
     true
   );
   const [prefetchPageNumber, setPrefetchPageNumber] = useState<number>(3);
+  const [filterType, setFilterType] = useState<string>('');
+  const [filterOrder, setFilterOrder] = useState<string>(FILTER_ORDER.DESC);
 
   useEffect(() => {
     (async () => {
@@ -57,13 +65,9 @@ const TabSectionSearch = ({
         setIsLoadingInitialMount(true);
 
         try {
-          const res = await getFromApi<
-            SearchResultsByType<
-              SearchTemplate | SearchAuthor | SearchCollection
-            >
-          >(`/api/search-by/${searchContentType}?query=${query}&page=1`);
-          if (!res.success) throw new Error(res.error.message);
-          setRenderedItems(res.message.contents);
+          await getFromApi({
+            page: '1',
+          });
           setIsLoadingInitialMount(false);
           setIsLoadingPrices(false);
           await fetchNextPage();
@@ -75,9 +79,41 @@ const TabSectionSearch = ({
     })();
   }, [query]);
 
+  const getFromApi = async ({
+    page,
+    sortOrder,
+  }: {
+    page: string;
+    sortOrder?: string;
+  }) => {
+    const sortQueryParams = sortOrder
+      ? `&sortOrder=${sortOrder}&sortKey=name`
+      : '';
+    const res = await getFromApi<
+      SearchResultsByType<SearchTemplate | SearchAuthor | SearchCollection>
+    >(
+      `/api/search-by/${searchContentType}?query=${query}&page=${page}${sortQueryParams}`
+    );
+    if (!res.success) throw new Error(res.error.message);
+    setRenderedItems(res.message.contents);
+  };
+
   const showNextNFTSearchPage = async () => {
     setRenderedItems((prevItems) => [...prevItems, ...prefetchedItems]);
     await fetchNextPage();
+  };
+
+  const handleItemsFilterClick = (filter: string) => {
+    if (filter === filterType) {
+      setFilterOrder((prevFilterOrder) =>
+        prevFilterOrder === FILTER_ORDER.ASC
+          ? FILTER_ORDER.DESC
+          : FILTER_ORDER.ASC
+      );
+    } else {
+      setFilterType(filterType);
+      setFilterOrder(FILTER_ORDER.DESC);
+    }
   };
 
   const fetchNextPage = async () => {
@@ -114,6 +150,11 @@ const TabSectionSearch = ({
           rendered={renderedItems}
           nextPageNumber={prefetchPageNumber}
           tabsProps={tabsProps}
+          filterDropdownProps={{
+            filters: [FILTER_TYPES.NAME, FILTER_TYPES.RECENTLY_CREATED],
+            activeFilter: filterType,
+            handleFilterClick: handleItemsFilterClick,
+          }}
           emptyContent={{
             subtitle: 'No search results!',
             buttonTitle: 'Explore NFTs',
