@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import TabSection, { SectionContainerProps } from '.';
 import LoadingPage from '../LoadingPage';
 import { Section } from '../../styles/index.styled';
@@ -38,11 +38,11 @@ const searchContent = {
   },
 };
 
-const TabSectionSearch = ({
-  query,
-  searchContentType,
+const TabSectionSearch: FC<Props> = ({
+  query = '',
+  searchContentType = '',
   ...tabsProps
-}: Props): JSX.Element => {
+}) => {
   const [renderedItems, setRenderedItems] = useState<
     (SearchTemplate | SearchAuthor | SearchCollection)[]
   >([]);
@@ -91,7 +91,7 @@ const TabSectionSearch = ({
     sortQueryParams,
   }: {
     page: number;
-    sortQueryParams: string;
+    sortQueryParams?: string;
   }): Promise<
     SearchResultsByType<SearchTemplate | SearchAuthor | SearchCollection>
   > => {
