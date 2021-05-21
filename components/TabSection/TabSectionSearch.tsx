@@ -9,13 +9,14 @@ import {
   SearchCollection,
 } from '../../services/search';
 import {
-  PAGINATION_LIMIT,
   TAB_TYPES,
   CARD_RENDER_TYPES,
   FILTER_TYPES,
-  FILTER_ORDER,
+  Filter,
 } from '../../utils/constants';
 import { getFromApi } from '../../utils/browser-fetch';
+
+const emptyFilterObject = { label: '', queryParam: '' };
 
 interface Props extends SectionContainerProps {
   query: string;
@@ -53,49 +54,59 @@ const TabSectionSearch = ({
   const [isLoadingInitialMount, setIsLoadingInitialMount] = useState<boolean>(
     true
   );
-  const [prefetchPageNumber, setPrefetchPageNumber] = useState<number>(3);
-  const [filterType, setFilterType] = useState<string>('');
-  const [filterOrder, setFilterOrder] = useState<string>(FILTER_ORDER.DESC);
+  const [prefetchPageNumber, setPrefetchPageNumber] = useState<number>(2);
+  const [filterType, setFilterType] = useState<Filter>(emptyFilterObject);
+
+  useEffect(() => {
+    (async () => {
+      if (filterType) {
+        await fetchNextPage();
+      }
+    })();
+  }, [filterType]);
 
   useEffect(() => {
     (async () => {
       if (query) {
-        setIsFetching(true);
         setIsLoadingPrices(true);
         setIsLoadingInitialMount(true);
 
         try {
-          await getFromApi({
-            page: '1',
+          const searchResponse = await getSearchResults({
+            page: 1,
           });
+          setRenderedItems(searchResponse.contents);
           setIsLoadingInitialMount(false);
           setIsLoadingPrices(false);
           await fetchNextPage();
         } catch (e) {
-          setIsFetching(false);
           setIsLoadingInitialMount(false);
         }
       }
     })();
   }, [query]);
 
-  const getFromApi = async ({
+  const getSearchResults = async ({
     page,
-    sortOrder,
+    sortQueryParams,
   }: {
-    page: string;
-    sortOrder?: string;
-  }) => {
-    const sortQueryParams = sortOrder
-      ? `&sortOrder=${sortOrder}&sortKey=name`
-      : '';
+    page: number;
+    sortQueryParams: string;
+  }): Promise<
+    SearchResultsByType<SearchTemplate | SearchAuthor | SearchCollection>
+  > => {
+    setIsFetching(true);
     const res = await getFromApi<
       SearchResultsByType<SearchTemplate | SearchAuthor | SearchCollection>
     >(
       `/api/search-by/${searchContentType}?query=${query}&page=${page}${sortQueryParams}`
     );
-    if (!res.success) throw new Error(res.error.message);
-    setRenderedItems(res.message.contents);
+    if (!res.success) {
+      setIsFetching(false);
+      throw new Error(res.error.message);
+    }
+    setIsFetching(false);
+    return res.message;
   };
 
   const showNextNFTSearchPage = async () => {
@@ -103,34 +114,36 @@ const TabSectionSearch = ({
     await fetchNextPage();
   };
 
-  const handleItemsFilterClick = (filter: string) => {
-    if (filter === filterType) {
-      setFilterOrder((prevFilterOrder) =>
-        prevFilterOrder === FILTER_ORDER.ASC
-          ? FILTER_ORDER.DESC
-          : FILTER_ORDER.ASC
-      );
+  const handleItemsFilterClick = async (filter: Filter) => {
+    const getSearchResultsParams = {
+      page: 1,
+      sortQueryParams: filter.queryParam,
+    };
+    setPrefetchPageNumber(2);
+
+    if (filter !== filterType) {
+      setFilterType(filter);
     } else {
-      setFilterType(filterType);
-      setFilterOrder(FILTER_ORDER.DESC);
+      setFilterType(emptyFilterObject);
+      getSearchResultsParams.sortQueryParams = '';
     }
+
+    const searchResults = await getSearchResults(getSearchResultsParams);
+    setRenderedItems(searchResults.contents);
   };
 
   const fetchNextPage = async () => {
     if (prefetchPageNumber > 0) {
-      setIsFetching(true);
-      const result = await getFromApi<
-        SearchResultsByType<SearchTemplate | SearchAuthor | SearchCollection>
-      >(
-        `/api/search-by/${searchContentType}?query=${query}&page=${prefetchPageNumber}`
-      );
-      setPrefetchedItems(result.message.contents);
+      const searchResponse = await getSearchResults({
+        page: prefetchPageNumber,
+        sortQueryParams: filterType.queryParam,
+      });
+      setPrefetchedItems(searchResponse.contents);
       setPrefetchPageNumber((prevPageNumber) =>
-        prefetchPageNumber >= result.message.totalPages
+        prefetchPageNumber >= searchResponse.totalPages
           ? -1
           : prevPageNumber + 1
       );
-      setIsFetching(false);
     }
   };
 
@@ -151,7 +164,7 @@ const TabSectionSearch = ({
           nextPageNumber={prefetchPageNumber}
           tabsProps={tabsProps}
           filterDropdownProps={{
-            filters: [FILTER_TYPES.NAME, FILTER_TYPES.RECENTLY_CREATED],
+            filters: Object.values(FILTER_TYPES),
             activeFilter: filterType,
             handleFilterClick: handleItemsFilterClick,
           }}
