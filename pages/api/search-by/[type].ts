@@ -19,13 +19,22 @@ const handler = async (
       break;
     default: {
       try {
-        const queryParams = {
+        const queryParams: {
+          q: string;
+          page: string;
+          pageSize: string;
+          sortKey?: string;
+          sortOrder?: string;
+        } = {
           q: query as string,
           page: (page as string) || '1',
           pageSize: (pageSize as string) || PAGINATION_LIMIT.toString(),
-          sortKey: (sortKey as string) || '',
-          sortOrder: (sortOrder as string) || 'desc',
         };
+
+        if (sortKey) {
+          queryParams.sortKey = sortKey as string;
+          queryParams.sortOrder = (sortOrder as string) || 'desc';
+        }
 
         const queryString = toQueryString(queryParams);
         const rawResult = await fetch(
