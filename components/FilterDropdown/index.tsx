@@ -10,16 +10,22 @@ import {
 import { ReactComponent as DownArrow } from '../../public/down-arrow-sm.svg';
 import { ReactComponent as Checkmark } from '../../public/icon-light-check-24-px.svg';
 import { useScrollLock, useEscapeKeyClose } from '../../hooks';
+import { Filter } from '../../utils/constants';
 
 export type FilterDropdownProps = {
-  filters: string[];
-  activeFilter: string;
-  handleFilterClick: (filter: string) => void;
+  filters: Filter[];
+  activeFilter: Filter;
+  handleFilterClick: (filter: Filter) => void;
+};
+
+export const defaultActiveFilter = {
+  label: '',
+  queryParam: '',
 };
 
 const FilterDropdown: FC<FilterDropdownProps> = ({
   filters = [],
-  activeFilter = '',
+  activeFilter = defaultActiveFilter,
   handleFilterClick = () => {},
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -35,16 +41,16 @@ const FilterDropdown: FC<FilterDropdownProps> = ({
         <DownArrow />
       </MenuButton>
       <Menu isOpen={isOpen}>
-        {filters.map((name) => (
+        {filters.map((filter) => (
           <MenuItem
-            key={name}
+            key={filter.label}
             tabIndex={0}
             onClick={() => {
-              handleFilterClick(name);
+              handleFilterClick(filter);
               closePopupMenu();
             }}>
-            <span>{name}</span>
-            <span>{activeFilter === name && <Checkmark />}</span>
+            <span>{filter.label}</span>
+            <span>{activeFilter.label === filter.label && <Checkmark />}</span>
           </MenuItem>
         ))}
       </Menu>

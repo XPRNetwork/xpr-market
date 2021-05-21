@@ -2,7 +2,10 @@ import { FC, memo } from 'react';
 export { TabSectionUserProfileItems } from './TabSectionUserProfileItems';
 export { TabSectionUserProfileCreations } from './TabSectionUserProfileCreations';
 import Tabs from '../Tabs';
-import FilterDropdown, { FilterDropdownProps } from '../FilterDropdown';
+import FilterDropdown, {
+  FilterDropdownProps,
+  defaultActiveFilter,
+} from '../FilterDropdown';
 import PaginationButton from '../PaginationButton';
 import Grid from '../Grid';
 import EmptySectionContent from '../EmptySectionContent';
@@ -25,8 +28,10 @@ export interface SectionContentByFilter {
 }
 
 export const defaultSectionContentByFilter = {
-  [FILTER_TYPES.NAME]: [],
-  [FILTER_TYPES.RECENTLY_CREATED]: [],
+  [FILTER_TYPES.NAME_AZ.label]: [],
+  [FILTER_TYPES.NAME_ZA.label]: [],
+  [FILTER_TYPES.OLDEST.label]: [],
+  [FILTER_TYPES.NEWEST.label]: [],
 };
 
 type Props = {
@@ -54,7 +59,7 @@ const TabSection: FC<Props> = ({
   },
   filterDropdownProps = {
     filters: [],
-    activeFilter: '',
+    activeFilter: defaultActiveFilter,
     handleFilterClick: () => {},
   },
   isLoadingPrices = false,
