@@ -18,14 +18,9 @@ export type FilterDropdownProps = {
   handleFilterClick: (filter: Filter) => void;
 };
 
-export const defaultActiveFilter = {
-  label: '',
-  queryParam: '',
-};
-
 const FilterDropdown: FC<FilterDropdownProps> = ({
   filters = [],
-  activeFilter = defaultActiveFilter,
+  activeFilter = undefined,
   handleFilterClick = () => {},
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -50,7 +45,11 @@ const FilterDropdown: FC<FilterDropdownProps> = ({
               closePopupMenu();
             }}>
             <span>{filter.label}</span>
-            <span>{activeFilter.label === filter.label && <Checkmark />}</span>
+            <span>
+              {activeFilter && activeFilter.label === filter.label && (
+                <Checkmark />
+              )}
+            </span>
           </MenuItem>
         ))}
       </Menu>
