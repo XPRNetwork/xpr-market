@@ -84,7 +84,7 @@ export const TabSectionUserProfileItems: FC<SectionContainerProps> = ({
             [NAME_AZ.label]: templatesByNameAZ,
             [NAME_ZA.label]: templatesByNameAZ.slice().reverse(),
             [NEWEST.label]: templatesWithPrices,
-            [OLDEST.label]: templatesByNameAZ.slice().reverse(),
+            [OLDEST.label]: templatesWithPrices.slice().reverse(),
           };
 
           setIsLoadingPrices(false);
