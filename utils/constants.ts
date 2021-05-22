@@ -69,8 +69,22 @@ export const REPORT_TYPE_TO_REFTYPE = {
 };
 
 export const FILTER_TYPES = {
-  NAME: 'Name',
-  RECENTLY_CREATED: 'Recently created',
+  NAME_AZ: {
+    label: 'Name A-Z',
+    queryParam: '&sortKey=name&sortOrder=asc',
+  },
+  NAME_ZA: {
+    label: 'Name Z-A',
+    queryParam: '&sortKey=name&sortOrder=desc',
+  },
+  OLDEST: {
+    label: 'Oldest',
+    queryParam: '&sortKey=created&sortOrder=asc',
+  },
+  NEWEST: {
+    label: 'Newest',
+    queryParam: '&sortKey=created&sortOrder=desc',
+  },
 };
 
 export const FEATURED_HOMEPAGE_COLLECTIONS = [
@@ -122,3 +136,8 @@ export interface QueryParams {
   q?: string;
   pageSize?: string;
 }
+
+export type Filter = {
+  label: string;
+  queryParam: string;
+};

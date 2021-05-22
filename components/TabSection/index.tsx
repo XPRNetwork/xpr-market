@@ -25,8 +25,10 @@ export interface SectionContentByFilter {
 }
 
 export const defaultSectionContentByFilter = {
-  [FILTER_TYPES.NAME]: [],
-  [FILTER_TYPES.RECENTLY_CREATED]: [],
+  [FILTER_TYPES.NAME_AZ.label]: [],
+  [FILTER_TYPES.NAME_ZA.label]: [],
+  [FILTER_TYPES.OLDEST.label]: [],
+  [FILTER_TYPES.NEWEST.label]: [],
 };
 
 type Props = {
@@ -54,7 +56,7 @@ const TabSection: FC<Props> = ({
   },
   filterDropdownProps = {
     filters: [],
-    activeFilter: '',
+    activeFilter: undefined,
     handleFilterClick: () => {},
   },
   isLoadingPrices = false,

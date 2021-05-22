@@ -17,7 +17,9 @@ import {
   TAB_TYPES,
   CARD_RENDER_TYPES,
   FILTER_TYPES,
+  Filter,
 } from '../../utils/constants';
+const { NAME_AZ, NAME_ZA, OLDEST, NEWEST } = FILTER_TYPES;
 
 export const TabSectionUserProfileCreations: FC<SectionContainerProps> = ({
   chainAccount,
@@ -33,9 +35,7 @@ export const TabSectionUserProfileCreations: FC<SectionContainerProps> = ({
   const [isLoadingInitialMount, setIsLoadingInitialMount] = useState<boolean>(
     true
   );
-  const [creationsFilter, setCreationsFilter] = useState<string>(
-    FILTER_TYPES.RECENTLY_CREATED
-  );
+  const [creationsFilter, setCreationsFilter] = useState<Filter>(NEWEST);
 
   const isUsersPage = currentUser && currentUser.actor === chainAccount;
 
@@ -64,13 +64,17 @@ export const TabSectionUserProfileCreations: FC<SectionContainerProps> = ({
             showZeroMints: isUsersPage,
           });
 
+          const creationsByNameAZ = creations
+            .slice()
+            .sort((a, b) =>
+              a.name.toLowerCase().localeCompare(b.name.toLowerCase())
+            );
+
           const allCreationsByFilter = {
-            [FILTER_TYPES.NAME]: creations
-              .slice()
-              .sort((a, b) =>
-                a.name.toLowerCase().localeCompare(b.name.toLowerCase())
-              ),
-            [FILTER_TYPES.RECENTLY_CREATED]: creations,
+            [NAME_AZ.label]: creationsByNameAZ,
+            [NAME_ZA.label]: creationsByNameAZ.slice().reverse(),
+            [NEWEST.label]: creations,
+            [OLDEST.label]: creations.slice().reverse(),
           };
 
           setAllCreations(allCreationsByFilter);
@@ -85,22 +89,25 @@ export const TabSectionUserProfileCreations: FC<SectionContainerProps> = ({
   }, [chainAccount]);
 
   const showNextCreationsPage = async () => {
-    const numNextPageItems = allCreations[creationsFilter].slice(
+    const numNextPageItems = allCreations[creationsFilter.label].slice(
       (nextPageNumber - 1) * PAGINATION_LIMIT,
       nextPageNumber * PAGINATION_LIMIT
     ).length;
 
     setRenderedCreations(
-      allCreations[creationsFilter].slice(0, nextPageNumber * PAGINATION_LIMIT)
+      allCreations[creationsFilter.label].slice(
+        0,
+        nextPageNumber * PAGINATION_LIMIT
+      )
     );
     setNextPageNumber((prevPageNumber) =>
       numNextPageItems < PAGINATION_LIMIT ? -1 : prevPageNumber + 1
     );
   };
 
-  const handleCreationsFilterClick = (filter: string) => {
+  const handleCreationsFilterClick = (filter: Filter) => {
     setCreationsFilter(filter);
-    const pageOneItems = allCreations[filter].slice(0, PAGINATION_LIMIT);
+    const pageOneItems = allCreations[filter.label].slice(0, PAGINATION_LIMIT);
     setRenderedCreations(pageOneItems);
     setNextPageNumber(pageOneItems.length < PAGINATION_LIMIT ? -1 : 2);
   };
@@ -118,7 +125,7 @@ export const TabSectionUserProfileCreations: FC<SectionContainerProps> = ({
           nextPageNumber={nextPageNumber}
           tabsProps={tabsProps}
           filterDropdownProps={{
-            filters: [FILTER_TYPES.NAME, FILTER_TYPES.RECENTLY_CREATED],
+            filters: [NAME_AZ, NAME_ZA, OLDEST, NEWEST],
             activeFilter: creationsFilter,
             handleFilterClick: handleCreationsFilterClick,
           }}
