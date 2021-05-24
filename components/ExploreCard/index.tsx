@@ -27,7 +27,7 @@ const ExploreCard = (): JSX.Element => {
     } else {
       setImgSrc('/Explore.png');
     }
-  }, [isDesktop]);
+  }, [isDesktop, isMobile]);
 
   const handleGetStartedClick = currentUser
     ? () => router.push('/create')
