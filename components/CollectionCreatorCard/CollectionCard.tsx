@@ -86,10 +86,7 @@ const CollectionCard = ({ cardContent }: Props): JSX.Element => {
           />
         </IconContainer>
         <Title>{name}</Title>
-        <Description>
-          {description ||
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque iaculis, orci at fermentum blandit, dolor magna dictum arcu, sit amet ullamcorper enim nunc sit amet libero. Nunc nunc ipsum, rhoncus quis ipsum placerat, posuere scelerisque libero. Proin eu erat velit. Praesent ac dolor orci. Sed egestas metus quis pretium accumsan. Duis malesuada aliquam justo sit amet tristique. Nunc sem arcu, facilisis eget aliquam id, pharetra a enim. Mauris quis erat a nunc vehicula accumsan semper quis nulla. Duis vel felis venenatis, cursus ipsum id, vehicula metus.'}
-        </Description>
+        {/* <Description>{description}</Description> */}
       </BottomSection>
     </Card>
   );
