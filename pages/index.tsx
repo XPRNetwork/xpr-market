@@ -7,7 +7,6 @@ import { MODAL_TYPES } from '../components/Provider';
 import { useFirebaseFeaturedTemplates } from '../services/firebase';
 import Grid from '../components/Grid';
 import { CARD_RENDER_TYPES } from '../utils/constants';
-import { useBlacklistContext } from '../components/Provider';
 
 const MarketPlace = (): JSX.Element => {
   const featuredTemplates = useFirebaseFeaturedTemplates();

@@ -68,6 +68,7 @@ const CollectionPage = (): JSX.Element => {
       type: collection,
       page: prefetchPageNumber,
     });
+
     setPrefetchedTemplates(prefetchedResult as Template[]);
 
     if (!prefetchedResult.length) {

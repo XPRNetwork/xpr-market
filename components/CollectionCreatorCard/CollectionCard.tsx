@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { useAuthContext, useCreateAssetContext } from '../Provider';
+import {
+  useAuthContext,
+  useCreateAssetContext,
+  useBlacklistContext,
+} from '../Provider';
 import {
   Card,
   Blur,
@@ -22,6 +26,7 @@ type Props = {
 const CollectionCard = ({ cardContent }: Props): JSX.Element => {
   const router = useRouter();
   const { cachedNewlyCreatedAssets } = useCreateAssetContext();
+  const { collectionsBlacklist } = useBlacklistContext();
   const { currentUser } = useAuthContext();
   const [collectionImgSrc, setCollectionImgSrc] = useState<string>('');
   const {
@@ -57,6 +62,10 @@ const CollectionCard = ({ cardContent }: Props): JSX.Element => {
   };
 
   // TO DO: Description will most likely need to be commented out until backend team adds description into ES
+
+  if (collectionsBlacklist[collection_name]) {
+    return null;
+  }
 
   return (
     <Card onClick={openCollectionsPage}>
