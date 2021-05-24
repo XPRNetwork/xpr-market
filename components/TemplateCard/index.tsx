@@ -20,7 +20,11 @@ import {
   IPFS_RESOLVER_IMAGE,
   RESIZER_IMAGE_SM,
 } from '../../utils/constants';
-import { useCreateAssetContext, useAuthContext } from '../Provider';
+import {
+  useCreateAssetContext,
+  useAuthContext,
+  useBlacklistContext,
+} from '../Provider';
 import { Template } from '../../services/templates';
 
 type Props = {
@@ -49,6 +53,7 @@ const TemplateCard = ({
 
   const { cachedNewlyCreatedAssets } = useCreateAssetContext();
   const { currentUser } = useAuthContext();
+  const { templatesBlacklist } = useBlacklistContext();
   const [templateVideoSrc, setTemplateVideoSrc] = useState<string>('');
   const [templateImgSrc, setTemplateImgSrc] = useState<string>('');
   const [fallbackImgSrc, setFallbackImgSrc] = useState<string>('');
@@ -121,6 +126,10 @@ const TemplateCard = ({
   ) : (
     <PlaceholderPrice aria-hidden />
   );
+
+  if (templatesBlacklist && templatesBlacklist[template_id]) {
+    return null;
+  }
 
   return (
     <Card

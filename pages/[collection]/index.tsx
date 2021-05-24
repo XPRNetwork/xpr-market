@@ -28,6 +28,7 @@ import {
   MODAL_TYPES,
   useAuthContext,
   useModalContext,
+  useBlacklistContext,
 } from '../../components/Provider';
 import { useNavigatorUserAgent, usePrevious } from '../../hooks';
 
@@ -36,6 +37,7 @@ const CollectionPage = (): JSX.Element => {
   const { isLoadingUser, currentUser } = useAuthContext();
   const { setModalProps } = useModalContext();
   const { isDesktop } = useNavigatorUserAgent();
+  const { collectionsBlacklist, isLoadingBlacklist } = useBlacklistContext();
   const { collection: caseSensitiveCollection } = router.query as RouterQuery;
   const collection = caseSensitiveCollection
     ? caseSensitiveCollection.toLowerCase()
@@ -66,6 +68,7 @@ const CollectionPage = (): JSX.Element => {
       type: collection,
       page: prefetchPageNumber,
     });
+
     setPrefetchedTemplates(prefetchedResult as Template[]);
 
     if (!prefetchedResult.length) {
@@ -123,12 +126,17 @@ const CollectionPage = (): JSX.Element => {
     (async () => {
       if (
         collection &&
+        !isLoadingBlacklist &&
         (!renderedTemplates.length || collection !== previousCollection)
       ) {
-        fetchCollection();
+        if (collectionsBlacklist[collection]) {
+          router.push('/');
+        } else {
+          fetchCollection();
+        }
       }
     })();
-  }, [collection]);
+  }, [collection, isLoadingBlacklist]);
 
   useEffect(() => {
     if (collectionData) {

@@ -10,6 +10,7 @@ import { CARD_RENDER_TYPES } from '../utils/constants';
 
 const MarketPlace = (): JSX.Element => {
   const featuredTemplates = useFirebaseFeaturedTemplates();
+
   return (
     <PageLayout>
       <Banner modalType={MODAL_TYPES.CLAIM} />

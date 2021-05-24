@@ -10,6 +10,7 @@ import {
 } from './CollectionCreatorCard.styled';
 import { Image } from '../../styles/index.styled';
 import { SearchAuthor } from '../../services/search';
+import { useBlacklistContext } from '../Provider';
 
 type Props = {
   cardContent: SearchAuthor;
@@ -17,6 +18,7 @@ type Props = {
 
 const CreatorCard = ({ cardContent }: Props): JSX.Element => {
   const router = useRouter();
+  const { authorsBlacklist } = useBlacklistContext();
   const { acc, avatar, name } = cardContent;
 
   const openUsersPage = () => {
@@ -26,6 +28,11 @@ const CreatorCard = ({ cardContent }: Props): JSX.Element => {
   const avatarSrc = avatar
     ? `data:image/jpeg;base64,${avatar}`
     : '/default-avatar.png';
+
+  if (authorsBlacklist && authorsBlacklist[acc]) {
+    return null;
+  }
+
   return (
     <Card onClick={openUsersPage}>
       <BlurContainer>
