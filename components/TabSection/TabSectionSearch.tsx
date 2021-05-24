@@ -68,6 +68,8 @@ const TabSectionSearch: FC<Props> = ({
   useEffect(() => {
     (async () => {
       if (query) {
+        setFilterType(emptyFilterObject);
+        setPrefetchPageNumber(2);
         setIsLoadingPrices(true);
         setIsLoadingInitialMount(true);
 
@@ -140,9 +142,7 @@ const TabSectionSearch: FC<Props> = ({
       });
       setPrefetchedItems(searchResponse.contents);
       setPrefetchPageNumber((prevPageNumber) =>
-        prefetchPageNumber >= searchResponse.totalPages
-          ? -1
-          : prevPageNumber + 1
+        prefetchPageNumber > searchResponse.totalPages ? -1 : prevPageNumber + 1
       );
     }
   };
@@ -164,7 +164,10 @@ const TabSectionSearch: FC<Props> = ({
           nextPageNumber={prefetchPageNumber}
           tabsProps={tabsProps}
           filterDropdownProps={{
-            filters: Object.values(FILTER_TYPES),
+            filters:
+              searchContentType !== 'authors'
+                ? Object.values(FILTER_TYPES)
+                : [FILTER_TYPES.NAME_AZ, FILTER_TYPES.NAME_ZA],
             activeFilter: filterType,
             handleFilterClick: handleItemsFilterClick,
           }}
