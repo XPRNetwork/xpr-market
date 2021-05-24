@@ -123,7 +123,7 @@ const TabSectionSearch: FC<Props> = ({
     };
     setPrefetchPageNumber(2);
 
-    if (filter !== filterType) {
+    if (filter.label !== filterType.label) {
       setFilterType(filter);
     } else {
       setFilterType(emptyFilterObject);
