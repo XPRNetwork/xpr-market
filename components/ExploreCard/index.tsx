@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Button from '../Button';
 import { Image } from '../../styles/index.styled';
@@ -15,8 +16,18 @@ import {
 const ExploreCard = (): JSX.Element => {
   const router = useRouter();
   const { currentUser, login } = useAuthContext();
+  const [imgSrc, setImgSrc] = useState<string>('');
   const { isDesktop } = useNavigatorUserAgent();
   const { isMobile } = useWindowSize();
+
+
+  useEffect(() => {
+    if (isDesktop !== null && (!isDesktop || isMobile)) {
+      setImgSrc('/ExploreMobile.png');
+    } else {
+      setImgSrc('/Explore.png');
+    }
+  }, [isDesktop]);
 
   const handleGetStartedClick = currentUser
     ? () => router.push('/create')
@@ -45,7 +56,7 @@ const ExploreCard = (): JSX.Element => {
           height="100%"
           objectFit="cover"
           alt="Explore"
-          src={isMobile || !isDesktop ? '/ExploreMobile.png' : 'Explore.png'}
+          src={imgSrc}
         />
       </ImageContainer>
     </Container>
