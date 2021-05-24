@@ -172,20 +172,20 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
   };
 
   useEffect(() => {
-    if (collection && templateId) {
+    if (collection && templateId && !isLoadingBlacklist) {
       fetchPageData();
     }
-  }, [collection, templateId]);
+  }, [collection, templateId, isLoadingBlacklist]);
 
   useEffect(() => {
-    const queryValuesPresent = chainAccount && collection && templateId;
-    const isBlacklisted =
-      authorsBlacklist[chainAccount] ||
-      collectionsBlacklist[collection] ||
-      templatesBlacklist[templateId];
-    const isNotOwner = !currentUser || currentUser.actor !== chainAccount;
-
     if (!isLoadingBlacklist) {
+      const queryValuesPresent = chainAccount && collection && templateId;
+      const isBlacklisted =
+        authorsBlacklist[chainAccount] ||
+        collectionsBlacklist[collection] ||
+        templatesBlacklist[templateId];
+      const isNotOwner = !currentUser || currentUser.actor !== chainAccount;
+
       if (queryValuesPresent && isBlacklisted) {
         router.push('/');
       } else if (queryValuesPresent && isNotOwner) {

@@ -12,6 +12,7 @@ const CollectionBox = ({
   active,
 }: CollectionBoxProps): JSX.Element => {
   const { collection_name, name, img } = collection;
+
   return (
     <BoxContainer active={active}>
       <CollectionIcon name={collection_name} image={img} width="40px" />

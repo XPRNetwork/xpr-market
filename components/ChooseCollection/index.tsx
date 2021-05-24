@@ -12,6 +12,7 @@ import {
   useAuthContext,
   useCreateAssetContext,
   CREATE_PAGE_STATES,
+  useBlacklistContext,
 } from '../../components/Provider';
 import { getAuthorsCollections, Collection } from '../../services/collections';
 
@@ -19,6 +20,7 @@ const ChooseCollection: FC<{
   setPageState: Dispatch<SetStateAction<string>>;
 }> = ({ setPageState }) => {
   const { currentUser, isLoadingUser } = useAuthContext();
+  const { isLoadingBlacklist, collectionsBlacklist } = useBlacklistContext();
   const {
     setSelectedCollection,
     setNewCollection,
@@ -34,16 +36,21 @@ const ChooseCollection: FC<{
   );
 
   useEffect(() => {
-    if (currentUser && !isLoadingUser) {
+    if (currentUser && !isLoadingUser && !isLoadingBlacklist) {
       getUserCollections();
     }
-  }, [currentUser, isLoadingUser]);
+  }, [currentUser, isLoadingUser, isLoadingBlacklist]);
 
   const getUserCollections = async () => {
     if (currentUser) {
       try {
         setIsLoadingCollections(true);
-        const collections = await getAuthorsCollections(currentUser.actor);
+        const unfilteredCollections = await getAuthorsCollections(
+          currentUser.actor
+        );
+        const collections = unfilteredCollections.filter(
+          ({ collection_name }) => !collectionsBlacklist[collection_name]
+        );
         setCollectionsList(collections);
         setFetchError('');
         setIsLoadingCollections(false);
