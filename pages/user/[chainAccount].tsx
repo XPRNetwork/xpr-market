@@ -67,18 +67,17 @@ const User = (): JSX.Element => {
   };
 
   useEffect(() => {
+    if (isLoadingBlacklist) return;
+    if (authorsBlacklist[chainAccount]) {
+      router.push('/');
+      return;
+    }
     (async () => {
       setIsLoading(true);
       try {
-        if (!isLoadingBlacklist) {
-          if (authorsBlacklist[chainAccount]) {
-            router.push('/');
-          } else {
-            const profileUser = await getUser(chainAccount);
-            setUser(profileUser);
-            setIsLoading(false);
-          }
-        }
+        const profileUser = await getUser(chainAccount);
+        setUser(profileUser);
+        setIsLoading(false);
       } catch (e) {
         setErrorMessage(e.message);
         setIsLoading(false);

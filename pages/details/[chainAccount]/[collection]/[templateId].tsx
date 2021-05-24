@@ -178,25 +178,25 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
   }, [collection, templateId, isLoadingBlacklist]);
 
   useEffect(() => {
-    if (!isLoadingBlacklist) {
-      const queryValuesPresent = chainAccount && collection && templateId;
-      const isBlacklisted =
-        authorsBlacklist[chainAccount] ||
-        collectionsBlacklist[collection] ||
-        templatesBlacklist[templateId];
-      const isNotOwner = !currentUser || currentUser.actor !== chainAccount;
+    if (isLoadingBlacklist) return;
 
-      if (queryValuesPresent && isBlacklisted) {
-        router.push('/');
-      } else if (queryValuesPresent && isNotOwner) {
-        router.push(`/${collection}/${templateId}`);
-      } else {
-        (async () => {
-          if (currentUser && currentUser.actor) {
-            await fees.refreshRamInfoForUser(currentUser.actor);
-          }
-        })();
-      }
+    const queryValuesPresent = chainAccount && collection && templateId;
+    const isBlacklisted =
+      authorsBlacklist[chainAccount] ||
+      collectionsBlacklist[collection] ||
+      templatesBlacklist[templateId];
+    const isNotOwner = !currentUser || currentUser.actor !== chainAccount;
+
+    if (queryValuesPresent && isBlacklisted) {
+      router.push('/');
+    } else if (queryValuesPresent && isNotOwner) {
+      router.push(`/${collection}/${templateId}`);
+    } else {
+      (async () => {
+        if (currentUser && currentUser.actor) {
+          await fees.refreshRamInfoForUser(currentUser.actor);
+        }
+      })();
     }
   }, [chainAccount, collection, templateId, currentUser, isLoadingBlacklist]);
 

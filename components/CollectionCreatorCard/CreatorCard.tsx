@@ -29,7 +29,7 @@ const CreatorCard = ({ cardContent }: Props): JSX.Element => {
     ? `data:image/jpeg;base64,${avatar}`
     : '/default-avatar.png';
 
-  if (authorsBlacklist[acc]) {
+  if (authorsBlacklist && authorsBlacklist[acc]) {
     return null;
   }
 

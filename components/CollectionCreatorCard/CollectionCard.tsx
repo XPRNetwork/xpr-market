@@ -63,7 +63,7 @@ const CollectionCard = ({ cardContent }: Props): JSX.Element => {
 
   // TO DO: Description will most likely need to be commented out until backend team adds description into ES
 
-  if (collectionsBlacklist[collection_name]) {
+  if (collectionsBlacklist && collectionsBlacklist[collection_name]) {
     return null;
   }
 

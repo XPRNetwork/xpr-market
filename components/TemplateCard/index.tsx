@@ -127,7 +127,7 @@ const TemplateCard = ({
     <PlaceholderPrice aria-hidden />
   );
 
-  if (templatesBlacklist[template_id]) {
+  if (templatesBlacklist && templatesBlacklist[template_id]) {
     return null;
   }
 
