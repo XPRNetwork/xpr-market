@@ -2,7 +2,7 @@ import { ConnectWallet } from '@proton/web-sdk';
 import { LinkSession, Link } from '@proton/link';
 import logoUrl from '../public/logo.svg';
 import proton from './proton-rpc';
-import { DEFAULT_SCHEMA } from '../utils/constants';
+import { DEFAULT_SCHEMA, TOKEN_PRECISION } from '../utils/constants';
 import fees, { MintFee } from '../services/fees';
 
 export interface User {
@@ -1338,6 +1338,15 @@ class ProtonSDK {
     }
   };
 
+  /**
+   * Purchase a specific asset for sale.
+   *
+   * @param {string}   buyer          Buyer of the asset for sale.
+   * @param {string[]} amount         Amount to buy the asset for sale.
+   * @param {string[]} sale_id        ID of the specific asset sale.
+   * @return {Response}               Returns an object indicating the success of the transaction and transaction ID.
+   */
+
   purchaseSale = async ({
     buyer,
     amount,
@@ -1403,6 +1412,15 @@ class ProtonSDK {
     }
   };
 
+  /**
+   * Create an auction for a specific asset.
+   *
+   * @param {string}   asset_id       ID of the asset to put up for auction.
+   * @param {string[]} starting_bid   Minimum starting bid for the auction.
+   * @param {string[]} duration       Duration in seconds the asset will be up for auction.
+   * @return {Response}               Returns an object indicating the success of the transaction and transaction ID.
+   */
+
   createAuction = async ({
     asset_id,
     starting_bid,
@@ -1455,7 +1473,7 @@ class ProtonSDK {
       ];
 
       const result = await this.session.transact(
-        { actions: actions },
+        { actions },
         { broadcast: true }
       );
 
@@ -1475,12 +1493,18 @@ class ProtonSDK {
     }
   };
 
+  /**
+   * Make a bid on an auction for a specific asset.
+   *
+   * @param {string}   auction_id     ID of the auction to make a bid on.
+   * @param {string[]} bid            Bid amount on the auction.
+   * @return {Response}               Returns an object indicating the success of the transaction and transaction ID.
+   */
+
   bidOnAuction = async ({
-    bidder,
     auction_id,
     bid,
   }: {
-    bidder: string;
     auction_id: string;
     bid: string;
   }): Promise<Response> => {
@@ -1489,23 +1513,34 @@ class ProtonSDK {
         throw new Error('Unable to bid on an auction without logging in.');
       }
 
+      const bidder = this.session.auth.actor;
+      const currentBalance = await proton.getAtomicMarketBalance(bidder);
+      const [bidAmount, bidToken] = bid.split(' ');
+      const [balanceAmount, balanceToken] = currentBalance.split(' ');
+      const balanceMinusBid = parseFloat(bidAmount) - parseFloat(balanceAmount);
+
       const actions = [
-        {
-          account: 'xtokens',
-          name: 'transfer',
-          authorization: [
-            {
-              actor: bidder,
-              permission: 'active',
-            },
-          ],
-          data: {
-            from: bidder,
-            to: 'atomicmarket',
-            quantity: bid,
-            memo: 'deposit',
-          },
-        },
+        balanceMinusBid > 0
+          ? {
+              account: 'xtokens',
+              name: 'transfer',
+              authorization: [
+                {
+                  actor: bidder,
+                  permission: 'active',
+                },
+              ],
+              data: {
+                from: bidder,
+                to: 'atomicmarket',
+                quantity:
+                  bidToken === balanceToken
+                    ? `${balanceMinusBid.toFixed(TOKEN_PRECISION)} ${bidToken}`
+                    : bid,
+                memo: 'deposit',
+              },
+            }
+          : undefined,
         {
           account: 'atomicmarket',
           name: 'auctionbid',
@@ -1522,10 +1557,10 @@ class ProtonSDK {
             taker_marketplace: 'fees.market',
           },
         },
-      ];
+      ].filter((action) => action !== undefined);
 
       const result = await this.session.transact(
-        { actions: actions },
+        { actions },
         { broadcast: true }
       );
 
@@ -1545,53 +1580,12 @@ class ProtonSDK {
     }
   };
 
-  cancelAuction = async ({
-    auction_id,
-  }: {
-    auction_id: string;
-  }): Promise<Response> => {
-    try {
-      if (!this.session) {
-        throw new Error('Unable to cancel an auction without logging in.');
-      }
-
-      const seller = this.session.auth.actor;
-      const actions = [
-        {
-          account: 'atomicmarket',
-          name: 'cancelauct',
-          authorization: [
-            {
-              actor: seller,
-              permission: 'active',
-            },
-          ],
-          data: {
-            auction_id,
-          },
-        },
-      ];
-
-      const result = await this.session.transact(
-        { actions: actions },
-        { broadcast: true }
-      );
-
-      await fees.refreshRamInfoForUser(seller);
-
-      return {
-        success: true,
-        transactionId: result.processed.id,
-      };
-    } catch (e) {
-      const message = e.message[0].toUpperCase() + e.message.slice(1);
-      return {
-        success: false,
-        error:
-          message || 'An error has occurred while trying to cancel an auction.',
-      };
-    }
-  };
+  /**
+   * Confirm the end of an auction as the seller (can only be done after the auction duration times out).
+   *
+   * @param {string}   auction_id     ID of the auction to confirm.
+   * @return {Response}               Returns an object indicating the success of the transaction and transaction ID.
+   */
 
   claimAuctionSell = async ({
     auction_id,
@@ -1621,7 +1615,7 @@ class ProtonSDK {
       ];
 
       const result = await this.session.transact(
-        { actions: actions },
+        { actions },
         { broadcast: true }
       );
 
@@ -1640,6 +1634,16 @@ class ProtonSDK {
       };
     }
   };
+
+  /**
+   * Confirm the end of an auction as the buyer (can only be done after the
+   * seller confirms the end of the auction and after the auction duration times
+   * out and ).
+   *
+   * @param {string}   auction_id     ID of the auction to confirm.
+   * @return {Response}               Returns an object indicating the success
+   * of the transaction and transaction ID.
+   */
 
   claimAuctionBuy = async ({
     auction_id,
@@ -1669,7 +1673,7 @@ class ProtonSDK {
       ];
 
       const result = await this.session.transact(
-        { actions: actions },
+        { actions },
         { broadcast: true }
       );
 
@@ -1685,6 +1689,61 @@ class ProtonSDK {
         success: false,
         error:
           message || 'An error has occurred while trying to claim an auction.',
+      };
+    }
+  };
+
+  /**
+   * Cancel a specific auction.
+   *
+   * @param {string}   auction_id     ID of the auction to cancel.
+   * @return {Response}               Returns an object indicating the success of the transaction and transaction ID.
+   */
+
+  cancelAuction = async ({
+    auction_id,
+  }: {
+    auction_id: string;
+  }): Promise<Response> => {
+    try {
+      if (!this.session) {
+        throw new Error('Unable to cancel an auction without logging in.');
+      }
+
+      const seller = this.session.auth.actor;
+      const actions = [
+        {
+          account: 'atomicmarket',
+          name: 'cancelauct',
+          authorization: [
+            {
+              actor: seller,
+              permission: 'active',
+            },
+          ],
+          data: {
+            auction_id,
+          },
+        },
+      ];
+
+      const result = await this.session.transact(
+        { actions },
+        { broadcast: true }
+      );
+
+      await fees.refreshRamInfoForUser(seller);
+
+      return {
+        success: true,
+        transactionId: result.processed.id,
+      };
+    } catch (e) {
+      const message = e.message[0].toUpperCase() + e.message.slice(1);
+      return {
+        success: false,
+        error:
+          message || 'An error has occurred while trying to cancel an auction.',
       };
     }
   };

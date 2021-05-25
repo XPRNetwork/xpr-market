@@ -20,7 +20,6 @@ const ExploreCard = (): JSX.Element => {
   const { isDesktop } = useNavigatorUserAgent();
   const { isMobile } = useWindowSize();
 
-
   useEffect(() => {
     if (isDesktop !== null && (!isDesktop || isMobile)) {
       setImgSrc('/ExploreMobile.png');

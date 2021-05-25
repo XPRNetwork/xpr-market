@@ -1,16 +1,15 @@
 import { useState } from 'react';
 import PageLayout from '../components/PageLayout';
-import { useAuthContext } from '../components/Provider';
 import ProtonSDK from '../services/proton';
 import { getAllAuctionsBySeller } from '../services/auctions';
 
 const Test = (): JSX.Element => {
-  const { currentUser } = useAuthContext();
   const [assetId, setAssetId] = useState('');
   const [startingBid, setStartingBid] = useState('');
   const [auctionDuration, setAuctionDuration] = useState('');
   const [bid, setBid] = useState('');
   const [auctionId, setAuctionId] = useState('');
+  const [seller, setSeller] = useState('');
 
   const createAuction = async () => {
     const res = await ProtonSDK.createAuction({
@@ -23,7 +22,6 @@ const Test = (): JSX.Element => {
 
   const bidOnAuction = async () => {
     const res = await ProtonSDK.bidOnAuction({
-      bidder: currentUser ? currentUser.actor : '',
       auction_id: auctionId,
       bid,
     });
@@ -52,13 +50,20 @@ const Test = (): JSX.Element => {
   };
 
   const getAllAuctions = async () => {
-    const seller = currentUser ? currentUser.actor : '';
     const auctions = await getAllAuctionsBySeller(seller);
-    console.log(`${seller}'s auctions: `, auctions);
+    console.log(`getAllAuctions by ${seller}: `, auctions);
   };
 
   return (
     <PageLayout title="Test">
+      <br />
+      <br />
+      <input
+        placeholder="Seller"
+        value={seller}
+        onChange={(e) => setSeller(e.target.value)}
+      />
+      <button onClick={getAllAuctions}>Get Auctions (console log)</button>
       <br />
       <br />
       1. Seller creates an auction
@@ -78,7 +83,6 @@ const Test = (): JSX.Element => {
         onChange={(e) => setAuctionDuration(e.target.value)}
       />
       <button onClick={createAuction}>Create Auction</button>
-      <button onClick={getAllAuctions}>Get Current User Auctions (console log)</button>
       <br />
       <br />
       2. Bidder makes bid on auction
@@ -113,6 +117,7 @@ const Test = (): JSX.Element => {
       <button onClick={claimAuctionAsBidder}>Finish Auction (Buyer)</button>
       <br />
       <br />
+      (Optional) Cancel an auction
       <input
         placeholder="Auction ID"
         value={auctionId}
