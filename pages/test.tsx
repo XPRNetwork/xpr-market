@@ -31,16 +31,14 @@ const Test = (): JSX.Element => {
   };
 
   const claimAuctionAsSeller = async () => {
-    const res = await ProtonSDK.claimAuction({
-      user: currentUser ? currentUser.actor : '',
+    const res = await ProtonSDK.claimAuctionSell({
       auction_id: auctionId,
     });
     console.log('claimAuctionAsSeller: ', res);
   };
 
   const claimAuctionAsBidder = async () => {
-    const res = await ProtonSDK.claimAuction({
-      user: currentUser ? currentUser.actor : '',
+    const res = await ProtonSDK.claimAuctionBuy({
       auction_id: auctionId,
     });
     console.log('claimAuctionAsBidder: ', res);

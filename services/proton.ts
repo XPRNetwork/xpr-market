@@ -1593,11 +1593,9 @@ class ProtonSDK {
     }
   };
 
-  claimAuction = async ({
-    user,
+  claimAuctionSell = async ({
     auction_id,
   }: {
-    user: string;
     auction_id: string;
   }): Promise<Response> => {
     try {
@@ -1605,13 +1603,14 @@ class ProtonSDK {
         throw new Error('Unable to claim an auction without logging in.');
       }
 
+      const seller = this.session.auth.actor;
       const actions = [
         {
           account: 'atomicmarket',
-          name: 'auctclaimbuy',
+          name: 'auctclaimsel',
           authorization: [
             {
-              actor: user,
+              actor: seller,
               permission: 'active',
             },
           ],
@@ -1626,7 +1625,55 @@ class ProtonSDK {
         { broadcast: true }
       );
 
-      await fees.refreshRamInfoForUser(user);
+      await fees.refreshRamInfoForUser(seller);
+
+      return {
+        success: true,
+        transactionId: result.processed.id,
+      };
+    } catch (e) {
+      const message = e.message[0].toUpperCase() + e.message.slice(1);
+      return {
+        success: false,
+        error:
+          message || 'An error has occurred while trying to claim an auction.',
+      };
+    }
+  };
+
+  claimAuctionBuy = async ({
+    auction_id,
+  }: {
+    auction_id: string;
+  }): Promise<Response> => {
+    try {
+      if (!this.session) {
+        throw new Error('Unable to claim an auction without logging in.');
+      }
+
+      const buyer = this.session.auth.actor;
+      const actions = [
+        {
+          account: 'atomicmarket',
+          name: 'auctclaimbuy',
+          authorization: [
+            {
+              actor: buyer,
+              permission: 'active',
+            },
+          ],
+          data: {
+            auction_id,
+          },
+        },
+      ];
+
+      const result = await this.session.transact(
+        { actions: actions },
+        { broadcast: true }
+      );
+
+      await fees.refreshRamInfoForUser(buyer);
 
       return {
         success: true,
