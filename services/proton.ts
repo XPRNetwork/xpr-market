@@ -1581,7 +1581,8 @@ class ProtonSDK {
   };
 
   /**
-   * Confirm the end of an auction as the seller (can only be done after the auction duration times out).
+   * Claim the tokens received in an auction as the seller (can only be done
+   * after the auction duration times out).
    *
    * @param {string}   auction_id     ID of the auction to confirm.
    * @return {Response}               Returns an object indicating the success of the transaction and transaction ID.
@@ -1636,9 +1637,8 @@ class ProtonSDK {
   };
 
   /**
-   * Confirm the end of an auction as the buyer (can only be done after the
-   * seller confirms the end of the auction and after the auction duration times
-   * out and ).
+   * Claim the asset won in an auction as the buyer (can only be done after the
+   * auction duration times out).
    *
    * @param {string}   auction_id     ID of the auction to confirm.
    * @return {Response}               Returns an object indicating the success

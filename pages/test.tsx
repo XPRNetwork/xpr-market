@@ -28,18 +28,18 @@ const Test = (): JSX.Element => {
     console.log('bidOnAuction: ', res);
   };
 
-  const claimAuctionAsSeller = async () => {
+  const claimTokensAsSeller = async () => {
     const res = await ProtonSDK.claimAuctionSell({
       auction_id: auctionId,
     });
-    console.log('claimAuctionAsSeller: ', res);
+    console.log('claimTokensAsSeller: ', res);
   };
 
-  const claimAuctionAsBidder = async () => {
+  const claimAssetAsBuyer = async () => {
     const res = await ProtonSDK.claimAuctionBuy({
       auction_id: auctionId,
     });
-    console.log('claimAuctionAsBidder: ', res);
+    console.log('claimAssetAsBuyer: ', res);
   };
 
   const cancelAuction = async () => {
@@ -99,23 +99,27 @@ const Test = (): JSX.Element => {
       <button onClick={bidOnAuction}>Bid on Auction</button>
       <br />
       <br />
-      3. Seller finishes auction with ProtonSDK.claimAuctionAsSeller
+      <h1>3. After an auction duration times out:</h1>
+      <br />
+      Seller finishes auction and claims tokens
       <input
         placeholder="Auction ID"
         value={auctionId}
         onChange={(e) => setAuctionId(e.target.value)}
       />
-      <button onClick={claimAuctionAsSeller}>Finish Auction (Seller)</button>
+      <button onClick={claimTokensAsSeller}>
+        Finish auction and claim tokens (Seller)
+      </button>
       <br />
-      <br />
-      4. Buyer finishes auction with ProtonSDK.claimAuctionAsBuyer
+      Buyer finishes auction and claims the asset
       <input
         placeholder="Auction ID"
         value={auctionId}
         onChange={(e) => setAuctionId(e.target.value)}
       />
-      <button onClick={claimAuctionAsBidder}>Finish Auction (Buyer)</button>
-      <br />
+      <button onClick={claimAssetAsBuyer}>
+        Finish auction and claim asset (Buyer)
+      </button>
       <br />
       (Optional) Cancel an auction
       <input
