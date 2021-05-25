@@ -238,6 +238,12 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
       return <LoadingPage />;
     }
 
+    // TODO: Remove after testing
+    console.log(
+      'templateAsset IDs',
+      templateAssets.map(({ asset_id }) => asset_id)
+    );
+
     return (
       <DetailsLayout
         templateId={templateId}

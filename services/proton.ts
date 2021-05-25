@@ -1402,6 +1402,245 @@ class ProtonSDK {
       };
     }
   };
+
+  createAuction = async ({
+    asset_id,
+    starting_bid,
+    duration,
+  }: {
+    asset_id: string;
+    starting_bid: string;
+    duration: string;
+  }): Promise<Response> => {
+    try {
+      if (!this.session) {
+        throw new Error('Unable to create an auction without logging in.');
+      }
+
+      const seller = this.session.auth.actor;
+      const actions = [
+        {
+          account: 'atomicmarket',
+          name: 'announceauct',
+          authorization: [
+            {
+              actor: seller,
+              permission: 'active',
+            },
+          ],
+          data: {
+            seller,
+            asset_ids: [asset_id],
+            starting_bid,
+            duration,
+            maker_marketplace: 'fees.market',
+          },
+        },
+        {
+          account: 'atomicassets',
+          name: 'transfer',
+          authorization: [
+            {
+              actor: seller,
+              permission: 'active',
+            },
+          ],
+          data: {
+            from: seller,
+            to: 'atomicmarket',
+            asset_ids: [asset_id],
+            memo: 'auction',
+          },
+        },
+      ];
+
+      const result = await this.session.transact(
+        { actions: actions },
+        { broadcast: true }
+      );
+
+      await fees.refreshRamInfoForUser(seller);
+
+      return {
+        success: true,
+        transactionId: result.processed.id,
+      };
+    } catch (e) {
+      const message = e.message[0].toUpperCase() + e.message.slice(1);
+      return {
+        success: false,
+        error:
+          message || 'An error has occurred while trying to create an auction.',
+      };
+    }
+  };
+
+  bidOnAuction = async ({
+    bidder,
+    auction_id,
+    bid,
+  }: {
+    bidder: string;
+    auction_id: string;
+    bid: string;
+  }): Promise<Response> => {
+    try {
+      if (!this.session) {
+        throw new Error('Unable to bid on an auction without logging in.');
+      }
+
+      const actions = [
+        {
+          account: 'xtokens',
+          name: 'transfer',
+          authorization: [
+            {
+              actor: bidder,
+              permission: 'active',
+            },
+          ],
+          data: {
+            from: bidder,
+            to: 'atomicmarket',
+            quantity: bid,
+            memo: 'deposit',
+          },
+        },
+        {
+          account: 'atomicmarket',
+          name: 'auctionbid',
+          authorization: [
+            {
+              actor: bidder,
+              permission: 'active',
+            },
+          ],
+          data: {
+            bidder,
+            auction_id,
+            bid,
+            taker_marketplace: 'fees.market',
+          },
+        },
+      ];
+
+      const result = await this.session.transact(
+        { actions: actions },
+        { broadcast: true }
+      );
+
+      await fees.refreshRamInfoForUser(bidder);
+
+      return {
+        success: true,
+        transactionId: result.processed.id,
+      };
+    } catch (e) {
+      const message = e.message[0].toUpperCase() + e.message.slice(1);
+      return {
+        success: false,
+        error:
+          message || 'An error has occurred while trying to bid on an auction.',
+      };
+    }
+  };
+
+  cancelAuction = async ({
+    auction_id,
+  }: {
+    auction_id: string;
+  }): Promise<Response> => {
+    try {
+      if (!this.session) {
+        throw new Error('Unable to cancel an auction without logging in.');
+      }
+
+      const seller = this.session.auth.actor;
+      const actions = [
+        {
+          account: 'atomicmarket',
+          name: 'cancelauct',
+          authorization: [
+            {
+              actor: seller,
+              permission: 'active',
+            },
+          ],
+          data: {
+            auction_id,
+          },
+        },
+      ];
+
+      const result = await this.session.transact(
+        { actions: actions },
+        { broadcast: true }
+      );
+
+      await fees.refreshRamInfoForUser(seller);
+
+      return {
+        success: true,
+        transactionId: result.processed.id,
+      };
+    } catch (e) {
+      const message = e.message[0].toUpperCase() + e.message.slice(1);
+      return {
+        success: false,
+        error:
+          message || 'An error has occurred while trying to cancel an auction.',
+      };
+    }
+  };
+
+  claimAuction = async ({
+    user,
+    auction_id,
+  }: {
+    user: string;
+    auction_id: string;
+  }): Promise<Response> => {
+    try {
+      if (!this.session) {
+        throw new Error('Unable to claim an auction without logging in.');
+      }
+
+      const actions = [
+        {
+          account: 'atomicmarket',
+          name: 'auctclaimbuy',
+          authorization: [
+            {
+              actor: user,
+              permission: 'active',
+            },
+          ],
+          data: {
+            auction_id,
+          },
+        },
+      ];
+
+      const result = await this.session.transact(
+        { actions: actions },
+        { broadcast: true }
+      );
+
+      await fees.refreshRamInfoForUser(user);
+
+      return {
+        success: true,
+        transactionId: result.processed.id,
+      };
+    } catch (e) {
+      const message = e.message[0].toUpperCase() + e.message.slice(1);
+      return {
+        success: false,
+        error:
+          message || 'An error has occurred while trying to claim an auction.',
+      };
+    }
+  };
 }
 
 export default new ProtonSDK();
