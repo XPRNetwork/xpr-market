@@ -20,7 +20,6 @@ const ExploreCard = (): JSX.Element => {
   const { isDesktop } = useNavigatorUserAgent();
   const { isMobile } = useWindowSize();
 
-
   useEffect(() => {
     if (isDesktop !== null && (!isDesktop || isMobile)) {
       setImgSrc('/ExploreMobile.png');
@@ -51,13 +50,15 @@ const ExploreCard = (): JSX.Element => {
         </ButtonWrapper>
       </Content>
       <ImageContainer>
-        <Image
-          width="100%"
-          height="100%"
-          objectFit="cover"
-          alt="Explore"
-          src={imgSrc}
-        />
+        {imgSrc ? (
+          <Image
+            width="100%"
+            height="100%"
+            objectFit="cover"
+            alt="Explore"
+            src={imgSrc}
+          />
+        ) : null}
       </ImageContainer>
     </Container>
   );
