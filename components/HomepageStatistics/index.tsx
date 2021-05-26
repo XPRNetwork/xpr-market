@@ -36,6 +36,7 @@ const HomepageStatistics = (): JSX.Element => {
   const [transactions, setTransactions] = useState<string>();
   const [totalSales, setTotalSales] = useState<string>();
   // const [salesToday, setSalesToday] = useState<string>();
+  // getting today's sale numbers currently disabled until we get more sales
 
   useEffect(() => {
     (async () => {
@@ -44,7 +45,7 @@ const HomepageStatistics = (): JSX.Element => {
         setNftsCreated(formatThousands(stats.nftsCreated));
         setTransactions(formatThousands(stats.transactions));
         setTotalSales(`$${formatThousands(stats.totalSales)}`);
-        setSalesToday(`$${formatThousands(stats.salesToday)}`);
+        // setSalesToday(`$${formatThousands(stats.salesToday)}`);
       } catch (err) {
         console.warn(err);
       }
