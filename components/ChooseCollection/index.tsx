@@ -1,4 +1,4 @@
-import { useState, useEffect, Dispatch, SetStateAction } from 'react';
+import { useState, useEffect, FC, Dispatch, SetStateAction } from 'react';
 import {
   Title,
   SubTitle,
@@ -6,36 +6,29 @@ import {
   ElementTitle,
   ErrorMessage,
 } from '../CreatePageLayout/CreatePageLayout.styled';
-import CollectionsCarousel, {
-  NewCollection,
-  CarouselCollection,
-} from '../CollectionsCarousel';
+import CollectionsCarousel from '../CollectionsCarousel';
+import Button from '../Button';
+import {
+  useAuthContext,
+  useCreateAssetContext,
+  CREATE_PAGE_STATES,
+  useBlacklistContext,
+} from '../../components/Provider';
 import { getAuthorsCollections, Collection } from '../../services/collections';
-import { useAuthContext } from '../../components/Provider';
-import Button from '../../components/Button';
 
-type Props = {
-  collectionsList: Collection[];
-  setSelectedCollection: Dispatch<SetStateAction<CarouselCollection>>;
-  setNewCollection: Dispatch<SetStateAction<NewCollection>>;
-  setIsUncreatedCollectionSelected: Dispatch<SetStateAction<boolean>>;
-  selectedCollection: CarouselCollection;
-  newCollection?: NewCollection;
-  goToCreateTemplate: () => void;
-  setCollectionsList: Dispatch<SetStateAction<Collection[]>>;
-};
-
-const ChooseCollection = ({
-  collectionsList,
-  setSelectedCollection,
-  setNewCollection,
-  setIsUncreatedCollectionSelected,
-  selectedCollection,
-  newCollection,
-  goToCreateTemplate,
-  setCollectionsList,
-}: Props): JSX.Element => {
+const ChooseCollection: FC<{
+  setPageState: Dispatch<SetStateAction<string>>;
+}> = ({ setPageState }) => {
   const { currentUser, isLoadingUser } = useAuthContext();
+  const { isLoadingBlacklist, collectionsBlacklist } = useBlacklistContext();
+  const {
+    setSelectedCollection,
+    setNewCollection,
+    setIsUncreatedCollectionSelected,
+    selectedCollection,
+    newCollection,
+  } = useCreateAssetContext();
+  const [collectionsList, setCollectionsList] = useState<Collection[]>([]);
   const [fetchError, setFetchError] = useState<string>('');
   const [noneSelectedError, setNoneSelectedError] = useState<string>('');
   const [isLoadingCollections, setIsLoadingCollections] = useState<boolean>(
@@ -43,16 +36,21 @@ const ChooseCollection = ({
   );
 
   useEffect(() => {
-    if (currentUser && !isLoadingUser) {
+    if (currentUser && !isLoadingUser && !isLoadingBlacklist) {
       getUserCollections();
     }
-  }, [currentUser, isLoadingUser]);
+  }, [currentUser, isLoadingUser, isLoadingBlacklist]);
 
   const getUserCollections = async () => {
     if (currentUser) {
       try {
         setIsLoadingCollections(true);
-        const collections = await getAuthorsCollections(currentUser.actor);
+        const unfilteredCollections = await getAuthorsCollections(
+          currentUser.actor
+        );
+        const collections = unfilteredCollections.filter(
+          ({ collection_name }) => !collectionsBlacklist[collection_name]
+        );
         setCollectionsList(collections);
         setFetchError('');
         setIsLoadingCollections(false);
@@ -70,13 +68,13 @@ const ChooseCollection = ({
       );
     } else {
       setNoneSelectedError('');
-      goToCreateTemplate();
+      setPageState(CREATE_PAGE_STATES.CREATE_TEMPLATE);
     }
   };
 
   return (
     <>
-      <Step>Step 1 of 3</Step>
+      <Step>Step 1 of 2</Step>
       <Title>Choose a collection</Title>
       <SubTitle>
         A small fee per NFT may be charged reflecting network costs.

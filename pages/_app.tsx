@@ -12,6 +12,7 @@ import {
   AuthProvider,
   ModalProvider,
   CreateAssetProvider,
+  BlacklistProvider,
 } from '../components/Provider';
 import '../styles/customprogress.css';
 import * as gtag from '../utils/gtag';
@@ -26,7 +27,7 @@ NProgress.configure({
 });
 
 Sentry.init({
-  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+  dsn: process.env.SENTRY_DSN,
   integrations: [new Integrations.BrowserTracing()],
 
   // Set tracesSampleRate to 1.0 to capture 100%
@@ -65,11 +66,13 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
     <SimpleReactLightbox>
       <ModalProvider>
         <AuthProvider>
-          <CreateAssetProvider>
-            <NavBar />
-            <Component {...pageProps} />
-            <Footer />
-          </CreateAssetProvider>
+          <BlacklistProvider>
+            <CreateAssetProvider>
+              <NavBar />
+              <Component {...pageProps} />
+              <Footer />
+            </CreateAssetProvider>
+          </BlacklistProvider>
         </AuthProvider>
       </ModalProvider>
     </SimpleReactLightbox>

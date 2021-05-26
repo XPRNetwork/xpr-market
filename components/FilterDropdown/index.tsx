@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { FC, useState } from 'react';
 import {
   MenuContainer,
   MenuButton,
@@ -10,19 +10,19 @@ import {
 import { ReactComponent as DownArrow } from '../../public/down-arrow-sm.svg';
 import { ReactComponent as Checkmark } from '../../public/icon-light-check-24-px.svg';
 import { useScrollLock, useEscapeKeyClose } from '../../hooks';
-import { FILTER_TYPES } from '../../utils/constants';
+import { Filter } from '../../utils/constants';
 
-type Props = {
-  filters: string[];
-  activeFilter: string;
-  handleFilterClick: (filter: string) => void;
+export type FilterDropdownProps = {
+  filters: Filter[];
+  activeFilter: Filter;
+  handleFilterClick: (filter: Filter) => void;
 };
 
-const FilterDropdown = ({
-  filters,
-  activeFilter,
-  handleFilterClick,
-}: Props): JSX.Element => {
+const FilterDropdown: FC<FilterDropdownProps> = ({
+  filters = [],
+  activeFilter = undefined,
+  handleFilterClick = () => {},
+}) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const togglePopupMenu = () => setIsOpen(!isOpen);
   const closePopupMenu = () => setIsOpen(false);
@@ -36,28 +36,26 @@ const FilterDropdown = ({
         <DownArrow />
       </MenuButton>
       <Menu isOpen={isOpen}>
-        {filters.map((name) => (
+        {filters.map((filter) => (
           <MenuItem
-            key={name}
+            key={filter.label}
             tabIndex={0}
             onClick={() => {
-              handleFilterClick(name);
+              handleFilterClick(filter);
               closePopupMenu();
             }}>
-            <span>{name}</span>
-            <span>{activeFilter === name && <Checkmark />}</span>
+            <span>{filter.label}</span>
+            <span>
+              {activeFilter && activeFilter.label === filter.label && (
+                <Checkmark />
+              )}
+            </span>
           </MenuItem>
         ))}
       </Menu>
       <TransparentBackground isOpen={isOpen} onClick={closePopupMenu} />
     </MenuContainer>
   );
-};
-
-FilterDropdown.defaultProps = {
-  filters: [FILTER_TYPES.NAME, FILTER_TYPES.RECENTLY_CREATED],
-  activeFilter: FILTER_TYPES.NAME,
-  handleFilterClick: () => {},
 };
 
 export default FilterDropdown;

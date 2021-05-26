@@ -465,12 +465,11 @@ export const getTemplatesFromTemplateIds = async (
 ): Promise<Template[]> => {
   // Organize pagination with an object (key: page number, value: array of templateIds)
   const pages: { [page: number]: string[] } = {};
-  for (let i = 1; i <= Math.ceil(templateIds.length / 100); i++) {
-    const startIdx = i - 1 + (i - 1) * 100;
-    const endIdx = i * 100;
-    pages[i] = templateIds.slice(startIdx, endIdx);
+  for (let i = 0; i <= Math.ceil(templateIds.length / 100) - 1; i++) {
+    const startIdx = i * 100;
+    const endIdx = (i + 1) * 100;
+    pages[i + 1] = templateIds.slice(startIdx, endIdx);
   }
-
   let templates = [];
   let page = 1;
   let hasResults = true;
@@ -506,20 +505,24 @@ export const getTemplatesFromTemplateIds = async (
   return templates;
 };
 
-export const getUserCreatedTemplates = async (
-  account: string,
-  page?: number,
-  hasAssets?: boolean
-): Promise<Template[]> => {
+export const getPaginatedCreationsByCreator = async ({
+  chainAccount,
+  showZeroMints,
+  page,
+}: {
+  chainAccount: string;
+  showZeroMints: boolean;
+  page?: number;
+}): Promise<Template[]> => {
   try {
-    const pageParam = page ? page : 1;
+    const pageParam = page || 1;
     const templatesQueryObject = {
-      authorized_account: account,
-      sort: 'updated',
+      authorized_account: chainAccount,
+      sort: 'created',
       order: 'desc',
       page: pageParam,
       limit: PAGINATION_LIMIT,
-      has_assets: Boolean(hasAssets),
+      has_assets: Boolean(showZeroMints),
     };
 
     const templatesQueryParams = toQueryString(templatesQueryObject);
@@ -532,6 +535,52 @@ export const getUserCreatedTemplates = async (
     }
 
     return templatesResponse.data;
+  } catch (e) {
+    throw new Error(e);
+  }
+};
+
+export const getAllCreationsByCreator = async ({
+  chainAccount,
+  showZeroMints,
+}: {
+  chainAccount: string;
+  showZeroMints: boolean;
+}): Promise<Template[]> => {
+  try {
+    const limit = 100;
+    let templates = [];
+    let hasResults = true;
+    let page = 1;
+
+    while (hasResults) {
+      const templatesQueryObject = {
+        authorized_account: chainAccount,
+        sort: 'created',
+        order: 'desc',
+        page,
+        limit,
+        has_assets: Boolean(showZeroMints),
+      };
+
+      const templatesQueryParams = toQueryString(templatesQueryObject);
+      const templatesResponse = await getFromApi<Template[]>(
+        `${process.env.NEXT_PUBLIC_NFT_ENDPOINT}/atomicassets/v1/templates?${templatesQueryParams}`
+      );
+
+      if (!templatesResponse.success) {
+        throw new Error((templatesResponse.message as unknown) as string);
+      }
+
+      if (templatesResponse.data.length < limit) {
+        hasResults = false;
+      }
+
+      templates = templates.concat(templatesResponse.data);
+      page += 1;
+    }
+
+    return templates;
   } catch (e) {
     throw new Error(e);
   }

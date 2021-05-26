@@ -51,11 +51,45 @@ export const TAB_TYPES = {
   GLOBAL: 'GLOBAL',
   ITEMS: 'ITEMS',
   CREATIONS: 'CREATIONS',
+  NFTS: 'NFTS',
+  CREATORS: 'CREATORS',
+  COLLECTIONS: 'COLLECTIONS',
+};
+
+export const REPORT_TYPE = {
+  CREATOR: 'CREATOR',
+  COLLECTION: 'COLLECTION',
+  NFT: 'NFT',
+};
+
+export const REPORT_TYPE_TO_REFTYPE = {
+  CREATOR: 'author',
+  COLLECTION: 'collection',
+  NFT: 'template',
 };
 
 export const FILTER_TYPES = {
-  NAME: 'Name',
-  RECENTLY_CREATED: 'Recently created',
+  NAME_AZ: {
+    label: 'Name A-Z',
+    queryParam: '&sortKey=name&sortOrder=asc',
+  },
+  NAME_ZA: {
+    label: 'Name Z-A',
+    queryParam: '&sortKey=name&sortOrder=desc',
+  },
+  OLDEST: {
+    label: 'Oldest',
+    queryParam: '&sortKey=created&sortOrder=asc',
+  },
+  NEWEST: {
+    label: 'Newest',
+    queryParam: '&sortKey=created&sortOrder=desc',
+  },
+};
+
+export const FILTER_ORDER = {
+  ASC: 'asc',
+  DESC: 'desc',
 };
 
 export const FEATURED_HOMEPAGE_COLLECTIONS = [
@@ -82,6 +116,12 @@ export const META = {
     'Start creating and selling your own NFTs! The best way to monetize your talent. Free to get started.',
 };
 
+export const CARD_RENDER_TYPES = {
+  TEMPLATE: 'TEMPLATE',
+  COLLECTION: 'COLLECTION',
+  CREATOR: 'CREATOR',
+  SEARCH_TEMPLATE: 'SEARCH_TEMPLATE',
+};
 export interface RouterQuery {
   [query: string]: string;
 }
@@ -96,6 +136,13 @@ export interface QueryParams {
   limit?: string | number;
   sort?: string;
   order?: string;
-  page?: number;
+  page?: number | string;
   symbol?: string;
+  q?: string;
+  pageSize?: string;
 }
+
+export type Filter = {
+  label: string;
+  queryParam: string;
+};
