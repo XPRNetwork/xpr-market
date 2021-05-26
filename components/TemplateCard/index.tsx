@@ -53,7 +53,7 @@ const TemplateCard = ({
 
   const { cachedNewlyCreatedAssets } = useCreateAssetContext();
   const { currentUser } = useAuthContext();
-  const { templatesBlacklist } = useBlacklistContext();
+  const { templatesBlacklist, collectionsBlacklist } = useBlacklistContext();
   const [templateVideoSrc, setTemplateVideoSrc] = useState<string>('');
   const [templateImgSrc, setTemplateImgSrc] = useState<string>('');
   const [fallbackImgSrc, setFallbackImgSrc] = useState<string>('');
@@ -127,7 +127,10 @@ const TemplateCard = ({
     <PlaceholderPrice aria-hidden />
   );
 
-  if (templatesBlacklist && templatesBlacklist[template_id]) {
+  if (
+    (templatesBlacklist && templatesBlacklist[template_id]) ||
+    (collectionsBlacklist && collectionsBlacklist[collection_name])
+  ) {
     return null;
   }
 
