@@ -68,7 +68,7 @@ const User = (): JSX.Element => {
 
   useEffect(() => {
     if (isLoadingBlacklist) return;
-    if (authorsBlacklist[chainAccount]) {
+    if (authorsBlacklist && authorsBlacklist[chainAccount]) {
       router.push('/');
       return;
     }
