@@ -129,7 +129,7 @@ const CollectionPage = (): JSX.Element => {
         !isLoadingBlacklist &&
         (!renderedTemplates.length || collection !== previousCollection)
       ) {
-        if (collectionsBlacklist[collection]) {
+        if (collectionsBlacklist && collectionsBlacklist[collection]) {
           router.push('/');
         } else {
           fetchCollection();

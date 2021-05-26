@@ -86,7 +86,7 @@ const MarketplaceTemplateDetail = (): JSX.Element => {
       return;
     }
 
-    if (templatesBlacklist[templateId]) {
+    if (templatesBlacklist && templatesBlacklist[templateId]) {
       router.push('/');
     }
 
