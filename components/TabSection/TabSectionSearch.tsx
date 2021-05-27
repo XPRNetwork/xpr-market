@@ -164,10 +164,10 @@ const TabSectionSearch: FC<Props> = ({
           nextPageNumber={prefetchPageNumber}
           tabsProps={tabsProps}
           filterDropdownProps={{
-            filters:
-              searchContentType !== 'authors'
-                ? Object.values(FILTER_TYPES)
-                : [FILTER_TYPES.NAME_AZ, FILTER_TYPES.NAME_ZA],
+            filters: [],
+            // searchContentType !== 'authors'
+            //   ? Object.values(FILTER_TYPES)
+            //   : [FILTER_TYPES.NAME_AZ, FILTER_TYPES.NAME_ZA],
             activeFilter: filterType,
             handleFilterClick: handleItemsFilterClick,
           }}
