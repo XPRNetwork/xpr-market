@@ -129,7 +129,7 @@ export const ReportModal = (): JSX.Element => {
           value={input}
           onKeyPress={onEnterKey}
           onChange={(e) => setInput(e.target.value)}
-          placeholder={`Please provide details on why you are concened about this ${type.toLowerCase()}.`}
+          placeholder={`Please provide details on why you are concerned about this ${type.toLowerCase()}.`}
         />
         <ErrorMessage>{error}</ErrorMessage>
         <HalfButton
