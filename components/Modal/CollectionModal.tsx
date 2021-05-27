@@ -292,7 +292,7 @@ const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
           />
           <Column>
             <Description mb="8px">
-              We recommend an image of at least 400x400. Gifs work too.
+              We recommend a collection image of at least 400x400. Gifs work too.
             </Description>
             <DragDropButton onClick={openUploadWindow}>
               Choose file
@@ -305,7 +305,7 @@ const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
             <InputField value={name} disabled={true} mb="16px" />
           ) : null}
           <InputField
-            placeholder="Collectioon Name"
+            placeholder="Collection Name"
             value={displayName}
             setFormError={setFormError}
             setValue={setDisplayName}
