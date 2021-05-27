@@ -180,7 +180,7 @@ const SearchInput = ({
         ref={inputRef}
         required
         type="text"
-        placeholder="Search by collection"
+        placeholder="Search by collection, members, NFTs"
         value={input}
         onChange={updateText}
         onKeyDown={handleInputKeyDown}
