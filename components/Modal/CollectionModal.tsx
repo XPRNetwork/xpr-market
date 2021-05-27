@@ -305,7 +305,7 @@ const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
             <InputField value={name} disabled={true} mb="16px" />
           ) : null}
           <InputField
-            placeholder="Collectioon Name"
+            placeholder="Collection Name"
             value={displayName}
             setFormError={setFormError}
             setValue={setDisplayName}
