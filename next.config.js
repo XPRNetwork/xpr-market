@@ -25,5 +25,6 @@ module.exports = {
       authDomain: 'proton-market.firebaseapp.com',
       projectId: 'proton-market',
     },
+    protonBackendServiceApi: process.env.BACKEND_ENDPOINT,
   },
 };

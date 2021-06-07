@@ -212,7 +212,9 @@ const CreateTemplate: FC<{
         placeholder="Enter mint amount"
         tooltip="Choose an initial mint amount (first 10 are for free). Minting takes a bit of time, so we recommend no more than 50 tokens in your initial mint."
         numberOfTooltipLines={5}
-        submit={isLoading ? null : validateAndCreate}
+        submit={
+          !isValid || isLoading || !allFieldsFilled ? null : validateAndCreate
+        }
         checkIfIsValid={checkMintAmountValidity}
       />
       <FeeLabel>
