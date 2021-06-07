@@ -20,7 +20,7 @@ export const uploadToIPFS = async (file: File): Promise<string> => {
     const result = await resultRaw.json();
 
     if (!result || result.error) {
-      throw new Error(result.message);
+      throw new Error(result.message || 'Unable to upload');
     }
 
     return result.IpfsHash;
