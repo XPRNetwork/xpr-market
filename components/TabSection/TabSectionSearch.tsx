@@ -101,12 +101,15 @@ const TabSectionSearch: FC<Props> = ({
     const res = await getFromApi<
       SearchResultsByType<SearchTemplate | SearchAuthor | SearchCollection>
     >(
-      `/api/search-by/${searchContentType}?query=${query}&page=${page}${sortQueryParams}`
+      `/api/search-by/${searchContentType}?query=${query}&page=${page}${
+        sortQueryParams || ''
+      }`
     );
     if (!res.success) {
       setIsFetching(false);
       throw new Error(res.error.message);
     }
+    console.log(searchContentType, res.message);
     setIsFetching(false);
     return res.message;
   };
