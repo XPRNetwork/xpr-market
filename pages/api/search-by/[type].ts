@@ -35,12 +35,12 @@ const handler = async (
           queryParams.sortKey = sortKey as string;
           queryParams.sortOrder = (sortOrder as string) || 'desc';
         }
-
         const queryString = toQueryString(queryParams);
         const rawResult = await fetch(
-          `${process.env.BACKEND_ENDPOINT}/chain/market/search/${type}?${queryString}`
+          `${process.env.BACKEND_ENDPOINT}/market/search/${type}?${queryString}`
         );
         const result = await rawResult.json();
+
         res.status(200).send({ success: true, message: result });
       } catch (e) {
         res.status(500).send({
