@@ -109,7 +109,6 @@ const TabSectionSearch: FC<Props> = ({
       setIsFetching(false);
       throw new Error(res.error.message);
     }
-    console.log(searchContentType, res.message);
     setIsFetching(false);
     return res.message;
   };

@@ -31,10 +31,6 @@ type Props = {
   template: Template;
 };
 
-// NOTE: This component is almost an exact copy of TemplateCard but with some
-// modifications for the different structure of the Search Template result.
-// If ES is ever updated so that the search result matches the atomicasset results,
-// this component can be deleted.
 const SearchTemplateCard = ({ template }: Props): JSX.Element => {
   const {
     template_id,
