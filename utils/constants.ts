@@ -30,6 +30,7 @@ export const LG_FILE_SIZE_UPLOAD_LIMIT = 30 * 1000000; // 30 MB
 export const SM_FILE_SIZE_UPLOAD_LIMIT = 5 * 1000000; // 5 MB
 export const RESIZER_IMAGE = 'https://bloks.io/cdn-cgi/image/width=500/';
 export const RESIZER_IMAGE_SM = 'https://bloks.io/cdn-cgi/image/width=250/';
+export const RESIZER_IMAGE_XSM = 'https://bloks.io/cdn-cgi/image/width=64/';
 export const IPFS_RESOLVER_IMAGE = 'https://ipfs.io/ipfs/';
 export const IPFS_RESOLVER_VIDEO = 'https://ipfs.io/ipfs/';
 export const DEFAULT_SCHEMA = {
