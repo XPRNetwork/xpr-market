@@ -12,7 +12,6 @@ import {
   ShimmerBlock,
 } from './TemplateCard.styled';
 import CollectionIcon from '../CollectionIcon';
-import { fileReader } from '../../utils';
 import TemplateImage from '../TemplateImage';
 import TemplateVideo from '../TemplateVideo';
 import {
@@ -48,7 +47,6 @@ const TemplateCard = ({
     totalAssets,
     assetsForSale,
     issued_supply,
-    created_at_time,
   } = template;
 
   const { cachedNewlyCreatedAssets } = useCreateAssetContext();
@@ -59,29 +57,25 @@ const TemplateCard = ({
   const [fallbackImgSrc, setFallbackImgSrc] = useState<string>('');
 
   useEffect(() => {
-    if (Date.now() - 600000 < Number(created_at_time) && isMyTemplate) {
-      // created within the last 10 minutes to deal with propagation lag
-      if (cachedNewlyCreatedAssets[video]) {
-        fileReader((result) => {
-          setTemplateVideoSrc(result);
-        }, cachedNewlyCreatedAssets[video]);
-      }
-      if (cachedNewlyCreatedAssets[image]) {
-        fileReader((result) => {
-          setTemplateImgSrc(result);
-        }, cachedNewlyCreatedAssets[image]);
-      }
-    } else {
-      const videoSrc = `${IPFS_RESOLVER_VIDEO}${video}`;
-      const imageSrc = !image
-        ? image
-        : `${RESIZER_IMAGE_SM}${IPFS_RESOLVER_IMAGE}${image}`;
-      const fallbackImageSrc = image ? `${IPFS_RESOLVER_IMAGE}${image}` : '';
-
-      setTemplateVideoSrc(videoSrc);
-      setTemplateImgSrc(imageSrc);
-      setFallbackImgSrc(fallbackImageSrc);
+    if (cachedNewlyCreatedAssets[video]) {
+      setTemplateVideoSrc(cachedNewlyCreatedAssets[video]);
+      return;
     }
+
+    if (cachedNewlyCreatedAssets[image]) {
+      setTemplateImgSrc(cachedNewlyCreatedAssets[image]);
+      return;
+    }
+
+    const videoSrc = `${IPFS_RESOLVER_VIDEO}${video}`;
+    const imageSrc = !image
+      ? image
+      : `${RESIZER_IMAGE_SM}${IPFS_RESOLVER_IMAGE}${image}`;
+    const fallbackImageSrc = image ? `${IPFS_RESOLVER_IMAGE}${image}` : '';
+
+    setTemplateVideoSrc(videoSrc);
+    setTemplateImgSrc(imageSrc);
+    setFallbackImgSrc(fallbackImageSrc);
   }, [video, image]);
 
   const router = useRouter();

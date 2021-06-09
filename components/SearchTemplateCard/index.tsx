@@ -11,7 +11,6 @@ import {
   ShimmerBlock,
 } from '../TemplateCard/TemplateCard.styled';
 import CollectionIcon from '../CollectionIcon';
-import { fileReader } from '../../utils';
 import TemplateImage from '../TemplateImage';
 import TemplateVideo from '../TemplateVideo';
 import {
@@ -20,10 +19,7 @@ import {
   RESIZER_IMAGE_SM,
 } from '../../utils/constants';
 import { addPrecisionDecimal } from '../../utils';
-import {
-  useCreateAssetContext,
-  useAuthContext,
-} from '../../components/Provider';
+import { useCreateAssetContext } from '../../components/Provider';
 import { Template } from '../../services/templates';
 import { getLowestPriceAsset } from '../../services/sales';
 
@@ -39,11 +35,9 @@ const SearchTemplateCard = ({ template }: Props): JSX.Element => {
     immutable_data: { image, video },
     max_supply,
     issued_supply,
-    created_at_time,
   } = template;
 
   const { cachedNewlyCreatedAssets } = useCreateAssetContext();
-  const { currentUser } = useAuthContext();
   const [templateVideoSrc, setTemplateVideoSrc] = useState<string>('');
   const [templateImgSrc, setTemplateImgSrc] = useState<string>('');
   const [fallbackImgSrc, setFallbackImgSrc] = useState<string>('');
@@ -53,29 +47,25 @@ const SearchTemplateCard = ({ template }: Props): JSX.Element => {
   );
 
   useEffect(() => {
-    if (Date.now() - 600000 < Number(created_at_time) && isMyTemplate) {
-      // created within the last 10 minutes to deal with propagation lag
-      if (cachedNewlyCreatedAssets[video]) {
-        fileReader((result) => {
-          setTemplateVideoSrc(result);
-        }, cachedNewlyCreatedAssets[video]);
-      }
-      if (cachedNewlyCreatedAssets[img]) {
-        fileReader((result) => {
-          setTemplateImgSrc(result);
-        }, cachedNewlyCreatedAssets[img]);
-      }
-    } else {
-      const videoSrc = `${IPFS_RESOLVER_VIDEO}${video}`;
-      const imageSrc = !image
-        ? image
-        : `${RESIZER_IMAGE_SM}${IPFS_RESOLVER_IMAGE}${image}`;
-      const fallbackImageSrc = image ? `${IPFS_RESOLVER_IMAGE}${image}` : '';
-
-      setTemplateVideoSrc(videoSrc);
-      setTemplateImgSrc(imageSrc);
-      setFallbackImgSrc(fallbackImageSrc);
+    if (cachedNewlyCreatedAssets[video]) {
+      setTemplateVideoSrc(cachedNewlyCreatedAssets[video]);
+      return;
     }
+
+    if (cachedNewlyCreatedAssets[img]) {
+      setTemplateImgSrc(cachedNewlyCreatedAssets[img]);
+      return;
+    }
+
+    const videoSrc = `${IPFS_RESOLVER_VIDEO}${video}`;
+    const imageSrc = !image
+      ? image
+      : `${RESIZER_IMAGE_SM}${IPFS_RESOLVER_IMAGE}${image}`;
+    const fallbackImageSrc = image ? `${IPFS_RESOLVER_IMAGE}${image}` : '';
+
+    setTemplateVideoSrc(videoSrc);
+    setTemplateImgSrc(imageSrc);
+    setFallbackImgSrc(fallbackImageSrc);
   }, [video, img]);
 
   useEffect(() => {
@@ -99,8 +89,6 @@ const SearchTemplateCard = ({ template }: Props): JSX.Element => {
   }, []);
 
   const router = useRouter();
-  const isMyTemplate =
-    currentUser && router.query.chainAccount === currentUser.actor;
   const redirectPath = `/${collection_name}/${template_id}`;
   const hasMultiple = !isNaN(parseInt(issued_supply))
     ? parseInt(issued_supply) > 1

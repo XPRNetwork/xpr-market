@@ -9,13 +9,9 @@ import {
   Dispatch,
 } from 'react';
 import { CarouselCollection, NewCollection } from '../CollectionsCarousel';
-import protonMarketIDB, {
-  CachedAssets,
-  CachedAsset,
-} from '../../services/indexed-db';
 import ProtonSDK from '../../services/proton';
 import fees, { MintFee } from '../../services/fees';
-import uploadToIPFS from '../../services/upload';
+import { uploadToIPFS, getCachedFiles } from '../../services/upload';
 import {
   LG_FILE_UPLOAD_TYPES_TEXT,
   SHORTENED_TOKEN_PRECISION,
@@ -33,11 +29,6 @@ const placeholderCollection = {
   img: '',
 };
 
-const emptyCachedAsset = {
-  ipfsHash: '',
-  file: undefined,
-};
-
 const MintFeeInitial = {
   specialMintFee: {
     display: Number('0').toFixed(SHORTENED_TOKEN_PRECISION).toString(),
@@ -52,8 +43,12 @@ const MintFeeInitial = {
   totalFee: Number('0').toFixed(SHORTENED_TOKEN_PRECISION).toString(),
 };
 
+interface CachedAssets {
+  [ipfsHash: string]: string;
+}
+
 interface CreateAssetContext {
-  updateCachedNewlyCreatedAssets: (asset: CachedAsset) => Promise<void>;
+  updateCachedNewlyCreatedAssets: () => Promise<void>;
   setSelectedCollection: Dispatch<SetStateAction<CarouselCollection>>;
   setNewCollection: Dispatch<SetStateAction<NewCollection>>;
   setTemplateName: Dispatch<SetStateAction<string>>;
@@ -144,31 +139,10 @@ export const CreateAssetProvider: FC<{
     cachedNewlyCreatedAssets,
     setCachedNewlyCreatedAssets,
   ] = useState<CachedAssets>({});
-  const [assetToAddToIDB, setAssetToAddToIDB] = useState<CachedAsset>(
-    emptyCachedAsset
-  );
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      protonMarketIDB.getAllAssets(setCachedNewlyCreatedAssets);
-    }
-
-    return () => {
-      if (typeof window !== 'undefined') {
-        protonMarketIDB.removeOldAssets();
-      }
-    };
+    updateCachedNewlyCreatedAssets();
   }, []);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const { ipfsHash, file } = assetToAddToIDB;
-      if (ipfsHash && file) {
-        protonMarketIDB.addAsset({ ipfsHash, file });
-        setAssetToAddToIDB(emptyCachedAsset);
-      }
-    }
-  }, [assetToAddToIDB]);
 
   const resetCreatePage = () => {
     setTemplateUploadedFile(null);
@@ -222,10 +196,13 @@ export const CreateAssetProvider: FC<{
 
     try {
       const templateIpfsImage = await uploadToIPFS(templateUploadedFile);
-      updateCachedNewlyCreatedAssets({
-        ipfsHash: templateIpfsImage,
-        file: templateUploadedFile,
-      });
+
+      if (!templateIpfsImage) {
+        const errors = ['try again (unable to upload image)'];
+        return errors;
+      }
+
+      await updateCachedNewlyCreatedAssets();
 
       let isVideo = false;
       if (templateUploadedFile.type.includes('mp4')) {
@@ -280,16 +257,9 @@ export const CreateAssetProvider: FC<{
     }
   };
 
-  const updateCachedNewlyCreatedAssets = async ({
-    ipfsHash,
-    file,
-  }: CachedAsset): Promise<void> => {
-    setCachedNewlyCreatedAssets((prevAssets) => ({
-      ...prevAssets,
-      [ipfsHash]: file,
-    }));
-
-    setAssetToAddToIDB({ ipfsHash, file });
+  const updateCachedNewlyCreatedAssets = async (): Promise<void> => {
+    const res = await getCachedFiles();
+    setCachedNewlyCreatedAssets(res);
   };
 
   const value = useMemo<CreateAssetContext>(

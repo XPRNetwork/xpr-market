@@ -29,7 +29,7 @@ import {
   ErrorMessage,
 } from './Modal.styled';
 import { useWindowSize } from '../../hooks';
-import uploadToIPFS from '../../services/upload';
+import { uploadToIPFS } from '../../services/upload';
 import { ReactComponent as CloseIcon } from '../../public/close.svg';
 import { fileReader, delay } from '../../utils';
 import ProtonSDK from '../../services/proton';
@@ -120,10 +120,7 @@ const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
 
     try {
       const ipfsImage = await uploadToIPFS(uploadedFile);
-      updateCachedNewlyCreatedAssets({
-        ipfsHash: ipfsImage,
-        file: uploadedFile,
-      });
+      await updateCachedNewlyCreatedAssets();
       setUpdatedImage(ipfsImage);
       fileReader((img) => setUpdatedImage(img), uploadedFile);
       return ipfsImage;
