@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import LazyLoad from 'react-lazyload';
 import { ImageContainer, DefaultImage, Image } from './TemplateImage.styled';
 import { PlaceholderAsset } from '../TemplateCard/TemplateCard.styled';
@@ -9,6 +9,7 @@ type Props = {
   fallbackImgSrc?: string;
   templateName: string;
   priceTag?: JSX.Element;
+  ipfsHash?: string;
 };
 
 const TemplateImageChild = ({
@@ -56,10 +57,15 @@ const TemplateImage = ({
   templateImgSrc,
   priceTag,
   fallbackImgSrc,
+  ipfsHash,
 }: Props): JSX.Element => {
   if (!fallbackImgSrc) {
     fallbackImgSrc = '/placeholder-template-image.png';
   }
+
+  useEffect(() => {
+
+  });
 
   return (
     <ImageContainer className="template-image-container">

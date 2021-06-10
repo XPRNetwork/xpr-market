@@ -4,7 +4,10 @@ const handler = async (
   req: NextApiRequest,
   res: NextApiResponse
 ): Promise<void> => {
-  const { method } = req;
+  const {
+    method,
+    query: { hash },
+  } = req;
   switch (method) {
     case 'POST':
       break;
@@ -14,8 +17,9 @@ const handler = async (
       break;
     default: {
       try {
+        const hashQueryParam = hash ? `?ipfsHash=${hash}` : '';
         const rawResult = await fetch(
-          `${process.env.BACKEND_ENDPOINT}/market/cached-files`,
+          `${process.env.BACKEND_ENDPOINT}/market/cached-files${hashQueryParam}`,
           {
             headers: {
               Authorization: `Bearer ${process.env.PROTON_MARKET_JWT_SECRET}`,

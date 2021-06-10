@@ -138,6 +138,7 @@ const SearchTemplateCard = ({ template }: Props): JSX.Element => {
       ) : (
         <TemplateImage
           templateImgSrc={templateImgSrc}
+          ipfsHash={image}
           fallbackImgSrc={fallbackImgSrc}
           templateName={name}
         />

@@ -43,4 +43,20 @@ export const getCachedFiles = async (): Promise<CachedBased64Strings> => {
   }
 };
 
+export const getCachedMetadataByHash = async (hash: string): Promise<{}> => {
+  try {
+    const res = await getFromApi<CachedBased64Strings>(
+      `/api/cached-files?hash=${hash}`
+    );
+
+    if (!res.success) {
+      throw new Error((res.message as unknown) as string);
+    }
+
+    return res.message;
+  } catch (e) {
+    throw new Error(e);
+  }
+};
+
 export default uploadToIPFS;

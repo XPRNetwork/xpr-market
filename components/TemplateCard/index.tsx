@@ -154,6 +154,7 @@ const TemplateCard = ({
         <TemplateImage
           templateImgSrc={templateImgSrc}
           fallbackImgSrc={fallbackImgSrc}
+          ipfsHash={image}
           templateName={name}
           priceTag={priceTag}
         />
