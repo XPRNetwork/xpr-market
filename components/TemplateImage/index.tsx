@@ -1,8 +1,9 @@
 import { useEffect, useRef } from 'react';
 import LazyLoad from 'react-lazyload';
-import { ImageContainer, DefaultImage, Image } from './TemplateImage.styled';
+import { ImageContainer, DefaultImage } from './TemplateImage.styled';
 import { PlaceholderAsset } from '../TemplateCard/TemplateCard.styled';
 import { ReactComponent as DefaultIcon } from '../../public/placeholder-template-icon.svg';
+import NSFWImageWrapper from '../NSFWImageWrapper';
 
 type Props = {
   templateImgSrc?: string;
@@ -37,7 +38,7 @@ const TemplateImageChild = ({
     <div>
       <PlaceholderAsset ref={refPlaceholder} />
       <LazyLoad height="100%" offset={100} once>
-        <Image
+        <NSFWImageWrapper
           src={templateImgSrc}
           alt={templateName}
           onError={(e) => {
