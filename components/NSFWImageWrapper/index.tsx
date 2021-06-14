@@ -48,8 +48,8 @@ const NSFWImageWrapper = ({
                 type.className === 'Sexy') &&
               type.probability > 0.00001
             ) {
+              setBlurImageNumber(getRandomNumberInRange(1, 4));
               setIsNSFW(true);
-              setBlurImageNumber(getRandomNumberInRange(4));
             }
           });
         } else {
