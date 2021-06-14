@@ -39,3 +39,12 @@ export const NSFWButton = styled.button`
   padding: 0px 10px;
   cursor: pointer;
 `;
+
+export const DefaultImage = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f2f2f2;
+`;

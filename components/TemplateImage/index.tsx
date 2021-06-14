@@ -1,8 +1,7 @@
 import { useRef } from 'react';
 import LazyLoad from 'react-lazyload';
-import { ImageContainer, DefaultImage } from './TemplateImage.styled';
+import { ImageContainer } from './TemplateImage.styled';
 import { PlaceholderAsset } from '../TemplateCard/TemplateCard.styled';
-import { ReactComponent as DefaultIcon } from '../../public/placeholder-template-icon.svg';
 import NSFWImageWrapper from '../NSFWImageWrapper';
 
 type Props = {
@@ -27,14 +26,6 @@ const TemplateImageChild = ({
   const refPlaceholder = useRef<HTMLDivElement>();
 
   const removePlaceholder = () => refPlaceholder.current.remove();
-
-  if (!templateImgSrc) {
-    return (
-      <DefaultImage>
-        <DefaultIcon />
-      </DefaultImage>
-    );
-  }
 
   return (
     <div>

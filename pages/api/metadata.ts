@@ -1,6 +1,4 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import Ajv from 'ajv';
-const ajv = new Ajv();
 
 const handler = async (
   req: NextApiRequest,

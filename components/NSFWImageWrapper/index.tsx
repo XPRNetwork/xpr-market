@@ -3,9 +3,11 @@ import {
   ImageStyled,
   BlockedImage,
   NSFWButton,
+  DefaultImage,
 } from './NSFWImageWrapper.styled';
 import { getRandomNumberInRange } from '../../utils';
-import { getCachedMetadataByHash } from '../../services/upload';
+import { getCachedMetadataByHash, MetadataResult } from '../../services/upload';
+import { ReactComponent as DefaultIcon } from '../../public/placeholder-template-icon.svg';
 
 type Props = {
   src: string;
@@ -17,12 +19,6 @@ type Props = {
   onError?: (e) => void;
   onClick?: (e) => void;
   ipfsHash?: string;
-};
-
-type MetadataResult = {
-  fileExtension?: string;
-  ipfsHash?: string;
-  nsfw?: { className: string; probability: number }[];
 };
 
 const NSFWImageWrapper = ({
@@ -46,10 +42,12 @@ const NSFWImageWrapper = ({
               (type.className === 'Hentai' ||
                 type.className === 'Porn' ||
                 type.className === 'Sexy') &&
-              type.probability > 0.00001
+              type.probability > 0.3
             ) {
               setBlurImageNumber(getRandomNumberInRange(1, 4));
               setIsNSFW(true);
+            } else {
+              setIsNSFW(false);
             }
           });
         } else {
@@ -73,11 +71,17 @@ const NSFWImageWrapper = ({
     );
   }
 
-  if (isNSFW === false || src.includes('placeholder')) {
+  if (isNSFW === false) {
     return <Image src={src} {...props} />;
   }
 
-  return <Image style={{ display: 'none' }} src={src} {...props} />;
+  if (!src || isNSFW === null) {
+    return (
+      <DefaultImage>
+        <DefaultIcon />
+      </DefaultImage>
+    );
+  }
 };
 
 export default NSFWImageWrapper;
