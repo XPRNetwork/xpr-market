@@ -5,6 +5,7 @@ import {
   NSFWButton,
 } from './NSFWImageWrapper.styled';
 import { getRandomNumberInRange } from '../../utils';
+import { getCachedMetadataByHash } from '../../services/upload';
 
 type Props = {
   src: string;
@@ -15,15 +16,48 @@ type Props = {
   onLoad?: (e) => void;
   onError?: (e) => void;
   onClick?: (e) => void;
+  ipfsHash?: string;
+};
+
+type MetadataResult = {
+  fileExtension?: string;
+  ipfsHash?: string;
+  nsfw?: { className: string; probability: number }[];
 };
 
 const NSFWImageWrapper = ({
   src,
   imageStyling: Image,
+  ipfsHash,
   ...props
 }: Props): JSX.Element => {
   const [isNSFW, setIsNSFW] = useState<boolean>(null);
   const [blurImageNumber, setBlurImageNumber] = useState<number>(1);
+
+  useEffect(() => {
+    (async () => {
+      if (ipfsHash) {
+        const metaResult: MetadataResult = await getCachedMetadataByHash(
+          ipfsHash
+        );
+        if (Object.keys(metaResult).length > 0) {
+          metaResult.nsfw.forEach((type) => {
+            if (
+              (type.className === 'Hentai' ||
+                type.className === 'Porn' ||
+                type.className === 'Sexy') &&
+              type.probability > 0.00001
+            ) {
+              setIsNSFW(true);
+              setBlurImageNumber(getRandomNumberInRange(4));
+            }
+          });
+        } else {
+          setIsNSFW(false);
+        }
+      }
+    })();
+  }, [ipfsHash]);
 
   if (isNSFW) {
     return (

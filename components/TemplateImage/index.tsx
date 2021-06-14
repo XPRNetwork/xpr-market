@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import LazyLoad from 'react-lazyload';
 import { ImageContainer, DefaultImage } from './TemplateImage.styled';
 import { PlaceholderAsset } from '../TemplateCard/TemplateCard.styled';
@@ -17,10 +17,12 @@ const TemplateImageChild = ({
   templateName,
   templateImgSrc,
   fallbackImgSrc,
+  ipfsHash,
 }: {
   templateName: string;
   templateImgSrc: string;
   fallbackImgSrc: string;
+  ipfsHash: string;
 }): JSX.Element => {
   const refPlaceholder = useRef<HTMLDivElement>();
 
@@ -41,6 +43,7 @@ const TemplateImageChild = ({
         <NSFWImageWrapper
           src={templateImgSrc}
           alt={templateName}
+          ipfsHash={ipfsHash}
           onError={(e) => {
             e.currentTarget.onerror = null;
             e.currentTarget.src = fallbackImgSrc;
@@ -64,16 +67,13 @@ const TemplateImage = ({
     fallbackImgSrc = '/placeholder-template-image.png';
   }
 
-  useEffect(() => {
-
-  });
-
   return (
     <ImageContainer className="template-image-container">
       <TemplateImageChild
         templateName={templateName}
         fallbackImgSrc={fallbackImgSrc}
         templateImgSrc={templateImgSrc}
+        ipfsHash={ipfsHash}
       />
       {priceTag}
     </ImageContainer>

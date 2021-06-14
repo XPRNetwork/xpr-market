@@ -1,10 +1,15 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import Ajv from 'ajv';
+const ajv = new Ajv();
 
 const handler = async (
   req: NextApiRequest,
   res: NextApiResponse
 ): Promise<void> => {
-  const { method } = req;
+  const {
+    method,
+    query: { hash },
+  } = req;
   switch (method) {
     case 'POST':
       break;
@@ -15,7 +20,7 @@ const handler = async (
     default: {
       try {
         const rawResult = await fetch(
-          `${process.env.BACKEND_ENDPOINT}/market/cached-files`,
+          `${process.env.BACKEND_ENDPOINT}/market/files/${hash}/metadata`,
           {
             headers: {
               Authorization: `Bearer ${process.env.PROTON_MARKET_JWT_SECRET}`,
@@ -23,16 +28,14 @@ const handler = async (
           }
         );
         const result = await rawResult.json();
-
-        const files = {};
-        for (const file of result.contents) {
-          const { ipfs_hash, data } = file;
-          files[ipfs_hash] =
-            'data:image/jpeg;base64,' +
-            Buffer.from(data.data).toString('base64');
+        if (result.message === 'Resource not found') {
+          return res.send({
+            success: true,
+            message: {},
+          });
         }
-
-        res.status(200).send({ success: true, message: files });
+        if (result.error) throw new Error(result.message);
+        res.status(200).send({ success: true, message: result });
       } catch (e) {
         res.send({
           success: false,
