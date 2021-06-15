@@ -26,7 +26,7 @@ const TemplateImageChild = ({
   const refPlaceholder = useRef<HTMLDivElement>();
 
   const removePlaceholder = () => {
-    if (refPlaceholder) {
+    if (refPlaceholder && refPlaceholder.current) {
       refPlaceholder.current.remove();
     }
   };

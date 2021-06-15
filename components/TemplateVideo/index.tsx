@@ -36,7 +36,11 @@ const TemplateVideo = ({
   const { isDesktop, isBrowserVideoCompatible } = useNavigatorUserAgent();
   const refPlaceholder = useRef<HTMLDivElement>();
 
-  const removePlaceholder = () => refPlaceholder.current.remove();
+  const removePlaceholder = () => {
+    if (refPlaceholder && refPlaceholder.current) {
+      refPlaceholder.current.remove();
+    }
+  };
 
   return (
     <VideoContainer onClick={(e) => e.stopPropagation()}>
