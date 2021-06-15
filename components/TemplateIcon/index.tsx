@@ -1,6 +1,6 @@
 import {
   IPFS_RESOLVER_IMAGE,
-  RESIZER_IMAGE,
+  RESIZER_IMAGE_XSM,
   IPFS_RESOLVER_VIDEO,
 } from '../../utils/constants';
 import { ImageIcon, VideoIcon } from './TemplateIcon.styled';
@@ -24,7 +24,7 @@ const TemplateIcon = ({
     (image && image.slice(0, 4).toLowerCase() !== 'data') ||
     (video && video.slice(0, 4).toLowerCase() !== 'data');
   const imageSrc = isIpfs
-    ? `${RESIZER_IMAGE}${IPFS_RESOLVER_IMAGE}${image}`
+    ? `${RESIZER_IMAGE_XSM}${IPFS_RESOLVER_IMAGE}${image}`
     : image || '/icon-blank-collection.png';
 
   const onImageError = (e) => {

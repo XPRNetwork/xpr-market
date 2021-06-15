@@ -4,10 +4,10 @@ import LoadingPage from '../LoadingPage';
 import { Section } from '../../styles/index.styled';
 import {
   SearchResultsByType,
-  SearchTemplate,
   SearchAuthor,
   SearchCollection,
 } from '../../services/search';
+import { Template } from '../../services/templates';
 import {
   TAB_TYPES,
   CARD_RENDER_TYPES,
@@ -44,10 +44,10 @@ const TabSectionSearch: FC<Props> = ({
   ...tabsProps
 }) => {
   const [renderedItems, setRenderedItems] = useState<
-    (SearchTemplate | SearchAuthor | SearchCollection)[]
+    (Template | SearchAuthor | SearchCollection)[]
   >([]);
   const [prefetchedItems, setPrefetchedItems] = useState<
-    (SearchTemplate | SearchAuthor | SearchCollection)[]
+    (Template | SearchAuthor | SearchCollection)[]
   >([]);
   const [isLoadingPrices, setIsLoadingPrices] = useState<boolean>(true);
   const [isFetching, setIsFetching] = useState<boolean>(true);
@@ -95,11 +95,11 @@ const TabSectionSearch: FC<Props> = ({
     page: number;
     sortQueryParams?: string;
   }): Promise<
-    SearchResultsByType<SearchTemplate | SearchAuthor | SearchCollection>
+    SearchResultsByType<Template | SearchAuthor | SearchCollection>
   > => {
     setIsFetching(true);
     const res = await getFromApi<
-      SearchResultsByType<SearchTemplate | SearchAuthor | SearchCollection>
+      SearchResultsByType<Template | SearchAuthor | SearchCollection>
     >(
       `/api/search-by/${searchContentType}?query=${query}&page=${page}${
         sortQueryParams || ''
