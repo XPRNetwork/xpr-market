@@ -9,6 +9,12 @@ type CachedBased64Strings = {
   [ipfsHash: string]: string;
 };
 
+export type MetadataResult = {
+  fileExtension?: string;
+  ipfsHash?: string;
+  nsfw?: { className: string; probability: number }[];
+};
+
 export const uploadToIPFS = async (file: File): Promise<string> => {
   const formData = new FormData();
   formData.append('file', file);
@@ -37,6 +43,23 @@ export const getCachedFiles = async (): Promise<CachedBased64Strings> => {
       throw new Error((res.message as unknown) as string);
     }
 
+    return res.message;
+  } catch (e) {
+    throw new Error(e);
+  }
+};
+
+export const getCachedMetadataByHash = async (
+  hash: string
+): Promise<MetadataResult> => {
+  try {
+    const res = await getFromApi<CachedBased64Strings>(
+      `/api/metadata?hash=${hash}`
+    );
+
+    if (!res.success) {
+      throw new Error((res.message as unknown) as string);
+    }
     return res.message;
   } catch (e) {
     throw new Error(e);
