@@ -15,9 +15,9 @@ type Props = {
   width?: string;
   alt: string;
   imageStyling: React.ElementType;
-  onLoad?: (e) => void;
+  onLoad?: () => void;
   onError?: (e) => void;
-  onClick?: (e) => void;
+  onClick?: () => void;
   ipfsHash?: string;
 };
 
@@ -25,6 +25,7 @@ const NSFWImageWrapper = ({
   src,
   imageStyling: Image,
   ipfsHash,
+  onLoad,
   ...props
 }: Props): JSX.Element => {
   const [isNSFW, setIsNSFW] = useState<boolean>(null);
@@ -36,6 +37,7 @@ const NSFWImageWrapper = ({
         const metaResult: MetadataResult = await getCachedMetadataByHash(
           ipfsHash
         );
+        let isNSFWUpdate = false;
         if (Object.keys(metaResult).length > 0) {
           metaResult.nsfw.forEach((type) => {
             if (
@@ -45,14 +47,12 @@ const NSFWImageWrapper = ({
               type.probability > 0.3
             ) {
               setBlurImageNumber(getRandomNumberInRange(1, 4));
-              setIsNSFW(true);
-            } else {
-              setIsNSFW(false);
+              isNSFWUpdate = true;
             }
           });
-        } else {
-          setIsNSFW(false);
         }
+        setIsNSFW(isNSFWUpdate);
+        onLoad();
       }
     })();
   }, [ipfsHash]);

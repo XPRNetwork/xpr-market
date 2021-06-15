@@ -25,7 +25,11 @@ const TemplateImageChild = ({
 }): JSX.Element => {
   const refPlaceholder = useRef<HTMLDivElement>();
 
-  const removePlaceholder = () => refPlaceholder.current.remove();
+  const removePlaceholder = () => {
+    if (refPlaceholder) {
+      refPlaceholder.current.remove();
+    }
+  };
 
   return (
     <div>
