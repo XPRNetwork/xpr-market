@@ -7,11 +7,8 @@ import {
   MagnifyingIconButton,
   ClearTextButton,
 } from './SearchInput.styled';
-import {
-  SearchCollection,
-  SearchAuthor,
-  SearchTemplate,
-} from '../../services/search';
+import { SearchCollection, SearchAuthor } from '../../services/search';
+import { Template } from '../../services/templates';
 import { getFromApi } from '../../utils/browser-fetch';
 import { ReactComponent as MagnifyingIcon } from '../../public/icon-light-search-24-px.svg';
 import { ReactComponent as CloseIcon } from '../../public/icon-light-close-16-px.svg';
@@ -25,7 +22,7 @@ type Props = {
 type SearchResponse = {
   index: string;
   keys: string[];
-  result: (SearchCollection | SearchAuthor | SearchTemplate)[];
+  result: (SearchCollection | SearchAuthor | Template)[];
 };
 
 let debounceTimer;
@@ -45,7 +42,7 @@ const SearchInput = ({
   const [searchCollections, setSearchCollections] = useState<
     SearchCollection[]
   >([]);
-  const [searchTemplates, setSearchTemplates] = useState<SearchTemplate[]>([]);
+  const [searchTemplates, setSearchTemplates] = useState<Template[]>([]);
   const [searchAuthors, setSearchAuthors] = useState<SearchAuthor[]>([]);
   const [isSearching, setIsSearching] = useState<boolean>(false);
 
@@ -100,7 +97,7 @@ const SearchInput = ({
             .result.slice(0, 3) || [];
         setSearchCollections(collections as SearchCollection[]);
         setSearchAuthors(users as SearchAuthor[]);
-        setSearchTemplates(templates as SearchTemplate[]);
+        setSearchTemplates(templates as Template[]);
         setIsSearching(false);
       }
     } catch (e) {
