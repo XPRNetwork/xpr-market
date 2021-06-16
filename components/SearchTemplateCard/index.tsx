@@ -19,9 +19,9 @@ import {
   RESIZER_IMAGE_SM,
 } from '../../utils/constants';
 import { addPrecisionDecimal } from '../../utils';
-import { useCreateAssetContext } from '../../components/Provider';
 import { Template } from '../../services/templates';
 import { getLowestPriceAsset } from '../../services/sales';
+import { getCachedFiles } from '../../services/upload';
 
 type Props = {
   template: Template;
@@ -37,7 +37,6 @@ const SearchTemplateCard = ({ template }: Props): JSX.Element => {
     issued_supply,
   } = template;
 
-  const { cachedNewlyCreatedAssets } = useCreateAssetContext();
   const [templateVideoSrc, setTemplateVideoSrc] = useState<string>('');
   const [templateImgSrc, setTemplateImgSrc] = useState<string>('');
   const [fallbackImgSrc, setFallbackImgSrc] = useState<string>('');
@@ -47,25 +46,28 @@ const SearchTemplateCard = ({ template }: Props): JSX.Element => {
   );
 
   useEffect(() => {
-    if (cachedNewlyCreatedAssets[video]) {
-      setTemplateVideoSrc(cachedNewlyCreatedAssets[video]);
-      return;
-    }
+    (async () => {
+      const cachedFile = await getCachedFiles(image || video);
+      if (cachedFile[video]) {
+        setTemplateVideoSrc(cachedFile[video]);
+        return;
+      }
 
-    if (cachedNewlyCreatedAssets[img]) {
-      setTemplateImgSrc(cachedNewlyCreatedAssets[img]);
-      return;
-    }
+      if (cachedFile[img]) {
+        setTemplateImgSrc(cachedFile[img]);
+        return;
+      }
 
-    const videoSrc = `${IPFS_RESOLVER_VIDEO}${video}`;
-    const imageSrc = !image
-      ? image
-      : `${RESIZER_IMAGE_SM}${IPFS_RESOLVER_IMAGE}${image}`;
-    const fallbackImageSrc = image ? `${IPFS_RESOLVER_IMAGE}${image}` : '';
+      const videoSrc = `${IPFS_RESOLVER_VIDEO}${video}`;
+      const imageSrc = !image
+        ? image
+        : `${RESIZER_IMAGE_SM}${IPFS_RESOLVER_IMAGE}${image}`;
+      const fallbackImageSrc = image ? `${IPFS_RESOLVER_IMAGE}${image}` : '';
 
-    setTemplateVideoSrc(videoSrc);
-    setTemplateImgSrc(imageSrc);
-    setFallbackImgSrc(fallbackImageSrc);
+      setTemplateVideoSrc(videoSrc);
+      setTemplateImgSrc(imageSrc);
+      setFallbackImgSrc(fallbackImageSrc);
+    })();
   }, [video, img]);
 
   useEffect(() => {

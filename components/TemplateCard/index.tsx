@@ -19,12 +19,9 @@ import {
   IPFS_RESOLVER_IMAGE,
   RESIZER_IMAGE_SM,
 } from '../../utils/constants';
-import {
-  useCreateAssetContext,
-  useAuthContext,
-  useBlacklistContext,
-} from '../Provider';
+import { useAuthContext, useBlacklistContext } from '../Provider';
 import { Template } from '../../services/templates';
+import { getCachedFiles } from '../../services/upload';
 
 type Props = {
   template: Template;
@@ -49,7 +46,6 @@ const TemplateCard = ({
     issued_supply,
   } = template;
 
-  const { cachedNewlyCreatedAssets } = useCreateAssetContext();
   const { currentUser } = useAuthContext();
   const { templatesBlacklist, collectionsBlacklist } = useBlacklistContext();
   const [templateVideoSrc, setTemplateVideoSrc] = useState<string>('');
@@ -57,26 +53,29 @@ const TemplateCard = ({
   const [fallbackImgSrc, setFallbackImgSrc] = useState<string>('');
 
   useEffect(() => {
-    if (cachedNewlyCreatedAssets[video]) {
-      setTemplateVideoSrc(cachedNewlyCreatedAssets[video]);
-      return;
-    }
+    (async () => {
+      const cachedFile = await getCachedFiles(image || video);
+      if (cachedFile[video]) {
+        setTemplateVideoSrc(cachedFile[video]);
+        return;
+      }
 
-    if (cachedNewlyCreatedAssets[image]) {
-      setTemplateImgSrc(cachedNewlyCreatedAssets[image]);
-      return;
-    }
+      if (cachedFile[image]) {
+        setTemplateImgSrc(cachedFile[image]);
+        return;
+      }
 
-    const videoSrc = `${IPFS_RESOLVER_VIDEO}${video}`;
-    const imageSrc = !image
-      ? image
-      : `${RESIZER_IMAGE_SM}${IPFS_RESOLVER_IMAGE}${image}`;
-    const fallbackImageSrc = image ? `${IPFS_RESOLVER_IMAGE}${image}` : '';
+      const videoSrc = `${IPFS_RESOLVER_VIDEO}${video}`;
+      const imageSrc = !image
+        ? image
+        : `${RESIZER_IMAGE_SM}${IPFS_RESOLVER_IMAGE}${image}`;
+      const fallbackImageSrc = image ? `${IPFS_RESOLVER_IMAGE}${image}` : '';
 
-    setTemplateVideoSrc(videoSrc);
-    setTemplateImgSrc(imageSrc);
-    setFallbackImgSrc(fallbackImageSrc);
-  }, [video, image]);
+      setTemplateVideoSrc(videoSrc);
+      setTemplateImgSrc(imageSrc);
+      setFallbackImgSrc(fallbackImageSrc);
+    })();
+  }, [image, video]);
 
   const router = useRouter();
   const isMyTemplate =

@@ -29,9 +29,13 @@ export const uploadToIPFS = async (file: File): Promise<string> => {
   }
 };
 
-export const getCachedFiles = async (): Promise<CachedBased64Strings> => {
+export const getCachedFiles = async (
+  ipfsHash: string
+): Promise<CachedBased64Strings> => {
   try {
-    const res = await getFromApi<CachedBased64Strings>('/api/cached-files');
+    const res = await getFromApi<CachedBased64Strings>(
+      `/api/cached-files/${ipfsHash}`
+    );
 
     if (!res.success) {
       throw new Error((res.message as unknown) as string);
@@ -39,7 +43,7 @@ export const getCachedFiles = async (): Promise<CachedBased64Strings> => {
 
     return res.message;
   } catch (e) {
-    throw new Error(e);
+    return {};
   }
 };
 

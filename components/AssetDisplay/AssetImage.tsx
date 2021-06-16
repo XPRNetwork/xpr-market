@@ -2,6 +2,7 @@ import { SRLWrapper, useLightbox } from 'simple-react-lightbox';
 import { Image } from './AssetDisplay.styled';
 import { IPFS_RESOLVER_IMAGE, RESIZER_IMAGE } from '../../utils/constants';
 import { useState, useEffect } from 'react';
+import { getCachedFiles } from '../../services/upload';
 
 const lightboxOptions = {
   thumbnails: {
@@ -42,7 +43,16 @@ const AssetImage = ({
   const lightboxElements = [{ src: highResSrc, width: 'auto', height: 'auto' }];
 
   useEffect(() => {
-    setSrc(resizedSrc);
+    (async () => {
+      const cachedFile = await getCachedFiles(image);
+
+      if (cachedFile[image]) {
+        setSrc(cachedFile[image]);
+        return;
+      }
+
+      setSrc(resizedSrc);
+    })();
   }, [image, templateName]);
 
   return (
