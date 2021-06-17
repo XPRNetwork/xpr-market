@@ -1,8 +1,19 @@
 import { SRLWrapper, useLightbox } from 'simple-react-lightbox';
 import { Image } from './AssetDisplay.styled';
-import { IPFS_RESOLVER_IMAGE, RESIZER_IMAGE } from '../../utils/constants';
+import {
+  IPFS_RESOLVER_IMAGE,
+  RESIZER_IMAGE,
+  PROPAGATION_LAG_TIME,
+} from '../../utils/constants';
 import { useState, useEffect } from 'react';
 import { getCachedFiles } from '../../services/upload';
+
+type Props = {
+  image: string;
+  templateName: string;
+  lightbox?: boolean;
+  created: string;
+};
 
 const lightboxOptions = {
   thumbnails: {
@@ -24,11 +35,8 @@ const AssetImage = ({
   image,
   templateName,
   lightbox,
-}: {
-  image: string;
-  templateName: string;
-  lightbox?: boolean;
-}): JSX.Element => {
+  created,
+}: Props): JSX.Element => {
   const resizedSrc = `${RESIZER_IMAGE}${IPFS_RESOLVER_IMAGE}${image}`;
   const highResSrc = `${IPFS_RESOLVER_IMAGE}${image}`;
 
@@ -44,11 +52,13 @@ const AssetImage = ({
 
   useEffect(() => {
     (async () => {
-      const cachedFile = await getCachedFiles(image);
+      if (new Date().getTime() - parseInt(created) < PROPAGATION_LAG_TIME) {
+        const cachedFile = await getCachedFiles(image);
 
-      if (cachedFile[image]) {
-        setSrc(cachedFile[image]);
-        return;
+        if (cachedFile[image]) {
+          setSrc(cachedFile[image]);
+          return;
+        }
       }
 
       setSrc(resizedSrc);

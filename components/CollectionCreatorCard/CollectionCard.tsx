@@ -12,7 +12,11 @@ import {
 } from './CollectionCreatorCard.styled';
 import { Image } from '../../styles/index.styled';
 import { SearchCollection } from '../../services/search';
-import { RESIZER_IMAGE, IPFS_RESOLVER_IMAGE } from '../../utils/constants';
+import {
+  RESIZER_IMAGE,
+  IPFS_RESOLVER_IMAGE,
+  PROPAGATION_LAG_TIME,
+} from '../../utils/constants';
 import { getCachedFiles } from '../../services/upload';
 
 type Props = {
@@ -23,15 +27,22 @@ const CollectionCard = ({ cardContent }: Props): JSX.Element => {
   const router = useRouter();
   const { collectionsBlacklist } = useBlacklistContext();
   const [collectionImgSrc, setCollectionImgSrc] = useState<string>('');
-  const { img, name, /* description, */ collection_name } = cardContent;
+  const {
+    img,
+    name,
+    /* description, */ collection_name,
+    created,
+  } = cardContent;
   const fallbackImgSrc = `${IPFS_RESOLVER_IMAGE}${img}`;
 
   useEffect(() => {
     (async () => {
-      const cachedFile = await getCachedFiles(img);
-      if (cachedFile[img]) {
-        setCollectionImgSrc(cachedFile[img]);
-        return;
+      if (new Date().getTime() - parseInt(created) < PROPAGATION_LAG_TIME) {
+        const cachedFile = await getCachedFiles(img);
+        if (cachedFile[img]) {
+          setCollectionImgSrc(cachedFile[img]);
+          return;
+        }
       }
 
       if (img) {

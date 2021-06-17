@@ -17,6 +17,7 @@ import {
   IPFS_RESOLVER_VIDEO,
   IPFS_RESOLVER_IMAGE,
   RESIZER_IMAGE_SM,
+  PROPAGATION_LAG_TIME,
 } from '../../utils/constants';
 import { addPrecisionDecimal } from '../../utils';
 import { Template } from '../../services/templates';
@@ -35,6 +36,7 @@ const SearchTemplateCard = ({ template }: Props): JSX.Element => {
     immutable_data: { image, video },
     max_supply,
     issued_supply,
+    created_at_time,
   } = template;
 
   const [templateVideoSrc, setTemplateVideoSrc] = useState<string>('');
@@ -47,15 +49,20 @@ const SearchTemplateCard = ({ template }: Props): JSX.Element => {
 
   useEffect(() => {
     (async () => {
-      const cachedFile = await getCachedFiles(image || video);
-      if (cachedFile[video]) {
-        setTemplateVideoSrc(cachedFile[video]);
-        return;
-      }
+      if (
+        new Date().getTime() - parseInt(created_at_time) <
+        PROPAGATION_LAG_TIME
+      ) {
+        const cachedFile = await getCachedFiles(image || video);
+        if (cachedFile[video]) {
+          setTemplateVideoSrc(cachedFile[video]);
+          return;
+        }
 
-      if (cachedFile[img]) {
-        setTemplateImgSrc(cachedFile[img]);
-        return;
+        if (cachedFile[image]) {
+          setTemplateImgSrc(cachedFile[image]);
+          return;
+        }
       }
 
       const videoSrc = `${IPFS_RESOLVER_VIDEO}${video}`;
