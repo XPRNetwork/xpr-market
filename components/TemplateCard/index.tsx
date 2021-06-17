@@ -94,9 +94,6 @@ const TemplateCard = ({
     })();
   }, [image, video]);
 
-  console.log('image: ', templateImgSrc);
-  console.log('video: ', templateVideoSrc);
-
   const router = useRouter();
   const isMyTemplate =
     currentUser && router.query.chainAccount === currentUser.actor;
