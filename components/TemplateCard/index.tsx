@@ -56,17 +56,27 @@ const TemplateCard = ({
 
   useEffect(() => {
     (async () => {
+      console.log('name: ', name);
+      console.log('date now: ', new Date().getTime());
+      console.log('created at: ', parseInt(created_at_time));
+      console.log(
+        'diff: ',
+        new Date().getTime() - parseInt(created_at_time) < PROPAGATION_LAG_TIME
+      );
       if (
         new Date().getTime() - parseInt(created_at_time) <
         PROPAGATION_LAG_TIME
       ) {
         const cachedFile = await getCachedFiles(image || video);
+        console.log(`${name} (cached file): `, cachedFile);
         if (cachedFile[video]) {
+          console.log(`${name} (video): `, cachedFile[video]);
           setTemplateVideoSrc(cachedFile[video]);
           return;
         }
 
         if (cachedFile[image]) {
+          console.log(`${name} (image): `, cachedFile[img]);
           setTemplateImgSrc(cachedFile[image]);
           return;
         }
