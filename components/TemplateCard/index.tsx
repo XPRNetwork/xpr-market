@@ -56,17 +56,26 @@ const TemplateCard = ({
 
   useEffect(() => {
     (async () => {
+      console.log('date now: ', Date().getTime());
+      console.log('created at: ', parseInt(created_at_time));
+      console.log(
+        'diff: ',
+        new Date().getTime() - parseInt(created_at_time) < PROPAGATION_LAG_TIME
+      );
       if (
         new Date().getTime() - parseInt(created_at_time) <
         PROPAGATION_LAG_TIME
       ) {
         const cachedFile = await getCachedFiles(image || video);
+        console.log('cachedFile: ', cachedFile);
         if (cachedFile[video]) {
+          console.log('for video: ', cachedFile[video]);
           setTemplateVideoSrc(cachedFile[video]);
           return;
         }
 
         if (cachedFile[image]) {
+          console.log('for image: ', cachedFile[img]);
           setTemplateImgSrc(cachedFile[image]);
           return;
         }
@@ -83,6 +92,9 @@ const TemplateCard = ({
       setFallbackImgSrc(fallbackImageSrc);
     })();
   }, [image, video]);
+
+  console.log('image: ', templateImgSrc);
+  console.log('video: ', templateVideoSrc);
 
   const router = useRouter();
   const isMyTemplate =
