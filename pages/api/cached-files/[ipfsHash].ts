@@ -27,7 +27,7 @@ const handler = async (
         );
         const result = await rawResult.json();
 
-        if (result.error || !result.success) {
+        if (result.error) {
           throw new Error(result.message || result.error);
         }
 
