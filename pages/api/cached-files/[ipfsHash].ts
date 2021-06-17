@@ -4,7 +4,10 @@ const handler = async (
   req: NextApiRequest,
   res: NextApiResponse
 ): Promise<void> => {
-  const { method } = req;
+  const {
+    method,
+    query: { ipfsHash },
+  } = req;
   switch (method) {
     case 'POST':
       break;
@@ -15,7 +18,7 @@ const handler = async (
     default: {
       try {
         const rawResult = await fetch(
-          `${process.env.BACKEND_ENDPOINT}/market/cached-files`,
+          `${process.env.BACKEND_ENDPOINT}/market/cached-files/${ipfsHash}`,
           {
             headers: {
               Authorization: `Bearer ${process.env.PROTON_MARKET_JWT_SECRET}`,
@@ -24,15 +27,15 @@ const handler = async (
         );
         const result = await rawResult.json();
 
-        const files = {};
-        for (const file of result.contents) {
-          const { ipfs_hash, data } = file;
-          files[ipfs_hash] =
-            'data:image/jpeg;base64,' +
-            Buffer.from(data.data).toString('base64');
+        if (result.error || !result.success) {
+          throw new Error(result.message || result.error);
         }
 
-        res.status(200).send({ success: true, message: files });
+        const { data } = result;
+        const base64 =
+          'data:image/jpeg;base64,' + Buffer.from(data.data).toString('base64');
+
+        res.status(200).send({ success: true, message: { ipfsHash: base64 } });
       } catch (e) {
         res.send({
           success: false,

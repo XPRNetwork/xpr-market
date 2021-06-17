@@ -4,14 +4,13 @@ import {
   useState,
   useContext,
   useMemo,
-  useEffect,
   SetStateAction,
   Dispatch,
 } from 'react';
 import { CarouselCollection, NewCollection } from '../CollectionsCarousel';
 import ProtonSDK from '../../services/proton';
 import fees, { MintFee } from '../../services/fees';
-import { uploadToIPFS, getCachedFiles } from '../../services/upload';
+import { uploadToIPFS } from '../../services/upload';
 import {
   LG_FILE_UPLOAD_TYPES_TEXT,
   SHORTENED_TOKEN_PRECISION,
@@ -48,7 +47,6 @@ interface CachedAssets {
 }
 
 interface CreateAssetContext {
-  updateCachedNewlyCreatedAssets: () => Promise<void>;
   setSelectedCollection: Dispatch<SetStateAction<CarouselCollection>>;
   setNewCollection: Dispatch<SetStateAction<NewCollection>>;
   setTemplateName: Dispatch<SetStateAction<string>>;
@@ -74,11 +72,9 @@ interface CreateAssetContext {
   uploadedFilePreview: string;
   mintFee: MintFee;
   isUncreatedCollectionSelected: boolean;
-  cachedNewlyCreatedAssets: CachedAssets;
 }
 
 const CreateAssetContext = createContext<CreateAssetContext>({
-  updateCachedNewlyCreatedAssets: async () => {},
   setSelectedCollection: () => {},
   setNewCollection: () => {},
   setTemplateName: () => {},
@@ -104,7 +100,6 @@ const CreateAssetContext = createContext<CreateAssetContext>({
   uploadedFilePreview: '',
   mintFee: MintFeeInitial,
   isUncreatedCollectionSelected: false,
-  cachedNewlyCreatedAssets: {},
 });
 
 export const useCreateAssetContext = (): CreateAssetContext => {
@@ -135,14 +130,6 @@ export const CreateAssetProvider: FC<{
     isUncreatedCollectionSelected,
     setIsUncreatedCollectionSelected,
   ] = useState<boolean>(false);
-  const [
-    cachedNewlyCreatedAssets,
-    setCachedNewlyCreatedAssets,
-  ] = useState<CachedAssets>({});
-
-  useEffect(() => {
-    updateCachedNewlyCreatedAssets();
-  }, []);
 
   const resetCreatePage = () => {
     setTemplateUploadedFile(null);
@@ -202,8 +189,6 @@ export const CreateAssetProvider: FC<{
         return errors;
       }
 
-      await updateCachedNewlyCreatedAssets();
-
       let isVideo = false;
       if (templateUploadedFile.type.includes('mp4')) {
         isVideo = true;
@@ -257,11 +242,6 @@ export const CreateAssetProvider: FC<{
     }
   };
 
-  const updateCachedNewlyCreatedAssets = async (): Promise<void> => {
-    const res = await getCachedFiles();
-    setCachedNewlyCreatedAssets(res);
-  };
-
   const value = useMemo<CreateAssetContext>(
     () => ({
       setSelectedCollection,
@@ -277,7 +257,6 @@ export const CreateAssetProvider: FC<{
       setMintFee,
       setIsUncreatedCollectionSelected,
       createNft,
-      updateCachedNewlyCreatedAssets,
       selectedCollection,
       newCollection,
       templateName,
@@ -290,7 +269,6 @@ export const CreateAssetProvider: FC<{
       uploadedFilePreview,
       mintFee,
       isUncreatedCollectionSelected,
-      cachedNewlyCreatedAssets,
     }),
     [
       selectedCollection,
@@ -305,7 +283,6 @@ export const CreateAssetProvider: FC<{
       uploadedFilePreview,
       mintFee,
       isUncreatedCollectionSelected,
-      cachedNewlyCreatedAssets,
     ]
   );
 

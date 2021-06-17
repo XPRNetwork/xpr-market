@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { useCreateAssetContext, useBlacklistContext } from '../Provider';
+import { useBlacklistContext } from '../Provider';
 import {
   Card,
   Blur,
@@ -12,7 +12,12 @@ import {
 } from './CollectionCreatorCard.styled';
 import { Image } from '../../styles/index.styled';
 import { SearchCollection } from '../../services/search';
-import { RESIZER_IMAGE, IPFS_RESOLVER_IMAGE } from '../../utils/constants';
+import {
+  RESIZER_IMAGE,
+  IPFS_RESOLVER_IMAGE,
+  PROPAGATION_LAG_TIME,
+} from '../../utils/constants';
+import { getCachedFiles } from '../../services/upload';
 
 type Props = {
   cardContent: SearchCollection;
@@ -20,24 +25,33 @@ type Props = {
 
 const CollectionCard = ({ cardContent }: Props): JSX.Element => {
   const router = useRouter();
-  const { cachedNewlyCreatedAssets } = useCreateAssetContext();
   const { collectionsBlacklist } = useBlacklistContext();
   const [collectionImgSrc, setCollectionImgSrc] = useState<string>('');
-  const { img, name, /* description, */ collection_name } = cardContent;
+  const {
+    img,
+    name,
+    /* description, */ collection_name,
+    created,
+  } = cardContent;
   const fallbackImgSrc = `${IPFS_RESOLVER_IMAGE}${img}`;
 
   useEffect(() => {
-    if (cachedNewlyCreatedAssets[img]) {
-      setCollectionImgSrc(cachedNewlyCreatedAssets[img]);
-      return;
-    }
+    (async () => {
+      if (new Date().getTime() - parseInt(created) < PROPAGATION_LAG_TIME) {
+        const cachedFile = await getCachedFiles(img);
+        if (cachedFile[img]) {
+          setCollectionImgSrc(cachedFile[img]);
+          return;
+        }
+      }
 
-    if (img) {
-      setCollectionImgSrc(`${RESIZER_IMAGE}${IPFS_RESOLVER_IMAGE}${img}`);
-      return;
-    }
+      if (img) {
+        setCollectionImgSrc(`${RESIZER_IMAGE}${IPFS_RESOLVER_IMAGE}${img}`);
+        return;
+      }
 
-    setCollectionImgSrc('/icon-blank-collection.png');
+      setCollectionImgSrc('/icon-blank-collection.png');
+    })();
   }, [img]);
 
   const openCollectionsPage = () => {

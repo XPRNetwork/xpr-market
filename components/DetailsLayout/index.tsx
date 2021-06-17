@@ -33,6 +33,7 @@ type Props = {
   saleIds?: string[];
   activeTab: string;
   isRefetchingAssets?: boolean;
+  createdAtTime: string;
   setActiveTab: Dispatch<SetStateAction<string>>;
   setCurrentAssetAsModalProps?: () => void;
 };
@@ -55,6 +56,7 @@ const DetailsLayout: FC<Props> = ({
   assetIds,
   saleIds,
   activeTab,
+  createdAtTime,
   isRefetchingAssets,
   setActiveTab,
   setCurrentAssetAsModalProps,
@@ -78,6 +80,7 @@ const DetailsLayout: FC<Props> = ({
           stage={stage}
           skybox={skybox}
           templateName={templateName}
+          created={createdAtTime}
         />
 
         <Column>
