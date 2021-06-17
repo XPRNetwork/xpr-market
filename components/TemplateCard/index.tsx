@@ -17,7 +17,7 @@ import TemplateVideo from '../TemplateVideo';
 import {
   IPFS_RESOLVER_VIDEO,
   IPFS_RESOLVER_IMAGE,
-  RESIZER_IMAGE_SM,
+  RESIZER_IMAGE,
   PROPAGATION_LAG_TIME,
 } from '../../utils/constants';
 import { useAuthContext, useBlacklistContext } from '../Provider';
@@ -76,7 +76,7 @@ const TemplateCard = ({
       const videoSrc = `${IPFS_RESOLVER_VIDEO}${video}`;
       const imageSrc = !image
         ? image
-        : `${RESIZER_IMAGE_SM}${IPFS_RESOLVER_IMAGE}${image}`;
+        : `${RESIZER_IMAGE}${IPFS_RESOLVER_IMAGE}${image}`;
       const fallbackImageSrc = image ? `${IPFS_RESOLVER_IMAGE}${image}` : '';
 
       setTemplateVideoSrc(videoSrc);

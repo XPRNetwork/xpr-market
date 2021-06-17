@@ -38,7 +38,7 @@ const NSFWImageWrapper = ({
           ipfsHash
         );
         let isNSFWUpdate = false;
-        if (Object.keys(metaResult).length > 0) {
+        if (Object.keys(metaResult).length > 0 && metaResult.nsfw) {
           metaResult.nsfw.forEach((type) => {
             if (
               (type.className === 'Hentai' ||
