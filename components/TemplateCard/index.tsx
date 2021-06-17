@@ -56,6 +56,7 @@ const TemplateCard = ({
 
   useEffect(() => {
     (async () => {
+      console.log('name: ', name);
       console.log('date now: ', new Date().getTime());
       console.log('created at: ', parseInt(created_at_time));
       console.log(
