@@ -93,6 +93,7 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
       img: collectionImage,
     },
     immutable_data: { image, name, desc, video, model, stage, skybox },
+    created_at_time,
   } = template;
 
   const fetchPageData = async () => {
@@ -246,6 +247,7 @@ const MyNFTsTemplateDetail = (): JSX.Element => {
         collectionName={collection_name}
         collectionAuthor={author}
         collectionImage={collectionImage}
+        createdAtTime={created_at_time}
         error={error}
         image={image}
         video={video}
