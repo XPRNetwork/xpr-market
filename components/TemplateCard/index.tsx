@@ -68,15 +68,15 @@ const TemplateCard = ({
         PROPAGATION_LAG_TIME
       ) {
         const cachedFile = await getCachedFiles(image || video);
-        console.log('cachedFile: ', cachedFile);
+        console.log(`${name} (cached file): `, cachedFile);
         if (cachedFile[video]) {
-          console.log('for video: ', cachedFile[video]);
+          console.log(`${name} (video): `, cachedFile[video]);
           setTemplateVideoSrc(cachedFile[video]);
           return;
         }
 
         if (cachedFile[image]) {
-          console.log('for image: ', cachedFile[img]);
+          console.log(`${name} (image): `, cachedFile[img]);
           setTemplateImgSrc(cachedFile[image]);
           return;
         }
