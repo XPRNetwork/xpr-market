@@ -10,11 +10,7 @@ import { TabsProps } from '../Tabs';
 import { Row } from './TabSection.styled';
 import { Template } from '../../services/templates';
 import { PAGINATION_LIMIT, FILTER_TYPES } from '../../utils/constants';
-import {
-  SearchTemplate,
-  SearchAuthor,
-  SearchCollection,
-} from '../../services/search';
+import { SearchAuthor, SearchCollection } from '../../services/search';
 
 export interface SectionContainerProps extends TabsProps {
   chainAccount?: string;
@@ -37,7 +33,7 @@ type Props = {
   filterDropdownProps?: FilterDropdownProps;
   isLoadingPrices?: boolean;
   isFetching: boolean;
-  rendered: Template[] | (SearchTemplate | SearchAuthor | SearchCollection)[];
+  rendered: Template[] | SearchAuthor[] | SearchCollection[];
   nextPageNumber: number;
   emptyContent: {
     subtitle: string;

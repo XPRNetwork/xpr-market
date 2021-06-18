@@ -20,25 +20,6 @@ export type SearchCollection = {
   description?: string;
 };
 
-export type SearchTemplate = {
-  author: string;
-  collection: string;
-  contract: string;
-  created: string;
-  id: string;
-  is_burnable: boolean;
-  is_transferable: true;
-  issued_supply: string;
-  max_supply: string;
-  name: string;
-  img?: string;
-  video?: string;
-  audio?: string;
-  model?: string;
-  stage?: string;
-  skybox?: string;
-};
-
 export type SearchResultsByType<T> = {
   contents?: T[];
   numberOfElements?: number;

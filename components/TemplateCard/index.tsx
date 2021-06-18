@@ -12,20 +12,17 @@ import {
   ShimmerBlock,
 } from './TemplateCard.styled';
 import CollectionIcon from '../CollectionIcon';
-import { fileReader } from '../../utils';
 import TemplateImage from '../TemplateImage';
 import TemplateVideo from '../TemplateVideo';
 import {
   IPFS_RESOLVER_VIDEO,
   IPFS_RESOLVER_IMAGE,
-  RESIZER_IMAGE_SM,
+  RESIZER_IMAGE,
+  PROPAGATION_LAG_TIME,
 } from '../../utils/constants';
-import {
-  useCreateAssetContext,
-  useAuthContext,
-  useBlacklistContext,
-} from '../Provider';
+import { useAuthContext, useBlacklistContext } from '../Provider';
 import { Template } from '../../services/templates';
+import { getCachedFiles } from '../../services/upload';
 
 type Props = {
   template: Template;
@@ -51,7 +48,6 @@ const TemplateCard = ({
     created_at_time,
   } = template;
 
-  const { cachedNewlyCreatedAssets } = useCreateAssetContext();
   const { currentUser } = useAuthContext();
   const { templatesBlacklist, collectionsBlacklist } = useBlacklistContext();
   const [templateVideoSrc, setTemplateVideoSrc] = useState<string>('');
@@ -59,30 +55,35 @@ const TemplateCard = ({
   const [fallbackImgSrc, setFallbackImgSrc] = useState<string>('');
 
   useEffect(() => {
-    if (Date.now() - 600000 < Number(created_at_time) && isMyTemplate) {
-      // created within the last 10 minutes to deal with propagation lag
-      if (cachedNewlyCreatedAssets[video]) {
-        fileReader((result) => {
-          setTemplateVideoSrc(result);
-        }, cachedNewlyCreatedAssets[video]);
+    (async () => {
+      if (
+        new Date().getTime() - parseInt(created_at_time) <
+        PROPAGATION_LAG_TIME
+      ) {
+        const cachedFile = await getCachedFiles(image || video);
+
+        if (cachedFile[video]) {
+          setTemplateVideoSrc(cachedFile[video]);
+          return;
+        }
+
+        if (cachedFile[image]) {
+          setTemplateImgSrc(cachedFile[image]);
+          return;
+        }
       }
-      if (cachedNewlyCreatedAssets[image]) {
-        fileReader((result) => {
-          setTemplateImgSrc(result);
-        }, cachedNewlyCreatedAssets[image]);
-      }
-    } else {
+
       const videoSrc = `${IPFS_RESOLVER_VIDEO}${video}`;
       const imageSrc = !image
         ? image
-        : `${RESIZER_IMAGE_SM}${IPFS_RESOLVER_IMAGE}${image}`;
+        : `${RESIZER_IMAGE}${IPFS_RESOLVER_IMAGE}${image}`;
       const fallbackImageSrc = image ? `${IPFS_RESOLVER_IMAGE}${image}` : '';
 
       setTemplateVideoSrc(videoSrc);
       setTemplateImgSrc(imageSrc);
       setFallbackImgSrc(fallbackImageSrc);
-    }
-  }, [video, image]);
+    })();
+  }, [image, video]);
 
   const router = useRouter();
   const isMyTemplate =
@@ -160,6 +161,7 @@ const TemplateCard = ({
         <TemplateImage
           templateImgSrc={templateImgSrc}
           fallbackImgSrc={fallbackImgSrc}
+          ipfsHash={image}
           templateName={name}
           priceTag={priceTag}
         />

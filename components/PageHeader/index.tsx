@@ -15,7 +15,7 @@ import { ReactComponent as MoreIcon } from '../../public/more.svg';
 import { ReactComponent as VerifiedIcon } from '../../public/icon-light-verified-24-px.svg';
 import ShareOnSocial from '../ShareOnSocial';
 import { useClickAway } from '../../hooks';
-import { IPFS_RESOLVER_IMAGE, RESIZER_IMAGE } from '../../utils/constants';
+import { IPFS_RESOLVER_IMAGE, RESIZER_IMAGE_SM } from '../../utils/constants';
 import ReadMoreDescription from '../ReadMoreDescription';
 import { ReactComponent as ReportIcon } from '../../public/report.svg';
 import { REPORT_TYPE } from '../../utils/constants';
@@ -52,7 +52,7 @@ const PageHeader = ({
     ? `data:image/jpeg;base64,${image}`
     : '/default-avatar.png';
   const collectionImg = image
-    ? `${RESIZER_IMAGE}${IPFS_RESOLVER_IMAGE}${image}`
+    ? `${RESIZER_IMAGE_SM}${IPFS_RESOLVER_IMAGE}${image}`
     : '/proton.svg';
 
   const displayImg = type === 'user' ? avatarImg : collectionImg;

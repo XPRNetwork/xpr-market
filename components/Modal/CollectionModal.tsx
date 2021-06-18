@@ -5,11 +5,7 @@ import {
   useRef,
   useEffect,
 } from 'react';
-import {
-  useAuthContext,
-  useModalContext,
-  useCreateAssetContext,
-} from '../Provider';
+import { useAuthContext, useModalContext } from '../Provider';
 import { CreateCollectionProps, UpdateCollectionProps } from '../Provider';
 import DragDropFileUploadSm from '../DragDropFileUploadSm';
 import InputField from '../InputField';
@@ -29,7 +25,7 @@ import {
   ErrorMessage,
 } from './Modal.styled';
 import { useWindowSize } from '../../hooks';
-import uploadToIPFS from '../../services/upload';
+import { uploadToIPFS } from '../../services/upload';
 import { ReactComponent as CloseIcon } from '../../public/close.svg';
 import { fileReader, delay } from '../../utils';
 import ProtonSDK from '../../services/proton';
@@ -48,7 +44,6 @@ type Props = {
 };
 
 const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
-  const { updateCachedNewlyCreatedAssets } = useCreateAssetContext();
   const { currentUser } = useAuthContext();
   const { isMobile } = useWindowSize();
   const { closeModal } = useModalContext();
@@ -120,10 +115,6 @@ const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
 
     try {
       const ipfsImage = await uploadToIPFS(uploadedFile);
-      updateCachedNewlyCreatedAssets({
-        ipfsHash: ipfsImage,
-        file: uploadedFile,
-      });
       setUpdatedImage(ipfsImage);
       fileReader((img) => setUpdatedImage(img), uploadedFile);
       return ipfsImage;

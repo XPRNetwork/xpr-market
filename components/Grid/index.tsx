@@ -6,16 +6,12 @@ import { Container } from './Grid.styled';
 import { CARD_RENDER_TYPES } from '../../utils/constants';
 import CollectionCard from '../CollectionCreatorCard/CollectionCard';
 import CreatorCard from '../CollectionCreatorCard/CreatorCard';
-import {
-  SearchCollection,
-  SearchAuthor,
-  SearchTemplate,
-} from '../../services/search';
+import { SearchCollection, SearchAuthor } from '../../services/search';
 import SearchTemplateCard from '../SearchTemplateCard';
 
 type Props = {
   isLoadingPrices: boolean;
-  items: Template[] | (SearchTemplate | SearchCollection | SearchAuthor)[];
+  items: Template[] | (Template | SearchCollection | SearchAuthor)[];
   type: string;
 };
 

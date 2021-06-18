@@ -12,11 +12,8 @@ import {
   SeeAllLink,
   LoadingSearchBox,
 } from './SearchInputResultsList.styled';
-import {
-  SearchCollection,
-  SearchAuthor,
-  SearchTemplate,
-} from '../../services/search';
+import { SearchCollection, SearchAuthor } from '../../services/search';
+import { Template } from '../../services/templates';
 import TemplateIcon from '../TemplateIcon';
 import CollectionIcon from '../CollectionIcon';
 import AvatarIcon from '../AvatarIcon';
@@ -26,7 +23,7 @@ import Spinner from '../Spinner';
 type Props = {
   input: string;
   collections?: SearchCollection[];
-  templates?: SearchTemplate[];
+  templates?: Template[];
   authors?: SearchAuthor[];
   inputRef: MutableRefObject<HTMLInputElement>;
   resultsListRef: MutableRefObject<HTMLUListElement>;
@@ -134,28 +131,38 @@ const SearchInputResultsList = ({
   return (
     <ResultsList ref={resultsListRef}>
       {templates.length ? <ResultListTitle>NFTs</ResultListTitle> : null}
-      {templates.map(({ name, id, collection, img, video }, i) => {
-        const link = `/${collection}/${id}`;
-        return (
-          <ResultItem
-            className="template"
-            onKeyDown={
-              i === 0 ? handleFirstResultItemKeyDown : handleResultItemKeyDown
-            }
-            onClick={() => handleClick(link)}
-            tabIndex={0}
-            data-key={link}
-            key={name}>
-            <TemplateIcon
-              name={name}
-              image={img}
-              video={video}
-              margin="0 12px 0 0"
-            />
-            <ResultItemName>{name}</ResultItemName>
-          </ResultItem>
-        );
-      })}
+      {templates.map(
+        (
+          {
+            name,
+            template_id,
+            collection: { collection_name },
+            immutable_data: { image, video },
+          },
+          i
+        ) => {
+          const link = `/${collection_name}/${template_id}`;
+          return (
+            <ResultItem
+              className="template"
+              onKeyDown={
+                i === 0 ? handleFirstResultItemKeyDown : handleResultItemKeyDown
+              }
+              onClick={() => handleClick(link)}
+              tabIndex={0}
+              data-key={link}
+              key={name}>
+              <TemplateIcon
+                name={name}
+                image={image}
+                video={video}
+                margin="0 12px 0 0"
+              />
+              <ResultItemName>{name}</ResultItemName>
+            </ResultItem>
+          );
+        }
+      )}
       {collections.length ? (
         <ResultListTitle>Collection</ResultListTitle>
       ) : null}

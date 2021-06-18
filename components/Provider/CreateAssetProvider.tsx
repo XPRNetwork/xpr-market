@@ -4,18 +4,13 @@ import {
   useState,
   useContext,
   useMemo,
-  useEffect,
   SetStateAction,
   Dispatch,
 } from 'react';
 import { CarouselCollection, NewCollection } from '../CollectionsCarousel';
-import protonMarketIDB, {
-  CachedAssets,
-  CachedAsset,
-} from '../../services/indexed-db';
 import ProtonSDK from '../../services/proton';
 import fees, { MintFee } from '../../services/fees';
-import uploadToIPFS from '../../services/upload';
+import { uploadToIPFS } from '../../services/upload';
 import {
   LG_FILE_UPLOAD_TYPES_TEXT,
   SHORTENED_TOKEN_PRECISION,
@@ -33,11 +28,6 @@ const placeholderCollection = {
   img: '',
 };
 
-const emptyCachedAsset = {
-  ipfsHash: '',
-  file: undefined,
-};
-
 const MintFeeInitial = {
   specialMintFee: {
     display: Number('0').toFixed(SHORTENED_TOKEN_PRECISION).toString(),
@@ -52,8 +42,11 @@ const MintFeeInitial = {
   totalFee: Number('0').toFixed(SHORTENED_TOKEN_PRECISION).toString(),
 };
 
+interface CachedAssets {
+  [ipfsHash: string]: string;
+}
+
 interface CreateAssetContext {
-  updateCachedNewlyCreatedAssets: (asset: CachedAsset) => Promise<void>;
   setSelectedCollection: Dispatch<SetStateAction<CarouselCollection>>;
   setNewCollection: Dispatch<SetStateAction<NewCollection>>;
   setTemplateName: Dispatch<SetStateAction<string>>;
@@ -79,11 +72,9 @@ interface CreateAssetContext {
   uploadedFilePreview: string;
   mintFee: MintFee;
   isUncreatedCollectionSelected: boolean;
-  cachedNewlyCreatedAssets: CachedAssets;
 }
 
 const CreateAssetContext = createContext<CreateAssetContext>({
-  updateCachedNewlyCreatedAssets: async () => {},
   setSelectedCollection: () => {},
   setNewCollection: () => {},
   setTemplateName: () => {},
@@ -109,7 +100,6 @@ const CreateAssetContext = createContext<CreateAssetContext>({
   uploadedFilePreview: '',
   mintFee: MintFeeInitial,
   isUncreatedCollectionSelected: false,
-  cachedNewlyCreatedAssets: {},
 });
 
 export const useCreateAssetContext = (): CreateAssetContext => {
@@ -140,35 +130,6 @@ export const CreateAssetProvider: FC<{
     isUncreatedCollectionSelected,
     setIsUncreatedCollectionSelected,
   ] = useState<boolean>(false);
-  const [
-    cachedNewlyCreatedAssets,
-    setCachedNewlyCreatedAssets,
-  ] = useState<CachedAssets>({});
-  const [assetToAddToIDB, setAssetToAddToIDB] = useState<CachedAsset>(
-    emptyCachedAsset
-  );
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      protonMarketIDB.getAllAssets(setCachedNewlyCreatedAssets);
-    }
-
-    return () => {
-      if (typeof window !== 'undefined') {
-        protonMarketIDB.removeOldAssets();
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const { ipfsHash, file } = assetToAddToIDB;
-      if (ipfsHash && file) {
-        protonMarketIDB.addAsset({ ipfsHash, file });
-        setAssetToAddToIDB(emptyCachedAsset);
-      }
-    }
-  }, [assetToAddToIDB]);
 
   const resetCreatePage = () => {
     setTemplateUploadedFile(null);
@@ -222,10 +183,11 @@ export const CreateAssetProvider: FC<{
 
     try {
       const templateIpfsImage = await uploadToIPFS(templateUploadedFile);
-      updateCachedNewlyCreatedAssets({
-        ipfsHash: templateIpfsImage,
-        file: templateUploadedFile,
-      });
+
+      if (!templateIpfsImage) {
+        const errors = ['try again (unable to upload image)'];
+        return errors;
+      }
 
       let isVideo = false;
       if (templateUploadedFile.type.includes('mp4')) {
@@ -280,18 +242,6 @@ export const CreateAssetProvider: FC<{
     }
   };
 
-  const updateCachedNewlyCreatedAssets = async ({
-    ipfsHash,
-    file,
-  }: CachedAsset): Promise<void> => {
-    setCachedNewlyCreatedAssets((prevAssets) => ({
-      ...prevAssets,
-      [ipfsHash]: file,
-    }));
-
-    setAssetToAddToIDB({ ipfsHash, file });
-  };
-
   const value = useMemo<CreateAssetContext>(
     () => ({
       setSelectedCollection,
@@ -307,7 +257,6 @@ export const CreateAssetProvider: FC<{
       setMintFee,
       setIsUncreatedCollectionSelected,
       createNft,
-      updateCachedNewlyCreatedAssets,
       selectedCollection,
       newCollection,
       templateName,
@@ -320,7 +269,6 @@ export const CreateAssetProvider: FC<{
       uploadedFilePreview,
       mintFee,
       isUncreatedCollectionSelected,
-      cachedNewlyCreatedAssets,
     }),
     [
       selectedCollection,
@@ -335,7 +283,6 @@ export const CreateAssetProvider: FC<{
       uploadedFilePreview,
       mintFee,
       isUncreatedCollectionSelected,
-      cachedNewlyCreatedAssets,
     ]
   );
 

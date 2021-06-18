@@ -99,3 +99,7 @@ export const fileReader = (
 
 export const delay = (ms: number): Promise<void> =>
   new Promise((resolve) => setTimeout(resolve, ms));
+
+export const getRandomNumberInRange = (min: number, max: number): number => {
+  return Math.floor(Math.random() * (max - min) + min);
+};

@@ -1,23 +1,23 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import {
-  useAuthContext,
-  useCreateAssetContext,
-  useBlacklistContext,
-} from '../Provider';
+import { useBlacklistContext } from '../Provider';
 import {
   Card,
   Blur,
   BlurContainer,
   Title,
-  Description,
+  // Description,
   BottomSection,
   IconContainer,
 } from './CollectionCreatorCard.styled';
 import { Image } from '../../styles/index.styled';
 import { SearchCollection } from '../../services/search';
-import { RESIZER_IMAGE, IPFS_RESOLVER_IMAGE } from '../../utils/constants';
-import { fileReader } from '../../utils';
+import {
+  RESIZER_IMAGE,
+  IPFS_RESOLVER_IMAGE,
+  PROPAGATION_LAG_TIME,
+} from '../../utils/constants';
+import { getCachedFiles } from '../../services/upload';
 
 type Props = {
   cardContent: SearchCollection;
@@ -25,36 +25,33 @@ type Props = {
 
 const CollectionCard = ({ cardContent }: Props): JSX.Element => {
   const router = useRouter();
-  const { cachedNewlyCreatedAssets } = useCreateAssetContext();
   const { collectionsBlacklist } = useBlacklistContext();
-  const { currentUser } = useAuthContext();
   const [collectionImgSrc, setCollectionImgSrc] = useState<string>('');
   const {
     img,
     name,
-    author,
-    description,
-    collection_name,
+    /* description, */ collection_name,
     created,
   } = cardContent;
-  const isMyCollection = currentUser && author === currentUser.actor;
   const fallbackImgSrc = `${IPFS_RESOLVER_IMAGE}${img}`;
 
   useEffect(() => {
-    if (img) {
-      if (Date.now() - 600000 < Number(created) && isMyCollection) {
-        // created within the last 10 minutes to deal with propagation lag
-        if (cachedNewlyCreatedAssets[img]) {
-          fileReader((result) => {
-            setCollectionImgSrc(result);
-          }, cachedNewlyCreatedAssets[img]);
+    (async () => {
+      if (new Date().getTime() - parseInt(created) < PROPAGATION_LAG_TIME) {
+        const cachedFile = await getCachedFiles(img);
+        if (cachedFile[img]) {
+          setCollectionImgSrc(cachedFile[img]);
+          return;
         }
-      } else {
-        setCollectionImgSrc(`${RESIZER_IMAGE}${IPFS_RESOLVER_IMAGE}${img}`);
       }
-    } else {
+
+      if (img) {
+        setCollectionImgSrc(`${RESIZER_IMAGE}${IPFS_RESOLVER_IMAGE}${img}`);
+        return;
+      }
+
       setCollectionImgSrc('/icon-blank-collection.png');
-    }
+    })();
   }, [img]);
 
   const openCollectionsPage = () => {
