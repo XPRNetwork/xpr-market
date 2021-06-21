@@ -12,7 +12,6 @@ import { ReactComponent as DefaultIcon } from '../../public/placeholder-template
 type Props = {
   src: string;
   height?: string;
-  width?: string;
   alt: string;
   imageStyling: React.ElementType;
   onLoad?: () => void;
