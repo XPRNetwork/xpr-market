@@ -12,6 +12,7 @@ import { ReactComponent as DefaultIcon } from '../../public/placeholder-template
 type Props = {
   src: string;
   height?: string;
+  width?: string;
   alt: string;
   imageStyling: React.ElementType;
   onLoad?: () => void;
@@ -32,11 +33,11 @@ const NSFWImageWrapper = ({
 
   useEffect(() => {
     (async () => {
+      let isNSFWUpdate = false;
       if (ipfsHash) {
         const metaResult: MetadataResult = await getCachedMetadataByHash(
           ipfsHash
         );
-        let isNSFWUpdate = false;
         if (Object.keys(metaResult).length > 0 && metaResult.nsfw) {
           metaResult.nsfw.forEach((type) => {
             if (
@@ -50,9 +51,9 @@ const NSFWImageWrapper = ({
             }
           });
         }
-        setIsNSFW(isNSFWUpdate);
-        onLoad();
       }
+      setIsNSFW(isNSFWUpdate);
+      onLoad();
     })();
   }, [ipfsHash]);
 
