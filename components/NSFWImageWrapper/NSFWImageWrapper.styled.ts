@@ -16,7 +16,6 @@ export const ImageStyled = styled.img<ImgProps>`
 `;
 
 export const BlockedImage = styled.div<BlockedImageProps>`
-  width: ${({ width }) => width || '270px'};
   height: ${({ height }) => height || '270px'};
   border-radius: 8px;
   display: flex;
