@@ -22,3 +22,11 @@ export const Image = styled.img`
   max-width: 270px;
   max-height: 270px;
 `;
+
+export const ChildContainer = styled.div`
+  width: 100%;
+
+  .lazyload-wrapper {
+    width: 100%;
+  }
+`;
