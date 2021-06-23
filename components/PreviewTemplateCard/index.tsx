@@ -59,7 +59,6 @@ const PreviewTemplateCard: FC<Props> = ({
         <TemplateImage
           templateImgSrc={templateImage}
           templateName={templateName}
-          ipfsHash=""
         />
       )}
       <Title>{templateName}</Title>
