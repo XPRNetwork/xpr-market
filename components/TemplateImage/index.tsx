@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import LazyLoad from 'react-lazyload';
-import { ImageContainer } from './TemplateImage.styled';
+import { ImageContainer, ChildContainer } from './TemplateImage.styled';
 import { PlaceholderAsset } from '../TemplateCard/TemplateCard.styled';
 import NSFWImageWrapper from '../NSFWImageWrapper';
 
@@ -32,7 +32,7 @@ const TemplateImageChild = ({
   };
 
   return (
-    <div>
+    <ChildContainer>
       <PlaceholderAsset ref={refPlaceholder} />
       <LazyLoad height="100%" offset={100} once>
         <NSFWImageWrapper
@@ -47,7 +47,7 @@ const TemplateImageChild = ({
           onLoad={removePlaceholder}
         />
       </LazyLoad>
-    </div>
+    </ChildContainer>
   );
 };
 
