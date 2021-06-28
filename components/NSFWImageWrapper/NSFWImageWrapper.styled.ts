@@ -12,6 +12,7 @@ interface BlockedImageProps extends ImgProps {
 
 export const ImageStyled = styled.img<ImgProps>`
   height: ${({ height }) => height || '270px'};
+  width: ${({ width }) => width || '270px'};
   object-fit: ${({ objectFit }) => objectFit || ''};
 `;
 
