@@ -31,15 +31,31 @@ const NSFWImageWrapper = ({
   const [isNSFW, setIsNSFW] = useState<boolean>(null);
   const [blurImageNumber, setBlurImageNumber] = useState<number>(1);
   const [width, setWidth] = useState<string>();
+  const [height, setHeight] = useState<string>();
 
-  const img = new window.Image();
-  img.addEventListener('load', function () {
-    const height = this.naturalHeight;
-    const conversion = 270 / height;
-    const newWidth = this.naturalWidth * conversion;
-    setWidth(newWidth <= 270 ? Math.round(newWidth).toString() + 'px' : null);
-  });
-  img.src = src;
+  useEffect(() => {
+    const img = new window.Image();
+    img.addEventListener('load', function () {
+      const { naturalWidth, naturalHeight } = this;
+
+      if (naturalWidth > naturalHeight) {
+        const conversion = 270 / naturalWidth;
+        const newHeight = naturalHeight * conversion;
+        setHeight(
+          newHeight <= 270 ? Math.round(newHeight).toString() + 'px' : null
+        );
+        setWidth(undefined);
+      } else {
+        const conversion = 270 / naturalHeight;
+        const newWidth = naturalWidth * conversion;
+        setWidth(
+          newWidth <= 270 ? Math.round(newWidth).toString() + 'px' : null
+        );
+        setHeight(undefined);
+      }
+    });
+    img.src = src;
+  }, [src]);
 
   useEffect(() => {
     (async () => {
@@ -75,6 +91,7 @@ const NSFWImageWrapper = ({
           setIsNSFW(false);
         }}
         width={width}
+        height={height}
         {...props}
         blurImage={blurImageNumber}>
         <NSFWButton>Click to see NSFW</NSFWButton>
@@ -83,7 +100,7 @@ const NSFWImageWrapper = ({
   }
 
   if (isNSFW === false) {
-    return <Image src={src} {...props} />;
+    return <Image width={width} height={height} src={src} {...props} />;
   }
 
   if (!src || isNSFW === null) {
