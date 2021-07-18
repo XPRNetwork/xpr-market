@@ -141,10 +141,10 @@ class ProtonJs {
   getXPRtoXUSDCConversionRate = async (): Promise<number> => {
     try {
       const res = await this.rpc.get_table_rows({
-        json: true,
         code: 'proton.swaps',
         scope: 'proton.swaps',
         table: 'pools',
+        limit: -1,
       });
 
       const conversion = res.rows.filter(
