@@ -84,6 +84,8 @@ const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
       setIsUncreatedCollectionSelected,
     } = modalProps as CreateCollectionProps;
     try {
+      // RESIZE IT HERE (STATIC / GIF)
+
       const ipfsImage = await uploadToIPFS(uploadedFile);
       fileReader((img) => {
         setSelectedCollection({
@@ -281,8 +283,10 @@ const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
             setUploadError={setUploadError}
             setFormError={setFormError}
           />
+          {JSON.stringify(uploadedFile)}
           <Column>
             <Description mb="8px">
+              {}
               We recommend a collection image of at least 400x400. Gifs work too.
             </Description>
             <DragDropButton onClick={openUploadWindow}>
