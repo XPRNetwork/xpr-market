@@ -30,14 +30,40 @@ const NSFWImageWrapper = ({
 }: Props): JSX.Element => {
   const [isNSFW, setIsNSFW] = useState<boolean>(null);
   const [blurImageNumber, setBlurImageNumber] = useState<number>(1);
+  const [width, setWidth] = useState<string>();
+  const [height, setHeight] = useState<string>();
+
+  useEffect(() => {
+    const img = new window.Image();
+    img.addEventListener('load', function () {
+      const { naturalWidth, naturalHeight } = this;
+
+      if (naturalWidth > naturalHeight) {
+        const conversion = 270 / naturalWidth;
+        const newHeight = naturalHeight * conversion;
+        setHeight(
+          newHeight <= 270 ? Math.round(newHeight).toString() + 'px' : null
+        );
+        setWidth(undefined);
+      } else {
+        const conversion = 270 / naturalHeight;
+        const newWidth = naturalWidth * conversion;
+        setWidth(
+          newWidth <= 270 ? Math.round(newWidth).toString() + 'px' : null
+        );
+        setHeight(undefined);
+      }
+    });
+    img.src = src;
+  }, [src]);
 
   useEffect(() => {
     (async () => {
+      let isNSFWUpdate = false;
       if (ipfsHash) {
         const metaResult: MetadataResult = await getCachedMetadataByHash(
           ipfsHash
         );
-        let isNSFWUpdate = false;
         if (Object.keys(metaResult).length > 0 && metaResult.nsfw) {
           metaResult.nsfw.forEach((type) => {
             if (
@@ -51,9 +77,9 @@ const NSFWImageWrapper = ({
             }
           });
         }
-        setIsNSFW(isNSFWUpdate);
-        onLoad();
       }
+      setIsNSFW(isNSFWUpdate);
+      onLoad();
     })();
   }, [ipfsHash]);
 
@@ -64,6 +90,8 @@ const NSFWImageWrapper = ({
           e.stopPropagation();
           setIsNSFW(false);
         }}
+        width={width}
+        height={height}
         {...props}
         blurImage={blurImageNumber}>
         <NSFWButton>Click to see NSFW</NSFWButton>
@@ -72,7 +100,7 @@ const NSFWImageWrapper = ({
   }
 
   if (isNSFW === false) {
-    return <Image src={src} {...props} />;
+    return <Image width={width} height={height} src={src} {...props} />;
   }
 
   if (!src || isNSFW === null) {

@@ -11,14 +11,15 @@ interface BlockedImageProps extends ImgProps {
 }
 
 export const ImageStyled = styled.img<ImgProps>`
-  width: ${({ width }) => width || '270px'};
   height: ${({ height }) => height || '270px'};
+  width: ${({ width }) => width || '270px'};
   object-fit: ${({ objectFit }) => objectFit || ''};
 `;
 
 export const BlockedImage = styled.div<BlockedImageProps>`
-  width: ${({ width }) => width || '270px'};
   height: ${({ height }) => height || '270px'};
+  width: ${({ width }) => width || '270px'};
+  min-width: 135px;
   border-radius: 8px;
   display: flex;
   justify-content: center;

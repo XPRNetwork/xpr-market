@@ -56,7 +56,7 @@ const TemplateImage = ({
   templateImgSrc,
   priceTag,
   fallbackImgSrc,
-  ipfsHash,
+  ipfsHash = '',
 }: Props): JSX.Element => {
   if (!fallbackImgSrc) {
     fallbackImgSrc = '/placeholder-template-image.png';
