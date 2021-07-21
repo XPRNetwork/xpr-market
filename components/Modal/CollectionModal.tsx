@@ -104,9 +104,7 @@ const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
       setIsUncreatedCollectionSelected(true);
       closeModal();
     } catch (err) {
-      let errMsg = String(err);
-      errMsg = errMsg.replaceAll('Error: ', '');
-      setFormError(errMsg);
+      setFormError(err.message);
     }
   };
 
