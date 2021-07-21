@@ -186,18 +186,18 @@ const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
     }
 
     if (errors.length === 1) {
-      setFormError(`Please ${errors[0]}.`);
+      setFormError(`${errors[0]}.`);
       return;
     }
 
     if (errors.length === 2) {
-      setFormError(`Please ${errors[0]} and ${errors[1]}.`);
+      setFormError(`${errors[0]} and ${errors[1]}.`);
       return;
     }
 
     if (errors.length > 2) {
       const lastErrorIndex = errors.length - 1;
-      let errorMessage = `Please ${errors[0]}`;
+      let errorMessage = `${errors[0]}`;
 
       for (let i = 1; i < errors.length; i++) {
         if (i === lastErrorIndex) {
