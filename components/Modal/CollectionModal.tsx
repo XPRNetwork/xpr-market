@@ -104,7 +104,9 @@ const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
       setIsUncreatedCollectionSelected(true);
       closeModal();
     } catch (err) {
-      setFormError('Unable to upload the collection image. Please try again.');
+      let errMsg = String(err);
+      errMsg = errMsg.replaceAll('Error: ', '');
+      setFormError(errMsg);
     }
   };
 
