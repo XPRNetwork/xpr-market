@@ -84,8 +84,6 @@ const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
       setIsUncreatedCollectionSelected,
     } = modalProps as CreateCollectionProps;
     try {
-      // RESIZE IT HERE (STATIC / GIF)
-
       const ipfsImage = await uploadToIPFS(uploadedFile);
       fileReader((img) => {
         setSelectedCollection({
@@ -283,7 +281,7 @@ const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
             setUploadError={setUploadError}
             setFormError={setFormError}
           />
-          {JSON.stringify(uploadedFile)}
+
           <Column>
             <Description mb="8px">
               {}
