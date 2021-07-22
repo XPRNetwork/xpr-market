@@ -23,8 +23,6 @@ export const uploadToIPFS = async (
   formData.append('file', file);
   formData.append('isCollection', JSON.stringify(isCollection));
 
-  //alert(JSON.stringify(isCollection));
-
   try {
     const resultRaw = await fetch(`${protonBackendServiceApi}/market/files`, {
       method: 'POST',
