@@ -284,7 +284,6 @@ const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
 
           <Column>
             <Description mb="8px">
-              {}
               We recommend a collection image of at least 400x400. GIFs work
               too.
             </Description>
