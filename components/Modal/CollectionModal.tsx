@@ -84,7 +84,7 @@ const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
       setIsUncreatedCollectionSelected,
     } = modalProps as CreateCollectionProps;
     try {
-      const ipfsImage = await uploadToIPFS(uploadedFile, true);
+      const ipfsImage = await uploadToIPFS(uploadedFile, 1);
       fileReader((img) => {
         setSelectedCollection({
           collection_name: name,
@@ -114,7 +114,7 @@ const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
     }
 
     try {
-      const ipfsImage = await uploadToIPFS(uploadedFile, true);
+      const ipfsImage = await uploadToIPFS(uploadedFile, 1);
       setUpdatedImage(ipfsImage);
       fileReader((img) => setUpdatedImage(img), uploadedFile);
       return ipfsImage;
