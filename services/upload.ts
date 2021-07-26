@@ -15,20 +15,23 @@ export type MetadataResult = {
   nsfw?: { className: string; probability: number }[];
 };
 
-export const uploadToIPFS = async (file: File): Promise<string> => {
+export const uploadToIPFS = async (
+  file: File,
+  isCollection = 0
+): Promise<string> => {
   const formData = new FormData();
   formData.append('file', file);
+  formData.append('isCollection', JSON.stringify(isCollection));
+
   try {
     const resultRaw = await fetch(`${protonBackendServiceApi}/market/files`, {
       method: 'POST',
       body: formData,
     });
     const result = await resultRaw.json();
-
     if (!result || result.error) {
       throw new Error(result.message || 'Unable to upload');
     }
-
     return result.IpfsHash;
   } catch (e) {
     throw new Error(e);

@@ -84,7 +84,7 @@ const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
       setIsUncreatedCollectionSelected,
     } = modalProps as CreateCollectionProps;
     try {
-      const ipfsImage = await uploadToIPFS(uploadedFile);
+      const ipfsImage = await uploadToIPFS(uploadedFile, 1);
       fileReader((img) => {
         setSelectedCollection({
           collection_name: name,
@@ -104,7 +104,7 @@ const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
       setIsUncreatedCollectionSelected(true);
       closeModal();
     } catch (err) {
-      setFormError('Unable to upload the collection image. Please try again.');
+      setFormError(err.message);
     }
   };
 
@@ -114,7 +114,7 @@ const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
     }
 
     try {
-      const ipfsImage = await uploadToIPFS(uploadedFile);
+      const ipfsImage = await uploadToIPFS(uploadedFile, 1);
       setUpdatedImage(ipfsImage);
       fileReader((img) => setUpdatedImage(img), uploadedFile);
       return ipfsImage;
@@ -186,18 +186,18 @@ const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
     }
 
     if (errors.length === 1) {
-      setFormError(`Please ${errors[0]}.`);
+      setFormError(`${errors[0]}.`);
       return;
     }
 
     if (errors.length === 2) {
-      setFormError(`Please ${errors[0]} and ${errors[1]}.`);
+      setFormError(`${errors[0]} and ${errors[1]}.`);
       return;
     }
 
     if (errors.length > 2) {
       const lastErrorIndex = errors.length - 1;
-      let errorMessage = `Please ${errors[0]}`;
+      let errorMessage = `${errors[0]}`;
 
       for (let i = 1; i < errors.length; i++) {
         if (i === lastErrorIndex) {
@@ -281,9 +281,11 @@ const CollectionModal = ({ type, modalProps }: Props): JSX.Element => {
             setUploadError={setUploadError}
             setFormError={setFormError}
           />
+
           <Column>
             <Description mb="8px">
-              We recommend a collection image of at least 400x400. Gifs work too.
+              We recommend a collection image of at least 400x400. GIFs work
+              too.
             </Description>
             <DragDropButton onClick={openUploadWindow}>
               Choose file

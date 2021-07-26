@@ -48,23 +48,23 @@ const CreateTemplate: FC<{
 
   const setErrorMessages = (errors: string[]): void => {
     if (errors.length === 1) {
-      setError(`Please ${errors[0]}.`);
+      setError(`${errors[0]}.`);
       return;
     }
 
     if (errors.length === 1) {
-      setError(`Please ${errors[0]}.`);
+      setError(`${errors[0]}.`);
       return;
     }
 
     if (errors.length === 2) {
-      setError(`Please ${errors[0]} and ${errors[1]}.`);
+      setError(`${errors[0]} and ${errors[1]}.`);
       return;
     }
 
     if (errors.length > 2) {
       const lastErrorIndex = errors.length - 1;
-      let errorMessage = `Please ${errors[0]}`;
+      let errorMessage = `${errors[0]}`;
 
       for (let i = 1; i < errors.length; i++) {
         if (i === lastErrorIndex) {
