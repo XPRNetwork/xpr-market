@@ -28,9 +28,9 @@ const ExploreCard = (): JSX.Element => {
     }
   }, [isDesktop, isMobile]);
 
-  const handleGetStartedClick = currentUser
-    ? () => router.push('/create')
-    : login;
+  const handleGetStartedClick = () => {
+    router.push('/learn-more');
+  };
 
   return (
     <Container>
