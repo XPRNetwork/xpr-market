@@ -239,7 +239,6 @@ export const Answer = styled.div`
       margin-bottom: 15px;
     }
   `};
-
 `;
 
 export const ImageContainer = styled(FadeInImageContainer)`
