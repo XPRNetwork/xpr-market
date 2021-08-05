@@ -149,12 +149,14 @@ export const Card = styled.div`
   margin-top: 15px;
   border: 1px solid #e6e6e6;
   border-radius: 16px;
-  padding: 26px 24px 43px;
 `;
 
 export const CardTitle = styled.div`
   font-size: 21px;
-  margin-bottom: 25px;
+  cursor: pointer;
+  user-select: none;
+  padding: 26px 24px 30px;
+
   &:before {
     content: '';
     display: inline-block;
@@ -183,7 +185,11 @@ export const CardTitle = styled.div`
       margin-bottom: -4px;
     }
   `};
+`;
 
+export const Collapse = styled.div`
+  margin-top: 0;
+  transition: visibility 0s, opacity 0.5s linear;
 `;
 
 export const CardParagraph = styled.div`
@@ -194,7 +200,9 @@ export const CardParagraph = styled.div`
   line-height: 1.5;
   letter-spacing: normal;
   color: #808080;
-  margin-top: 25px;
+  margin-bottom: 25px;
+  padding-left: 25px;
+  padding-right: 25px;
 `;
 export const StandardLink = styled.a`
   color: #419cff;
@@ -204,13 +212,17 @@ export const Question = styled.div`
   font-size: 18px;
   font-weight: 500;
   color: #333333;
-  margin-top: 36px;
+  margin-bottom: 36px;
+  padding-left: 25px;
+  padding-right: 25px;
 `;
 export const Answer = styled.div`
   font-size: 16px;
   color: #333333;
   margin-left: 36px;
-  margin-top: 30px;
+  margin-bottom: 30px;
+  padding-left: 25px;
+  padding-right: 25px;
 `;
 
 export const ImageContainer = styled(FadeInImageContainer)`
@@ -219,12 +231,9 @@ export const ImageContainer = styled(FadeInImageContainer)`
   display: flex;
   justify-content: flex-end;
   min-width: 543px;
-
-
 `;
 
 export const FeatureBox = styled.div`
-  
   background-color: #d8d8d8;
   border: 1px solid #979797;
   padding: 10px 22px 14px;
