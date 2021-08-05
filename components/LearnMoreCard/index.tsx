@@ -99,8 +99,7 @@ const LearnMoreCard = (): JSX.Element => {
           </TickList>
 
           <BannerText>
-            To learn more about Proton Market, check out our{' '}
-            <strong>quick guide here.</strong>
+            To learn more about Proton Market, check out our quick guide below.
           </BannerText>
         </Content>
         <ImageContainer>
