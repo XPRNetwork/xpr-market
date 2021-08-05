@@ -79,7 +79,7 @@ export const Title2 = styled.h2`
 `;
 
 export const SubTitle = styled.p`
-  color: #b28bf4;
+  color: #dddddd;
   font-size: 21px;
   line-height: 32px;
   margin: 16px 0 40px;
@@ -99,7 +99,7 @@ export const SubTitle = styled.p`
 `;
 
 export const BannerText = styled.p`
-  color: #b28bf4;
+  color: #dddddd;
   font-size: 21px;
   line-height: 32px;
   margin: 16px 0 40px;
@@ -119,12 +119,12 @@ export const BannerText = styled.p`
 `;
 
 export const TickList = styled.ul`
-  list-style-image: url(/tick.png);
+  list-style-image: url(/proton-mark.png);
   padding-left: 25px;
 `;
 
 export const BulletPoint = styled.li`
-  color: #b28bf4;
+  color: #dddddd;
   font-size: 21px;
   line-height: 1.52;
   margin: 0px 0px 15px 25px;
@@ -199,7 +199,7 @@ export const CardParagraph = styled.div`
   font-style: normal;
   line-height: 1.5;
   letter-spacing: normal;
-  color: #808080;
+  color: #555555;
   margin-bottom: 25px;
   padding-left: 25px;
   padding-right: 25px;
@@ -251,14 +251,14 @@ export const FeatureBoxTitle = styled.div`
 `;
 
 export const FeatureBoxBullet = styled.div`
-  color: #808080;
+  color: #555555;
   margin-top: 15px;
   margin-bottom: 15px;
   line-height: 24px;
 `;
 
 export const FeatureBoxText = styled.div`
-  color: #808080;
+  color: #555555;
   padding-left: 15px;
   line-height: 24px;
 `;
