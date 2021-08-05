@@ -170,7 +170,6 @@ export const CardTitle = styled.div`
   ${breakpoint.tablet`
     font-size: 18px;
     line-height: 28px;
-    margin: 12px 0 32px;
   `};
 
   ${breakpoint.mobile`
@@ -211,18 +210,36 @@ export const StandardLink = styled.a`
 export const Question = styled.div`
   font-size: 18px;
   font-weight: 500;
+  line-height: 1.5;
   color: #333333;
   margin-bottom: 36px;
   padding-left: 25px;
   padding-right: 25px;
+
+  ${breakpoint.mobile`
+    {
+      margin-bottom: 10px;
+      margin-top: 30px;
+    }
+  `};
 `;
 export const Answer = styled.div`
   font-size: 16px;
+  line-height: 1.5;
   color: #333333;
   margin-left: 36px;
   margin-bottom: 30px;
   padding-left: 25px;
   padding-right: 25px;
+
+  ${breakpoint.mobile`
+    {
+      padding-left: 10px;
+      padding-right: 10px;
+      margin-bottom: 15px;
+    }
+  `};
+
 `;
 
 export const ImageContainer = styled(FadeInImageContainer)`
