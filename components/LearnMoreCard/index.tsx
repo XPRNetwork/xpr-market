@@ -72,12 +72,12 @@ const LearnMoreCard = (): JSX.Element => {
             The easiest, most affordable, and most straight-forward way to
             create, sell, buy, and trade NFTs is ready for you.
           </SubTitle>
-          <Title2>Why launch your NFTs on Proton Market</Title2>
+          <Title2>Why launch your NFTs on Proton Market?</Title2>
 
           <TickList>
             <BulletPoint>
-              No gas fees! There are no fees for users to purchase NFTs and with
-              with the Proton blockchain.
+              No gas fees! There are no gas fees for users to purchase NFTs on
+              the Proton blockchain.
             </BulletPoint>
             <BulletPoint>
               Low fees to mint NFTs, with mint prices hovering around just a few
@@ -85,12 +85,12 @@ const LearnMoreCard = (): JSX.Element => {
             </BulletPoint>
             <BulletPoint>
               Instant transactions mean no wait times - so your buyers can own
-              new new purchases immediately.
+              their new purchases immediately.
             </BulletPoint>
             <BulletPoint>
               Low barriers to entry. Buyers shouldn’t have to pay $40-$200 in
-              fees just to own an NFT; with Proton Market, your buyers pay far
-              than anywhere else, meaning you take home more profit.
+              fees just to own an NFT. With Proton Market, your buyers pay fewer
+              fees than anywhere else, meaning you take home more profit.
             </BulletPoint>
             <BulletPoint style={{ marginBottom: 38 }}>
               Royalties! Earn passive income every time one of your creations is
@@ -191,11 +191,12 @@ const LearnMoreCard = (): JSX.Element => {
             }}>
             <CardParagraph>
               <strong>
-                We firmly believe that whatever can be decentralized;
+                We firmly believe that whatever can be decentralized, should be
+                decentralized.
               </strong>{' '}
-              should be decentralized; cryptocurrency is best when more people
-              can exert small amounts of collective control, and this logic
-              applies to our own projects as well. For this reason,{' '}
+              Cryptocurrency is best when more people can exert small amounts of
+              collective control, and this logic applies to our own projects as
+              well. For this reason,{' '}
               <StandardLink
                 target="_BLANK"
                 rel="noreferrer"
@@ -304,8 +305,7 @@ const LearnMoreCard = (): JSX.Element => {
             </CardParagraph>
 
             <CardParagraph>
-              Step 1 - Visit the open-source codebase is available on Github
-              here:{' '}
+              Step 1 - Visit the open-source codebase on Github here:{' '}
               <StandardLink
                 target="_BLANK"
                 rel="noreferrer"
