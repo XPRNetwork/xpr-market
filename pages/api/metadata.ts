@@ -17,6 +17,14 @@ const handler = async (
       break;
     default: {
       try {
+        // hash should not contain slashes
+        if (hash.indexOf('/') !== -1) {
+          return res.send({
+            success: true,
+            message: {},
+          });
+        }
+
         const rawResult = await fetch(
           `${process.env.BACKEND_ENDPOINT}/market/files/${hash}/metadata`,
           {
