@@ -176,6 +176,7 @@ class ProtonSDK {
       },
     });
     this.link = link;
+    this.session = session;
     this.auth = {
       actor: session.auth.actor.toString(),
       permission: session.auth.permission.toString(),
