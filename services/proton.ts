@@ -191,7 +191,7 @@ class ProtonSDK {
   login = async (): Promise<WalletResponse> => {
     try {
       await this.connect({ restoreSession: false });
-      if (!this.session || !this.accountData) {
+      if (!this.session || !this.auth || !this.accountData) {
         throw new Error('An error has occurred while logging in');
       }
 
@@ -230,7 +230,7 @@ class ProtonSDK {
   restoreSession = async () => {
     try {
       await this.connect({ restoreSession: true });
-      if (!this.session || !this.accountData) {
+      if (!this.session || !this.auth || !this.accountData) {
         throw new Error('An error has occurred while restoring a session');
       }
 
@@ -293,7 +293,7 @@ class ProtonSDK {
       },
     ];
     try {
-      if (!this.session) {
+      if (!this.session || !this.auth) {
         throw new Error('Must be logged in to transfer an asset');
       }
 
@@ -342,7 +342,7 @@ class ProtonSDK {
       },
     ];
     try {
-      if (!this.session) {
+      if (!this.session || !this.auth) {
         throw new Error('Must be logged in to burn an asset');
       }
 
@@ -396,7 +396,7 @@ class ProtonSDK {
       },
     ];
     try {
-      if (!this.session) {
+      if (!this.session || !this.auth) {
         throw new Error('Must be logged in to withdraw from the market');
       }
 
@@ -702,7 +702,7 @@ class ProtonSDK {
 
     try {
       console.log('createNft, session? ', this.session);
-      if (!this.session) {
+      if (!this.session || !this.auth) {
         throw new Error(
           'Unable to create and mint a collection, schema, template, and assets without logging in.'
         );
@@ -809,7 +809,7 @@ class ProtonSDK {
     }
 
     try {
-      if (!this.session) {
+      if (!this.session || !this.auth) {
         throw new Error('Unable to update a collection without logging in.');
       }
       const result = await this.session.transact(
@@ -860,7 +860,7 @@ class ProtonSDK {
       },
     ];
     try {
-      if (!this.session) {
+      if (!this.session || !this.auth) {
         throw new Error('Unable to set a market fee without logging in.');
       }
       const result = await this.session.transact(
@@ -996,7 +996,7 @@ class ProtonSDK {
 
     try {
       console.log('createTemplateAssets this.session?', this.session);
-      if (!this.session) {
+      if (!this.session || !this.auth) {
         throw new Error(
           'Unable to create a template and mint assets without logging in.'
         );
@@ -1090,7 +1090,7 @@ class ProtonSDK {
     }
 
     try {
-      if (!this.session) {
+      if (!this.session || !this.auth) {
         throw new Error('Unable to mint assets without logging in.');
       }
       const result = await this.session.transact(
@@ -1174,7 +1174,7 @@ class ProtonSDK {
     ];
 
     try {
-      if (!this.session) {
+      if (!this.session || !this.auth) {
         throw new Error('Unable to create a sale offer without logging in.');
       }
 
@@ -1265,7 +1265,7 @@ class ProtonSDK {
     ];
 
     try {
-      if (!this.session) {
+      if (!this.session || !this.auth) {
         throw new Error('Unable to create a sale offer without logging in.');
       }
 
@@ -1315,7 +1315,7 @@ class ProtonSDK {
     ];
 
     try {
-      if (!this.session) {
+      if (!this.session || !this.auth) {
         throw new Error('Unable to cancel a sale without logging in.');
       }
 
@@ -1365,7 +1365,7 @@ class ProtonSDK {
     }));
 
     try {
-      if (!this.session) {
+      if (!this.session || !this.auth) {
         throw new Error('Unable to cancel a sale without logging in.');
       }
 
@@ -1437,7 +1437,7 @@ class ProtonSDK {
       },
     ];
     try {
-      if (!this.session) {
+      if (!this.session || !this.auth) {
         throw new Error('Unable to purchase a sale without logging in.');
       }
 
@@ -1481,7 +1481,7 @@ class ProtonSDK {
     duration: string;
   }): Promise<Response> => {
     try {
-      if (!this.session) {
+      if (!this.session || !this.auth) {
         throw new Error('Unable to create an auction without logging in.');
       }
 
@@ -1559,7 +1559,7 @@ class ProtonSDK {
     bid: string;
   }): Promise<Response> => {
     try {
-      if (!this.session) {
+      if (!this.session || !this.auth) {
         throw new Error('Unable to bid on an auction without logging in.');
       }
 
@@ -1644,7 +1644,7 @@ class ProtonSDK {
     auction_id: string;
   }): Promise<Response> => {
     try {
-      if (!this.session) {
+      if (!this.session || !this.auth) {
         throw new Error('Unable to claim an auction without logging in.');
       }
 
@@ -1701,7 +1701,7 @@ class ProtonSDK {
     auction_id: string;
   }): Promise<Response> => {
     try {
-      if (!this.session) {
+      if (!this.session || !this.auth) {
         throw new Error('Unable to claim an auction without logging in.');
       }
 
@@ -1756,7 +1756,7 @@ class ProtonSDK {
     auction_id: string;
   }): Promise<Response> => {
     try {
-      if (!this.session) {
+      if (!this.session || !this.auth) {
         throw new Error('Unable to cancel an auction without logging in.');
       }
 
