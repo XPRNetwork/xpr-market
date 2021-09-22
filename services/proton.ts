@@ -186,6 +186,11 @@ class ProtonSDK {
     if (this.auth.actor) {
       this.accountData = await proton.getAccountData(this.auth.actor);
     }
+    console.log(this.link);
+    console.log(this.session);
+    console.log(this.auth);
+    console.log(this.chainId);
+    console.log(this.accountData);
   };
 
   login = async (): Promise<WalletResponse> => {
