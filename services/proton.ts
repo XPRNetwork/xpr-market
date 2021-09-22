@@ -1,9 +1,10 @@
-import { ConnectWallet } from '@proton/web-sdk';
-import { LinkSession, Link } from '@proton/link';
+import { ConnectWallet, ProtonWebLink } from '@bloks/web-sdk';
+import { ChainId, Link, LinkSession } from '@bloks/link';
 import logoUrl from '../public/logo.svg';
 import proton from './proton-rpc';
 import { DEFAULT_SCHEMA, TOKEN_PRECISION } from '../utils/constants';
 import fees, { MintFee } from '../services/fees';
+import { RpcInterfaces } from '@proton/js';
 
 export interface User {
   actor: string;
@@ -139,20 +140,31 @@ interface Action {
 class ProtonSDK {
   appName: string;
   requestAccount: string;
+  auth: { actor: string; permission: string } | null;
+  link: ProtonWebLink | Link | null;
   session: LinkSession | null;
-  link: Link | null;
+  accountData: RpcInterfaces.UserInfo | null;
+  chainId: ChainId | null;
 
   constructor() {
     this.appName = 'Proton Market';
     this.requestAccount = 'nftmarket';
     this.session = null;
+    this.auth = null;
     this.link = null;
+    this.accountData = null;
+    this.chainId = null;
   }
 
   connect = async ({ restoreSession }): Promise<void> => {
     const { link, session } = await ConnectWallet({
       linkOptions: {
-        rpc: proton.rpc,
+        endpoints: proton.endpoints,
+        chainId:
+          process.env.NEXT_PUBLIC_NFT_ENDPOINT ===
+          'https://test.proton.api.atomicassets.io'
+            ? '71ee83bcf52142d61019d95f9cc5427ba6a0d7ff8accd9e2088ae2abeaf3d3dd'
+            : '384da888112027f0321850a169f737c33e53b388aad48b5adace4bab97f437e0',
         restoreSession,
       },
       transportOptions: {
@@ -161,32 +173,40 @@ class ProtonSDK {
       },
       selectorOptions: {
         appName: this.appName,
-        appLogo: logoUrl as string,
       },
     });
     this.link = link;
     this.session = session;
+    this.auth = {
+      actor: session.auth.actor.toString(),
+      permission: session.auth.permission.toString(),
+    };
+    this.chainId = session.chainId;
+
+    if (this.auth.actor) {
+      this.accountData = await proton.getAccountData(this.auth.actor);
+    }
   };
 
   login = async (): Promise<WalletResponse> => {
     try {
       await this.connect({ restoreSession: false });
-      if (!this.session || !this.session.auth || !this.session.accountData) {
+      if (!this.session || !this.auth || !this.accountData) {
         throw new Error('An error has occurred while logging in');
       }
-      const { auth, accountData } = this.session;
-      const { avatar, isLightKYCVerified, name } = accountData[0];
+
+      const { avatar, isLightKYCVerified, name } = this.accountData;
       const chainAccountAvatar = avatar
         ? `data:image/jpeg;base64,${avatar}`
         : '/default-avatar.png';
 
       return {
         user: {
-          actor: auth.actor,
+          actor: this.auth.actor,
           avatar: chainAccountAvatar,
           isLightKYCVerified,
           name,
-          permission: auth.permission,
+          permission: this.auth.permission,
         },
         error: '',
       };
@@ -199,18 +219,23 @@ class ProtonSDK {
   };
 
   logout = async () => {
-    await this.link.removeSession(this.requestAccount, this.session.auth);
+    await this.link.removeSession(this.requestAccount, this.auth, this.chainId);
+    this.auth = null;
+    this.link = null;
+    this.session = null;
+    this.accountData = null;
+    this.chainId = null;
   };
 
   restoreSession = async () => {
     try {
       await this.connect({ restoreSession: true });
-      if (!this.session || !this.session.auth || !this.session.accountData) {
+      if (!this.session || !this.auth || !this.accountData) {
         throw new Error('An error has occurred while restoring a session');
       }
 
-      const { auth, accountData } = this.session;
-      const { avatar, isLightKYCVerified, name } = accountData[0];
+      const { auth, accountData } = this;
+      const { avatar, isLightKYCVerified, name } = accountData;
       const chainAccountAvatar = avatar
         ? `data:image/jpeg;base64,${avatar}`
         : '/default-avatar.png';
@@ -268,7 +293,7 @@ class ProtonSDK {
       },
     ];
     try {
-      if (!this.session) {
+      if (!this.session || !this.auth) {
         throw new Error('Must be logged in to transfer an asset');
       }
 
@@ -317,7 +342,7 @@ class ProtonSDK {
       },
     ];
     try {
-      if (!this.session) {
+      if (!this.session || !this.auth) {
         throw new Error('Must be logged in to burn an asset');
       }
 
@@ -371,7 +396,7 @@ class ProtonSDK {
       },
     ];
     try {
-      if (!this.session) {
+      if (!this.session || !this.auth) {
         throw new Error('Must be logged in to withdraw from the market');
       }
 
@@ -677,7 +702,7 @@ class ProtonSDK {
 
     try {
       console.log('createNft, session? ', this.session);
-      if (!this.session) {
+      if (!this.session || !this.auth) {
         throw new Error(
           'Unable to create and mint a collection, schema, template, and assets without logging in.'
         );
@@ -784,7 +809,7 @@ class ProtonSDK {
     }
 
     try {
-      if (!this.session) {
+      if (!this.session || !this.auth) {
         throw new Error('Unable to update a collection without logging in.');
       }
       const result = await this.session.transact(
@@ -835,7 +860,7 @@ class ProtonSDK {
       },
     ];
     try {
-      if (!this.session) {
+      if (!this.session || !this.auth) {
         throw new Error('Unable to set a market fee without logging in.');
       }
       const result = await this.session.transact(
@@ -971,7 +996,7 @@ class ProtonSDK {
 
     try {
       console.log('createTemplateAssets this.session?', this.session);
-      if (!this.session) {
+      if (!this.session || !this.auth) {
         throw new Error(
           'Unable to create a template and mint assets without logging in.'
         );
@@ -1065,7 +1090,7 @@ class ProtonSDK {
     }
 
     try {
-      if (!this.session) {
+      if (!this.session || !this.auth) {
         throw new Error('Unable to mint assets without logging in.');
       }
       const result = await this.session.transact(
@@ -1149,7 +1174,7 @@ class ProtonSDK {
     ];
 
     try {
-      if (!this.session) {
+      if (!this.session || !this.auth) {
         throw new Error('Unable to create a sale offer without logging in.');
       }
 
@@ -1240,7 +1265,7 @@ class ProtonSDK {
     ];
 
     try {
-      if (!this.session) {
+      if (!this.session || !this.auth) {
         throw new Error('Unable to create a sale offer without logging in.');
       }
 
@@ -1290,7 +1315,7 @@ class ProtonSDK {
     ];
 
     try {
-      if (!this.session) {
+      if (!this.session || !this.auth) {
         throw new Error('Unable to cancel a sale without logging in.');
       }
 
@@ -1340,7 +1365,7 @@ class ProtonSDK {
     }));
 
     try {
-      if (!this.session) {
+      if (!this.session || !this.auth) {
         throw new Error('Unable to cancel a sale without logging in.');
       }
 
@@ -1412,7 +1437,7 @@ class ProtonSDK {
       },
     ];
     try {
-      if (!this.session) {
+      if (!this.session || !this.auth) {
         throw new Error('Unable to purchase a sale without logging in.');
       }
 
@@ -1456,11 +1481,11 @@ class ProtonSDK {
     duration: string;
   }): Promise<Response> => {
     try {
-      if (!this.session) {
+      if (!this.session || !this.auth) {
         throw new Error('Unable to create an auction without logging in.');
       }
 
-      const seller = this.session.auth.actor;
+      const seller = this.auth.actor;
       const actions = [
         {
           account: 'atomicmarket',
@@ -1534,11 +1559,11 @@ class ProtonSDK {
     bid: string;
   }): Promise<Response> => {
     try {
-      if (!this.session) {
+      if (!this.session || !this.auth) {
         throw new Error('Unable to bid on an auction without logging in.');
       }
 
-      const bidder = this.session.auth.actor;
+      const bidder = this.auth.actor;
       const currentBalance = await proton.getAtomicMarketBalance(bidder);
       const [bidAmount, bidToken] = bid.split(' ');
       const [balanceAmount, balanceToken] = currentBalance.split(' ');
@@ -1619,11 +1644,11 @@ class ProtonSDK {
     auction_id: string;
   }): Promise<Response> => {
     try {
-      if (!this.session) {
+      if (!this.session || !this.auth) {
         throw new Error('Unable to claim an auction without logging in.');
       }
 
-      const seller = this.session.auth.actor;
+      const seller = this.auth.actor;
       const actions = [
         {
           account: 'atomicmarket',
@@ -1676,11 +1701,11 @@ class ProtonSDK {
     auction_id: string;
   }): Promise<Response> => {
     try {
-      if (!this.session) {
+      if (!this.session || !this.auth) {
         throw new Error('Unable to claim an auction without logging in.');
       }
 
-      const buyer = this.session.auth.actor;
+      const buyer = this.auth.actor;
       const actions = [
         {
           account: 'atomicmarket',
@@ -1731,11 +1756,11 @@ class ProtonSDK {
     auction_id: string;
   }): Promise<Response> => {
     try {
-      if (!this.session) {
+      if (!this.session || !this.auth) {
         throw new Error('Unable to cancel an auction without logging in.');
       }
 
-      const seller = this.session.auth.actor;
+      const seller = this.auth.actor;
       const actions = [
         {
           account: 'atomicmarket',
