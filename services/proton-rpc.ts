@@ -5,6 +5,8 @@ import {
   TOKEN_CONTRACT,
   EMPTY_BALANCE,
 } from '../utils/constants';
+import { encodeName } from '@bloks/utils';
+import { RpcInterfaces } from '@proton/js';
 
 type User = {
   actor: string;
@@ -14,10 +16,11 @@ type User = {
 
 class ProtonJs {
   rpc: JsonRpc = null;
+  endpoints: string[];
 
   constructor() {
-    const endpoints = process.env.NEXT_PUBLIC_CHAIN_ENDPOINTS.split(', ');
-    this.rpc = new JsonRpc(endpoints);
+    this.endpoints = process.env.NEXT_PUBLIC_CHAIN_ENDPOINTS.split(', ');
+    this.rpc = new JsonRpc(this.endpoints);
   }
 
   getAccountBalance = async (chainAccount: string): Promise<string> => {
@@ -29,6 +32,23 @@ class ProtonJs {
     const price = balance.length ? balance[0] : `${0} ${TOKEN_SYMBOL}`;
     return formatPrice(price);
   };
+
+  async getAccountData(chainAccount: string): Promise<RpcInterfaces.UserInfo> {
+    const { rows } = await this.rpc.get_table_rows({
+      json: true,
+      code: 'eosio.proton',
+      scope: 'eosio.proton',
+      table: 'usersinfo',
+      table_key: '',
+      key_type: 'i64',
+      lower_bound: encodeName(chainAccount, false),
+      index_position: 1,
+      limit: 1,
+    });
+    return rows && rows.length && rows[0].acc === chainAccount
+      ? rows[0]
+      : undefined;
+  }
 
   getUserByChainAccount = async (chainAccount: string): Promise<User> => {
     const { rows } = await this.rpc.get_table_rows({
