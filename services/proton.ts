@@ -186,11 +186,6 @@ class ProtonSDK {
     if (this.auth.actor) {
       this.accountData = await proton.getAccountData(this.auth.actor);
     }
-    console.log(this.link);
-    console.log(this.session);
-    console.log(this.auth);
-    console.log(this.chainId);
-    console.log(this.accountData);
   };
 
   login = async (): Promise<WalletResponse> => {
@@ -240,7 +235,7 @@ class ProtonSDK {
       }
 
       const { auth, accountData } = this;
-      const { avatar, isLightKYCVerified, name } = accountData[0];
+      const { avatar, isLightKYCVerified, name } = accountData;
       const chainAccountAvatar = avatar
         ? `data:image/jpeg;base64,${avatar}`
         : '/default-avatar.png';
