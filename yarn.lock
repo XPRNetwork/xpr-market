@@ -1714,10 +1714,10 @@
     long "^4.0.0"
     qs "^6.9.0"
 
-"@bloks/web-sdk@^2.7.23-42":
-  version "2.7.23-42"
-  resolved "https://registry.yarnpkg.com/@bloks/web-sdk/-/web-sdk-2.7.23-42.tgz#3d630820c225bacd118653f03a7a81baa4bc2af1"
-  integrity sha512-6fEe9jjtCNbLL716IzjDpe+JcVhBHJiQOQAB5UlX5t6jUwJClDnjEHgDWQo25xjn2fkm8wdhi/GFMu2z5WDZIQ==
+"@bloks/web-sdk@^2.7.23-43":
+  version "2.7.23-43"
+  resolved "https://registry.yarnpkg.com/@bloks/web-sdk/-/web-sdk-2.7.23-43.tgz#d3ecce9e7ae0ca9a55bc24b2530f2dcd064232a3"
+  integrity sha512-62qv0GXznBeNlVZv6shKynnkC+12WQP4nTrI06tatlmRpk7Pg3uNwzZM4fzjoeVE5qPjR7YUENsvvY88EUpLvg==
   dependencies:
     "@bloks/browser-transport" "^3.2.1-12"
     "@bloks/link" "^3.2.3-15"
