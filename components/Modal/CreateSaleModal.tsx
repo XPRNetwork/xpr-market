@@ -146,10 +146,13 @@ export const CreateSaleModal: FC = () => {
     raw: null,
   });
 
+  useEffect(() => {
+    fees.refreshRamInfoForUser(currentUser.actor);
+  });
+
   const createOneSale = async () => {
     try {
       const formattedAmount = parseFloat(amount).toFixed(TOKEN_PRECISION);
-      await fees.refreshRamInfoForUser(currentUser.actor);
       const finalFee = fees.calculateFee({
         numAssets: 1,
         actor: currentUser ? currentUser.actor : '',
@@ -203,10 +206,13 @@ export const CreateMultipleSalesModal: FC = () => {
   const numSales = assetIds.length;
   const maxNumSales = 100;
 
+  useEffect(() => {
+    fees.refreshRamInfoForUser(currentUser.actor);
+  });
+
   const createMultipleSales = async () => {
     try {
       const formattedAmount = parseFloat(amount).toFixed(TOKEN_PRECISION);
-      await fees.refreshRamInfoForUser(currentUser.actor);
       const finalFee = fees.calculateFee({
         numAssets: numSales,
         actor: currentUser ? currentUser.actor : '',
