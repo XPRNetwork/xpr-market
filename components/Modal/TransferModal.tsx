@@ -41,12 +41,12 @@ export const TransferModal = (): JSX.Element => {
         return;
       }
 
-      const user = await proton.getUserByChainAccount(recipient);
+      // const user = await proton.getUserByChainAccount(recipient);
 
-      if (!user) {
-        setError('Invalid user. Please try again.');
-        return;
-      }
+      // if (!user) {
+      //   setError('Invalid user. Please try again.');
+      //   return;
+      // }
 
       const res = await ProtonSDK.transfer({
         sender: currentUser ? currentUser.actor : '',

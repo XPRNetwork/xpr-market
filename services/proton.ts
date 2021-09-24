@@ -1,6 +1,5 @@
 import { ConnectWallet, ProtonWebLink } from '@bloks/web-sdk';
 import { ChainId, Link, LinkSession } from '@bloks/link';
-import logoUrl from '../public/logo.svg';
 import proton from './proton-rpc';
 import { DEFAULT_SCHEMA, TOKEN_PRECISION } from '../utils/constants';
 import fees, { MintFee } from '../services/fees';
@@ -220,11 +219,6 @@ class ProtonSDK {
 
   logout = async () => {
     await this.link.removeSession(this.requestAccount, this.auth, this.chainId);
-    this.auth = null;
-    this.link = null;
-    this.session = null;
-    this.accountData = null;
-    this.chainId = null;
   };
 
   restoreSession = async () => {
@@ -467,10 +461,7 @@ class ProtonSDK {
    * @return {Action}                                     Returns an array of conditional ram actions.
    */
 
-  generateRamActions = async ({
-    author,
-    mintFee,
-  }: GenerateRamActions): Promise<Action[]> => {
+  generateRamActions = ({ author, mintFee }: GenerateRamActions): Action[] => {
     const hasInitializedStorage = mintFee.userSpecialMintContractRam !== -1;
     const hasEnoughAccountRam = mintFee.accountRamFee.raw === 0;
     const hasEnoughContractRam = mintFee.specialMintFee.raw === 0;
@@ -570,7 +561,7 @@ class ProtonSDK {
   }: CreateNftOptions): Promise<Response> => {
     const collection_name_or_author = collection_name || author;
 
-    const ramActions = await this.generateRamActions({
+    const ramActions = this.generateRamActions({
       author,
       mintFee,
     });
@@ -701,7 +692,6 @@ class ProtonSDK {
     ];
 
     try {
-      console.log('createNft, session? ', this.session);
       if (!this.session || !this.auth) {
         throw new Error(
           'Unable to create and mint a collection, schema, template, and assets without logging in.'
@@ -904,7 +894,7 @@ class ProtonSDK {
     max_supply,
     initial_mint_amount,
   }: CreateTemplateAssetsOptions): Promise<Response> => {
-    const ramActions = await this.generateRamActions({
+    const ramActions = this.generateRamActions({
       author,
       mintFee,
     });
