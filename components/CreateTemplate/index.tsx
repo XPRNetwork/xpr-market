@@ -41,10 +41,19 @@ const CreateTemplate: FC<{
     templateUploadedFile,
     uploadedFilePreview,
     mintFee,
+    uploadError,
+    uploading,
+    hashIPFS,
   } = useCreateAssetContext();
   const [error, setError] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isValid, setIsValid] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (uploadError !== '') {
+      setErrorMessages([uploadError]);
+    }
+  }, [uploadError]);
 
   const setErrorMessages = (errors: string[]): void => {
     if (errors.length === 1) {
@@ -161,12 +170,25 @@ const CreateTemplate: FC<{
         itself.
       </SubTitle>
       <ElementTitle>Upload file</ElementTitle>
-      <DragDropFileUploadLg
-        setTemplateUploadedFile={setTemplateUploadedFile}
-        templateUploadedFile={templateUploadedFile}
-        setUploadedFilePreview={setUploadedFilePreview}
-        uploadedFilePreview={uploadedFilePreview}
-      />
+
+      {uploading ? (
+        <div
+          style={{
+            height: 136,
+            borderRadius: 4,
+            border: 'dashed 2px #e6e6e6',
+          }}>
+          <Spinner size="42px" radius="10" />
+        </div>
+      ) : (
+        <DragDropFileUploadLg
+          setTemplateUploadedFile={setTemplateUploadedFile}
+          templateUploadedFile={templateUploadedFile}
+          setUploadedFilePreview={setUploadedFilePreview}
+          uploadedFilePreview={uploadedFilePreview}
+        />
+      )}
+
       <InputField
         mt="16px"
         value={templateName}
@@ -221,6 +243,7 @@ const CreateTemplate: FC<{
         <span>Mint Fee</span>
         <span>≈ {mintFee.totalFee} XUSDC</span>
       </FeeLabel>
+
       <Terms>By clicking “Create NFT”: </Terms>
       <span>
         <Terms>
@@ -238,7 +261,13 @@ const CreateTemplate: FC<{
       {error ? <ErrorMessage>{error}</ErrorMessage> : null}
       <Button
         onClick={isLoading ? null : validateAndCreate}
-        disabled={!isValid || isLoading || !allFieldsFilled}
+        disabled={
+          !isValid ||
+          isLoading ||
+          !allFieldsFilled ||
+          uploading ||
+          hashIPFS === ''
+        }
         padding={isLoading ? '0' : '12px 0'}>
         {isLoading ? (
           <Spinner size="42px" radius="10" hasBackground />
@@ -247,7 +276,7 @@ const CreateTemplate: FC<{
         )}
       </Button>
       <BackButton
-        disabled={isLoading}
+        disabled={isLoading || uploading}
         onClick={() => {
           resetTemplatePage();
           setPageState(CREATE_PAGE_STATES.CHOOSE_COLLECTION);
