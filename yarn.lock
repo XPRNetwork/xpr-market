@@ -1655,10 +1655,10 @@
     "@babel/helper-validator-identifier" "^7.12.11"
     to-fast-properties "^2.0.0"
 
-"@bloks/browser-transport@^3.2.1-12":
-  version "3.2.1-12"
-  resolved "https://registry.yarnpkg.com/@bloks/browser-transport/-/browser-transport-3.2.1-12.tgz#469fa49195b4e063bc4654bda4837113ad10959e"
-  integrity sha512-8QMJ2I0c7a5nKxOCgUlYJsnMBzH8QiCuYJFuUjeCCHoZ/NDQXXVkoPM7lmSV8GsosfVFMCtUraVNV0L6pW3yKw==
+"@bloks/browser-transport@^3.2.1-16":
+  version "3.2.1-16"
+  resolved "https://registry.yarnpkg.com/@bloks/browser-transport/-/browser-transport-3.2.1-16.tgz#0ca70a720bf356641e72f1987da7b7b317e0f240"
+  integrity sha512-bwTg+BOfQxo0OaQA06pwxPZTYtqDQKC5IzaoMKpRougp5H0gohg4/x74b8C8caRwVKjADXVQ8A2J5pNuD9aQew==
   dependencies:
     "@bloks/qrcode" "^0.1.0"
     tslib "^2.0.3"
@@ -1674,6 +1674,21 @@
   integrity sha512-jIayUReYbipVap8VYp8uq+CC8fXKiupRgWjS8aUROoSYxG3HgdYaM2sff9WCg9ODGU0eVmIKtLzEtx/1sCgHyQ==
   dependencies:
     "@bloks/signing-request" "^2.2.2-5"
+    "@greymass/eosio" "^0.4.7"
+    "@jafri/asmcrypto.js" "^2.3.2"
+    fetch-ponyfill "^7.1.0"
+    isomorphic-ws "^4.0.1"
+    pako "^2.0.3"
+    tslib "^2.1.0"
+    uuid "^8.3.2"
+    ws "^7.4.3"
+
+"@bloks/link@^3.2.3-19":
+  version "3.2.3-19"
+  resolved "https://registry.yarnpkg.com/@bloks/link/-/link-3.2.3-19.tgz#35b3448d4b0966b56de727eddc89666dbb8a96cd"
+  integrity sha512-eg3oEX/GeqlhOHTWhvqJbpy+sb9/I88v/z8YiBO4VF5dodPjEmlC709ziXTc7IL1i82T0qQuw/NnZCLQIzzBdg==
+  dependencies:
+    "@bloks/signing-request" "^2.2.2-6"
     "@greymass/eosio" "^0.4.7"
     "@jafri/asmcrypto.js" "^2.3.2"
     fetch-ponyfill "^7.1.0"
@@ -1706,6 +1721,14 @@
     "@greymass/eosio" "^0.4.7"
     tslib "^2.0.3"
 
+"@bloks/signing-request@^2.2.2-6":
+  version "2.2.2-6"
+  resolved "https://registry.yarnpkg.com/@bloks/signing-request/-/signing-request-2.2.2-6.tgz#18d61f000fcda58da11bf66fd773d725325f6f34"
+  integrity sha512-//xEHDyQEg0mXvnTzim+QMm7DthQRmxxquXdywMxl1G4u9sq/Omuzff+3WVQUuOAaJzYTOrmkZ0KxgZs6H3YRg==
+  dependencies:
+    "@greymass/eosio" "^0.4.7"
+    tslib "^2.0.3"
+
 "@bloks/utils@^25.0.0":
   version "25.0.0"
   resolved "https://registry.yarnpkg.com/@bloks/utils/-/utils-25.0.0.tgz#2ae1319f809d8f91a55c59db8f5794f3455e74d7"
@@ -1714,13 +1737,13 @@
     long "^4.0.0"
     qs "^6.9.0"
 
-"@bloks/web-sdk@^2.7.23-45":
-  version "2.7.23-45"
-  resolved "https://registry.yarnpkg.com/@bloks/web-sdk/-/web-sdk-2.7.23-45.tgz#1f07f2ac24d976b28216ecdc78d17becdf6b6a86"
-  integrity sha512-tqKSJTEPo+Xmna4FYG8ggpdPg55l3eeXOlm0y5WPk7hnNiWVyvXazRlVnSERQ7lnYKFHlYNHAih1KmzkSOVEUg==
+"@bloks/web-sdk@^2.7.23-51":
+  version "2.7.23-51"
+  resolved "https://registry.yarnpkg.com/@bloks/web-sdk/-/web-sdk-2.7.23-51.tgz#106001d516a3f763c118af90d7a9351a36e54ee6"
+  integrity sha512-QqYujhoa6+2zIGhcAFQT7c7B6EwnwdGbGh9hOGsaiYFen5N6eJ5HxgJRjkKYYJyhGFZ7qneUbQCLLwOYHMoEPA==
   dependencies:
-    "@bloks/browser-transport" "^3.2.1-12"
-    "@bloks/link" "^3.2.3-15"
+    "@bloks/browser-transport" "^3.2.1-16"
+    "@bloks/link" "^3.2.3-19"
     "@bloks/provider-axios" "^2.2.2-3"
 
 "@cnakazawa/watch@^1.0.3":
