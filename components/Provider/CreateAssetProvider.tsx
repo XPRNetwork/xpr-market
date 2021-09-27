@@ -1,12 +1,14 @@
 import {
   FC,
   createContext,
+  useEffect,
   useState,
   useContext,
   useMemo,
   SetStateAction,
   Dispatch,
 } from 'react';
+import { useAuthContext } from '../Provider';
 import { CarouselCollection, NewCollection } from '../CollectionsCarousel';
 import ProtonSDK from '../../services/proton';
 import fees, { MintFee } from '../../services/fees';
@@ -58,6 +60,9 @@ interface CreateAssetContext {
   setTemplateUploadedFile: Dispatch<SetStateAction<File | null>>;
   setUploadedFilePreview: Dispatch<SetStateAction<string>>;
   setMintFee: Dispatch<SetStateAction<MintFee>>;
+  setUploadError: Dispatch<SetStateAction<string>>;
+  setUploading: Dispatch<SetStateAction<boolean>>;
+  setHashIPFS: Dispatch<SetStateAction<string>>;
   setIsUncreatedCollectionSelected: Dispatch<SetStateAction<boolean>>;
   createNft: (author: string) => Promise<string[]>;
   selectedCollection: CarouselCollection;
@@ -71,6 +76,9 @@ interface CreateAssetContext {
   templateUploadedFile: File | null;
   uploadedFilePreview: string;
   mintFee: MintFee;
+  uploadError: string;
+  uploading: boolean;
+  hashIPFS: string;
   isUncreatedCollectionSelected: boolean;
 }
 
@@ -86,6 +94,9 @@ const CreateAssetContext = createContext<CreateAssetContext>({
   setTemplateUploadedFile: () => {},
   setUploadedFilePreview: () => {},
   setMintFee: () => {},
+  setUploadError: () => {},
+  setUploading: () => {},
+  setHashIPFS: () => {},
   setIsUncreatedCollectionSelected: () => {},
   createNft: async () => [],
   selectedCollection: placeholderCollection,
@@ -99,6 +110,9 @@ const CreateAssetContext = createContext<CreateAssetContext>({
   templateUploadedFile: undefined,
   uploadedFilePreview: '',
   mintFee: MintFeeInitial,
+  uploadError: '',
+  uploading: false,
+  hashIPFS: '',
   isUncreatedCollectionSelected: false,
 });
 
@@ -126,6 +140,12 @@ export const CreateAssetProvider: FC<{
   );
   const [uploadedFilePreview, setUploadedFilePreview] = useState<string>('');
   const [mintFee, setMintFee] = useState<MintFee>(MintFeeInitial);
+  const [uploadError, setUploadError] = useState<string>('');
+  const [uploading, setUploading] = useState<boolean>(false);
+  const [hashIPFS, setHashIPFS] = useState<string>('');
+
+  const { currentUser } = useAuthContext();
+
   const [
     isUncreatedCollectionSelected,
     setIsUncreatedCollectionSelected,
@@ -175,26 +195,47 @@ export const CreateAssetProvider: FC<{
     return errors;
   };
 
+  useEffect(() => {
+    if (templateUploadedFile) {
+      setUploading(true);
+      uploadToIPFS(templateUploadedFile)
+        .then((hash) => {
+          setHashIPFS(hash);
+          setUploadError('');
+          setUploading(false);
+        })
+        .catch((error) => {
+          setHashIPFS('');
+          setTemplateUploadedFile(null);
+          setUploadError(error);
+          setUploading(false);
+        });
+    }
+  }, [templateUploadedFile]);
+
+  useEffect(() => {
+    if (currentUser) {
+      fees.refreshRamInfoForUser(currentUser.actor);
+    }
+  });
+
   const createNft = async (author: string): Promise<string[]> => {
     const errors = getCreateTemplateValidationErrors();
     if (errors.length) {
       return errors;
     }
 
+    if (hashIPFS === '') {
+      errors.push('Unable to read file. Please upload again.');
+      return errors;
+    }
+
     try {
-      const templateIpfsImage = await uploadToIPFS(templateUploadedFile);
-
-      if (!templateIpfsImage) {
-        const errors = ['try again (unable to upload image)'];
-        return errors;
-      }
-
       let isVideo = false;
       if (templateUploadedFile.type.includes('mp4')) {
         isVideo = true;
       }
 
-      await fees.refreshRamInfoForUser(author);
       const finalMintFees = fees.calculateCreateFlowFees({
         numAssets: parseInt(mintAmount),
         actor: author,
@@ -213,8 +254,8 @@ export const CreateAssetProvider: FC<{
             ).toFixed(6),
             template_name: templateName,
             template_description: templateDescription,
-            template_image: isVideo ? null : templateIpfsImage,
-            template_video: isVideo ? templateIpfsImage : null,
+            template_image: isVideo ? null : hashIPFS,
+            template_video: isVideo ? hashIPFS : null,
             max_supply: parseInt(maxSupply),
             initial_mint_amount: parseInt(mintAmount),
           })
@@ -223,8 +264,8 @@ export const CreateAssetProvider: FC<{
             author,
             collection_name: selectedCollection.collection_name,
             template_name: templateName,
-            template_image: isVideo ? null : templateIpfsImage,
-            template_video: isVideo ? templateIpfsImage : null,
+            template_image: isVideo ? null : hashIPFS,
+            template_video: isVideo ? hashIPFS : null,
             template_description: templateDescription,
             max_supply: parseInt(maxSupply),
             initial_mint_amount: parseInt(mintAmount),
@@ -235,6 +276,7 @@ export const CreateAssetProvider: FC<{
       }
 
       resetCreatePage();
+
       return errors;
     } catch (err) {
       errors.push(err.message || 'Unable to create the NFT. Please try again.');
@@ -255,6 +297,9 @@ export const CreateAssetProvider: FC<{
       setTemplateUploadedFile,
       setUploadedFilePreview,
       setMintFee,
+      setUploadError,
+      setUploading,
+      setHashIPFS,
       setIsUncreatedCollectionSelected,
       createNft,
       selectedCollection,
@@ -268,6 +313,9 @@ export const CreateAssetProvider: FC<{
       templateUploadedFile,
       uploadedFilePreview,
       mintFee,
+      uploadError,
+      uploading,
+      hashIPFS,
       isUncreatedCollectionSelected,
     }),
     [
@@ -282,6 +330,9 @@ export const CreateAssetProvider: FC<{
       templateUploadedFile,
       uploadedFilePreview,
       mintFee,
+      uploadError,
+      uploading,
+      hashIPFS,
       isUncreatedCollectionSelected,
     ]
   );
