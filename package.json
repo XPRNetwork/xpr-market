@@ -14,7 +14,7 @@
   "dependencies": {
     "@bloks/link": "^3.2.3-19",
     "@bloks/utils": "^25.0.0",
-    "@bloks/web-sdk": "^2.7.23-52",
+    "@bloks/web-sdk": "^2.7.23-55",
     "@google/model-viewer": "^1.6.0",
     "@netlify/plugin-nextjs": "3.2.2",
     "@proton/js": "^22.0.64",
