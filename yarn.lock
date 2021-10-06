@@ -1668,21 +1668,6 @@
   resolved "https://registry.yarnpkg.com/@bloks/constants/-/constants-22.0.58.tgz#d77db648ad6894236e60e0cdccda36b0a14ba176"
   integrity sha512-cq52jHYHo8B+eB+r2obwTxfvUtkgsKWkHodYOv02/avgS3GbNJAqtmfoZEBKFs0lHlehw5AYJ0XmH3SWryDRMA==
 
-"@bloks/link@^3.2.3-19":
-  version "3.2.3-19"
-  resolved "https://registry.yarnpkg.com/@bloks/link/-/link-3.2.3-19.tgz#35b3448d4b0966b56de727eddc89666dbb8a96cd"
-  integrity sha512-eg3oEX/GeqlhOHTWhvqJbpy+sb9/I88v/z8YiBO4VF5dodPjEmlC709ziXTc7IL1i82T0qQuw/NnZCLQIzzBdg==
-  dependencies:
-    "@bloks/signing-request" "^2.2.2-6"
-    "@greymass/eosio" "^0.4.7"
-    "@jafri/asmcrypto.js" "^2.3.2"
-    fetch-ponyfill "^7.1.0"
-    isomorphic-ws "^4.0.1"
-    pako "^2.0.3"
-    tslib "^2.1.0"
-    uuid "^8.3.2"
-    ws "^7.4.3"
-
 "@bloks/link@^3.2.3-22":
   version "3.2.3-22"
   resolved "https://registry.yarnpkg.com/@bloks/link/-/link-3.2.3-22.tgz#2a8afb32d7fce1e0eb8c8881e8349f806a7d7864"
@@ -1712,14 +1697,6 @@
   integrity sha512-VpP2ZFgsmd5I7hGvtvldTHKgdoqAeP1kLuJvIC1AinvTYqajhUCcNH0UBZ9QdzglYhDiRE+DIsjGPwxlSMvotg==
   dependencies:
     qrcode "^1.4.4"
-
-"@bloks/signing-request@^2.2.2-6":
-  version "2.2.2-6"
-  resolved "https://registry.yarnpkg.com/@bloks/signing-request/-/signing-request-2.2.2-6.tgz#18d61f000fcda58da11bf66fd773d725325f6f34"
-  integrity sha512-//xEHDyQEg0mXvnTzim+QMm7DthQRmxxquXdywMxl1G4u9sq/Omuzff+3WVQUuOAaJzYTOrmkZ0KxgZs6H3YRg==
-  dependencies:
-    "@greymass/eosio" "^0.4.7"
-    tslib "^2.0.3"
 
 "@bloks/signing-request@^2.2.2-8":
   version "2.2.2-8"
