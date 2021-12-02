@@ -25,7 +25,7 @@ const links = [
   },
   {
     name: 'Help',
-    url: 'https://support.protonchain.com/support/home',
+    url: 'https://help.protonchain.com',
   },
 ];
 
