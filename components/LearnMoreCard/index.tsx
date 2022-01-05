@@ -146,7 +146,7 @@ const LearnMoreCard = (): JSX.Element => {
                 target="_BLANK"
                 rel="noreferrer"
                 href="https://www.protonchain.com/wallet">
-                Proton Wallet account
+                Webauth.com account
               </StandardLink>{' '}
               for free.
             </CardParagraph>
@@ -373,9 +373,9 @@ const LearnMoreCard = (): JSX.Element => {
             <Answer>PNG, GIF, JPG, WEBP, and MP4</Answer>
             <Question>How does key management work?</Question>
             <Answer>
-              Proton Wallet is a non-custodial wallet, meaning every user
-              manages their own keys. You will never have to manage your users’
-              keys for them.
+              Webauth.com is a non-custodial wallet, meaning every user manages
+              their own keys. You will never have to manage your users’ keys for
+              them.
             </Answer>
             <Question>
               Can users purchase NFTs on the Proton Market using a credit card?
