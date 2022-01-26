@@ -39,7 +39,7 @@ const TemplateCard = ({
     template_id,
     name,
     collection: { collection_name, img, name: collectionDisplayName },
-    immutable_data: { image, video },
+    immutable_data: { image, video, glbthumb },
     max_supply,
     lowestPrice,
     totalAssets,
@@ -60,7 +60,7 @@ const TemplateCard = ({
         new Date().getTime() - parseInt(created_at_time) <
         PROPAGATION_LAG_TIME
       ) {
-        const cachedFile = await getCachedFiles(image || video);
+        const cachedFile = await getCachedFiles(image || video || glbthumb);
 
         if (cachedFile[video]) {
           setTemplateVideoSrc(cachedFile[video]);
@@ -71,19 +71,24 @@ const TemplateCard = ({
           setTemplateImgSrc(cachedFile[image]);
           return;
         }
+
+        if (cachedFile[glbthumb]) {
+          setTemplateImgSrc(cachedFile[glbthumb]);
+          return;
+        }
       }
 
       const videoSrc = `${IPFS_RESOLVER_VIDEO}${video}`;
       const imageSrc = !image
-        ? image
+        ? `${RESIZER_IMAGE}${IPFS_RESOLVER_IMAGE}${glbthumb}`
         : `${RESIZER_IMAGE}${IPFS_RESOLVER_IMAGE}${image}`;
-      const fallbackImageSrc = image ? `${IPFS_RESOLVER_IMAGE}${image}` : '';
+      const fallbackImageSrc = image ? `${IPFS_RESOLVER_IMAGE}${image}` : `${IPFS_RESOLVER_IMAGE}${glbthumb}`;
 
       setTemplateVideoSrc(videoSrc);
       setTemplateImgSrc(imageSrc);
       setFallbackImgSrc(fallbackImageSrc);
     })();
-  }, [image, video]);
+  }, [image, video, glbthumb]);
 
   const router = useRouter();
   const isMyTemplate =
