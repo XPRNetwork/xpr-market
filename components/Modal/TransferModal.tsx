@@ -98,7 +98,7 @@ export const TransferModal = (): JSX.Element => {
               const isValid =
                 input.length >= 4 &&
                 input.length < 13 &&
-                !!input.match(/^[a-z1-5]+$/);
+                !!input.match(/^[a-z1-5.]+$/);
               setIsValid(isValid);
               const errorMessage =
                 "Recipient's name must be 4-12 characters and only contain the numbers 1-5 or lowercase letters a-z";
