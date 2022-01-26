@@ -25,6 +25,7 @@ type ImmutableData = {
   model?: string;
   stage?: string;
   skybox?: string;
+  glbthumb?: string;
 };
 
 export interface Template {
