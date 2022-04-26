@@ -1,4 +1,5 @@
-const withTM = require('next-transpile-modules')(['@proton/web-sdk']);
+// eslint-disable-next-line
+ const withTM = require('next-transpile-modules')(['@proton/web-sdk']);
 
 module.exports = withTM({
   images: {

@@ -82,7 +82,9 @@ const TemplateCard = ({
       const imageSrc = !image
         ? `${RESIZER_IMAGE}${IPFS_RESOLVER_IMAGE}${glbthumb}`
         : `${RESIZER_IMAGE}${IPFS_RESOLVER_IMAGE}${image}`;
-      const fallbackImageSrc = image ? `${IPFS_RESOLVER_IMAGE}${image}` : `${IPFS_RESOLVER_IMAGE}${glbthumb}`;
+      const fallbackImageSrc = image
+        ? `${IPFS_RESOLVER_IMAGE}${image}`
+        : `${IPFS_RESOLVER_IMAGE}${glbthumb}`;
 
       setTemplateVideoSrc(videoSrc);
       setTemplateImgSrc(imageSrc);

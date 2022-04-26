@@ -73,7 +73,9 @@ const SearchTemplateCard = ({ template }: Props): JSX.Element => {
       const imageSrc = !image
         ? `${RESIZER_IMAGE_SM}${IPFS_RESOLVER_IMAGE}${glbthumb}`
         : `${RESIZER_IMAGE_SM}${IPFS_RESOLVER_IMAGE}${image}`;
-      const fallbackImageSrc = image ? `${IPFS_RESOLVER_IMAGE}${image}` : `${IPFS_RESOLVER_IMAGE}${glbthumb}`;
+      const fallbackImageSrc = image
+        ? `${IPFS_RESOLVER_IMAGE}${image}`
+        : `${IPFS_RESOLVER_IMAGE}${glbthumb}`;
 
       setTemplateVideoSrc(videoSrc);
       setTemplateImgSrc(imageSrc);
