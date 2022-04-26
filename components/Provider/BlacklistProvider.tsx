@@ -42,9 +42,9 @@ interface Props {
 }
 
 const BlacklistContext = createContext<BlacklistContext>({
-  authorsBlacklist: null,
-  templatesBlacklist: null,
-  collectionsBlacklist: null,
+  authorsBlacklist: {},
+  templatesBlacklist: {},
+  collectionsBlacklist: {},
   isLoadingBlacklist: true,
 });
 
@@ -57,13 +57,13 @@ export const BlacklistProvider: FC<Props> = ({ children }) => {
   const [isLoadingBlacklist, setisLoadingBlacklist] = useState<boolean>(true);
   const [templatesBlacklist, setTemplatesBlacklist] = useState<{
     [template: string]: boolean;
-  }>(null);
+  }>({});
   const [authorsBlacklist, setAuthorsBlacklist] = useState<{
     [author: string]: boolean;
-  }>(null);
+  }>({});
   const [collectionsBlacklist, setCollectionsBlacklist] = useState<{
     [collection: string]: boolean;
-  }>(null);
+  }>({});
   const { asPath: routerPath } = useRouter();
 
   const getList = async () => {
@@ -77,9 +77,9 @@ export const BlacklistProvider: FC<Props> = ({ children }) => {
     }
     const blacklist = message as BlacklistResponse;
 
-    setTemplatesBlacklist(blacklist.templates);
-    setAuthorsBlacklist(blacklist.authors);
-    setCollectionsBlacklist(blacklist.collections);
+    setTemplatesBlacklist(blacklist.templates || {});
+    setAuthorsBlacklist(blacklist.authors || {});
+    setCollectionsBlacklist(blacklist.collections || {});
     setisLoadingBlacklist(false);
   };
 
