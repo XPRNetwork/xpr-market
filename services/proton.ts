@@ -1,5 +1,5 @@
-import { ConnectWallet, ProtonWebLink } from '@bloks/web-sdk';
-import { ChainId, Link, LinkSession } from '@bloks/link';
+import ConnectWallet, { ProtonWebLink } from '@proton/web-sdk';
+import { ChainId, Link, LinkSession } from '@proton/link';
 import proton from './proton-rpc';
 import { DEFAULT_SCHEMA, TOKEN_PRECISION } from '../utils/constants';
 import fees, { MintFee } from '../services/fees';

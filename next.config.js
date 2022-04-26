@@ -1,4 +1,6 @@
-module.exports = {
+const withTM = require('next-transpile-modules')(['@proton/web-sdk']);
+
+module.exports = withTM({
   images: {
     domains: [
       'cloudflare-ipfs.com',
@@ -11,9 +13,7 @@ module.exports = {
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,
-      issuer: {
-        test: /\.(js|ts)x?$/,
-      },
+      issuer: /\.(js|ts)x?$/,
       use: ['@svgr/webpack', 'url-loader'],
     });
 
@@ -27,4 +27,4 @@ module.exports = {
     },
     protonBackendServiceApi: process.env.BACKEND_ENDPOINT,
   },
-};
+});
