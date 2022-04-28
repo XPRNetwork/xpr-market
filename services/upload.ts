@@ -69,8 +69,8 @@ export const getCachedMetadataByHash = async (
     }
     return res.message;
   } catch (e) {
-    console.error(e)
-    return {}
+    console.error(e);
+    return {};
   }
 };
 

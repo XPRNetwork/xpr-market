@@ -5,10 +5,7 @@ const handler = async (
   req: NextApiRequest,
   res: NextApiResponse
 ): Promise<void> => {
-  const {
-    method,
-    query,
-  } = req;
+  const { method, query } = req;
   let { accounts } = query;
 
   switch (method) {
