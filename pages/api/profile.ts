@@ -5,10 +5,11 @@ const handler = async (
   req: NextApiRequest,
   res: NextApiResponse
 ): Promise<void> => {
-  let {
+  const {
     method,
-    query: { accounts },
+    query,
   } = req;
+  let { accounts } = query;
 
   switch (method) {
     case 'POST':
