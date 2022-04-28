@@ -25,6 +25,7 @@ type ImmutableData = {
   model?: string;
   stage?: string;
   skybox?: string;
+  glbthumb?: string;
 };
 
 export interface Template {
@@ -237,7 +238,6 @@ export const getLowestPricesForAllCollectionTemplates = async ({
       collection_name: type,
       symbol: TOKEN_SYMBOL,
       order: 'desc',
-      sort: 'created',
       limit,
       page,
     };

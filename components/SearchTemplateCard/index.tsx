@@ -33,7 +33,7 @@ const SearchTemplateCard = ({ template }: Props): JSX.Element => {
     template_id,
     name,
     collection: { collection_name, img, name: collectionDisplayName },
-    immutable_data: { image, video },
+    immutable_data: { image, video, glbthumb },
     max_supply,
     issued_supply,
     created_at_time,
@@ -46,14 +46,13 @@ const SearchTemplateCard = ({ template }: Props): JSX.Element => {
   const [isLoadingLowestPrice, setIsLoadingLowestPrice] = useState<boolean>(
     true
   );
-
   useEffect(() => {
     (async () => {
       if (
         new Date().getTime() - parseInt(created_at_time) <
         PROPAGATION_LAG_TIME
       ) {
-        const cachedFile = await getCachedFiles(image || video);
+        const cachedFile = await getCachedFiles(image || video || glbthumb);
         if (cachedFile[video]) {
           setTemplateVideoSrc(cachedFile[video]);
           return;
@@ -63,19 +62,26 @@ const SearchTemplateCard = ({ template }: Props): JSX.Element => {
           setTemplateImgSrc(cachedFile[image]);
           return;
         }
+
+        if (cachedFile[glbthumb]) {
+          setTemplateImgSrc(cachedFile[glbthumb]);
+          return;
+        }
       }
 
       const videoSrc = `${IPFS_RESOLVER_VIDEO}${video}`;
       const imageSrc = !image
-        ? image
+        ? `${RESIZER_IMAGE_SM}${IPFS_RESOLVER_IMAGE}${glbthumb}`
         : `${RESIZER_IMAGE_SM}${IPFS_RESOLVER_IMAGE}${image}`;
-      const fallbackImageSrc = image ? `${IPFS_RESOLVER_IMAGE}${image}` : '';
+      const fallbackImageSrc = image
+        ? `${IPFS_RESOLVER_IMAGE}${image}`
+        : `${IPFS_RESOLVER_IMAGE}${glbthumb}`;
 
       setTemplateVideoSrc(videoSrc);
       setTemplateImgSrc(imageSrc);
       setFallbackImgSrc(fallbackImageSrc);
     })();
-  }, [video, img]);
+  }, [video, img, glbthumb]);
 
   useEffect(() => {
     (async () => {

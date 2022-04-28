@@ -124,31 +124,30 @@ export const getStatistics = async (): Promise<Statistics> => {
     const { volume, sales } = await getTotalVolumeAndSales();
     transactions = isNaN(parseInt(sales)) ? 0 : parseInt(sales);
     totalSales = isNaN(parseInt(volume)) ? 0 : parseInt(volume);
-
-    salesToday = await getDailyTotalSales();
-    nftsCreated = await getNFTsCreatedCount();
-
-    return {
-      nftsCreated: nftsCreated.toString(),
-      transactions: transactions.toString(),
-      totalSales: (totalSales / 10 ** TOKEN_PRECISION).toFixed(
-        SHORTENED_TOKEN_PRECISION
-      ),
-      salesToday: (salesToday / 10 ** TOKEN_PRECISION).toFixed(
-        SHORTENED_TOKEN_PRECISION
-      ),
-    };
   } catch (e) {
     console.warn(e.message);
-    return {
-      nftsCreated: nftsCreated.toString(),
-      transactions: transactions.toString(),
-      totalSales: (totalSales / 10 ** TOKEN_PRECISION).toFixed(
-        SHORTENED_TOKEN_PRECISION
-      ),
-      salesToday: (salesToday / 10 ** TOKEN_PRECISION).toFixed(
-        SHORTENED_TOKEN_PRECISION
-      ),
-    };
   }
+
+  try {
+    salesToday = await getDailyTotalSales();
+  } catch (e) {
+    console.warn(e.message);
+  }
+
+  try {
+    nftsCreated = await getNFTsCreatedCount();
+  } catch (e) {
+    console.warn(e.message);
+  }
+
+  return {
+    nftsCreated: nftsCreated.toString(),
+    transactions: transactions.toString(),
+    totalSales: (totalSales / 10 ** TOKEN_PRECISION).toFixed(
+      SHORTENED_TOKEN_PRECISION
+    ),
+    salesToday: (salesToday / 10 ** TOKEN_PRECISION).toFixed(
+      SHORTENED_TOKEN_PRECISION
+    ),
+  };
 };
