@@ -5,10 +5,9 @@ const handler = async (
   req: NextApiRequest,
   res: NextApiResponse
 ): Promise<void> => {
-  const {
-    method,
-    query: { accounts },
-  } = req;
+  const { method, query } = req;
+  let { accounts } = query;
+
   switch (method) {
     case 'POST':
       break;
@@ -18,6 +17,10 @@ const handler = async (
       break;
     default: {
       try {
+        if (typeof accounts === 'string' && ~accounts.indexOf(', ')) {
+          accounts = accounts.split(', ');
+        }
+
         const chainAccounts =
           typeof accounts === 'string' ? [accounts] : [...new Set(accounts)];
 
