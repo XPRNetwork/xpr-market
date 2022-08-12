@@ -34,3 +34,17 @@ a {
 *:focus-visible {
   outline-color: #752eeb;
 }
+
+.rotate-90 {
+  transform: rotate(90deg);
+  transition-duration: 0.5s;
+}
+
+.rotate-270 {
+  transform: rotate(270deg);
+  transition-duration: 0.5s;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}

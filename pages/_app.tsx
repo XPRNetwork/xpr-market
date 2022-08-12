@@ -14,10 +14,12 @@ import {
   CreateAssetProvider,
   BlacklistProvider,
 } from '../components/Provider';
+import { ThirdwebWeb3Provider } from "@3rdweb/hooks";
 import '../styles/customprogress.css';
 import * as gtag from '../utils/gtag';
 import * as Sentry from '@sentry/react';
 import { Integrations } from '@sentry/tracing';
+import "regenerator-runtime/runtime";
 
 NProgress.configure({
   minimum: 0.3,
@@ -37,6 +39,12 @@ Sentry.init({
 });
 
 function MyApp({ Component, pageProps }: AppProps): JSX.Element {
+  const supportedChainIds = [137];
+
+  const connectors = {
+    injected: {},
+  };
+
   const start = () => NProgress.start();
   const end = (url) => {
     NProgress.done();
@@ -64,17 +72,22 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
 
   return (
     <SimpleReactLightbox>
-      <ModalProvider>
-        <AuthProvider>
-          <BlacklistProvider>
-            <CreateAssetProvider>
-              <NavBar />
-              <Component {...pageProps} />
-              <Footer />
-            </CreateAssetProvider>
-          </BlacklistProvider>
-        </AuthProvider>
-      </ModalProvider>
+      <ThirdwebWeb3Provider
+        supportedChainIds={supportedChainIds}
+        connectors={connectors}
+      >
+        <ModalProvider>
+          <AuthProvider>
+            <BlacklistProvider>
+              <CreateAssetProvider>
+                <NavBar />
+                <Component {...pageProps} />
+                <Footer />
+              </CreateAssetProvider>
+            </BlacklistProvider>
+          </AuthProvider>
+        </ModalProvider>
+      </ThirdwebWeb3Provider>
     </SimpleReactLightbox>
   );
 }

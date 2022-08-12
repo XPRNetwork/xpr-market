@@ -12,6 +12,8 @@
     "check:all": "yarn lint && yarn format && yarn typecheck"
   },
   "dependencies": {
+    "@3rdweb/hooks": "^1.9.2",
+    "@alch/alchemy-web3": "^1.4.6",
     "@bloks/utils": "^25.0.0",
     "@google/model-viewer": "^1.6.0",
     "@netlify/plugin-nextjs": "4.4.3",
@@ -22,6 +24,7 @@
     "bufferutil": "^4.0.3",
     "dayjs": "^1.10.4",
     "encoding": "^0.1.13",
+    "ethers": "^5.6.9",
     "firebase": "^8.4.3",
     "form-data": "^4.0.0",
     "next": "^12.1.5",
