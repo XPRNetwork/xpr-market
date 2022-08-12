@@ -1,5 +1,4 @@
 import { createAlchemyWeb3 } from "@alch/alchemy-web3";
-import ethers from "ethers";
 
 const web3 = createAlchemyWeb3("https://polygon-mainnet.g.alchemy.com/v2/cZYm3F6HFecKtBJDWBLiYR2Bweqmwlnc");
 
@@ -35,6 +34,7 @@ export const getNfts = async (
       pageKey = response.pageKey;
     } while(pageKey);
 
+    console.log("--- owned nfts", ownedNfts);
     return ownedNfts.map(nft => {
       return {
         contractAddress: nft.contract.address,

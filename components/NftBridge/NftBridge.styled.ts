@@ -3,7 +3,7 @@ import { breakpoint } from '../../styles/Breakpoints';
 
 export const Header = styled.div`
   width: 100%;
-  padding: 60px 180px 0;
+  padding: 60px 120px 0;
   background: linear-gradient(64deg, #4710a3 14%, #b28bf4 109%);
   margin-top: 40px;
   border-radius: 16px;
@@ -47,22 +47,22 @@ export const ContentHeader = styled.div`
   color: black;
   padding: 20px;
   border-radius: 14px 14px 0 0;
-  background-color: #F4F7F9;
+  background-color: #FEFEFE;
 `;
 
 export const Container = styled.div`
   width: 100%;
-  padding: 0 180px;
+  padding: 0 120px;
 `;
 
 export const Content = styled.div`
   max-width: 900px;
   width: 100%;
   min-height: 300px;
-  border-top: 1px solid #e8e8e8;
+  border-top: 1px solid #F6F7F9;
   border-radius: 0 0 14px 14px;
-  background-color: #F4F7F9;
-  box-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+  background-color: #FEFEFE;
+  box-shadow: 0px 1px 2px rgba(0,0,0,0.3);
 `;
 
 export const Switch = styled.div`
@@ -70,13 +70,13 @@ export const Switch = styled.div`
   align-items: center;
   width: 100%;
   padding: 20px;
-  border-bottom: 1px solid #e8e8e8;
+  border-bottom: 1px solid #F6F7F9;
 `;
 
 export const CurrentDir = styled.div`
   flex: 1;
   font-size: 20px;
-  font-weight: 500;
+  font-weight: 350;
   color: #4710a3;
 `;
 
@@ -109,7 +109,9 @@ export const NftBox = styled.div`
 
 export const NftList = styled.div`
   flex: 1;
-  padding: 20px;
+  height: 350px;
+  overflow-y: auto;
+  padding: 20px 0;
   border: 1px solid #e8e8e8;
   border-radius: 6px;
 `;
@@ -122,6 +124,25 @@ export const NftExchangeBtnBox = styled.div`
   justify-content: center;
   align-items: center;
   padding: 20px;
+`;
+
+export const NftItem = styled.div<{selected: boolean}>`
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  margin: 5px 0;
+  border: 1px solid #EFEFEF;
+  cursor: pointer;
+  // :hover {
+  //   background-color: #e7eaf3;
+  // }
+
+  ${({ selected }) =>
+    selected &&
+    `
+    color: #fff;
+    background-color: #4710a3;
+  `};
 `;
 
 export const NftName = styled.p`

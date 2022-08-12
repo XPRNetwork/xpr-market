@@ -15,20 +15,31 @@ import {
   NftBox,
   NftList,
   NftExchangeBtnBox,
-  NftName
+  NftName,
+  NftItem
 } from './NftBridge.styled';
 import { Image } from '../../styles/index.styled';
 import Button from '../Button';
 import { ETH_ASSET, getNfts } from '../../services/eth-assets';
+import LoadingPage from '../LoadingPage';
 
 const TRANSFER_DIR = {
   ETH_TO_PROTON: 'ETH_TO_PROTON',
   PROTON_TO_ETH: 'PROTON_TO_ETH'
 };
 
-const NFT = (props: {data: ETH_ASSET}) => {
+interface NFTProps {
+  data: ETH_ASSET,
+  selectedNft: ETH_ASSET;
+  setSelectedNft: (nft: ETH_ASSET) => void;
+};
+
+const NFT = (props: NFTProps) => {
   return (
-    <div style={{display: 'flex', alignItems: 'center', padding: 10}}>
+    <NftItem
+      selected={props.selectedNft?.contractAddress == props.data.contractAddress && props.selectedNft?.tokenId == props.data.tokenId}
+      onClick={() => props.setSelectedNft(props.data)}
+    >
       <Image
         src={props.data.attributes.image}
         width="50"
@@ -36,22 +47,23 @@ const NFT = (props: {data: ETH_ASSET}) => {
         style={{marginRight: 20}}
       />
       <NftName>{props.data.attributes.name}</NftName>
-    </div>
+    </NftItem>
   )
 }
 
 const NftBridge = (): JSX.Element => {
   const { connectWallet, disconnectWallet, address } = useWeb3();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [transDir, setTransDir] = useState<string>(TRANSFER_DIR.ETH_TO_PROTON);
   const [ethAssetsOrigin, setEthAssetsOrigin] = useState<ETH_ASSET[]>([]);
   const [ethAssetsToSend, setEthAssetsToSend] = useState<ETH_ASSET[]>([]);
+  const [selectedNft, setSelectedNft] = useState<ETH_ASSET | null>(null);
 
   useEffect(() => {
     onSelectNft();
   }, [address]);
 
   const onWalletAction = () => {
-    console.log("---------- wallet action")
     if (address) {
       disconnectWallet();
     } else {
@@ -60,18 +72,52 @@ const NftBridge = (): JSX.Element => {
   }
 
   const onSelectNft = async () => {
-    console.log("---------- select nft")
     if (!address) {
-      alert("Connect wallet");
       return;
     }
+
+    setIsLoading(true);
     const nfts = await getNfts(address);
     console.log(nfts);
     setEthAssetsOrigin(nfts);
+    setIsLoading(false);
+  }
+
+  const onExchange = async (dir: boolean) => {
+    if (!selectedNft) return;
+
+    if (dir) {
+      const index = ethAssetsOrigin.findIndex((nft: ETH_ASSET) => nft.contractAddress == selectedNft.contractAddress && nft.tokenId == selectedNft.tokenId);
+      if (index > -1) {
+        setEthAssetsOrigin(
+          ethAssetsOrigin.filter((nft: ETH_ASSET) => nft.contractAddress !== selectedNft.contractAddress && nft.tokenId !== selectedNft.tokenId)
+        );
+  
+        ethAssetsToSend.push(selectedNft);
+        setEthAssetsToSend(ethAssetsToSend);
+  
+        setSelectedNft(null);
+      }
+    } else {
+      const index = ethAssetsToSend.findIndex((nft: ETH_ASSET) => nft.contractAddress == selectedNft.contractAddress && nft.tokenId == selectedNft.tokenId);
+      if (index > -1) {
+        setEthAssetsToSend(
+          ethAssetsToSend.filter((nft: ETH_ASSET) => nft.contractAddress !== selectedNft.contractAddress && nft.tokenId !== selectedNft.tokenId)
+        );
+
+        ethAssetsOrigin.push(selectedNft);
+        setEthAssetsOrigin(ethAssetsOrigin);
+
+        setSelectedNft(null);
+      }
+    }
   }
 
   const handleTransfer = () => {
-    console.log("---------- transfer")
+    if (!ethAssetsToSend.length) {
+      alert("Please select NFTs");
+      return;
+    }
   }
 
   return (
@@ -83,7 +129,8 @@ const NftBridge = (): JSX.Element => {
       </Header>
 
       <Container>
-        <Content>
+        {isLoading && <LoadingPage />}
+        {!isLoading && <Content>
           <Switch>
             {transDir === TRANSFER_DIR.ETH_TO_PROTON && (
               <CurrentDir>Ethereum to Proton</CurrentDir>
@@ -114,7 +161,7 @@ const NftBridge = (): JSX.Element => {
 
           <MessageBox>
             <MessageContent>
-              <p>To access the Ethereum to Proton bridge you need to switch to Eth Mainnet.</p>
+              {/* <p>To access the Ethereum to Proton bridge you need to switch to Eth Mainnet.</p> */}
               <br />
               {!address && <Button
                 smallSize={true}
@@ -137,11 +184,14 @@ const NftBridge = (): JSX.Element => {
 
           <NftBox>
             <NftList>
-              {
-                ethAssetsOrigin.map((ethAsset: ETH_ASSET, idx) => (
-                  <NFT data={ethAsset} key={idx}/>
-                ))
-              }
+              {ethAssetsOrigin.map((ethAsset: ETH_ASSET, idx) => (
+                <NFT
+                  data={ethAsset}
+                  selectedNft={selectedNft}
+                  setSelectedNft={setSelectedNft}
+                  key={idx}
+                />
+              ))}
             </NftList>
 
             <NftExchangeBtnBox>
@@ -149,29 +199,47 @@ const NftBridge = (): JSX.Element => {
                 width="18px"
                 height="18px"
                 alt="exchange_button"
-                src="/directional-arrows.svg"
+                src="/right-arrow.svg"
                 className="cursor-pointer"
+                style={{marginBottom: 20}}
+                onClick={()=>onExchange(true)}
+              />
+              <Image
+                width="18px"
+                height="18px"
+                alt="exchange_button"
+                src="/left-arrow.svg"
+                className="cursor-pointer"
+                onClick={()=>onExchange(false)}
               />
             </NftExchangeBtnBox>
             
             <NftList>
-              
+              {
+                ethAssetsToSend.map((ethAsset: ETH_ASSET, idx) => (
+                  <NFT
+                    data={ethAsset}
+                    selectedNft={selectedNft}
+                    setSelectedNft={setSelectedNft}
+                    key={idx}
+                  />
+                ))
+              }
             </NftList>
           </NftBox>
 
-          <div style={{padding: '0 20px 20px'}}>
+          <div style={{display: 'flex', justifyContent: 'end', padding: '0 20px 20px'}}>
             <Button
-              fullWidth
               smallSize={true}
               onClick={handleTransfer}
             >
               Transfer
             </Button>
           </div>
-        </Content>
+        </Content>}
       </Container>
     </>
   )
 }
 
-export default NftBridge
+export default NftBridge;
