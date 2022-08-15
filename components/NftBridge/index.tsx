@@ -20,7 +20,7 @@ import {
 } from './NftBridge.styled';
 import { Image } from '../../styles/index.styled';
 import Button from '../Button';
-import { ETH_ASSET, getNfts } from '../../services/eth-assets';
+import { ETH_ASSET, NFT_ATTR, getNfts, getNftMetadata } from '../../services/eth-assets';
 import LoadingPage from '../LoadingPage';
 
 const TRANSFER_DIR = {
@@ -35,18 +35,31 @@ interface NFTProps {
 };
 
 const NFT = (props: NFTProps) => {
+  const [attributes, setAttributes] = useState<NFT_ATTR>();
+
+  useEffect(() => {
+    if (props?.data.attributes.name) {
+      setAttributes(props.data.attributes);
+    } else if (props.data.tokenUri) {
+      getNftMetadata(props.data.tokenUri)
+      .then(attr => {
+        setAttributes(attr);
+      });
+    }
+  }, [props?.data.tokenUri]);
+
   return (
     <NftItem
       selected={props.selectedNft?.contractAddress == props.data.contractAddress && props.selectedNft?.tokenId == props.data.tokenId}
       onClick={() => props.setSelectedNft(props.data)}
     >
       <Image
-        src={props.data.attributes.image}
+        src={attributes?.image}
         width="50"
         height='50'
         style={{marginRight: 20}}
       />
-      <NftName>{props.data.attributes.name}</NftName>
+      <NftName>{attributes?.name}</NftName>
     </NftItem>
   )
 }
@@ -78,7 +91,6 @@ const NftBridge = (): JSX.Element => {
 
     setIsLoading(true);
     const nfts = await getNfts(address);
-    console.log(nfts);
     setEthAssetsOrigin(nfts);
     setIsLoading(false);
   }

@@ -6,13 +6,20 @@ export type ETH_ASSET = {
   contractAddress: string;
   tokenId: string;
   tokenType: string;
+  tokenUri: string;
   attributes: {
+    name: string;
     description: string;
     image: string;
-    name: string;
-  };
+  },
   balance: number;
 }
+
+export type NFT_ATTR = {
+  name: string;
+  image: string;
+  description: string;
+};
 
 export const getNfts = async (
   owner: string
@@ -34,17 +41,38 @@ export const getNfts = async (
       pageKey = response.pageKey;
     } while(pageKey);
 
-    console.log("--- owned nfts", ownedNfts);
     return ownedNfts.map(nft => {
       return {
         contractAddress: nft.contract.address,
         tokenId: nft.id.tokenId,
-        tokenType: nft.id.tokenMetadata.tokenType,
-        attributes: nft.metadata,
-        balance: nft.balance
+        tokenType: nft.id.tokenMetadata?.tokenType,
+        tokenUri: nft.tokenUri?.raw,
+        balance: nft.balance,
+        attributes: {
+          name: nft.metadata.name,
+          description: nft.metadata.description,
+          image: nft.metadata.image
+        }
       };
     });
   } catch (e) {
+    throw new Error(e);
+  }
+}
+
+export const getNftMetadata = async (
+  tokenUri: string,
+): Promise<NFT_ATTR> => {
+
+  try {
+    const response = await fetch(tokenUri);
+    const nft = await response.json();
+    return {
+      name: nft.name,
+      description: nft.description,
+      image: nft.image
+    };
+  } catch(e) {
     throw new Error(e);
   }
 }
