@@ -77,7 +77,7 @@ type UserTemplateAssetDetails = {
 
 export const getAllUserAssetsByTemplate = async (
   owner: string,
-  templateId: string
+  templateId: string | undefined
 ): Promise<Asset[]> => {
   try {
     const limit = 100;
@@ -86,14 +86,21 @@ export const getAllUserAssetsByTemplate = async (
     let page = 1;
 
     while (hasResults) {
-      const queryObject = {
+      let queryObject: any = {
         owner,
         page,
         order: 'asc',
-        sort: 'template_mint',
-        template_id: templateId,
         limit,
       };
+
+      if (templateId) {
+        queryObject = {
+          ...queryObject,
+          sort: 'template_mint',
+          template_id: templateId,
+        };
+      }
+
       const queryString = toQueryString(queryObject);
       const result = await getFromApi<Asset[]>(
         `${process.env.NEXT_PUBLIC_NFT_ENDPOINT}/atomicassets/v1/assets?${queryString}`

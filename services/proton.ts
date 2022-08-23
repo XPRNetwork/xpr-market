@@ -16,7 +16,7 @@ export interface User {
 interface TransferOptions {
   sender: string;
   recipient: string;
-  asset_id: string;
+  asset_ids: string[];
   memo?: string;
 }
 
@@ -265,7 +265,7 @@ class ProtonSDK {
   transfer = async ({
     sender,
     recipient,
-    asset_id,
+    asset_ids,
     memo,
   }: TransferOptions): Promise<Response> => {
     const action = [
@@ -281,7 +281,7 @@ class ProtonSDK {
         data: {
           from: sender,
           to: recipient,
-          asset_ids: [asset_id],
+          asset_ids: asset_ids,
           memo: memo || '',
         },
       },
@@ -301,6 +301,7 @@ class ProtonSDK {
         transactionId: result.processed.id,
       };
     } catch (e) {
+      console.log("---", e)
       return {
         success: false,
         error:
@@ -1787,6 +1788,51 @@ class ProtonSDK {
       };
     }
   };
+
+  teleportToEth = async ({
+    asset_id,
+    to_address
+  }: {
+    asset_id: string,
+    to_address: string
+  }): Promise<Response> => {
+    try {
+      if (!this.session || !this.auth) {
+        throw new Error('Unable to teleport NFTs without logging in.');
+      }
+  
+      const actions = [
+        {
+          account: 'bridgetest11',
+          name: 'teleport',
+          authorization: [
+            {
+              actor: this.auth.actor,
+              permission: 'active',
+            },
+          ],
+          data: {
+            asset_id,
+            to_address
+          },
+        },
+      ];
+  
+      await this.session.transact(
+        { actions },
+        { broadcast: true }
+      );
+  
+      return { success: true };
+    } catch (e) {
+      const message = e.message[0].toUpperCase() + e.message.slice(1);
+      return {
+        success: false,
+        error:
+          message || 'An error has occurred while trying to cancel an auction.',
+      };
+    }
+  }
 }
 
 export default new ProtonSDK();

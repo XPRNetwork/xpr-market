@@ -14,6 +14,12 @@ type User = {
   name: string;
 };
 
+export type TeleportFees = {
+  chainId: number;
+  port_in_fee: string;
+  port_out_fee: string;
+}
+
 class ProtonJs {
   rpc: JsonRpc = null;
   endpoints: string[];
@@ -201,6 +207,39 @@ class ProtonJs {
       return false;
     }
   };
+
+  async getTeleportFees(): Promise<TeleportFees[]> {
+    const { rows } = await this.rpc.get_table_rows({
+      json: true,
+      code: 'bridgetest22',
+      scope: 'bridgetest22',
+      table: 'fees',
+    });
+
+    console.log("-------------1", rows);
+    return rows && rows.length
+      ? rows[0]
+      : [];
+  }
+
+  async getFeesBalanceForTeleport(
+    chainAccount: string
+  ): Promise<string> {
+    const { rows } = await this.rpc.get_table_rows({
+      json: true,
+      code: 'bridgetest22',
+      scope: 'bridgetest22',
+      table: 'feesbalance',
+      lower_bound: chainAccount,
+      upper_bound: chainAccount,
+      limit: 1,
+    });
+
+    console.log("-------------2", rows);
+    return rows && rows.length && rows[0].acc === chainAccount
+      ? rows[0]
+      : '0';
+  }
 }
 
 const proton = new ProtonJs();

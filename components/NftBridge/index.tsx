@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useWeb3 } from "@3rdweb/hooks" 
+import { InjectedConnector } from "@web3-react/injected-connector";
+import { useWeb3React } from '@web3-react/core';
 import {
   Header,
   HeaderTitle,
@@ -15,121 +16,209 @@ import {
   NftBox,
   NftList,
   NftExchangeBtnBox,
-  NftName,
-  NftItem
 } from './NftBridge.styled';
 import { Image } from '../../styles/index.styled';
 import Button from '../Button';
-import { ETH_ASSET, NFT_ATTR, getNfts, getNftMetadata } from '../../services/eth-assets';
+import { ETH_ASSET, getNfts, teleportToProton, transferERC721ToBridge, claimNfts } from '../../services/ethereum';
+import protonSDK from '../../services/proton';
+import proton, { TeleportFees } from '../../services/proton-rpc';
+import { Asset, getAllUserAssetsByTemplate } from '../../services/assets';
 import LoadingPage from '../LoadingPage';
+import { useAuthContext } from '../Provider';
+import { EthNft, ProtonNft } from './Nft';
+import InputField from '../InputField';
 
 const TRANSFER_DIR = {
   ETH_TO_PROTON: 'ETH_TO_PROTON',
   PROTON_TO_ETH: 'PROTON_TO_ETH'
 };
 
-interface NFTProps {
-  data: ETH_ASSET,
-  selectedNft: ETH_ASSET;
-  setSelectedNft: (nft: ETH_ASSET) => void;
-};
-
-const NFT = (props: NFTProps) => {
-  const [attributes, setAttributes] = useState<NFT_ATTR>();
-
-  useEffect(() => {
-    if (props?.data.attributes.name) {
-      setAttributes(props.data.attributes);
-    } else if (props.data.tokenUri) {
-      getNftMetadata(props.data.tokenUri)
-      .then(attr => {
-        setAttributes(attr);
-      });
-    }
-  }, [props?.data.tokenUri]);
-
-  return (
-    <NftItem
-      selected={props.selectedNft?.contractAddress == props.data.contractAddress && props.selectedNft?.tokenId == props.data.tokenId}
-      onClick={() => props.setSelectedNft(props.data)}
-    >
-      <Image
-        src={attributes?.image}
-        width="50"
-        height='50'
-        style={{marginRight: 20}}
-      />
-      <NftName>{attributes?.name}</NftName>
-    </NftItem>
-  )
-}
+const injected = new InjectedConnector({
+  supportedChainIds: [137, 3]
+});
 
 const NftBridge = (): JSX.Element => {
-  const { connectWallet, disconnectWallet, address } = useWeb3();
+  const { currentUser, isLoadingUser } = useAuthContext();
+  const { library, account, active, activate, deactivate } = useWeb3React();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [transDir, setTransDir] = useState<string>(TRANSFER_DIR.ETH_TO_PROTON);
   const [ethAssetsOrigin, setEthAssetsOrigin] = useState<ETH_ASSET[]>([]);
   const [ethAssetsToSend, setEthAssetsToSend] = useState<ETH_ASSET[]>([]);
-  const [selectedNft, setSelectedNft] = useState<ETH_ASSET | null>(null);
+  const [protonAssetsOrigin, setProtonAssetsOrigin] = useState<Asset[]>([]);
+  const [protonAssetsToSend, setProtonAssetsToSend] = useState<Asset[]>([]);
+  const [selectedEthNft, setSelectedEthNft] = useState<ETH_ASSET | null>(null);
+  const [selectedProtonNft, setSelectedProtonNft] = useState<Asset | null>(null);
+  const [targetAddress, setTargetAddress] = useState<string>("");
+  const [teleportFees, setTeleportFees] = useState<TeleportFees[]>([]);
+  const [feesBalance, setFeesBalance] = useState<string>("");
 
   useEffect(() => {
-    onSelectNft();
-  }, [address]);
+    if (localStorage.getItem("connected") === "YES" && !active) {
+      localStorage.removeItem("connected");
+    }
+
+    (async () => {
+      const fees = await proton.getTeleportFees();
+      setTeleportFees(fees);
+    })();
+  }, []);
+
+  useEffect(() => {
+    if (active) {
+      localStorage.setItem("connected", "YES");
+    }
+  }, [active]);
+
+  useEffect(() => {
+    setEthAssetsOrigin([]);
+    setEthAssetsToSend([]);
+    fetchEthAssets();
+  }, [account]);
+
+  useEffect(() => {
+    setProtonAssetsOrigin([]);
+    setProtonAssetsToSend([]);
+    (async () => {
+      if (currentUser?.actor) {
+        setIsLoading(true);
+
+        try {
+          const assets = await getAllUserAssetsByTemplate(currentUser.actor, undefined);
+          setProtonAssetsOrigin(assets);
+
+          const balance = await proton.getFeesBalanceForTeleport(currentUser.actor);
+          setFeesBalance(balance);
+
+          setIsLoading(false);
+        } catch (e) {
+          console.warn(e.message);
+          setIsLoading(false);
+        }
+      }
+    })();
+  }, [currentUser?.actor]);
 
   const onWalletAction = () => {
-    if (address) {
-      disconnectWallet();
-    } else {
-      connectWallet("injected");
+    if (active) {
+      deactivate();
+      localStorage.clear();
+      return;
     }
+    activate(injected, (error) => {
+      console.log(error);
+    });
   }
 
-  const onSelectNft = async () => {
-    if (!address) {
+  const fetchEthAssets = async () => {
+    if (!account) {
       return;
     }
 
     setIsLoading(true);
-    const nfts = await getNfts(address);
+    const nfts = await getNfts(account);
     setEthAssetsOrigin(nfts);
     setIsLoading(false);
   }
 
   const onExchange = async (dir: boolean) => {
-    if (!selectedNft) return;
+    if (
+      (transDir == TRANSFER_DIR.ETH_TO_PROTON && !selectedEthNft) ||
+      (transDir == TRANSFER_DIR.PROTON_TO_ETH && !selectedProtonNft)
+    ) return;
 
-    if (dir) {
-      const index = ethAssetsOrigin.findIndex((nft: ETH_ASSET) => nft.contractAddress == selectedNft.contractAddress && nft.tokenId == selectedNft.tokenId);
+    if (dir && transDir == TRANSFER_DIR.ETH_TO_PROTON) {
+      const index = ethAssetsOrigin.findIndex((nft: ETH_ASSET) => nft.contractAddress == selectedEthNft.contractAddress && nft.tokenId == selectedEthNft.tokenId);
       if (index > -1) {
         setEthAssetsOrigin(
-          ethAssetsOrigin.filter((nft: ETH_ASSET) => nft.contractAddress !== selectedNft.contractAddress && nft.tokenId !== selectedNft.tokenId)
+          ethAssetsOrigin.filter((nft: ETH_ASSET) => nft.contractAddress !== selectedEthNft.contractAddress && nft.tokenId !== selectedEthNft.tokenId)
         );
   
-        ethAssetsToSend.push(selectedNft);
+        ethAssetsToSend.push(selectedEthNft);
         setEthAssetsToSend(ethAssetsToSend);
-  
-        setSelectedNft(null);
+        setSelectedEthNft(null);
       }
-    } else {
-      const index = ethAssetsToSend.findIndex((nft: ETH_ASSET) => nft.contractAddress == selectedNft.contractAddress && nft.tokenId == selectedNft.tokenId);
+    } else if (!dir && transDir == TRANSFER_DIR.ETH_TO_PROTON) {
+      const index = ethAssetsToSend.findIndex((nft: ETH_ASSET) => nft.contractAddress == selectedEthNft.contractAddress && nft.tokenId == selectedEthNft.tokenId);
       if (index > -1) {
         setEthAssetsToSend(
-          ethAssetsToSend.filter((nft: ETH_ASSET) => nft.contractAddress !== selectedNft.contractAddress && nft.tokenId !== selectedNft.tokenId)
+          ethAssetsToSend.filter((nft: ETH_ASSET) => nft.contractAddress !== selectedEthNft.contractAddress && nft.tokenId !== selectedEthNft.tokenId)
         );
 
-        ethAssetsOrigin.push(selectedNft);
+        ethAssetsOrigin.push(selectedEthNft);
         setEthAssetsOrigin(ethAssetsOrigin);
+        setSelectedEthNft(null);
+      }
+    } else if (dir && transDir == TRANSFER_DIR.PROTON_TO_ETH) {
+      const index = protonAssetsOrigin.findIndex((nft: Asset) => nft.asset_id == selectedProtonNft.asset_id);
+      if (index > -1) {
+        setProtonAssetsOrigin(
+          protonAssetsOrigin.filter((nft: Asset) => nft.asset_id !== selectedProtonNft.asset_id)
+        );
 
-        setSelectedNft(null);
+        protonAssetsToSend.push(selectedProtonNft);
+        setProtonAssetsToSend(protonAssetsToSend);
+        setSelectedProtonNft(null);
+      }
+    } else {
+      const index = protonAssetsToSend.findIndex((nft: Asset) => nft.asset_id == selectedProtonNft.asset_id);
+      if (index > -1) {
+        setProtonAssetsToSend(
+          protonAssetsToSend.filter((nft: Asset) => nft.asset_id !== selectedProtonNft.asset_id)
+        );
+
+        protonAssetsOrigin.push(selectedProtonNft);
+        setProtonAssetsOrigin(protonAssetsOrigin);
+        setSelectedProtonNft(null);
       }
     }
   }
 
-  const handleTransfer = () => {
-    if (!ethAssetsToSend.length) {
-      alert("Please select NFTs");
-      return;
-    }
+  const handleTransfer = async () => {
+    // try {
+    //   if (
+    //     (!ethAssetsToSend.length && transDir == TRANSFER_DIR.ETH_TO_PROTON) ||
+    //     (!protonAssetsToSend.length && transDir == TRANSFER_DIR.PROTON_TO_ETH)
+    //   ) {
+    //     alert("Please select NFTs to send.");
+    //     return;
+    //   }
+  
+    //   if (!library) {
+    //     alert("Please connect ethereum wallet.");
+    //     return;
+    //   }
+  
+    //   if (transDir === TRANSFER_DIR.ETH_TO_PROTON) {
+    //     const tokenIds = ethAssetsToSend.map((nft: ETH_ASSET) => nft.tokenId);
+    //     const tokenContract = ethAssetsToSend[0].contractAddress;
+    //     setIsLoading(true);
+    //     // Group by contract and token type (721, 1155)
+    //     // await transferERC721ToBridge(tokenContract, tokenIds[0], account, library.getSigner());
+
+    //     // Claim
+    //     // await claimNfts("0xcd494673999194365033d7a287af9f0a3b163874", ["1174"], library.getSigner());
+
+    //     // Teleport or claim
+    //     await teleportToProton({
+    //       tokenContract: "0xcd494673999194365033d7a287af9f0a3b163874",
+    //       tokenIds: ["1174"],
+    //       provider: library.getSigner(),
+    //       to: currentUser.actor
+    //     });
+    //     setIsLoading(false);
+    //   } else {
+    //     const res = await protonSDK.transfer({
+    //       sender: currentUser?.actor,
+    //       recipient: "bridgetest22",
+    //       asset_ids: protonAssetsToSend.map(asset => asset.asset_id),
+    //       memo: "Transfer NFTs to teleport",
+    //     });
+    //     console.log("transfer nfts", res);
+    //   }
+    // } catch (e) {
+    //   setIsLoading(false);
+    //   console.log(e);
+    // }
   }
 
   return (
@@ -143,6 +232,36 @@ const NftBridge = (): JSX.Element => {
       <Container>
         {isLoading && <LoadingPage />}
         {!isLoading && <Content>
+          <MessageBox>
+            <MessageContent>
+              {/* <p>To access the Ethereum to Proton bridge you need to switch to Eth Mainnet.</p> */}
+              <br />
+              {!account && <Button
+                smallSize={true}
+                onClick={onWalletAction}
+              >
+                Connect Wallet
+              </Button>}
+
+              <p>{account ? account : "Click on the button above to connect to your metamask accout."}</p>
+
+              <br />
+              {account && <Button
+                smallSize={true}
+                onClick={onWalletAction}
+              >
+                Disconnect Wallet
+              </Button>}
+
+              {!account && <InputField
+                placeholder="0x0000000000000000000000000000000000000000"
+                value={targetAddress}
+                setValue={setTargetAddress}
+                mb="16px"
+              />}
+            </MessageContent>
+          </MessageBox>
+
           <Switch>
             {transDir === TRANSFER_DIR.ETH_TO_PROTON && (
               <CurrentDir>Ethereum to Proton</CurrentDir>
@@ -171,36 +290,22 @@ const NftBridge = (): JSX.Element => {
             )}
           </Switch>
 
-          <MessageBox>
-            <MessageContent>
-              {/* <p>To access the Ethereum to Proton bridge you need to switch to Eth Mainnet.</p> */}
-              <br />
-              {!address && <Button
-                smallSize={true}
-                onClick={() => onWalletAction()}
-              >
-                Connect Wallet
-              </Button>}
-              <p>
-                {address ? address : "Click on the button above to connect to your metamask accout."}
-              </p>
-              <br />
-              {address && <Button
-                smallSize={true}
-                onClick={() => onWalletAction()}
-              >
-                Disconnect Wallet
-              </Button>}
-            </MessageContent>
-          </MessageBox>
-
           <NftBox>
             <NftList>
-              {ethAssetsOrigin.map((ethAsset: ETH_ASSET, idx) => (
-                <NFT
+              {transDir==TRANSFER_DIR.ETH_TO_PROTON && ethAssetsOrigin.map((ethAsset: ETH_ASSET, idx) => (
+                <EthNft
                   data={ethAsset}
-                  selectedNft={selectedNft}
-                  setSelectedNft={setSelectedNft}
+                  selectedNft={selectedEthNft}
+                  setSelectedNft={setSelectedEthNft}
+                  key={idx}
+                />
+              ))}
+
+              {transDir==TRANSFER_DIR.PROTON_TO_ETH && protonAssetsOrigin.map((asset: Asset, idx) => (
+                <ProtonNft
+                  data={asset}
+                  selectedNft={selectedProtonNft}
+                  setSelectedNft={setSelectedProtonNft}
                   key={idx}
                 />
               ))}
@@ -208,8 +313,8 @@ const NftBridge = (): JSX.Element => {
 
             <NftExchangeBtnBox>
               <Image
-                width="18px"
-                height="18px"
+                width="38px"
+                height="38px"
                 alt="exchange_button"
                 src="/right-arrow.svg"
                 className="cursor-pointer"
@@ -217,8 +322,8 @@ const NftBridge = (): JSX.Element => {
                 onClick={()=>onExchange(true)}
               />
               <Image
-                width="18px"
-                height="18px"
+                width="38px"
+                height="38px"
                 alt="exchange_button"
                 src="/left-arrow.svg"
                 className="cursor-pointer"
@@ -227,12 +332,21 @@ const NftBridge = (): JSX.Element => {
             </NftExchangeBtnBox>
             
             <NftList>
-              {
-                ethAssetsToSend.map((ethAsset: ETH_ASSET, idx) => (
-                  <NFT
+              {transDir==TRANSFER_DIR.ETH_TO_PROTON && ethAssetsToSend.map((ethAsset: ETH_ASSET, idx) => (
+                  <EthNft
                     data={ethAsset}
-                    selectedNft={selectedNft}
-                    setSelectedNft={setSelectedNft}
+                    selectedNft={selectedEthNft}
+                    setSelectedNft={setSelectedEthNft}
+                    key={idx}
+                  />
+                ))
+              }
+
+              {transDir==TRANSFER_DIR.PROTON_TO_ETH && protonAssetsToSend.map((asset: Asset, idx) => (
+                  <ProtonNft
+                    data={asset}
+                    selectedNft={selectedProtonNft}
+                    setSelectedNft={setSelectedProtonNft}
                     key={idx}
                   />
                 ))

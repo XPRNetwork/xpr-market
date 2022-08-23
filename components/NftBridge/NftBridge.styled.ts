@@ -48,6 +48,8 @@ export const ContentHeader = styled.div`
   padding: 20px;
   border-radius: 14px 14px 0 0;
   background-color: #FEFEFE;
+  font-size: 22px;
+  font-weight: 600;
 `;
 
 export const Container = styled.div`
@@ -97,9 +99,9 @@ export const MessageContent = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #FFE8C3;
+  // background-color: #FFE8C3;
   border-radius: 8px;
-  padding: 20px;
+  padding: 5px;
 `;
 
 export const NftBox = styled.div`
@@ -117,13 +119,13 @@ export const NftList = styled.div`
 `;
 
 export const NftExchangeBtnBox = styled.div`
-  width: 30px;
+  width: 50px;
   height: auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 20px;
+  padding: 5px;
 `;
 
 export const NftItem = styled.div<{selected: boolean}>`

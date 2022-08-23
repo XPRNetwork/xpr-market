@@ -51,7 +51,7 @@ export const TransferModal = (): JSX.Element => {
       const res = await ProtonSDK.transfer({
         sender: currentUser ? currentUser.actor : '',
         recipient,
-        asset_id: assetId,
+        asset_ids: [assetId],
         memo,
       });
 
