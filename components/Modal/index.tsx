@@ -9,3 +9,4 @@ export {
 } from './CollectionModal';
 export { BurnAssetModal } from './BurnAssetModal';
 export { ReportModal } from './ReportModal';
+export { ConfirmTeleportModal } from './ConfirmTeleportModal';

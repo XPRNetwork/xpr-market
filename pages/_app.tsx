@@ -20,7 +20,7 @@ import '../styles/customprogress.css';
 import * as gtag from '../utils/gtag';
 import * as Sentry from '@sentry/react';
 import { Integrations } from '@sentry/tracing';
-import { type } from 'os';
+import { ToastProvider } from 'react-toast-notifications';
 
 const Web3ProviderNetwork =
   typeof window !== "undefined" && createWeb3ReactRoot('NETWORK');
@@ -76,6 +76,7 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
 
   return (
     <SimpleReactLightbox>
+      <ToastProvider>
       <Web3ReactProvider getLibrary={getLibrary}>
         {typeof window !== "undefined" ? (
           <Web3ProviderNetwork getLibrary={getLibrary}>
@@ -105,6 +106,7 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
           </ModalProvider>
         )}
       </Web3ReactProvider>
+      </ToastProvider>
     </SimpleReactLightbox>
   );
 }

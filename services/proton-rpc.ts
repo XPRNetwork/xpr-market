@@ -15,9 +15,15 @@ type User = {
 };
 
 export type TeleportFees = {
-  chainId: number;
-  port_in_fee: string;
-  port_out_fee: string;
+  chain_id: number;
+  port_in_fee: number;
+  port_out_fee: number;
+}
+
+export type TeleportFeesBalance = {
+  owner: string;
+  balance: number;
+  reserved: number;
 }
 
 class ProtonJs {
@@ -211,34 +217,59 @@ class ProtonJs {
   async getTeleportFees(): Promise<TeleportFees[]> {
     const { rows } = await this.rpc.get_table_rows({
       json: true,
-      code: 'bridgetest22',
-      scope: 'bridgetest22',
+      code: process.env.NEXT_PUBLIC_PRT_NFT_BRIDGE,
+      scope: 0,
       table: 'fees',
     });
 
-    console.log("-------------1", rows);
     return rows && rows.length
-      ? rows[0]
+      ? rows.map(el => {
+        const port_in_fee = Number(el.port_in_fee?.split(" ")[0]);
+        const port_out_fee = Number(el.port_out_fee?.split(" ")[0]);
+        return {
+          chain_id: Number(el.chain_id),
+          port_in_fee,
+          port_out_fee
+        };
+      })
       : [];
   }
 
   async getFeesBalanceForTeleport(
     chainAccount: string
-  ): Promise<string> {
+  ): Promise<TeleportFeesBalance> {
     const { rows } = await this.rpc.get_table_rows({
       json: true,
-      code: 'bridgetest22',
-      scope: 'bridgetest22',
+      code: process.env.NEXT_PUBLIC_PRT_NFT_BRIDGE,
+      scope: 0,
       table: 'feesbalance',
       lower_bound: chainAccount,
       upper_bound: chainAccount,
       limit: 1,
     });
 
-    console.log("-------------2", rows);
-    return rows && rows.length && rows[0].acc === chainAccount
-      ? rows[0]
-      : '0';
+    return rows && rows.length && rows[0].owner === chainAccount
+      ? {
+        balance: Number(rows[0].balance?.split(" ")[0]),
+        owner: rows[0].owner,
+        reserved: Number(rows[0].reserved?.split(" ")[0]),
+      } : {
+        balance: 0,
+        owner: chainAccount,
+        reserved: 0
+      };
+  }
+
+  async getOutReqsForTeleport(): Promise<TeleportFeesBalance> {
+    const { rows } = await this.rpc.get_table_rows({
+      json: true,
+      code: process.env.NEXT_PUBLIC_PRT_NFT_BRIDGE,
+      scope: 0,
+      table: 'outreqs',
+      limit: 1,
+    });
+
+    return rows;
   }
 }
 

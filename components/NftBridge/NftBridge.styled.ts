@@ -75,6 +75,15 @@ export const Switch = styled.div`
   border-bottom: 1px solid #F6F7F9;
 `;
 
+export const InfoBox = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-itmes: center;
+  padding: 20px;
+  border-bottom: 1px solid #F6F7F9;
+  color: #4710a3;
+`;
+
 export const CurrentDir = styled.div`
   flex: 1;
   font-size: 20px;
@@ -91,7 +100,7 @@ export const NextDir = styled.div`
 
 export const MessageBox = styled.div`
   width: 100%;
-  padding: 20px;
+  padding: 10px 20px;
   border-bottom: 1px solid #e8e8e8;
 `;
 

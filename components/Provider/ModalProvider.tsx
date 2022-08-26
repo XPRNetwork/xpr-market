@@ -23,6 +23,7 @@ export const MODAL_TYPES = {
   MINT_ASSET: 'MINT_ASSET',
   BURN_ASSET: 'BURN_ASSET',
   REPORT: 'REPORT',
+  CONFIRM_TELEPORT: 'CONFIRM_TELEPORT'
 };
 
 type Props = {
@@ -88,6 +89,13 @@ export interface MintAssetModalProps extends GeneralModalProps {
   issuedSupply: number;
 }
 
+export interface ConfirmTeleportModalProps extends GeneralModalProps {
+  ethToProton: boolean;
+  tokenContract?: string;
+  tokenId?: string;
+  assetId?: string;
+}
+
 type ModalProps =
   | GeneralModalProps
   | CancelSaleModalProps
@@ -98,7 +106,8 @@ type ModalProps =
   | CreateCollectionProps
   | UpdateCollectionProps
   | MintAssetModalProps
-  | ReportProps;
+  | ReportProps
+  | ConfirmTeleportModalProps;
 
 type ModalContextValue = {
   modalType: string;

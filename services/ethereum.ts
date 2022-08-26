@@ -4,8 +4,7 @@ import { ethers } from 'ethers';
 const NftBridgeAbi = require("../abis/NftBridge.json");
 const ERC721Abi = require("../abis/ERC721.json");
 
-const web3 = createAlchemyWeb3("https://polygon-mainnet.g.alchemy.com/v2/cZYm3F6HFecKtBJDWBLiYR2Bweqmwlnc");
-const EthBridgeAddress = "0x6bb77DEa7E6d163988231c52335b3d65D0ad805B";
+const web3 = createAlchemyWeb3(process.env.NEXT_PUBLIC_ALCHEMY_URL);
 
 export type ETH_ASSET = {
   contractAddress: string;
@@ -75,7 +74,7 @@ export const getNftMetadata = async (
     return {
       name: nft.name,
       description: nft.description,
-      image: nft.image
+      image: nft.image != "" ? nft.image : nft.nft?.urlThumbnail
     };
   } catch(e) {
     throw new Error(e);
@@ -90,7 +89,11 @@ export const transferERC721ToBridge = async (
 ) => {
   const nftContract = new ethers.Contract(tokenContract, ERC721Abi, signer);
   console.log(nftContract);
-  await nftContract['safeTransferFrom(address,address,uint256)'](from, EthBridgeAddress, ethers.BigNumber.from(tokenId));
+  await nftContract['safeTransferFrom(address,address,uint256)'](
+    from,
+    process.env.NEXT_PUBLIC_NFT_BRIDGE_ADDRESS,
+    ethers.BigNumber.from(tokenId)
+  );
 }
 
 export const claimNfts = async (
@@ -98,7 +101,11 @@ export const claimNfts = async (
   tokenIds: string[],
   signer: Web3Provider
 ) => {
-  const nftBridgeContract = new ethers.Contract(EthBridgeAddress, NftBridgeAbi, signer);
+  const nftBridgeContract = new ethers.Contract(
+    process.env.NEXT_PUBLIC_NFT_BRIDGE_ADDRESS,
+    NftBridgeAbi,
+    signer
+  );
   const res = await nftBridgeContract['claim(address,uint256[])'](tokenContract, tokenIds.map(el => ethers.BigNumber.from(el)));
   console.log(res);
   return { success: true };
@@ -116,7 +123,11 @@ export const teleportToProton = async ({
   to: string
 }) => {
   try {
-    const nftBridgeContract = new ethers.Contract(EthBridgeAddress, NftBridgeAbi, provider);
+    const nftBridgeContract = new ethers.Contract(
+      process.env.NEXT_PUBLIC_NFT_BRIDGE_ADDRESS,
+      NftBridgeAbi,
+      provider
+    );
     const res = await nftBridgeContract.teleport(
       tokenContract,
       tokenIds.map(el => ethers.BigNumber.from(el)),
