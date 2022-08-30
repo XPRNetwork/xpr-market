@@ -84,14 +84,10 @@ const NftBridge = (): JSX.Element => {
   }, [active]);
 
   useEffect(() => {
-    setEthAssetsOrigin([]);
-    setEthAssetsToSend([]);
     fetchEthAssets();
   }, [account]);
 
   useEffect(() => {
-    setProtonAssetsOrigin([]);
-    setProtonAssetsToSend([]);
     fetchProtonAssets();
   }, [currentUser?.actor]);
 
@@ -160,14 +156,15 @@ const NftBridge = (): JSX.Element => {
 
       try {
         const assets = await getAllUserAssetsByTemplate(currentUser.actor, undefined);
-        console.log(assets)
-        setProtonAssetsOrigin(assets);
+        // support assets that created by bridge.
+        const filtered = assets.filter(el => el.collection.author == process.env.NEXT_PUBLIC_PRT_NFT_BRIDGE);
+        setProtonAssetsOrigin(filtered);
 
         const balance = await proton.getFeesBalanceForTeleport(currentUser.actor);
         setFeesBalance(balance);
 
-        // const reqs = await proton.getOutReqsForTeleport();
-        // console.log("==============", reqs)
+        const outreqs = await proton.getOutReqsForTeleport();
+        console.log("---- outreqs", outreqs)
 
         setIsLoading(false);
       } catch (e) {
@@ -305,9 +302,21 @@ const NftBridge = (): JSX.Element => {
         addToast('Transfered NFTs to PRTBRIDGE successfully!', { appearance: 'success', autoDismiss: true });
 
         setTimeout(() => {
+          let tokenContract = "0x";
+          (protonAssetsToSend[0].data.contract_address as number[]).forEach(el => {
+            tokenContract += el.toString(16);
+          });
+
+          let tokenId = "0x";
+          (protonAssetsToSend[0].data.token_id as number[]).forEach(el => {
+            tokenId += el.toString(16);
+          });
+
           setModalProps((previousModalProps) => ({
             ...previousModalProps,
             ethToProton: false,
+            tokenContract,
+            tokenId,
             assetId: protonAssetsToSend[0].asset_id,
             fetchPageData: fetchProtonAssets
           }));
@@ -398,33 +407,37 @@ const NftBridge = (): JSX.Element => {
               </div>}
               <div>
                 <span>Fee Balance: &nbsp;</span>
-                <span>{feesBalance?.balance - feesBalance?.reserved} XPR</span>
+                <span>{(feesBalance?.balance - feesBalance?.reserved).toFixed(4)} XPR</span>
               </div>
               <div>
                 <span>Fee: &nbsp;</span>
-                {transDir == TRANSFER_DIR.ETH_TO_PROTON && <span>{filteredFees?.port_in_fee} XPR</span>}
-                {transDir == TRANSFER_DIR.PROTON_TO_ETH && <span>{filteredFees?.port_out_fee} XPR</span>}
+                {transDir == TRANSFER_DIR.ETH_TO_PROTON && <span>{(filteredFees?.port_in_fee).toFixed(4)} XPR</span>}
+                {transDir == TRANSFER_DIR.PROTON_TO_ETH && <span>{(filteredFees?.port_out_fee).toFixed(4)} XPR</span>}
               </div>
             </InfoBox>
 
             <NftBox>
               <NftList>
-                {transDir==TRANSFER_DIR.ETH_TO_PROTON && filteredEthAssets.map((ethAsset: ETH_ASSET, idx) => (
+                {transDir==TRANSFER_DIR.ETH_TO_PROTON && (filteredEthAssets.length ? filteredEthAssets.map((ethAsset: ETH_ASSET, idx) => (
                   <EthNft
                     data={ethAsset}
                     selectedNft={selectedEthNft}
                     setSelectedNft={setSelectedEthNft}
                     key={idx}
                   />
+                )) : (
+                  <div style={{padding: 20}}>No NFTs</div>
                 ))}
 
-                {transDir==TRANSFER_DIR.PROTON_TO_ETH && protonAssetsOrigin.map((asset: Asset, idx) => (
+                {transDir==TRANSFER_DIR.PROTON_TO_ETH && (protonAssetsOrigin.length ? protonAssetsOrigin.map((asset: Asset, idx) => (
                   <ProtonNft
                     data={asset}
                     selectedNft={selectedProtonNft}
                     setSelectedNft={setSelectedProtonNft}
                     key={idx}
                   />
+                )) : (
+                  <div style={{padding: 20}}>No NFTs</div>
                 ))}
               </NftList>
 

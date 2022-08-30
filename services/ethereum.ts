@@ -108,7 +108,7 @@ export const claimNfts = async (
   );
   const res = await nftBridgeContract['claim(address,uint256[])'](tokenContract, tokenIds.map(el => ethers.BigNumber.from(el)));
   console.log(res);
-  return { success: true };
+  return res;
 }
 
 export const teleportToProton = async ({
@@ -134,7 +134,7 @@ export const teleportToProton = async ({
       to
     );
     console.log(res);
-    return { success: true };
+    return res;
   } catch (e) {
     console.log("-----------------4", e)
     const message = e.message[0].toUpperCase() + e.message.slice(1);

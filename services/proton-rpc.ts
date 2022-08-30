@@ -26,6 +26,15 @@ export type TeleportFeesBalance = {
   reserved: number;
 }
 
+export type TeleportOutReqs = {
+  asset_id: string;
+  chain_id: string;
+  contract_address: string;
+  created_on: string;
+  to_address: string;
+  token_id: string;
+}
+
 class ProtonJs {
   rpc: JsonRpc = null;
   endpoints: string[];
@@ -260,13 +269,12 @@ class ProtonJs {
       };
   }
 
-  async getOutReqsForTeleport(): Promise<TeleportFeesBalance> {
+  async getOutReqsForTeleport(): Promise<TeleportOutReqs[]> {
     const { rows } = await this.rpc.get_table_rows({
       json: true,
       code: process.env.NEXT_PUBLIC_PRT_NFT_BRIDGE,
       scope: 0,
       table: 'outreqs',
-      limit: 1,
     });
 
     return rows;
