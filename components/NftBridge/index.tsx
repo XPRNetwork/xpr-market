@@ -181,6 +181,12 @@ const NftBridge = (): JSX.Element => {
     ) return;
 
     if (dir && transDir == TRANSFER_DIR.ETH_TO_PROTON) {
+      // Only 1 nft is available
+      if (ethAssetsToSend.length) {
+        addToast('Currently only 1 NFT can be teleported.', { appearance: 'info', autoDismiss: true });
+        return;
+      }
+
       const index = ethAssetsOrigin.findIndex((nft: ETH_ASSET) => nft.contractAddress == selectedEthNft.contractAddress && nft.tokenId == selectedEthNft.tokenId);
       if (index > -1) {
         setEthAssetsOrigin(
@@ -203,6 +209,12 @@ const NftBridge = (): JSX.Element => {
         setSelectedEthNft(null);
       }
     } else if (dir && transDir == TRANSFER_DIR.PROTON_TO_ETH) {
+      // Only 1 nft is available
+      if (protonAssetsToSend.length) {
+        addToast('Currently only 1 NFT can be teleported.', { appearance: 'info', autoDismiss: true });
+        return;
+      }
+      
       const index = protonAssetsOrigin.findIndex((nft: Asset) => nft.asset_id == selectedProtonNft.asset_id);
       if (index > -1) {
         setProtonAssetsOrigin(
