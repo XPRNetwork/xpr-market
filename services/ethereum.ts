@@ -89,11 +89,12 @@ export const transferERC721ToBridge = async (
 ) => {
   const nftContract = new ethers.Contract(tokenContract, ERC721Abi, signer);
   console.log(nftContract);
-  await nftContract['safeTransferFrom(address,address,uint256)'](
+  const res = await nftContract['safeTransferFrom(address,address,uint256)'](
     from,
     process.env.NEXT_PUBLIC_NFT_BRIDGE_ADDRESS,
     ethers.BigNumber.from(tokenId)
   );
+  return res;
 }
 
 export const claimNfts = async (
@@ -107,7 +108,6 @@ export const claimNfts = async (
     signer
   );
   const res = await nftBridgeContract['claim(address,uint256[])'](tokenContract, tokenIds.map(el => ethers.BigNumber.from(el)));
-  console.log(res);
   return res;
 }
 
@@ -133,15 +133,32 @@ export const teleportToProton = async ({
       tokenIds.map(el => ethers.BigNumber.from(el)),
       to
     );
-    console.log(res);
     return res;
   } catch (e) {
-    console.log("-----------------4", e)
     const message = e.message[0].toUpperCase() + e.message.slice(1);
     return {
       success: false,
       error:
-        message || 'An error has occurred while trying to cancel an auction.',
+        message || 'An error has occurred while trying to teleport.',
+    };
+  }
+}
+
+export const getDepositList = async (owner: string, provider: Web3Provider) => {
+  try {
+    const nftBridgeContract = new ethers.Contract(
+      process.env.NEXT_PUBLIC_NFT_BRIDGE_ADDRESS,
+      NftBridgeAbi,
+      provider
+    );
+    const res = await nftBridgeContract.tokensByUser(owner);
+    return res;
+  } catch (e) {
+    const message = e.message[0].toUpperCase() + e.message.slice(1);
+    return {
+      success: false,
+      error:
+        message || 'An error has occurred while trying to teleport.',
     };
   }
 }

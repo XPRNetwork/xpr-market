@@ -279,6 +279,17 @@ class ProtonJs {
 
     return rows;
   }
+
+  async getMintedForTeleport() {
+    const { rows } = await this.rpc.get_table_rows({
+      json: true,
+      code: process.env.NEXT_PUBLIC_PRT_NFT_BRIDGE,
+      scope: 0,
+      table: 'minted',
+    });
+
+    return rows;
+  }
 }
 
 const proton = new ProtonJs();

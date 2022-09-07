@@ -5,8 +5,7 @@ export const Header = styled.div`
   width: 100%;
   padding: 60px 120px 0;
   background: linear-gradient(64deg, #4710a3 14%, #b28bf4 109%);
-  margin-top: 40px;
-  border-radius: 16px;
+  border-radius: 0 0 8px 8px;
   overflow: hidden;
   color: #fff;
 `;
@@ -65,6 +64,7 @@ export const Content = styled.div`
   border-radius: 0 0 14px 14px;
   background-color: #FEFEFE;
   box-shadow: 0px 1px 2px rgba(0,0,0,0.3);
+  margin-bottom: 20px;
 `;
 
 export const Switch = styled.div`
@@ -79,8 +79,8 @@ export const InfoBox = styled.div`
   display: flex;
   justify-content: space-between;
   align-itmes: center;
-  padding: 20px;
-  border-bottom: 1px solid #F6F7F9;
+  padding: 20px 20px 0;
+  // border-bottom: 1px solid #F6F7F9;
   color: #4710a3;
 `;
 
@@ -120,7 +120,7 @@ export const NftBox = styled.div`
 
 export const NftList = styled.div`
   flex: 1;
-  height: 350px;
+  height: 250px;
   overflow-y: auto;
   padding: 20px 0;
   border: 1px solid #e8e8e8;
@@ -161,4 +161,34 @@ export const NftName = styled.p`
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
+`;
+
+export const TableContent = styled.div`
+  width: 100%;
+  padding: 20px 0;
+  background-color: #FEFEFE;
+  margin-bottom: 20px;
+`;
+
+export const Tabs = styled.div`
+  display: flex;
+  align-items: flex-end;
+  padding: 4px 0px;
+  margin-bottom: 20px;
+`;
+
+export const Tab = styled.div<{selected: boolean}>`
+  text-align: center;
+  color: #6a6a6a;
+  margin-right: 20px;
+  padding: 5px 0;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+
+  ${({ selected }) =>
+    selected &&
+    `
+    color: #000;
+    border-bottom: 2px solid #4710a3;
+  `};
 `;

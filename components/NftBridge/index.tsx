@@ -29,6 +29,7 @@ import LoadingPage from '../LoadingPage';
 import { useAuthContext } from '../Provider';
 import { EthNft, ProtonNft } from './Nft';
 import { useModalContext, MODAL_TYPES } from '../Provider';
+import { TrackingTables } from './TrackingTables';
 
 const TRANSFER_DIR = {
   ETH_TO_PROTON: 'ETH_TO_PROTON',
@@ -163,8 +164,8 @@ const NftBridge = (): JSX.Element => {
         const balance = await proton.getFeesBalanceForTeleport(currentUser.actor);
         setFeesBalance(balance);
 
-        const outreqs = await proton.getOutReqsForTeleport();
-        console.log("---- outreqs", outreqs)
+        // const outreqs = await proton.getOutReqsForTeleport();
+        // console.log("---- outreqs", outreqs)
 
         setIsLoading(false);
       } catch (e) {
@@ -274,7 +275,8 @@ const NftBridge = (): JSX.Element => {
         const tokenIds = ethAssetsToSend.map((nft: ETH_ASSET) => nft.tokenId);
         const tokenContract = ethAssetsToSend[0].contractAddress;
         setIsLoading(true);
-        await transferERC721ToBridge(tokenContract, tokenIds[0], account, library.getSigner());
+        const txPreHash = await transferERC721ToBridge(tokenContract, tokenIds[0], account, library.getSigner());
+        await txPreHash.wait();
         addToast('Transfered to Ethereum NFT Bridge successfully.', { appearance: 'success', autoDismiss: true });
 
         setTimeout(() => {
@@ -506,6 +508,8 @@ const NftBridge = (): JSX.Element => {
             </div>
           </>}
         </Content>
+
+        <TrackingTables fetchEthAssets={fetchEthAssets} />
       </Container>
     </>
   )

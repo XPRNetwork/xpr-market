@@ -3,7 +3,7 @@ import { useWeb3React } from '@web3-react/core';
 import { useToasts } from 'react-toast-notifications';
 import { useAuthContext, useModalContext, ConfirmTeleportModalProps } from '../Provider';
 import protonSDK from '../../services/proton';
-import proton, {  } from '../../services/proton-rpc';
+import proton from '../../services/proton-rpc';
 import {
   Background,
   ModalBox,
@@ -16,6 +16,7 @@ import {
 import { ReactComponent as CloseIcon } from '../../public/close.svg';
 import { teleportToProton, claimNfts } from '../../services/ethereum';
 import { delay } from '../../utils';
+import LoadingPage from '../LoadingPage';
 
 export const ConfirmTeleportModal = (): JSX.Element => {
   const { closeModal, modalProps } = useModalContext();
@@ -24,6 +25,7 @@ export const ConfirmTeleportModal = (): JSX.Element => {
   const { addToast } = useToasts();
 
   const [error, setError] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const {
     ethToProton,
@@ -37,17 +39,18 @@ export const ConfirmTeleportModal = (): JSX.Element => {
     if (error) setError('');
   }, []);
 
-  const checkOutReqs = async () => {
-    const outreqs = await proton.getOutReqsForTeleport();
-    const index = outreqs.findIndex(el => el.asset_id == assetId);
-    if (index > -1) {
-      return true;
-    } else {
-      return false;
-    }
-  }
+  // const checkOutReqs = async () => {
+  //   const outreqs = await proton.getOutReqsForTeleport();
+  //   const index = outreqs.findIndex(el => el.asset_id == assetId);
+  //   if (index > -1) {
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // }
 
   const teleportNFT = async () => {
+    setIsLoading(true);
     if (ethToProton) {
       const txPreHash = await teleportToProton({
         tokenContract: tokenContract,
@@ -58,10 +61,9 @@ export const ConfirmTeleportModal = (): JSX.Element => {
 
       try {
         await txPreHash.wait();
+        addToast(`Teleported successfully.`, { appearance: 'success', autoDismiss: true });
       } catch (err) {
         addToast('Teleport failed.', { appearance: 'error', autoDismiss: true });
-        console.log("teleport error", err);
-        return;
       }
     } else {
       const teleportRes = await protonSDK.teleportToEth({
@@ -71,41 +73,46 @@ export const ConfirmTeleportModal = (): JSX.Element => {
       
       if (!teleportRes.success) {
         addToast('Teleport failed.', { appearance: 'error', autoDismiss: true });
-        return;
+        addToast('Please check deposit list and claim back.', { appearance: 'info', autoDismiss: false });
+      } else {
+        addToast(`Teleported successfully.`, { appearance: 'success', autoDismiss: true });
       }
       
       /*
         1. Check outreqs table
         2. Claim transaction
       */
-      const startTime = new Date().getTime();
-      do {
-        await delay(1000);
-        const elapsedTime = new Date().getTime() - startTime;
-        console.log("--- elapsed", elapsedTime);
-      } while (await checkOutReqs());
+      // const startTime = new Date().getTime();
+      // do {
+      //   await delay(1000);
+      //   const elapsedTime = new Date().getTime() - startTime;
+      //   console.log("--- elapsed", elapsedTime);
+      // } while (await checkOutReqs());
 
-      const txPreHash = await claimNfts(tokenContract, [tokenId], library.getSigner());
-      console.log("-------- txPreHash", txPreHash)
-      try {
-        await txPreHash.wait();
-      } catch (err) {
-        addToast('Claim failed.', { appearance: 'error', autoDismiss: true });
-        console.log("claim error", err);
-      }
+      // const txPreHash = await claimNfts(tokenContract, [tokenId], library.getSigner());
+      // console.log("-------- txPreHash", txPreHash)
+      // try {
+      //   await txPreHash.wait();
+      // } catch (err) {
+      //   addToast('Claim failed.', { appearance: 'error', autoDismiss: true });
+      //   console.log("claim error", err);
+      // }
     }
     
-    fetchPageData();
-    addToast(`Teleported successfully.`, { appearance: 'success', autoDismiss: true });
+    await delay(1000);
+    await fetchPageData();
+    setIsLoading(false);
     closeModal();
   }
 
   const claimNFT = async () => {
+    setIsLoading(true);
     if (ethToProton) {
       const txPreHash = await claimNfts(tokenContract, [tokenId], library.getSigner());
       try {
         await txPreHash.wait();
       } catch (err) {
+        setIsLoading(false);
         addToast('Claim failed.', { appearance: 'error', autoDismiss: true });
         console.log("claim error", err);
       }
@@ -115,19 +122,21 @@ export const ConfirmTeleportModal = (): JSX.Element => {
       });
 
       if (!claimbackRes.success) {
+        setIsLoading(false);
         addToast('Claim back failed.', { appearance: 'error', autoDismiss: true });
         return;
       }
     }
 
-    fetchPageData();
+    await fetchPageData();
+    setIsLoading(false);
     addToast('Claimed successfully!', { appearance: 'success', autoDismiss: true });
     closeModal();
   }
 
   return (
     <Background>
-      <ModalBox>
+      {!isLoading ? <ModalBox>
         <Section>
           <Title>Teleport NFT</Title>
           <CloseIconContainer role="button" onClick={closeModal}>
@@ -145,7 +154,8 @@ export const ConfirmTeleportModal = (): JSX.Element => {
             Teleport
           </HalfButton>
         </Section>
-      </ModalBox>
+      </ModalBox> :
+      <LoadingPage></LoadingPage>}
     </Background>
   );
 };
