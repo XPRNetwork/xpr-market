@@ -35,7 +35,7 @@ export const TrackingTables = (props: TrackingProps) => {
     } else if (selectedTab === TABS.DEPOSIT_LIST) {
       fetchDepositList();
     }
-  }, [selectedTab]);
+  }, [selectedTab, account]);
 
   const fetchOutreqs = async () => {
     setOutreqs([]);
@@ -54,16 +54,22 @@ export const TrackingTables = (props: TrackingProps) => {
 
     setDepositList([]);
     const res = await getDepositList(account, library.getSigner());
-    setDepositList(res);
+    const filtered = res?.filter(el => !el.locked);
+    setDepositList(filtered);
   }
 
   const claimEth = async (contract: string, tokenId: string) => {
+    if (!library) {
+      addToast('Please connect your Ethereum wallet', { appearance: 'error', autoDismiss: true });
+      return;
+    }
+
     try {
       const txPreHash = await claimNfts(contract, [tokenId], library.getSigner());
       await txPreHash.wait();
       addToast('Claimed successfully!', { appearance: 'success', autoDismiss: true });
-      fetchDepositList();
       props.fetchEthAssets();
+      await fetchDepositList();
     } catch (err) {
       addToast('Claim failed.', { appearance: 'error', autoDismiss: true });
       console.log("claim error", err);
@@ -79,12 +85,12 @@ export const TrackingTables = (props: TrackingProps) => {
         >
           OUTREQS
         </Tab>
-        <Tab
+        {/* <Tab
           selected={selectedTab == TABS.MINTED}
           onClick={() => setSelectedTab(TABS.MINTED)}
         >
           MINTED
-        </Tab>
+        </Tab> */}
         <Tab
           selected={selectedTab == TABS.DEPOSIT_LIST}
           onClick={() => setSelectedTab(TABS.DEPOSIT_LIST)}
@@ -120,7 +126,7 @@ export const TrackingTables = (props: TrackingProps) => {
       </table>}
 
       {/* minted table */}
-      {selectedTab === TABS.MINTED && <table>
+      {/* {selectedTab === TABS.MINTED && <table>
         <thead style={{color: '#4710a3'}}>
           <th style={{padding: 15}}>#</th>
           <th style={{padding: 15}}>Asset ID</th>
@@ -135,7 +141,7 @@ export const TrackingTables = (props: TrackingProps) => {
             </tr>
           ))}
         </tbody>
-      </table>}
+      </table>} */}
 
       {/* deposit list table */}
       {selectedTab === TABS.DEPOSIT_LIST && <table>
@@ -144,7 +150,7 @@ export const TrackingTables = (props: TrackingProps) => {
           <th style={{padding: 15}}>OWNER</th>
           <th style={{padding: 15}}>COLLECTION</th>
           <th style={{padding: 15}}>TOKEN ID</th>
-          <th style={{padding: 15}}>LOCKED</th>
+          {/* <th style={{padding: 15}}>LOCKED</th> */}
         </thead>
         <tbody>
           {depositList.length > 0 && depositList.map((el, idx) => (
@@ -153,14 +159,15 @@ export const TrackingTables = (props: TrackingProps) => {
               <td style={{padding: 15}}>{shortenAddress(el.owner)}</td>
               <td style={{padding: 15}}>{shortenAddress(el.collection)}</td>
               <td style={{padding: 15}}>{el.tokenId.toHexString()}</td>
-              <td style={{padding: 15}}>{el.locked ? 'True' : 'False'}</td>
-              <td style={{padding: 15}}>
-                {!el.locked && <Button
+              <td style={{padding: 15}}>{el.locked ? 'Locked' : 'Unlocked'}</td>
+              <td>
+                <Button
                   smallSize={true}
+                  disabled={el.locked}
                   onClick={() => claimEth(el.collection, el.tokenId.toHexString())}
                 >
                   Claim
-                </Button>}
+                </Button>
               </td>
             </tr>
           ))}

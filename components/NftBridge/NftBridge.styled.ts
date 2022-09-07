@@ -48,7 +48,6 @@ export const ContentHeader = styled.div`
   border-radius: 14px 14px 0 0;
   background-color: #FEFEFE;
   font-size: 22px;
-  font-weight: 600;
 `;
 
 export const Container = styled.div`
@@ -60,7 +59,7 @@ export const Content = styled.div`
   max-width: 900px;
   width: 100%;
   min-height: 300px;
-  border-top: 1px solid #F6F7F9;
+  // border-top: 1px solid #F6F7F9;
   border-radius: 0 0 14px 14px;
   background-color: #FEFEFE;
   box-shadow: 0px 1px 2px rgba(0,0,0,0.3);

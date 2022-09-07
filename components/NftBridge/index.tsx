@@ -313,7 +313,7 @@ const NftBridge = (): JSX.Element => {
           setIsLoading(false);
           return;
         }
-        addToast('Transfered NFTs to PRTBRIDGE successfully!', { appearance: 'success', autoDismiss: true });
+        addToast('Transfered NFTs to PRTBRIDGE', { appearance: 'success', autoDismiss: true });
 
         setTimeout(() => {
           let tokenContract = "0x";
@@ -374,7 +374,7 @@ const NftBridge = (): JSX.Element => {
                   smallSize={true}
                   onClick={onWalletAction}
                 >
-                  Disconnect Wallet
+                  Disconnect
                 </Button>}
 
                 {/* {!account && <InputField

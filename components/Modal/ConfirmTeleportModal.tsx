@@ -73,9 +73,9 @@ export const ConfirmTeleportModal = (): JSX.Element => {
       
       if (!teleportRes.success) {
         addToast('Teleport failed.', { appearance: 'error', autoDismiss: true });
-        addToast('Please check deposit list and claim back.', { appearance: 'info', autoDismiss: false });
       } else {
         addToast(`Teleported successfully.`, { appearance: 'success', autoDismiss: true });
+        addToast('Please check deposit list and claim your NFT.', { appearance: 'info', autoDismiss: false });
       }
       
       /*

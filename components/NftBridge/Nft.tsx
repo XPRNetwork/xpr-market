@@ -40,25 +40,59 @@ export const EthNft = (props: EthNftProps) => {
   )
 }
 
+// interface ProtonNftProps {
+//   data: Asset,
+//   selectedNft: Asset;
+//   setSelectedNft: (nft: Asset) => void;
+// };
+
+// export const ProtonNft = (props: ProtonNftProps) => {
+//   return (
+//     <NftItem
+//       selected={props.selectedNft?.asset_id == props.data.asset_id}
+//       onClick={() => props.setSelectedNft(props.data)}
+//     >
+//       <Image
+//         src={`https://proton.mypinata.cloud/ipfs/${props.data.data.image}`}
+//         width="50"
+//         height='50'
+//         style={{marginRight: 20}}
+//       />
+//       <NftName>{props.data.data?.name}</NftName>
+//     </NftItem>
+//   )
+// }
+
 interface ProtonNftProps {
-  data: Asset,
+  data: any,
   selectedNft: Asset;
   setSelectedNft: (nft: Asset) => void;
 };
 
 export const ProtonNft = (props: ProtonNftProps) => {
+  const [attributes, setAttributes] = useState<NFT_ATTR>();
+
+  useEffect(() => {
+    if (props.data.data.token_uri) {
+      getNftMetadata(props.data.data.token_uri)
+      .then(attr => {
+        setAttributes(attr);
+      });
+    }
+  }, [props?.data.data.token_uri]);
+
   return (
     <NftItem
       selected={props.selectedNft?.asset_id == props.data.asset_id}
       onClick={() => props.setSelectedNft(props.data)}
     >
       <Image
-        src={`https://proton.mypinata.cloud/ipfs/${props.data.data.image}`}
+        src={attributes?.image}
         width="50"
         height='50'
         style={{marginRight: 20}}
       />
-      <NftName>{props.data.data?.name}</NftName>
+      <NftName>{attributes?.name}</NftName>
     </NftItem>
   )
 }
