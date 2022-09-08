@@ -1,8 +1,9 @@
 import { createAlchemyWeb3 } from "@alch/alchemy-web3";
-import { Web3Provider } from '@ethersproject/providers';
+import { Web3Provider } from "@ethersproject/providers";
 import { ethers } from 'ethers';
 const NftBridgeAbi = require("../abis/NftBridge.json");
 const ERC721Abi = require("../abis/ERC721.json");
+const ERC1155Abi = require("../abis/ERC1155.json");
 
 const web3 = createAlchemyWeb3(process.env.NEXT_PUBLIC_ALCHEMY_URL);
 
@@ -88,11 +89,28 @@ export const transferERC721ToBridge = async (
   signer: Web3Provider
 ) => {
   const nftContract = new ethers.Contract(tokenContract, ERC721Abi, signer);
-  console.log(nftContract);
   const res = await nftContract['safeTransferFrom(address,address,uint256)'](
     from,
     process.env.NEXT_PUBLIC_NFT_BRIDGE_ADDRESS,
     ethers.BigNumber.from(tokenId)
+  );
+  return res;
+}
+
+export const transferERC1155ToBridge = async (
+  tokenContract: string,
+  tokenId: string,
+  from: string,
+  amount: number,
+  signer: Web3Provider
+) => {
+  const nftContract = new ethers.Contract(tokenContract, ERC1155Abi, signer);
+  const res = await nftContract['safeTransferFrom(address,address,uint256,uint256,bytes)'](
+    from,
+    process.env.NEXT_PUBLIC_NFT_BRIDGE_ADDRESS,
+    ethers.BigNumber.from(tokenId),
+    amount,
+    "0x"
   );
   return res;
 }

@@ -7,6 +7,8 @@ import { getDepositList } from '../../services/ethereum';
 import { claimNfts } from '../../services/ethereum';
 import { shortenAddress } from '../../utils';
 import Button from '../Button';
+import { delay } from '../../utils';
+import Spinner from '../Spinner';
 
 const enum TABS {
   OUT_REQS = 'outreqs',
@@ -26,6 +28,7 @@ export const TrackingTables = (props: TrackingProps) => {
   const [outreqs, setOutreqs] = useState<TeleportOutReqs[]>([]);
   const [minted, setMinted] = useState([]);
   const [depositList, setDepositList] = useState([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (selectedTab === TABS.OUT_REQS) {
@@ -38,24 +41,30 @@ export const TrackingTables = (props: TrackingProps) => {
   }, [selectedTab, account]);
 
   const fetchOutreqs = async () => {
+    setIsLoading(true);
     setOutreqs([]);
     const rows = await proton.getOutReqsForTeleport();
     setOutreqs(rows);
+    setIsLoading(false);
   }
 
   const fetchMinted = async () => {
+    setIsLoading(true);
     setMinted([]);
     const rows = await proton.getMintedForTeleport();
     setMinted(rows);
+    setIsLoading(false);
   }
 
   const fetchDepositList = async () => {
     if (!library) return;
 
+    setIsLoading(true);
     setDepositList([]);
     const res = await getDepositList(account, library.getSigner());
     const filtered = res?.filter(el => !el.locked);
     setDepositList(filtered);
+    setIsLoading(false);
   }
 
   const claimEth = async (contract: string, tokenId: string) => {
@@ -65,13 +74,15 @@ export const TrackingTables = (props: TrackingProps) => {
     }
 
     try {
+      setIsLoading(true);
       const txPreHash = await claimNfts(contract, [tokenId], library.getSigner());
       await txPreHash.wait();
       addToast('Claimed successfully!', { appearance: 'success', autoDismiss: true });
       props.fetchEthAssets();
-      await fetchDepositList();
+      // Refresh deposit list
     } catch (err) {
       addToast('Claim failed.', { appearance: 'error', autoDismiss: true });
+      setIsLoading(false);
       console.log("claim error", err);
     }
   }
@@ -99,8 +110,11 @@ export const TrackingTables = (props: TrackingProps) => {
         </Tab>
       </Tabs>
       
+      {isLoading && <Spinner>
+      </Spinner>}
+
       {/* outreqs table */}
-      {selectedTab == TABS.OUT_REQS && <table>
+      {!isLoading && selectedTab == TABS.OUT_REQS && <table>
         <thead style={{color: '#4710a3'}}>
           <th style={{padding: 15}}>#</th>
           <th style={{padding: 15}}>Asset ID</th>
@@ -144,13 +158,12 @@ export const TrackingTables = (props: TrackingProps) => {
       </table>} */}
 
       {/* deposit list table */}
-      {selectedTab === TABS.DEPOSIT_LIST && <table>
+      {!isLoading && selectedTab === TABS.DEPOSIT_LIST && <table>
         <thead style={{color: '#4710a3'}}>
           <th style={{padding: 15}}>#</th>
           <th style={{padding: 15}}>OWNER</th>
           <th style={{padding: 15}}>COLLECTION</th>
           <th style={{padding: 15}}>TOKEN ID</th>
-          {/* <th style={{padding: 15}}>LOCKED</th> */}
         </thead>
         <tbody>
           {depositList.length > 0 && depositList.map((el, idx) => (
@@ -158,8 +171,7 @@ export const TrackingTables = (props: TrackingProps) => {
               <td style={{padding: 15}}>{idx + 1}</td>
               <td style={{padding: 15}}>{shortenAddress(el.owner)}</td>
               <td style={{padding: 15}}>{shortenAddress(el.collection)}</td>
-              <td style={{padding: 15}}>{el.tokenId.toHexString()}</td>
-              <td style={{padding: 15}}>{el.locked ? 'Locked' : 'Unlocked'}</td>
+              <td style={{padding: 15}}>{el.tokenId.toHexString().length > 15 ? shortenAddress(el.tokenId.toHexString()) : el.tokenId.toHexString()}</td>
               <td>
                 <Button
                   smallSize={true}

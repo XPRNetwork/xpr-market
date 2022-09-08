@@ -3,7 +3,6 @@ import { useWeb3React } from '@web3-react/core';
 import { useToasts } from 'react-toast-notifications';
 import { useAuthContext, useModalContext, ConfirmTeleportModalProps } from '../Provider';
 import protonSDK from '../../services/proton';
-import proton from '../../services/proton-rpc';
 import {
   Background,
   ModalBox,

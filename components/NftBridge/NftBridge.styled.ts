@@ -78,9 +78,24 @@ export const InfoBox = styled.div`
   display: flex;
   justify-content: space-between;
   align-itmes: center;
+  height: 62px;
   padding: 20px 20px 0;
   // border-bottom: 1px solid #F6F7F9;
   color: #4710a3;
+`;
+
+export const TokenTypeBtn = styled.div<{selected: boolean}>`
+  padding: 10px 30px;
+  background: transparent;
+  color: #6E798F;
+  border-radius: 4px;
+  cursor: pointer;
+  ${({ selected }) =>
+  selected &&
+  `
+  color: #fff;
+  background-color: #3e3b51;
+  `};
 `;
 
 export const CurrentDir = styled.div`

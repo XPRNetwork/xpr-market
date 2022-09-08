@@ -17,15 +17,16 @@ import {
   NftBox,
   NftList,
   NftExchangeBtnBox,
-  InfoBox
+  InfoBox,
+  TokenTypeBtn
 } from './NftBridge.styled';
 import { Image } from '../../styles/index.styled';
 import Button from '../Button';
-import { ETH_ASSET, getNfts, transferERC721ToBridge } from '../../services/ethereum';
+import { ETH_ASSET, getNfts, transferERC721ToBridge, transferERC1155ToBridge } from '../../services/ethereum';
 import protonSDK from '../../services/proton';
 import proton, { TeleportFees, TeleportFeesBalance } from '../../services/proton-rpc';
 import { Asset, getAllUserAssetsByTemplate } from '../../services/assets';
-import LoadingPage from '../LoadingPage';
+import Spinner from '../Spinner';
 import { useAuthContext } from '../Provider';
 import { EthNft, ProtonNft } from './Nft';
 import { useModalContext, MODAL_TYPES } from '../Provider';
@@ -47,7 +48,7 @@ const injected = new InjectedConnector({
 
 const NftBridge = (): JSX.Element => {
   const { addToast } = useToasts();
-  const { currentUser, isLoadingUser } = useAuthContext();
+  const { currentUser } = useAuthContext();
   const { openModal, setModalProps } = useModalContext();
 
   const { library, account, active, activate, deactivate, chainId } = useWeb3React();
@@ -91,6 +92,11 @@ const NftBridge = (): JSX.Element => {
   useEffect(() => {
     fetchProtonAssets();
   }, [currentUser?.actor]);
+
+  useEffect(() => {
+    setEthAssetsOrigin(ethAssetsOrigin.concat(ethAssetsToSend));
+    setEthAssetsToSend([]);
+  }, [nftType]);
 
   const filteredEthAssets = useMemo(() => {
     return ethAssetsOrigin.filter(el => el.tokenType?.toLowerCase() == nftType);
@@ -275,8 +281,14 @@ const NftBridge = (): JSX.Element => {
         const tokenIds = ethAssetsToSend.map((nft: ETH_ASSET) => nft.tokenId);
         const tokenContract = ethAssetsToSend[0].contractAddress;
         setIsLoading(true);
-        const txPreHash = await transferERC721ToBridge(tokenContract, tokenIds[0], account, library.getSigner());
-        await txPreHash.wait();
+        if (nftType == NftType.ERC_721) {
+          const txPreHash = await transferERC721ToBridge(tokenContract, tokenIds[0], account, library.getSigner());
+          await txPreHash.wait();
+        } else {
+          const txPreHash = await transferERC1155ToBridge(tokenContract, tokenIds[0], account, 1, library.getSigner());
+          await txPreHash.wait();
+        }
+        
         addToast('Transfered to Ethereum NFT Bridge successfully.', { appearance: 'success', autoDismiss: true });
 
         setTimeout(() => {
@@ -355,12 +367,14 @@ const NftBridge = (): JSX.Element => {
 
       <Container>
         <Content>
-        {isLoading && <LoadingPage />}
+        {isLoading && <div style={{display: 'flex', justifyContent: 'center'}}>
+          <Spinner />
+        </div>}
+
         {!isLoading &&
           <>
             <MessageBox>
               <MessageContent>
-                {/* <p>To access the Ethereum to Proton bridge you need to switch to Eth Mainnet.</p> */}
                 {!account && <Button
                   smallSize={true}
                   onClick={onWalletAction}
@@ -376,13 +390,6 @@ const NftBridge = (): JSX.Element => {
                 >
                   Disconnect
                 </Button>}
-
-                {/* {!account && <InputField
-                  placeholder="0x0000000000000000000000000000000000000000"
-                  value={targetAddress}
-                  setValue={setTargetAddress}
-                  mb="16px"
-                />} */}
               </MessageContent>
             </MessageBox>
 
@@ -415,15 +422,25 @@ const NftBridge = (): JSX.Element => {
             </Switch>
 
             <InfoBox>
-              {transDir === TRANSFER_DIR.ETH_TO_PROTON && <div>
-                <span>Token Type: &nbsp;</span>
-                <span>{nftType.toUpperCase()}</span>
+              {transDir === TRANSFER_DIR.ETH_TO_PROTON &&
+              <div style={{display: 'flex', alignItems: 'center'}}>
+                <label>NFT Type: &nbsp;</label>
+                <div style={{display: 'flex', alignItems: 'center', padding: 2, border: '1px solid #C7CBD9'}}>
+                  <TokenTypeBtn
+                    selected={nftType === NftType.ERC_721}
+                    onClick={()=>setNftType(NftType.ERC_721)}
+                  >ERC721</TokenTypeBtn>
+                  <TokenTypeBtn
+                    selected={nftType === NftType.ERC_1155}
+                    onClick={()=>setNftType(NftType.ERC_1155)}
+                  >ERC1155</TokenTypeBtn>
+                </div>
               </div>}
-              <div>
+              <div style={{display: 'flex', alignItems: 'center'}}>
                 <span>Fee Balance: &nbsp;</span>
                 <span>{(feesBalance?.balance - feesBalance?.reserved).toFixed(4)} XPR</span>
               </div>
-              <div>
+              <div style={{display: 'flex', alignItems: 'center'}}>
                 <span>Fee: &nbsp;</span>
                 {transDir == TRANSFER_DIR.ETH_TO_PROTON && <span>{(filteredFees?.port_in_fee).toFixed(4)} XPR</span>}
                 {transDir == TRANSFER_DIR.PROTON_TO_ETH && <span>{(filteredFees?.port_out_fee).toFixed(4)} XPR</span>}
