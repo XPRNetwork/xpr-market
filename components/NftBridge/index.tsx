@@ -31,6 +31,8 @@ import { useAuthContext } from '../Provider';
 import { EthNft, ProtonNft } from './Nft';
 import { useModalContext, MODAL_TYPES } from '../Provider';
 import { TrackingTables } from './TrackingTables';
+import { nftBridgeOracle } from '../../utils/constants';
+import { getFromApi } from '../../utils/browser-fetch';
 
 const TRANSFER_DIR = {
   ETH_TO_PROTON: 'ETH_TO_PROTON',
@@ -181,6 +183,17 @@ const NftBridge = (): JSX.Element => {
     }
   }
 
+  const checkOracle = async () => {
+    try {
+      await getFromApi(
+        nftBridgeOracle,
+      );
+      return true;
+    } catch (err) {
+      return false;
+    }
+  }
+
   const onExchange = async (dir: boolean) => {
     if (
       (transDir == TRANSFER_DIR.ETH_TO_PROTON && !selectedEthNft) ||
@@ -247,6 +260,12 @@ const NftBridge = (): JSX.Element => {
   }
 
   const handleTransfer = async () => {
+    const oracleStatus = await checkOracle();
+    if (!oracleStatus) {
+      addToast('Oracle is down', { appearance: 'warning', autoDismiss: true });
+      return;
+    }
+
     if (!teleportFees.length || !feesBalance) {
       addToast('Refresh the page!', { appearance: 'warning', autoDismiss: true });
       return;
