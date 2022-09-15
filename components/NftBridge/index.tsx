@@ -71,21 +71,11 @@ const NftBridge = (): JSX.Element => {
   });
 
   useEffect(() => {
-    if (localStorage.getItem("connected") === "YES" && !active) {
-      localStorage.removeItem("connected");
-    }
-
     (async () => {
       const fees = await proton.getTeleportFees();
       setTeleportFees(fees);
     })();
   }, []);
-
-  useEffect(() => {
-    if (active) {
-      localStorage.setItem("connected", "YES");
-    }
-  }, [active]);
 
   useEffect(() => {
     fetchEthAssets();
@@ -131,15 +121,12 @@ const NftBridge = (): JSX.Element => {
     }
   }, [chainId, teleportFees]);
 
-  const onWalletAction = () => {
+  const disconnectWallet = () => {
     if (active) {
       deactivate();
       localStorage.clear();
       return;
     }
-    activate(injected, (error) => {
-      console.log(error);
-    });
   }
 
   const fetchEthAssets = async () => {
@@ -396,7 +383,7 @@ const NftBridge = (): JSX.Element => {
               <MessageContent>
                 {!account && <Button
                   smallSize={true}
-                  onClick={onWalletAction}
+                  onClick={()=>openModal(MODAL_TYPES.SELECT_WALLET)}
                 >
                   Connect Wallet
                 </Button>}
@@ -405,7 +392,7 @@ const NftBridge = (): JSX.Element => {
 
                 {account && <Button
                   smallSize={true}
-                  onClick={onWalletAction}
+                  onClick={disconnectWallet}
                 >
                   Disconnect
                 </Button>}

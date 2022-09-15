@@ -1,11 +1,36 @@
 import { createAlchemyWeb3 } from "@alch/alchemy-web3";
 import { Web3Provider } from "@ethersproject/providers";
 import { ethers } from 'ethers';
+import { InjectedConnector } from "@web3-react/injected-connector";
+import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
+import { WalletLinkConnector } from "@web3-react/walletlink-connector";
 const NftBridgeAbi = require("../abis/NftBridge.json");
 const ERC721Abi = require("../abis/ERC721.json");
 const ERC1155Abi = require("../abis/ERC1155.json");
 
 const web3 = createAlchemyWeb3(process.env.NEXT_PUBLIC_ALCHEMY_URL);
+
+const injected = new InjectedConnector({
+  supportedChainIds: [137]
+});
+
+const walletconnect = new WalletConnectConnector({
+  rpcUrl: process.env.NEXT_PUBLIC_ALCHEMY_URL,
+  bridge: "https://bridge.walletconnect.org",
+  qrcode: true
+});
+
+const walletlink = new WalletLinkConnector({
+  url: process.env.NEXT_PUBLIC_ALCHEMY_URL,
+  appName: "proton-market"
+});
+
+export const connectors = {
+  injected: injected,
+  walletConnect: walletconnect,
+  coinbaseWallet: walletlink
+};
+
 
 export type ETH_ASSET = {
   contractAddress: string;

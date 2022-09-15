@@ -14,6 +14,11 @@ interface DescriptionProps {
   mb?: string;
 }
 
+type SectionProps = {
+  justifyContent?: string;
+  alignItems?: string;
+};
+
 export const Background = styled.div`
   z-index: 100;
   position: fixed;
@@ -41,10 +46,10 @@ export const ModalBox = styled(MaxWidth)`
   }
 `;
 
-export const Section = styled.section`
+export const Section = styled.section<SectionProps>`
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+  justify-content: ${({ justifyContent }) => justifyContent || 'space-between'};
+  align-items: ${({ justifyContent }) => justifyContent || 'flex-start'};
 `;
 
 export const CloseIconContainer = styled.div`
@@ -199,4 +204,8 @@ export const TextArea = styled.textarea`
     line-height: 1.5;
     color: #808080;
   }
+`;
+
+export const BtnLabel = styled.label`
+  padding: 0 10px;
 `;

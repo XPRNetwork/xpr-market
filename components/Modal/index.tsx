@@ -10,3 +10,4 @@ export {
 export { BurnAssetModal } from './BurnAssetModal';
 export { ReportModal } from './ReportModal';
 export { ConfirmTeleportModal } from './ConfirmTeleportModal';
+export { SelectWalletModal } from './SelectWalletModal';
