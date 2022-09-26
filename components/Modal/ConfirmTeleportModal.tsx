@@ -38,16 +38,6 @@ export const ConfirmTeleportModal = (): JSX.Element => {
     if (error) setError('');
   }, []);
 
-  // const checkOutReqs = async () => {
-  //   const outreqs = await proton.getOutReqsForTeleport();
-  //   const index = outreqs.findIndex(el => el.asset_id == assetId);
-  //   if (index > -1) {
-  //     return true;
-  //   } else {
-  //     return false;
-  //   }
-  // }
-
   const teleportNFT = async () => {
     setIsLoading(true);
     if (ethToProton) {
@@ -76,26 +66,6 @@ export const ConfirmTeleportModal = (): JSX.Element => {
         addToast(`Teleported successfully.`, { appearance: 'success', autoDismiss: true });
         addToast('Please check deposit list and claim your NFT.', { appearance: 'info', autoDismiss: false });
       }
-      
-      /*
-        1. Check outreqs table
-        2. Claim transaction
-      */
-      // const startTime = new Date().getTime();
-      // do {
-      //   await delay(1000);
-      //   const elapsedTime = new Date().getTime() - startTime;
-      //   console.log("--- elapsed", elapsedTime);
-      // } while (await checkOutReqs());
-
-      // const txPreHash = await claimNfts(tokenContract, [tokenId], library.getSigner());
-      // console.log("-------- txPreHash", txPreHash)
-      // try {
-      //   await txPreHash.wait();
-      // } catch (err) {
-      //   addToast('Claim failed.', { appearance: 'error', autoDismiss: true });
-      //   console.log("claim error", err);
-      // }
     }
     
     await delay(1000);

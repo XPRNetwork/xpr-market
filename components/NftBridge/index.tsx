@@ -1,5 +1,4 @@
 import { useState, useEffect, useMemo } from 'react';
-import { InjectedConnector } from "@web3-react/injected-connector";
 import { useWeb3React } from '@web3-react/core';
 import { useToasts } from 'react-toast-notifications';
 import {
@@ -10,17 +9,17 @@ import {
   Container,
   Content,
   Switch,
-  CurrentDir,
-  NextDir,
+  ChainBtn,
   MessageBox,
-  MessageContent,
   NftBox,
-  NftList,
-  NftExchangeBtnBox,
   InfoBox,
-  TokenTypeBtn
+  TableContent,
+  Tabs,
+  Tab,
+  AddNFTBtn
 } from './NftBridge.styled';
 import { Image } from '../../styles/index.styled';
+import InputField from '../InputField';
 import Button from '../Button';
 import { ETH_ASSET, getNfts, transferERC721ToBridge, transferERC1155ToBridge } from '../../services/ethereum';
 import protonSDK from '../../services/proton';
@@ -44,10 +43,6 @@ enum NftType {
   ERC_1155 = "erc1155"
 };
 
-const injected = new InjectedConnector({
-  supportedChainIds: [137, 3]
-});
-
 const NftBridge = (): JSX.Element => {
   const { addToast } = useToasts();
   const { currentUser } = useAuthContext();
@@ -56,6 +51,7 @@ const NftBridge = (): JSX.Element => {
   const { library, account, active, activate, deactivate, chainId } = useWeb3React();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [transDir, setTransDir] = useState<string>(TRANSFER_DIR.ETH_TO_PROTON);
+  const [advancedAddr, setAdvancedAddr] = useState<string>("");
   const [ethAssetsOrigin, setEthAssetsOrigin] = useState<ETH_ASSET[]>([]);
   const [ethAssetsToSend, setEthAssetsToSend] = useState<ETH_ASSET[]>([]);
   const [protonAssetsOrigin, setProtonAssetsOrigin] = useState<Asset[]>([]);
@@ -365,165 +361,160 @@ const NftBridge = (): JSX.Element => {
 
   return (
     <>
-      <Header>
-        <HeaderTitle>NFT Bridge</HeaderTitle>
-        <SubTitle>The NFT bridge allows a user transfer their NFT assets between Ethereum blockchain and Proton.</SubTitle>
-        <ContentHeader>Transfer NFTs</ContentHeader>
-      </Header>
-
       <Container>
+        <Header>
+          <HeaderTitle>NFT Bridge</HeaderTitle>
+          <SubTitle>The NFT bridge allows a user transfer their NFT assets between Ethereum blockchain and Proton.</SubTitle>
+        </Header>
+
         <Content>
-        {isLoading && <div style={{display: 'flex', justifyContent: 'center'}}>
-          <Spinner />
-        </div>}
+          <ContentHeader>Transfer NFTs</ContentHeader>
+          <MessageBox>
+            <>
+              {account ?
+              <div style={{display: 'flex', justifyContent: 'center'}}>
+                <span style={{marginRight: 20, wordBreak: 'break-all'}}>{account}</span>
+                <Image width='24px' height='24px' src='/close.svg' color='#752EEB' onClick={()=>disconnectWallet()} />
+              </div> : <p>Click on the button below to connect to your Ethereum wallet.</p>}
+            </>
 
-        {!isLoading &&
-          <>
-            <MessageBox>
-              <MessageContent>
-                {!account && <Button
-                  smallSize={true}
-                  onClick={()=>openModal(MODAL_TYPES.SELECT_WALLET)}
-                >
-                  Connect Wallet
-                </Button>}
+            {!account && <Button
+              smallSize={true}
+              onClick={()=>openModal(MODAL_TYPES.SELECT_WALLET)}
+            >
+              Connect Wallet
+            </Button>}
 
-                <p>{account ? account : "Click on the button above to connect to your metamask accout."}</p>
+            <InputField
+              mt="16px"
+              value={advancedAddr}
+              setValue={setAdvancedAddr}
+              placeholder="Add address"
+            />
+          </MessageBox>
 
-                {account && <Button
-                  smallSize={true}
-                  onClick={disconnectWallet}
-                >
-                  Disconnect
-                </Button>}
-              </MessageContent>
-            </MessageBox>
+          <Switch>
+            <span style={{order: 1}}>From</span>
+            <ChainBtn isFrom={transDir === TRANSFER_DIR.ETH_TO_PROTON}>
+              <Image
+                width="10px"
+                height='15px'
+                alt="swap_button"
+                src="/ethereum.png"
+              />
+              <span>Ethereum</span>
+            </ChainBtn>
 
-            <Switch>
-              {transDir === TRANSFER_DIR.ETH_TO_PROTON && (
-                <CurrentDir>Ethereum to Proton</CurrentDir>
-              )}
+            <div onClick={() => setTransDir(transDir === TRANSFER_DIR.ETH_TO_PROTON ? TRANSFER_DIR.PROTON_TO_ETH : TRANSFER_DIR.ETH_TO_PROTON)} style={{order: 3}}>
+              <Image
+                width="36px"
+                height="36px"
+                alt="swap_button"
+                src="/swap-vert-blue.svg"
+                className={transDir === TRANSFER_DIR.ETH_TO_PROTON ? 'rotate-90 cursor-pointer' : 'rotate-270 cursor-pointer'}
+              />
+            </div>
 
-              {transDir === TRANSFER_DIR.PROTON_TO_ETH && (
-                <CurrentDir>Proton to Ethereum</CurrentDir>
-              )}
-
-              <div onClick={() => setTransDir(transDir === TRANSFER_DIR.ETH_TO_PROTON ? TRANSFER_DIR.PROTON_TO_ETH : TRANSFER_DIR.ETH_TO_PROTON)}>
+            <span style={{order: 4, marginLeft: 20}}>To</span>
+            <ChainBtn isFrom={transDir !== TRANSFER_DIR.ETH_TO_PROTON}>
+              <div style={{borderRadius: '50%', border: '1px solid #752EEB', width: 16, height: 16, display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                 <Image
-                  width="36px"
-                  height="36px"
+                  width="10px"
+                  height='10px'
                   alt="swap_button"
-                  src="/swap-vert-blue.svg"
-                  className={transDir === TRANSFER_DIR.ETH_TO_PROTON ? 'rotate-90 cursor-pointer' : 'rotate-270 cursor-pointer'}
+                  src="/proton.svg"
                 />
               </div>
+              <span>Proton</span>
+            </ChainBtn>
+          </Switch>
 
-              {transDir === TRANSFER_DIR.ETH_TO_PROTON && (
-                <NextDir>Proton to Ethereum</NextDir>
-              )}
+          {isLoading && <div style={{display: 'flex', justifyContent: 'center'}}>
+            <Spinner />
+          </div>}
 
-              {transDir === TRANSFER_DIR.PROTON_TO_ETH && (
-                <NextDir>Ethereum to Proton</NextDir>
-              )}
-            </Switch>
+          {!isLoading &&
+          <>
+            <TableContent>
+              <AddNFTBtn>
+                <Image
+                  width='24px'
+                  height='24px'
+                  src='/plus-icon.png'
+                />
+                <span style={{marginLeft: 10}}>Add NFT</span>
+              </AddNFTBtn>
 
-            <InfoBox>
-              {transDir === TRANSFER_DIR.ETH_TO_PROTON &&
-              <div style={{display: 'flex', alignItems: 'center'}}>
-                <label>NFT Type: &nbsp;</label>
-                <div style={{display: 'flex', alignItems: 'center', padding: 2, border: '1px solid #C7CBD9'}}>
-                  <TokenTypeBtn
+              <Tabs>
+                {transDir === TRANSFER_DIR.ETH_TO_PROTON && <>
+                  <Tab
                     selected={nftType === NftType.ERC_721}
                     onClick={()=>setNftType(NftType.ERC_721)}
-                  >ERC721</TokenTypeBtn>
-                  <TokenTypeBtn
+                  >
+                    ERC721
+                  </Tab>
+                  <Tab
                     selected={nftType === NftType.ERC_1155}
                     onClick={()=>setNftType(NftType.ERC_1155)}
-                  >ERC1155</TokenTypeBtn>
+                  >
+                    ERC1155
+                  </Tab></>
+                }
+
+                {transDir === TRANSFER_DIR.PROTON_TO_ETH && <Tab
+                  selected={true}
+                  >
+                    Atomic Assets
+                  </Tab>
+                }
+              </Tabs>
+            </TableContent>
+
+            <NftBox>
+              {transDir==TRANSFER_DIR.ETH_TO_PROTON && (filteredEthAssets.length ? filteredEthAssets.map((ethAsset: ETH_ASSET, idx) => (
+                <EthNft
+                  data={ethAsset}
+                  selectedNft={selectedEthNft}
+                  setSelectedNft={setSelectedEthNft}
+                  key={idx}
+                />
+              )) : (
+                <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%'}}>
+                  <Image width='134px' height='106px' src='/proton-pc.png' />
+                  <div style={{color: '#1A1A1A', fontSize: 18, marginTop: 20}}>No NFT's added yet 😢</div>
                 </div>
-              </div>}
-              <div style={{display: 'flex', alignItems: 'center'}}>
+              ))}
+
+              {transDir==TRANSFER_DIR.PROTON_TO_ETH && (protonAssetsOrigin.length ? protonAssetsOrigin.map((asset: Asset, idx) => (
+                <ProtonNft
+                  data={asset}
+                  selectedNft={selectedProtonNft}
+                  setSelectedNft={setSelectedProtonNft}
+                  key={idx}
+                />
+              )) : (
+                <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%'}}>
+                  <Image width='134px' height='106px' src='/proton-pc.png' />
+                  <div style={{color: '#1A1A1A', fontSize: 18, marginTop: 20}}>No NFT's added yet 😢</div>
+                </div>
+              ))}
+            </NftBox>
+
+            <InfoBox>
+              <div style={{display: 'flex', alignItems: 'center', margin: '10px 0'}}>
                 <span>Fee Balance: &nbsp;</span>
                 <span>{(feesBalance?.balance - feesBalance?.reserved).toFixed(4)} XPR</span>
               </div>
-              <div style={{display: 'flex', alignItems: 'center'}}>
+              <div style={{display: 'flex', alignItems: 'center', margin: '10px 0'}}>
                 <span>Fee: &nbsp;</span>
                 {transDir == TRANSFER_DIR.ETH_TO_PROTON && <span>{(filteredFees?.port_in_fee).toFixed(4)} XPR</span>}
                 {transDir == TRANSFER_DIR.PROTON_TO_ETH && <span>{(filteredFees?.port_out_fee).toFixed(4)} XPR</span>}
               </div>
             </InfoBox>
 
-            <NftBox>
-              <NftList>
-                {transDir==TRANSFER_DIR.ETH_TO_PROTON && (filteredEthAssets.length ? filteredEthAssets.map((ethAsset: ETH_ASSET, idx) => (
-                  <EthNft
-                    data={ethAsset}
-                    selectedNft={selectedEthNft}
-                    setSelectedNft={setSelectedEthNft}
-                    key={idx}
-                  />
-                )) : (
-                  <div style={{padding: 20}}>No NFTs</div>
-                ))}
-
-                {transDir==TRANSFER_DIR.PROTON_TO_ETH && (protonAssetsOrigin.length ? protonAssetsOrigin.map((asset: Asset, idx) => (
-                  <ProtonNft
-                    data={asset}
-                    selectedNft={selectedProtonNft}
-                    setSelectedNft={setSelectedProtonNft}
-                    key={idx}
-                  />
-                )) : (
-                  <div style={{padding: 20}}>No NFTs</div>
-                ))}
-              </NftList>
-
-              <NftExchangeBtnBox>
-                <Image
-                  width="38px"
-                  height="38px"
-                  alt="exchange_button"
-                  src="/right-arrow.svg"
-                  className="cursor-pointer"
-                  style={{marginBottom: 20}}
-                  onClick={()=>onExchange(true)}
-                />
-                <Image
-                  width="38px"
-                  height="38px"
-                  alt="exchange_button"
-                  src="/left-arrow.svg"
-                  className="cursor-pointer"
-                  onClick={()=>onExchange(false)}
-                />
-              </NftExchangeBtnBox>
-              
-              <NftList>
-                {transDir==TRANSFER_DIR.ETH_TO_PROTON && ethAssetsToSend.map((ethAsset: ETH_ASSET, idx) => (
-                    <EthNft
-                      data={ethAsset}
-                      selectedNft={selectedEthNft}
-                      setSelectedNft={setSelectedEthNft}
-                      key={idx}
-                    />
-                  ))
-                }
-
-                {transDir==TRANSFER_DIR.PROTON_TO_ETH && protonAssetsToSend.map((asset: Asset, idx) => (
-                    <ProtonNft
-                      data={asset}
-                      selectedNft={selectedProtonNft}
-                      setSelectedNft={setSelectedProtonNft}
-                      key={idx}
-                    />
-                  ))
-                }
-              </NftList>
-            </NftBox>
-
-            <div style={{display: 'flex', justifyContent: 'end', padding: '0 20px 20px'}}>
+            <div style={{width: 200 , marginTop: 10}}>
               <Button
-                smallSize={true}
+                fullWidth
                 onClick={handleTransfer}
               >
                 Transfer
@@ -532,7 +523,7 @@ const NftBridge = (): JSX.Element => {
           </>}
         </Content>
 
-        <TrackingTables fetchEthAssets={fetchEthAssets} />
+        {/* <TrackingTables fetchEthAssets={fetchEthAssets} /> */}
       </Container>
     </>
   )

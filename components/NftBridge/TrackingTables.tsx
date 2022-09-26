@@ -7,10 +7,9 @@ import { getDepositList } from '../../services/ethereum';
 import { claimNfts } from '../../services/ethereum';
 import { shortenAddress } from '../../utils';
 import Button from '../Button';
-import { delay } from '../../utils';
 import Spinner from '../Spinner';
 
-const enum TABS {
+enum TABS {
   OUT_REQS = 'outreqs',
   MINTED = 'minted',
   DEPOSIT_LIST = 'depositList'
@@ -90,12 +89,12 @@ export const TrackingTables = (props: TrackingProps) => {
   return (
     <TableContent>
       <Tabs>
-        <Tab
+        {/* <Tab
           selected={selectedTab == TABS.OUT_REQS}
           onClick={() => setSelectedTab(TABS.OUT_REQS)}
         >
           OUTREQS
-        </Tab>
+        </Tab> */}
         {/* <Tab
           selected={selectedTab == TABS.MINTED}
           onClick={() => setSelectedTab(TABS.MINTED)}

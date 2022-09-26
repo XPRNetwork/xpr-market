@@ -97,6 +97,11 @@ export interface ConfirmTeleportModalProps extends GeneralModalProps {
   assetId?: string;
 }
 
+export interface SelectAssetsModalProps extends GeneralModalProps {
+  ethToProton: boolean;
+  owner: string;
+}
+
 type ModalProps =
   | GeneralModalProps
   | CancelSaleModalProps
@@ -108,7 +113,8 @@ type ModalProps =
   | UpdateCollectionProps
   | MintAssetModalProps
   | ReportProps
-  | ConfirmTeleportModalProps;
+  | ConfirmTeleportModalProps
+  | SelectAssetsModalProps;
 
 type ModalContextValue = {
   modalType: string;

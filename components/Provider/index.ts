@@ -17,5 +17,6 @@ export type {
   CreateCollectionProps,
   UpdateCollectionProps,
   ReportProps,
-  ConfirmTeleportModalProps
+  ConfirmTeleportModalProps,
+  SelectAssetsModalProps
 } from './ModalProvider';
