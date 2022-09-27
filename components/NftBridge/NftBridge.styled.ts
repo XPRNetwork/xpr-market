@@ -71,7 +71,7 @@ export const ChainBtn = styled.div<{isFrom: boolean}>`
   border-radius: 8px;
   font-size: 16px;
   color: #1A1A1A;
-  padding: 4px 15px;
+  padding: 4px 10px;
   background: #F2F2F2;
   margin: 0 20px;
 
@@ -109,25 +109,29 @@ export const MessageBox = styled.div`
 `;
 
 export const NftBox = styled.div`
-  display: flex;
-  flex-wrap: wrap;
   width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 20px;
   border-bottom: 1px solid #808080;
   padding-bottom: 20px;
+  ${breakpoint.tablet`
+    grid-template-columns: repeat(2, 1fr);
+  `};
   ${breakpoint.mobile`
-    flex-direction: column;
-    align-items: center;
+    grid-template-columns: 1fr;
   `};
 `;
 
 export const NftItem = styled.div<{selected: boolean}>`
+  width: 100%;
   display: flex;
   align-items: center;
-  padding: 10px;
-  margin: 5px 10px;
-  border: 1px solid #EFEFEF;
+  padding: 4px;
+  border: 1px solid #752EEB;
+  border-radius: 4px;
+  margin: 5px 0;
   cursor: pointer;
-
   ${({ selected }) =>
     selected &&
     `
@@ -137,13 +141,13 @@ export const NftItem = styled.div<{selected: boolean}>`
 `;
 
 export const NftName = styled.p`
-  width: 200px;
+  flex: 1;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
 `;
 
-export const TableContent = styled.div`
+export const TabContainer = styled.div`
   position: relative;
   width: 100%;
   padding: 20px 0;
@@ -163,7 +167,6 @@ export const Tab = styled.div<{selected: boolean}>`
   font-size: 18px;
   font-weight: 700;
   color: #6B717F;
-  margin-right: 20px;
   padding: 5px 0;
   border-bottom: 3px solid transparent;
   cursor: pointer;
@@ -190,4 +193,13 @@ export const AddNFTBtn = styled.div`
     position: relative;
     margin-bottom: 20px;
   `};
+`;
+
+export const NoNFTBox = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-bottom: 1px solid #808080;
+  padding-bottom: 20px;
 `;

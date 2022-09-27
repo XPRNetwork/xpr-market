@@ -6,8 +6,8 @@ import { Image } from '../../styles/index.styled';
 
 interface EthNftProps {
   data: ETH_ASSET,
-  selectedNft: ETH_ASSET;
-  setSelectedNft: (nft: ETH_ASSET) => void;
+  selectedNft?: ETH_ASSET;
+  setSelectedNft?: (nft: ETH_ASSET) => void;
 };
 
 export const EthNft = (props: EthNftProps) => {
@@ -27,46 +27,23 @@ export const EthNft = (props: EthNftProps) => {
   return (
     <NftItem
       selected={props.selectedNft?.contractAddress == props.data.contractAddress && props.selectedNft?.tokenId == props.data.tokenId}
-      onClick={() => props.setSelectedNft(props.data)}
+      onClick={() => props.setSelectedNft && props.setSelectedNft(props.data)}
     >
       <Image
         src={attributes?.image}
-        width="50"
-        height='50'
-        style={{marginRight: 20}}
+        width="48"
+        height='48'
+        style={{marginRight: 20, borderRadius: 4}}
       />
       <NftName>{attributes?.name}</NftName>
     </NftItem>
   )
 }
 
-// interface ProtonNftProps {
-//   data: Asset,
-//   selectedNft: Asset;
-//   setSelectedNft: (nft: Asset) => void;
-// };
-
-// export const ProtonNft = (props: ProtonNftProps) => {
-//   return (
-//     <NftItem
-//       selected={props.selectedNft?.asset_id == props.data.asset_id}
-//       onClick={() => props.setSelectedNft(props.data)}
-//     >
-//       <Image
-//         src={`https://proton.mypinata.cloud/ipfs/${props.data.data.image}`}
-//         width="50"
-//         height='50'
-//         style={{marginRight: 20}}
-//       />
-//       <NftName>{props.data.data?.name}</NftName>
-//     </NftItem>
-//   )
-// }
-
 interface ProtonNftProps {
   data: any,
-  selectedNft: Asset;
-  setSelectedNft: (nft: Asset) => void;
+  selectedNft?: Asset;
+  setSelectedNft?: (nft: Asset) => void;
 };
 
 export const ProtonNft = (props: ProtonNftProps) => {
@@ -84,13 +61,13 @@ export const ProtonNft = (props: ProtonNftProps) => {
   return (
     <NftItem
       selected={props.selectedNft?.asset_id == props.data.asset_id}
-      onClick={() => props.setSelectedNft(props.data)}
+      onClick={() => props.setSelectedNft && props.setSelectedNft(props.data)}
     >
       <Image
         src={attributes?.image}
         width="50"
         height='50'
-        style={{marginRight: 20}}
+        style={{marginRight: 20, borderRadius: 4}}
       />
       <NftName>{attributes?.name}</NftName>
     </NftItem>

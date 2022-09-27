@@ -209,3 +209,35 @@ export const TextArea = styled.textarea`
 export const BtnLabel = styled.label`
   padding: 0 10px;
 `;
+
+export const TabContainer = styled.div`
+  position: relative;
+  width: 100%;
+  padding: 20px 0;
+  background-color: #FEFEFE;
+`;
+
+export const Tabs = styled.div`
+  display: flex;
+  align-items: flex-end;
+  border-bottom: 1px solid #808080;
+`;
+
+export const Tab = styled.div<{selected: boolean}>`
+  width: 100%;
+  max-width: 200px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 700;
+  color: #6B717F;
+  padding: 5px 0;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+
+  ${({ selected }) =>
+    selected &&
+    `
+    color: #1A1A1A;
+    border-bottom: 3px solid #752EEB;
+  `};
+`;

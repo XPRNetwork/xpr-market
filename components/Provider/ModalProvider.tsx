@@ -24,7 +24,8 @@ export const MODAL_TYPES = {
   BURN_ASSET: 'BURN_ASSET',
   REPORT: 'REPORT',
   CONFIRM_TELEPORT: 'CONFIRM_TELEPORT',
-  SELECT_WALLET: 'SELECT_WALLET'
+  SELECT_WALLET: 'SELECT_WALLET',
+  SELECT_ASSETS: 'SELECT_ASSETS'
 };
 
 type Props = {
@@ -100,6 +101,8 @@ export interface ConfirmTeleportModalProps extends GeneralModalProps {
 export interface SelectAssetsModalProps extends GeneralModalProps {
   ethToProton: boolean;
   owner: string;
+  nftType: string;
+  setSelectedNft: (nfts: any) => Promise<void>;
 }
 
 type ModalProps =

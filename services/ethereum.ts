@@ -51,6 +51,11 @@ export type NFT_ATTR = {
   description: string;
 };
 
+export enum NftType {
+  ERC_721 = "erc721",
+  ERC_1155 = "erc1155"
+};
+
 export const getNfts = async (
   owner: string
 ): Promise<ETH_ASSET[]> => {
