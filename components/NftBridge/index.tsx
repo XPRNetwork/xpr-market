@@ -17,7 +17,10 @@ import {
   Tabs,
   Tab,
   AddNFTBtn,
-  NoNFTBox
+  NoNFTBox,
+  Row,
+  PlusIcon,
+  SwitchIcon
 } from './NftBridge.styled';
 import { Image } from '../../styles/index.styled';
 import InputField from '../InputField';
@@ -140,6 +143,16 @@ const NftBridge = (): JSX.Element => {
   }
 
   const openAssetsModal = () => {
+    if (transDir === TRANSFER_DIR.ETH_TO_PROTON && !account) {
+      addToast('Please connect Ethereum wallet.', { appearance: 'warning', autoDismiss: true });
+      return;
+    }
+
+    if (transDir === TRANSFER_DIR.PROTON_TO_ETH && !currentUser.actor) {
+      addToast('Please connect Webauth.com wallet.', { appearance: 'warning', autoDismiss: true });
+      return;
+    }
+
     setModalProps((previousModalProps) => ({
       ...previousModalProps,
       ethToProton: transDir === TRANSFER_DIR.ETH_TO_PROTON,
@@ -278,10 +291,13 @@ const NftBridge = (): JSX.Element => {
           <MessageBox>
             <>
               {account ?
-              <div style={{display: 'flex', justifyContent: 'center'}}>
-                <span style={{marginRight: 20, wordBreak: 'break-all'}}>{account}</span>
-                <Image width='24px' height='24px' src='/close.svg' color='#752EEB' onClick={()=>disconnectWallet()} />
-              </div> : <p>Click on the button below to connect to your Ethereum wallet.</p>}
+              <Row>
+                <div style={{whiteSpace: 'nowrap', marginRight: 10}}>Connected Wallet</div>
+                <div style={{display: 'flex', justifyContent: 'center'}}>
+                  <div style={{marginRight: 20, wordBreak: 'break-all'}}>{account}</div>
+                  <Image width='24px' height='24px' src='/close.svg' color='#752EEB' onClick={()=>disconnectWallet()} />
+                </div>
+              </Row> : <p>Click on the button below to connect to your Ethereum wallet.</p>}
             </>
 
             {!account && <Button
@@ -291,12 +307,15 @@ const NftBridge = (): JSX.Element => {
               Connect Wallet
             </Button>}
 
-            <InputField
-              mt="16px"
-              value={advancedAddr}
-              setValue={setAdvancedAddr}
-              placeholder="Add address"
-            />
+            <Row>
+              <div style={{whiteSpace: 'nowrap', margin: '16px 10px 0 0'}}>Receive Address</div>
+              <InputField
+                mt="16px"
+                value={advancedAddr}
+                setValue={setAdvancedAddr}
+                placeholder="Address"
+              />
+            </Row>
           </MessageBox>
 
           <Switch>
@@ -312,13 +331,7 @@ const NftBridge = (): JSX.Element => {
             </ChainBtn>
 
             <div onClick={() => setTransDir(transDir === TRANSFER_DIR.ETH_TO_PROTON ? TRANSFER_DIR.PROTON_TO_ETH : TRANSFER_DIR.ETH_TO_PROTON)} style={{order: 3}}>
-              <Image
-                width="36px"
-                height="36px"
-                alt="swap_button"
-                src="/right-arrow.svg"
-                className='cursor-pointer'
-              />
+              <SwitchIcon>	&#8250; </SwitchIcon>
             </div>
 
             <span style={{order: 4, marginLeft: 20}}>To</span>
@@ -342,15 +355,6 @@ const NftBridge = (): JSX.Element => {
           {!isLoading &&
           <>
             <TabContainer>
-              <AddNFTBtn onClick={openAssetsModal}>
-                <Image
-                  width='24px'
-                  height='24px'
-                  src='/plus-icon.png'
-                />
-                <span style={{marginLeft: 10}}>Add NFT</span>
-              </AddNFTBtn>
-
               <Tabs>
                 {transDir === TRANSFER_DIR.ETH_TO_PROTON && <>
                   <Tab
@@ -387,7 +391,7 @@ const NftBridge = (): JSX.Element => {
               </NftBox> :
               <NoNFTBox>
                 <Image width='134px' height='106px' src='/proton-pc.png' />
-                <div style={{color: '#1A1A1A', fontSize: 18, marginTop: 20}}>No NFT's added yet 😢</div>
+                <div style={{color: '#1A1A1A', fontSize: 18, marginTop: 20}}>No NFTs added yet 😢</div>
               </NoNFTBox>)}
 
             {transDir==TRANSFER_DIR.PROTON_TO_ETH && (protonAssetsToSend.length ?
@@ -401,8 +405,13 @@ const NftBridge = (): JSX.Element => {
               </NftBox> :
               <NoNFTBox>
                 <Image width='134px' height='106px' src='/proton-pc.png' />
-                <div style={{color: '#1A1A1A', fontSize: 18, marginTop: 20}}>No NFT's added yet 😢</div>
+                <div style={{color: '#1A1A1A', fontSize: 18, marginTop: 20}}>No NFTs added yet 😢</div>
               </NoNFTBox>)}
+            
+            <AddNFTBtn onClick={openAssetsModal}>
+              <PlusIcon>+</PlusIcon>
+              <span style={{marginLeft: 10}}>Add NFT</span>
+            </AddNFTBtn>
 
             <InfoBox>
               <div style={{display: 'flex', alignItems: 'center', margin: '10px 0'}}>
@@ -427,7 +436,7 @@ const NftBridge = (): JSX.Element => {
           </>}
         </Content>
 
-        {/* <TrackingTables fetchEthAssets={fetchEthAssets} /> */}
+        {/* <TrackingTables /> */}
       </Container>
     </>
   )

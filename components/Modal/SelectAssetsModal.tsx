@@ -9,10 +9,7 @@ import {
   Section,
   CloseIconContainer,
   Title,
-  ModalButton,
-  TabContainer,
-  Tabs,
-  Tab
+  HalfButton,
 } from './Modal.styled';
 import { EthNft, ProtonNft } from '../NftBridge/Nft';
 import { ReactComponent as CloseIcon } from '../../public/close.svg';
@@ -102,9 +99,7 @@ export const SelectAssetsModal = (): JSX.Element => {
             key={idx}
           />
         )) : (
-          <div style={{textAlign: 'center'}}>
-            No NFT's added yet 😢
-          </div>
+          <div style={{textAlign: 'center', fontSize: 20}}>No NFT</div>
         ))}
 
         {!ethToProton && (protonAssets.length ? protonAssets.map((asset: Asset, idx) => (
@@ -115,20 +110,20 @@ export const SelectAssetsModal = (): JSX.Element => {
             key={idx}
           />
         )) : (
-          <div style={{textAlign: 'center'}}>
-            No NFT's added yet 😢
-          </div>
+          <div style={{textAlign: 'center', fontSize: 20}}>No NFT</div>
         ))}
         <br />
 
-        <ModalButton
+        <HalfButton
+          margin='20px 0 0'
+          disabled={(ethToProton && !selectedEthNft) || (!ethToProton && !selectedProtonNft)}
           onClick={()=>{
             setSelectedNft(ethToProton ? selectedEthNft : selectedProtonNft);
             closeModal();
           }}
         >
           Add
-        </ModalButton>
+        </HalfButton>
       </ModalBox> :
       <LoadingPage></LoadingPage>}
     </Background>

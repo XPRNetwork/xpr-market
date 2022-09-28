@@ -62,6 +62,21 @@ export const Switch = styled.div`
   `};
 `;
 
+export const SwitchIcon = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  font-weight: 100;
+  font-size: 36px;
+  border-radius: 50%;
+  color: #752EEB;
+  background: #F0E8FD;
+  padding-left: 4px;
+  cursor: pointer;
+`;
+
 export const ChainBtn = styled.div<{isFrom: boolean}>`
   order: 2;
   display: flex;
@@ -165,7 +180,7 @@ export const Tab = styled.div<{selected: boolean}>`
   max-width: 200px;
   text-align: center;
   font-size: 18px;
-  font-weight: 700;
+  font-weight: 500;
   color: #6B717F;
   padding: 5px 0;
   border-bottom: 3px solid transparent;
@@ -179,20 +194,27 @@ export const Tab = styled.div<{selected: boolean}>`
   `};
 `;
 
+export const PlusIcon = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 24px;
+  height: 24px;
+  font-weight: 100;
+  font-size: 22px;
+  border-radius: 50%;
+  color: #fff;
+  background: #752EEB;
+`;
+
 export const AddNFTBtn = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  position: absolute;
-  right: 0;
   color: #752EEB;
   font-size: 16px;
-  font-weight: 600;
   cursor: pointer;
-  ${breakpoint.mobile`
-    position: relative;
-    margin-bottom: 20px;
-  `};
+  margin-top: 30px;
 `;
 
 export const NoNFTBox = styled.div`
@@ -202,4 +224,15 @@ export const NoNFTBox = styled.div`
   align-items: center;
   border-bottom: 1px solid #808080;
   padding-bottom: 20px;
+`;
+
+
+export const Row = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  ${breakpoint.mobile`
+    flex-direction: column;
+    justify-content: center;
+  `};
 `;
