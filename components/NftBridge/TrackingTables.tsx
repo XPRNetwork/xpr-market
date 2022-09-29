@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import { useToasts } from 'react-toast-notifications';
-import proton, { TeleportOutReqs } from '../../services/proton-rpc';
 import { getDepositList } from '../../services/ethereum';
 import { claimNfts } from '../../services/ethereum';
 import { shortenAddress } from '../../utils';
@@ -12,13 +11,7 @@ import TableRow from '../TableRow';
 import { TableHeaderCell, TableDataCell } from './NftBridge.styled';
 import TableContentWrapper from '../TableContentWraper';
 
-enum TABS {
-  OUT_REQS = 'outreqs',
-  MINTED = 'minted',
-  DEPOSIT_LIST = 'depositList'
-}
-
-interface TrackingProps {};
+// interface TrackingProps {};
 
 const tableHeaders = [
   { title: '#', id: '#' },
@@ -28,41 +21,16 @@ const tableHeaders = [
   { title: 'CLAIM', id: 'claim' },
 ]
 
-export const TrackingTables = (props: TrackingProps) => {
+export const TrackingTables = () => {
   const { library, account } = useWeb3React();
   const { addToast } = useToasts();
 
-  const [selectedTab, setSelectedTab] = useState<TABS>(TABS.DEPOSIT_LIST);
-  const [outreqs, setOutreqs] = useState<TeleportOutReqs[]>([]);
-  const [minted, setMinted] = useState([]);
   const [depositList, setDepositList] = useState([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    if (selectedTab === TABS.OUT_REQS) {
-      fetchOutreqs();
-    } else if (selectedTab === TABS.MINTED) {
-      fetchMinted();
-    } else if (selectedTab === TABS.DEPOSIT_LIST) {
-      fetchDepositList();
-    }
-  }, [selectedTab, account]);
-
-  const fetchOutreqs = async () => {
-    setIsLoading(true);
-    setOutreqs([]);
-    const rows = await proton.getOutReqsForTeleport();
-    setOutreqs(rows);
-    setIsLoading(false);
-  }
-
-  const fetchMinted = async () => {
-    setIsLoading(true);
-    setMinted([]);
-    const rows = await proton.getMintedForTeleport();
-    setMinted(rows);
-    setIsLoading(false);
-  }
+    fetchDepositList();
+  }, [account]);
 
   const fetchDepositList = async () => {
     if (!library) return;
@@ -97,8 +65,8 @@ export const TrackingTables = (props: TrackingProps) => {
   return (
     <>
       {isLoading && <Spinner></Spinner>}
-      {/* deposit list table */}
-      {!isLoading && selectedTab === TABS.DEPOSIT_LIST &&
+
+      {!isLoading &&
       <table style={{width: '100%'}}>
         <thead>
           <TableHeaderRow>

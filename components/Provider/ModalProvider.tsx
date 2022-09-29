@@ -93,6 +93,7 @@ export interface MintAssetModalProps extends GeneralModalProps {
 
 export interface ConfirmTeleportModalProps extends GeneralModalProps {
   ethToProton: boolean;
+  receiver: string;
   tokenContract?: string;
   tokenId?: string;
   assetId?: string;

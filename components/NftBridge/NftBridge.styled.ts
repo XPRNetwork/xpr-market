@@ -146,7 +146,7 @@ export const NftItem = styled.div<{selected: boolean}>`
   // border: 1px solid #752EEB;
   border-radius: 4px;
   margin: 4px 0;
-  cursor: pointer;
+  overflow: hidden;
   ${({ selected }) =>
     selected &&
     `

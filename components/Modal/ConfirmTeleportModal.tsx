@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import { useToasts } from 'react-toast-notifications';
-import { useAuthContext, useModalContext, ConfirmTeleportModalProps } from '../Provider';
+import { useModalContext, ConfirmTeleportModalProps } from '../Provider';
 import protonSDK from '../../services/proton';
 import {
   Background,
@@ -19,8 +19,7 @@ import LoadingPage from '../LoadingPage';
 
 export const ConfirmTeleportModal = (): JSX.Element => {
   const { closeModal, modalProps } = useModalContext();
-  const { currentUser } = useAuthContext();
-  const { library, account } = useWeb3React();
+  const { library } = useWeb3React();
   const { addToast } = useToasts();
 
   const [error, setError] = useState<string>('');
@@ -28,10 +27,11 @@ export const ConfirmTeleportModal = (): JSX.Element => {
 
   const {
     ethToProton,
+    receiver,
     tokenContract,
     tokenId,
     assetId,
-    fetchPageData,
+    fetchPageData
   } = modalProps as ConfirmTeleportModalProps;
 
   useEffect(() => {
@@ -45,30 +45,30 @@ export const ConfirmTeleportModal = (): JSX.Element => {
         tokenContract: tokenContract,
         tokenIds: [tokenId],
         provider: library.getSigner(),
-        to: currentUser.actor
+        to: receiver
       });
 
       try {
         await txPreHash.wait();
         addToast(`Teleported successfully.`, { appearance: 'success', autoDismiss: true });
+        addToast('It will take 1 ~ 2 minutes to have teleported NFT in your WebAuth.com wallet.', { appearance: 'info', autoDismiss: false });
       } catch (err) {
         addToast('Teleport failed.', { appearance: 'error', autoDismiss: true });
       }
     } else {
       const teleportRes = await protonSDK.teleportToEth({
         asset_id: assetId,
-        to_address: account?.substring(2)
+        to_address: receiver?.substring(2)
       });
       
       if (!teleportRes.success) {
         addToast('Teleport failed.', { appearance: 'error', autoDismiss: true });
       } else {
         addToast(`Teleported successfully.`, { appearance: 'success', autoDismiss: true });
-        addToast('Please check deposit list and claim your NFT.', { appearance: 'info', autoDismiss: false });
+        addToast("To claim NFT, please connect recipient's wallet and check the deposit list.", { appearance: 'info', autoDismiss: false });
       }
     }
     
-    await delay(1000);
     await fetchPageData();
     setIsLoading(false);
     closeModal();
@@ -80,10 +80,12 @@ export const ConfirmTeleportModal = (): JSX.Element => {
       const txPreHash = await claimNfts(tokenContract, [tokenId], library.getSigner());
       try {
         await txPreHash.wait();
+        addToast('Claimed successfully!', { appearance: 'success', autoDismiss: true });
       } catch (err) {
-        setIsLoading(false);
         addToast('Claim failed.', { appearance: 'error', autoDismiss: true });
         console.log("claim error", err);
+        setIsLoading(false);
+        return;
       }
     } else {
       const claimbackRes = await protonSDK.claimbackTeleport({
@@ -91,15 +93,16 @@ export const ConfirmTeleportModal = (): JSX.Element => {
       });
 
       if (!claimbackRes.success) {
-        setIsLoading(false);
         addToast('Claim back failed.', { appearance: 'error', autoDismiss: true });
+        setIsLoading(false);
         return;
+      } else {
+        addToast('Claimed successfully!', { appearance: 'success', autoDismiss: true });
       }
     }
 
     await fetchPageData();
     setIsLoading(false);
-    addToast('Claimed successfully!', { appearance: 'success', autoDismiss: true });
     closeModal();
   }
 
