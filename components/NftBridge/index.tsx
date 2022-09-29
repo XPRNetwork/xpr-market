@@ -91,15 +91,17 @@ const NftBridge = (): JSX.Element => {
   }, [nftType, ethAssetsToSend.length]);
 
   const filteredFees = useMemo(() => {
-    if (!teleportFees.length || !chainId) {
+    if (!teleportFees.length) {
       return {
-        chainId: -1,
+        chain_id: -1,
         port_in_fee: 0,
         port_out_fee: 0
       }
     }
 
-    const fees = teleportFees.find(el => el.chain_id == chainId);
+    const defaultChainId = chainId ? chainId : 137;
+
+    const fees = teleportFees.find(el => el.chain_id == defaultChainId);
     if (fees) {
       return fees;
     } else {
@@ -110,7 +112,7 @@ const NftBridge = (): JSX.Element => {
       }
 
       return {
-        chainId: -1,
+        chain_id: -1,
         port_in_fee: 0,
         port_out_fee: 0
       };
@@ -183,41 +185,65 @@ const NftBridge = (): JSX.Element => {
     setProtonAssetsToSend([]);
   }
 
-  const handleTransfer = async () => {
-    const oracleStatus = await checkOracle();
-    if (!oracleStatus) {
-      addToast('Oracle is down', { appearance: 'warning', autoDismiss: true });
-      return;
+  const checkFeesBalance = () => {
+    if (filteredFees.chain_id < 0) {
+      return false;
     }
+    
+    if (transDir === TRANSFER_DIR.ETH_TO_PROTON) {
+      if (filteredFees.port_in_fee == 0) {
+        return true;
+      }
+      return feesBalance.balance - feesBalance.reserved >= filteredFees.port_in_fee;
+    } else {
+      if (filteredFees.port_out_fee == 0) {
+        return true;
+      }
+      return feesBalance.balance - feesBalance.reserved >= filteredFees.port_out_fee;
+    }
+  }
 
+  const topUpFeesBalance = async () => {
+    // Top up 5 XPR as default
+    const res = await protonSDK.topUpTeleportFee(5);
+    if (res.success) {
+      if (currentUser?.actor) {
+        proton.getFeesBalanceForTeleport(currentUser.actor)
+        .then(balance => {
+          setFeesBalance(balance);
+        });
+      }
+    } else {
+      addToast(res.error, { appearance: 'error', autoDismiss: true });
+    }
+  }
+
+  const handleTransfer = async () => {
     if (!teleportFees.length || !feesBalance) {
       addToast('Refresh the page!', { appearance: 'warning', autoDismiss: true });
       return;
     }
 
-    let fees = teleportFees.find(el => el.chain_id == chainId);
-    if (!fees) {
-      fees = teleportFees.find(el => el.chain_id == 0);
+    if (!checkFeesBalance()) {
+      await topUpFeesBalance();
+      return;
+    }
+
+    const oracleStatus = await checkOracle();
+    if (!oracleStatus) {
+      addToast('Oracle is down. please contact with developer.', { appearance: 'warning', autoDismiss: true });
+      return;
     }
 
     try {
-      if (
-        (!ethAssetsToSend.length && transDir == TRANSFER_DIR.ETH_TO_PROTON) ||
-        (!protonAssetsToSend.length && transDir == TRANSFER_DIR.PROTON_TO_ETH)
-      ) {
-        addToast('Please select NFTs to send.', { appearance: 'info', autoDismiss: true });
-        return;
-      }
-  
-      if (!library) {
-        addToast('Please connect ethereum wallet.', { appearance: 'info', autoDismiss: true });
-        return;
-      }
-  
       if (transDir === TRANSFER_DIR.ETH_TO_PROTON) {
-        // Check fee balance
-        if ((feesBalance.balance - feesBalance.reserved) < fees.port_in_fee) {
-          addToast('Too low balance for fee. please top up firstly!', { appearance: 'warning', autoDismiss: true });
+        if (!library) {
+          addToast('Please connect ethereum wallet.', { appearance: 'info', autoDismiss: true });
+          return;
+        }
+
+        if (!ethAssetsToSend.length) {
+          addToast('Please select NFTs to send.', { appearance: 'info', autoDismiss: true });
           return;
         }
 
@@ -248,9 +274,13 @@ const NftBridge = (): JSX.Element => {
 
         setIsLoading(false);
       } else {
-        // Check fee balance
-        if ((feesBalance.balance - feesBalance.reserved) < fees.port_out_fee) {
-          addToast('Too low balance for fee. please top up firstly!', { appearance: 'warning', autoDismiss: true });
+        if (!account && advancedAddr == '') {
+          addToast("Please connect ethereum wallet or enter recipient's address.", { appearance: 'info', autoDismiss: true });
+          return;
+        }
+
+        if (!protonAssetsToSend.length) {
+          addToast('Please select NFTs to send.', { appearance: 'info', autoDismiss: true });
           return;
         }
 
@@ -467,7 +497,7 @@ const NftBridge = (): JSX.Element => {
               <InfoBox>
                 <div style={{display: 'flex', alignItems: 'center', margin: '10px 0'}}>
                   <span>Fee Balance: &nbsp;</span>
-                  <span>{displayNumberAsAmount(feesBalance?.balance - feesBalance?.reserved, 4, true)} XPR</span>
+                  <span style={checkFeesBalance() ? {} : {color: '#F94E6C'}}>{displayNumberAsAmount(feesBalance?.balance - feesBalance?.reserved, 4, true)} XPR</span>
                 </div>
                 <div style={{display: 'flex', alignItems: 'center', margin: '10px 0'}}>
                   <span>Fee: &nbsp;</span>
@@ -481,7 +511,10 @@ const NftBridge = (): JSX.Element => {
                   fullWidth
                   onClick={handleTransfer}
                 >
-                  Transfer
+                  <>
+                    {!checkFeesBalance() && <span>Top Up &nbsp; 5 XPR</span>}
+                    {checkFeesBalance() && <span>Transfer</span>}
+                  </>
                 </Button>
               </div>
             </>}

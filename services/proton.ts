@@ -1822,11 +1822,48 @@ class ProtonSDK {
   
       return { success: true };
     } catch (e) {
-      const message = e.message[0].toUpperCase() + e.message.slice(1);
       return {
         success: false,
-        error:
-          message || 'An error has occurred while trying to cancel an auction.',
+        error: 'An error has occurred while trying to claim.',
+      };
+    }
+  }
+
+  topUpTeleportFee = async (amount: number): Promise<Response> => {
+    try {
+      if (!this.session || !this.auth) {
+        throw new Error('Unable to top up without logging in.');
+      }
+  
+      const actions = [
+        {
+          account: 'eosio.token',
+          name: 'transfer',
+          authorization: [
+            {
+              actor: this.auth.actor,
+              permission: 'active',
+            },
+          ],
+          data: {
+            from: this.auth.actor,
+            to: process.env.NEXT_PUBLIC_PRT_NFT_BRIDGE,
+            quantity: `${amount.toFixed(4)} XPR`,
+            memo: 'Top up teleport fee.'
+          },
+        },
+      ];
+  
+      await this.session.transact(
+        { actions },
+        { broadcast: true }
+      );
+  
+      return { success: true };
+    } catch (e) {
+      return {
+        success: false,
+        error: 'An error has occurred while trying to top up teleport fee.',
       };
     }
   }
@@ -1867,11 +1904,9 @@ class ProtonSDK {
   
       return { success: true };
     } catch (e) {
-      const message = e.message[0].toUpperCase() + e.message.slice(1);
       return {
         success: false,
-        error:
-          message || 'An error has occurred while trying to cancel an auction.',
+        error: 'An error has occurred while trying to cancel an auction.',
       };
     }
   }
