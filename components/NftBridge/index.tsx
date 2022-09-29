@@ -36,6 +36,7 @@ import { useModalContext, MODAL_TYPES } from '../Provider';
 import { TrackingTables } from './TrackingTables';
 import { nftBridgeOracle } from '../../utils/constants';
 import { getFromApi } from '../../utils/browser-fetch';
+import { displayNumberAsAmount } from '@bloks/numbers'
 
 const TRANSFER_DIR = {
   ETH_TO_PROTON: 'ETH_TO_PROTON',
@@ -466,12 +467,12 @@ const NftBridge = (): JSX.Element => {
               <InfoBox>
                 <div style={{display: 'flex', alignItems: 'center', margin: '10px 0'}}>
                   <span>Fee Balance: &nbsp;</span>
-                  <span>{(feesBalance?.balance - feesBalance?.reserved).toFixed(4)} XPR</span>
+                  <span>{displayNumberAsAmount(feesBalance?.balance - feesBalance?.reserved, 4, true)} XPR</span>
                 </div>
                 <div style={{display: 'flex', alignItems: 'center', margin: '10px 0'}}>
                   <span>Fee: &nbsp;</span>
-                  {transDir == TRANSFER_DIR.ETH_TO_PROTON && <span>{(filteredFees?.port_in_fee).toFixed(4)} XPR</span>}
-                  {transDir == TRANSFER_DIR.PROTON_TO_ETH && <span>{(filteredFees?.port_out_fee).toFixed(4)} XPR</span>}
+                  {transDir == TRANSFER_DIR.ETH_TO_PROTON && <span>{displayNumberAsAmount(filteredFees?.port_in_fee, 4, true)} XPR</span>}
+                  {transDir == TRANSFER_DIR.PROTON_TO_ETH && <span>{displayNumberAsAmount(filteredFees?.port_out_fee, 4, true)} XPR</span>}
                 </div>
               </InfoBox>
 

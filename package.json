@@ -14,6 +14,7 @@
   "dependencies": {
     "@3rdweb/hooks": "^1.9.2",
     "@alch/alchemy-web3": "^1.4.6",
+    "@bloks/numbers": "^26.1.69",
     "@bloks/utils": "^25.0.0",
     "@google/model-viewer": "^1.6.0",
     "@netlify/plugin-nextjs": "4.4.3",
