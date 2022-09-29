@@ -53,7 +53,10 @@ export type NFT_ATTR = {
 
 export enum NftType {
   ERC_721 = "erc721",
-  ERC_1155 = "erc1155"
+  ERC_1155 = "erc1155",
+  // Extra
+  ATOMIC = "ATOMIC",
+  DEPOSIT_LIST = "DEPOSIT_LIST"
 };
 
 export const getNfts = async (

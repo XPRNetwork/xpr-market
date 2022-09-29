@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { MaxWidth } from '../../styles/MaxWidth.styled';
 import { StyledButton, ButtonProps } from '../Button/Button.styled';
+import { breakpoint } from '../../styles/Breakpoints';
 
 interface HalfButtonProps extends ButtonProps {
   color?: string;
@@ -209,4 +210,55 @@ export const TextArea = styled.textarea`
 
 export const BtnLabel = styled.label`
   padding: 0 10px;
+`;
+
+export const InputContainer = styled.div`
+  border-radius: 8px;
+  border: 1px solid #808080;
+  width: 100%;
+  height: 48px;
+  transition: 0.2s;
+  display: flex;
+  align-items: center;
+  outline: none;
+  margin-bottom: 20px;
+`;
+
+const IconButton = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  outline: none;
+`;
+
+export const MagnifyingIconButton = styled(IconButton)`
+  margin-left: 16px;
+  ${breakpoint.tablet`
+    margin-left: 18px;
+  `}
+`;
+
+export const Input = styled.input`
+  width: 100%;
+  font-size: 16px;
+  color: black;
+  padding: 12px 28px 12px 16px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  line-height: 24px;
+  background: none;
+
+  ::placeholder {
+    color: #808080;
+  }
+
+  ${breakpoint.tablet`
+    border-radius: 20px;
+    padding: 8px 16px 8px 18px;
+  `}
 `;

@@ -117,6 +117,7 @@ const NftBridge = (): JSX.Element => {
     if (active) {
       deactivate();
       localStorage.clear();
+      setNftType(transDir === TRANSFER_DIR.ETH_TO_PROTON ? NftType.ERC_721 : NftType.ATOMIC)
       return;
     }
   }
@@ -148,7 +149,7 @@ const NftBridge = (): JSX.Element => {
       return;
     }
 
-    if (transDir === TRANSFER_DIR.PROTON_TO_ETH && !currentUser.actor) {
+    if (transDir === TRANSFER_DIR.PROTON_TO_ETH && !currentUser?.actor) {
       addToast('Please connect Webauth.com wallet.', { appearance: 'warning', autoDismiss: true });
       return;
     }
@@ -330,7 +331,13 @@ const NftBridge = (): JSX.Element => {
               <span>Ethereum</span>
             </ChainBtn>
 
-            <div onClick={() => setTransDir(transDir === TRANSFER_DIR.ETH_TO_PROTON ? TRANSFER_DIR.PROTON_TO_ETH : TRANSFER_DIR.ETH_TO_PROTON)} style={{order: 3}}>
+            <div
+              onClick={() => {
+                setNftType(transDir === TRANSFER_DIR.ETH_TO_PROTON ? NftType.ATOMIC : NftType.ERC_721)
+                setTransDir(transDir === TRANSFER_DIR.ETH_TO_PROTON ? TRANSFER_DIR.PROTON_TO_ETH : TRANSFER_DIR.ETH_TO_PROTON)
+              }}
+              style={{order: 3}}
+            >
               <SwitchIcon>	&#8250; </SwitchIcon>
             </div>
 
@@ -368,19 +375,35 @@ const NftBridge = (): JSX.Element => {
                     onClick={()=>setNftType(NftType.ERC_1155)}
                   >
                     ERC1155
-                  </Tab></>
+                  </Tab>
+                  {account && <Tab
+                    onClick={()=>setNftType(NftType.DEPOSIT_LIST)}
+                    selected={nftType === NftType.DEPOSIT_LIST}
+                    align='right'
+                  >
+                    DEPOSIT LIST
+                  </Tab>}</>
                 }
 
-                {transDir === TRANSFER_DIR.PROTON_TO_ETH && <Tab
-                  selected={true}
-                  >
-                    Atomic Assets
+                {transDir === TRANSFER_DIR.PROTON_TO_ETH && <>
+                  <Tab
+                    selected={nftType === NftType.ATOMIC}
+                    onClick={()=>setNftType(NftType.ATOMIC)}
+                    >
+                      Atomic Assets
                   </Tab>
+                  {account && <Tab
+                    onClick={()=>setNftType(NftType.DEPOSIT_LIST)}
+                    selected={nftType === NftType.DEPOSIT_LIST}
+                    align='right'
+                  >
+                    DEPOSIT LIST
+                  </Tab>}</>
                 }
               </Tabs>
             </TabContainer>
 
-            {transDir==TRANSFER_DIR.ETH_TO_PROTON && (filteredEthAssets.length ? 
+            {transDir==TRANSFER_DIR.ETH_TO_PROTON && nftType !== NftType.DEPOSIT_LIST && (filteredEthAssets.length ? 
               <NftBox>
                 {filteredEthAssets.map((ethAsset: ETH_ASSET, idx) => (
                   <EthNft
@@ -394,7 +417,7 @@ const NftBridge = (): JSX.Element => {
                 <div style={{color: '#1A1A1A', fontSize: 18, marginTop: 20}}>No NFTs added yet 😢</div>
               </NoNFTBox>)}
 
-            {transDir==TRANSFER_DIR.PROTON_TO_ETH && (protonAssetsToSend.length ?
+            {transDir==TRANSFER_DIR.PROTON_TO_ETH && nftType !== NftType.DEPOSIT_LIST && (protonAssetsToSend.length ?
               <NftBox>
                 {protonAssetsToSend.map((asset: Asset, idx) => (
                   <ProtonNft
@@ -407,36 +430,38 @@ const NftBridge = (): JSX.Element => {
                 <Image width='134px' height='106px' src='/proton-pc.png' />
                 <div style={{color: '#1A1A1A', fontSize: 18, marginTop: 20}}>No NFTs added yet 😢</div>
               </NoNFTBox>)}
+
+            {nftType === NftType.DEPOSIT_LIST && <TrackingTables />}
             
-            <AddNFTBtn onClick={openAssetsModal}>
-              <PlusIcon>+</PlusIcon>
-              <span style={{marginLeft: 10}}>Add NFT</span>
-            </AddNFTBtn>
+            {nftType !== NftType.DEPOSIT_LIST && <>
+              <AddNFTBtn onClick={openAssetsModal}>
+                <PlusIcon>+</PlusIcon>
+                <span style={{marginLeft: 10}}>Add NFT</span>
+              </AddNFTBtn>
 
-            <InfoBox>
-              <div style={{display: 'flex', alignItems: 'center', margin: '10px 0'}}>
-                <span>Fee Balance: &nbsp;</span>
-                <span>{(feesBalance?.balance - feesBalance?.reserved).toFixed(4)} XPR</span>
-              </div>
-              <div style={{display: 'flex', alignItems: 'center', margin: '10px 0'}}>
-                <span>Fee: &nbsp;</span>
-                {transDir == TRANSFER_DIR.ETH_TO_PROTON && <span>{(filteredFees?.port_in_fee).toFixed(4)} XPR</span>}
-                {transDir == TRANSFER_DIR.PROTON_TO_ETH && <span>{(filteredFees?.port_out_fee).toFixed(4)} XPR</span>}
-              </div>
-            </InfoBox>
+              <InfoBox>
+                <div style={{display: 'flex', alignItems: 'center', margin: '10px 0'}}>
+                  <span>Fee Balance: &nbsp;</span>
+                  <span>{(feesBalance?.balance - feesBalance?.reserved).toFixed(4)} XPR</span>
+                </div>
+                <div style={{display: 'flex', alignItems: 'center', margin: '10px 0'}}>
+                  <span>Fee: &nbsp;</span>
+                  {transDir == TRANSFER_DIR.ETH_TO_PROTON && <span>{(filteredFees?.port_in_fee).toFixed(4)} XPR</span>}
+                  {transDir == TRANSFER_DIR.PROTON_TO_ETH && <span>{(filteredFees?.port_out_fee).toFixed(4)} XPR</span>}
+                </div>
+              </InfoBox>
 
-            <div style={{width: 200 , marginTop: 10}}>
-              <Button
-                fullWidth
-                onClick={handleTransfer}
-              >
-                Transfer
-              </Button>
-            </div>
+              <div style={{width: 200 , marginTop: 10}}>
+                <Button
+                  fullWidth
+                  onClick={handleTransfer}
+                >
+                  Transfer
+                </Button>
+              </div>
+            </>}
           </>}
         </Content>
-
-        {/* <TrackingTables /> */}
       </Container>
     </>
   )

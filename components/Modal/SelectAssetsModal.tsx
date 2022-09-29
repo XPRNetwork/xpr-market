@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useToasts } from 'react-toast-notifications';
-import { useAuthContext, useModalContext, SelectAssetsModalProps } from '../Provider';
+// import { useToasts } from 'react-toast-notifications';
+import { useModalContext, SelectAssetsModalProps } from '../Provider';
 import { ETH_ASSET, getNfts, NftType } from '../../services/ethereum';
 import { Asset, getAllUserAssetsByTemplate } from '../../services/assets';
 import {
@@ -10,14 +10,18 @@ import {
   CloseIconContainer,
   Title,
   HalfButton,
+  Input,
+  MagnifyingIconButton,
+  InputContainer
 } from './Modal.styled';
 import { EthNft, ProtonNft } from '../NftBridge/Nft';
 import { ReactComponent as CloseIcon } from '../../public/close.svg';
 import LoadingPage from '../LoadingPage';
+import { ReactComponent as MagnifyingIcon } from '../../public/icon-light-search-24-px.svg';
 
 export const SelectAssetsModal = (): JSX.Element => {
   const { closeModal, modalProps } = useModalContext();
-  const { addToast } = useToasts();
+  // const { addToast } = useToasts();
 
   const [error, setError] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -25,6 +29,7 @@ export const SelectAssetsModal = (): JSX.Element => {
   const [protonAssets, setProtonAssets] = useState<Asset[]>([]);
   const [selectedEthNft, setSelectedEthNft] = useState<ETH_ASSET | null>(null);
   const [selectedProtonNft, setSelectedProtonNft] = useState<Asset | null>(null);
+  const [searchText, setSearchText] = useState<string>('');
 
   const {
     ethToProton,
@@ -56,7 +61,20 @@ export const SelectAssetsModal = (): JSX.Element => {
   
   const filteredEthAssets = useMemo(() => {
     return ethAssets.filter(el => el.tokenType?.toLowerCase() == nftType);
-  }, [nftType, ethAssets.length]);
+  }, [searchText, ethAssets.length]);
+
+  const filteredAtomicAssets = useMemo(() => {
+    const filter = searchText.trim().toLowerCase();
+    if (filter == '') {
+      return protonAssets;
+    }
+
+    return protonAssets.filter(el => {
+      const matchesName = el.name?.trim()?.toLowerCase()?.indexOf(filter) > -1;
+      const matchesCollection = el.collection?.name?.trim()?.toLowerCase()?.indexOf(filter) > -1;
+      return matchesName || matchesCollection;
+    });
+  }, [searchText, protonAssets.length]);
 
   const fetchProtonAssets = async () => {
     if (owner) {
@@ -84,12 +102,25 @@ export const SelectAssetsModal = (): JSX.Element => {
         <Section>
           <Title>Select&nbsp;
             {ethToProton && (nftType === NftType.ERC_721 ? 'ERC721' : 'ERC1155')}
-            {!ethToProton && 'atomic assets'}
+            {!ethToProton && 'Atomic Assets'}
           </Title>
           <CloseIconContainer role="button" onClick={closeModal}>
             <CloseIcon />
           </CloseIconContainer>
         </Section>
+
+        <InputContainer>
+          <MagnifyingIconButton>
+            <MagnifyingIcon />
+          </MagnifyingIconButton>
+          <Input
+            required
+            type="text"
+            placeholder="Search"
+            value={searchText}
+            onChange={(e)=>setSearchText(e.target.value)}
+          />
+        </InputContainer>
 
         {ethToProton && (filteredEthAssets.length ? filteredEthAssets.map((ethAsset: ETH_ASSET, idx) => (
           <EthNft
@@ -102,7 +133,7 @@ export const SelectAssetsModal = (): JSX.Element => {
           <div style={{textAlign: 'center', fontSize: 20}}>No NFT</div>
         ))}
 
-        {!ethToProton && (protonAssets.length ? protonAssets.map((asset: Asset, idx) => (
+        {!ethToProton && (filteredAtomicAssets.length ? filteredAtomicAssets.map((asset: Asset, idx) => (
           <ProtonNft
             data={asset}
             selectedNft={selectedProtonNft}

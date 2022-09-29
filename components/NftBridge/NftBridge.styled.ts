@@ -129,7 +129,7 @@ export const NftBox = styled.div`
   grid-template-columns: repeat(4, 1fr);
   grid-gap: 20px;
   border-bottom: 1px solid #808080;
-  padding-bottom: 20px;
+  padding: 20px 0;
   ${breakpoint.tablet`
     grid-template-columns: repeat(2, 1fr);
   `};
@@ -143,9 +143,9 @@ export const NftItem = styled.div<{selected: boolean}>`
   display: flex;
   align-items: center;
   padding: 4px;
-  border: 1px solid #752EEB;
+  // border: 1px solid #752EEB;
   border-radius: 4px;
-  margin: 5px 0;
+  margin: 4px 0;
   cursor: pointer;
   ${({ selected }) =>
     selected &&
@@ -165,7 +165,7 @@ export const NftName = styled.p`
 export const TabContainer = styled.div`
   position: relative;
   width: 100%;
-  padding: 20px 0;
+  padding: 20px 0 0;
   background-color: #FEFEFE;
 `;
 
@@ -175,7 +175,7 @@ export const Tabs = styled.div`
   border-bottom: 1px solid #808080;
 `;
 
-export const Tab = styled.div<{selected: boolean}>`
+export const Tab = styled.div<{selected: boolean, align?: string}>`
   width: 100%;
   max-width: 200px;
   text-align: center;
@@ -192,6 +192,12 @@ export const Tab = styled.div<{selected: boolean}>`
     color: #1A1A1A;
     border-bottom: 3px solid #752EEB;
   `};
+
+  ${({ align }) =>
+    align == 'right' &&
+    `
+    margin-left: auto
+  `};
 `;
 
 export const PlusIcon = styled.div`
@@ -207,7 +213,7 @@ export const PlusIcon = styled.div`
   background: #752EEB;
 `;
 
-export const AddNFTBtn = styled.div`
+export const AddNFTBtn = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -215,6 +221,8 @@ export const AddNFTBtn = styled.div`
   font-size: 16px;
   cursor: pointer;
   margin-top: 30px;
+  border: none;
+  background: transparent;
 `;
 
 export const NoNFTBox = styled.div`
@@ -223,7 +231,7 @@ export const NoNFTBox = styled.div`
   flex-direction: column;
   align-items: center;
   border-bottom: 1px solid #808080;
-  padding-bottom: 20px;
+  padding: 20px 0;
 `;
 
 
@@ -235,4 +243,22 @@ export const Row = styled.div`
     flex-direction: column;
     justify-content: center;
   `};
+`;
+
+export const TableHeaderCell = styled.th`
+  padding: 12px 4px;
+  font-size: 14px;
+  line-height: 12px;
+  font-weight: 600;
+  color: #1A1A1A;
+  text-align: center;
+`;
+
+export const TableDataCell = styled.td`
+  padding: 10px 4px;
+  font-size: 14px;
+  line-height: 24px;
+  font-weight: 450;
+  color: #000;
+  text-align: center;
 `;
