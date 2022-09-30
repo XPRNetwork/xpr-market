@@ -346,8 +346,8 @@ const NftBridge = (): JSX.Element => {
             <>
               {account ?
               <Row>
-                <label style={{whiteSpace: 'nowrap', marginRight: 10}}>Eth Wallet</label>
-                <div style={{display: 'flex', justifyContent: 'center'}}>
+                <label style={{whiteSpace: 'nowrap', margin: '16px 10px 0 0'}}>Eth Wallet</label>
+                <div style={{display: 'flex', justifyContent: 'center', marginTop: 16}}>
                   <div style={{marginRight: 20, wordBreak: 'break-all'}}>{account}</div>
                   <Image width='24px' height='24px' src='/close.svg' color='#752EEB' onClick={()=>disconnectWallet()} />
                 </div>
@@ -468,7 +468,7 @@ const NftBridge = (): JSX.Element => {
               </NftBox> :
               <NoNFTBox>
                 <Image width='134px' height='106px' src='/proton-pc.png' />
-                <div style={{color: '#1A1A1A', fontSize: 18, marginTop: 20}}>No NFTs added yet 😢</div>
+                <p style={{marginTop: 20}}>No NFTs added yet 😢</p>
               </NoNFTBox>)}
 
             {transDir==TRANSFER_DIR.PROTON_TO_ETH && nftType !== NftType.DEPOSIT_LIST && (protonAssetsToSend.length ?

@@ -8,18 +8,10 @@ import Button from '../Button';
 import Spinner from '../Spinner';
 import TableHeaderRow from '../TableHeaderRow';
 import TableRow from '../TableRow';
-import { TableHeaderCell, TableDataCell } from './NftBridge.styled';
+import { TableWrapper, Table, TableHeaderCell, TableDataCell } from './NftBridge.styled';
 import TableContentWrapper from '../TableContentWraper';
 
 // interface TrackingProps {};
-
-const tableHeaders = [
-  { title: '#', id: '#' },
-  { title: 'OWNER', id: 'owner' },
-  { title: 'COLLECTION', id: 'collection' },
-  { title: 'TOKEN ID', id: 'tokenId' },
-  { title: 'CLAIM', id: 'claim' },
-]
 
 export const TrackingTables = () => {
   const { library, account } = useWeb3React();
@@ -55,6 +47,7 @@ export const TrackingTables = () => {
       await txPreHash.wait();
       addToast('Claimed successfully!', { appearance: 'success', autoDismiss: true });
       // Refresh deposit list
+      await fetchDepositList();
     } catch (err) {
       addToast('Claim failed.', { appearance: 'error', autoDismiss: true });
       setIsLoading(false);
@@ -66,45 +59,44 @@ export const TrackingTables = () => {
     <>
       {isLoading && <Spinner></Spinner>}
 
-      {!isLoading &&
-      <table style={{width: '100%'}}>
-        <thead>
-          <TableHeaderRow>
-            {tableHeaders.map((header) => {
-              return (
-                <TableHeaderCell key={header.title}>
-                  {header.title}
-                </TableHeaderCell>
-              );
-            })}
-          </TableHeaderRow>
-        </thead>
-        <tbody>
-          <TableContentWrapper
-            loading={isLoading}
-            noData={!depositList.length}
-            columns={tableHeaders.length}
-          >
-            {depositList.length > 0 && depositList.map((el, idx) => (
-              <TableRow key={idx}>
-                <TableDataCell >{idx + 1}</TableDataCell>
-                <TableDataCell >{shortenAddress(el.owner)}</TableDataCell>
-                <TableDataCell >{shortenAddress(el.collection)}</TableDataCell>
-                <TableDataCell >{el.tokenId.toHexString().length > 15 ? shortenAddress(el.tokenId.toHexString()) : el.tokenId.toHexString()}</TableDataCell>
-                <TableDataCell>
-                  <Button
-                    smallSize={true}
-                    disabled={el.locked}
-                    onClick={() => claimEth(el.collection, el.tokenId.toHexString())}
-                  >
-                    Claim
-                  </Button>
-                </TableDataCell>
-              </TableRow>
-            ))}
-          </TableContentWrapper>
-        </tbody>
-      </table>}
+      {!isLoading && <TableWrapper>
+        <Table>
+          <thead>
+            <TableHeaderRow>
+              <TableHeaderCell width={5}>#</TableHeaderCell>
+              <TableHeaderCell width={25}>OWNER</TableHeaderCell>
+              <TableHeaderCell width={25}>COLLECTION</TableHeaderCell>
+              <TableHeaderCell width={25}>TOKEN ID</TableHeaderCell>
+              <TableHeaderCell width={20}>ACTIONS</TableHeaderCell>
+            </TableHeaderRow>
+          </thead>
+          <tbody>
+            <TableContentWrapper
+              loading={isLoading}
+              noData={!depositList.length}
+              columns={5}
+            >
+              {depositList.length > 0 && depositList.map((el, idx) => (
+                <TableRow key={idx}>
+                  <TableDataCell >{idx + 1}</TableDataCell>
+                  <TableDataCell >{shortenAddress(el.owner)}</TableDataCell>
+                  <TableDataCell >{shortenAddress(el.collection)}</TableDataCell>
+                  <TableDataCell >{el.tokenId.toHexString().length > 15 ? shortenAddress(el.tokenId.toHexString()) : el.tokenId.toHexString()}</TableDataCell>
+                  <TableDataCell>
+                    <Button
+                      smallSize={true}
+                      disabled={el.locked}
+                      onClick={() => claimEth(el.collection, el.tokenId.toHexString())}
+                    >
+                      Claim
+                    </Button>
+                  </TableDataCell>
+                </TableRow>
+              ))}
+            </TableContentWrapper>
+          </tbody>
+        </Table>
+      </TableWrapper>}
     </>
   )
 }

@@ -18,7 +18,7 @@ export const HeaderTitle = styled.p`
   line-height: 56px;
   color: #1A1A1A;
   ${breakpoint.mobile`
-    font-size: 36px;
+    font-size: 40px;
   `};
 `;
 
@@ -30,6 +30,9 @@ export const SubTitle = styled.p`
   font-weight: 450;
   line-height: 28px;
   margin: 30px auto 0;
+  ${breakpoint.mobile`
+    font-size: 16px;
+  `};
 `;
 
 export const ContentHeader = styled.p`
@@ -55,6 +58,7 @@ export const Switch = styled.div`
   width: 100%;
   padding: 20px 0;
   color: #6B717F;
+  font-size: 16px;
   ${breakpoint.mobile`
     & > span {
       display: none;
@@ -105,6 +109,7 @@ export const InfoBox = styled.div`
   max-width: 400px;
   padding: 30px 0 0;
   color: #4710a3;
+  font-size: 16px;
   ${breakpoint.mobile`
     flex-direction: column;
     align-items: center;
@@ -121,6 +126,9 @@ export const MessageBox = styled.div`
   font-size: 20px;
   font-weight: 450;
   line-height: 28px;
+  ${breakpoint.mobile`
+    font-size: 16px;
+  `};
 `;
 
 export const NftBox = styled.div`
@@ -198,6 +206,11 @@ export const Tab = styled.div<{selected: boolean, align?: string}>`
     `
     margin-left: auto
   `};
+
+  ${breakpoint.mobile`
+    max-width: 114px;
+    font-size: 14px;
+  `};
 `;
 
 export const PlusIcon = styled.div`
@@ -232,26 +245,49 @@ export const NoNFTBox = styled.div`
   align-items: center;
   border-bottom: 1px solid #808080;
   padding: 20px 0;
+  color: '#1A1A1A';
+  font-size: 18px;
+  ${breakpoint.mobile`
+    font-size: 16px;
+  `};
 `;
-
 
 export const Row = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
+  font-size: 16px;
   ${breakpoint.mobile`
     flex-direction: column;
     justify-content: center;
+    align-items: start;
   `};
 `;
 
-export const TableHeaderCell = styled.th`
-  padding: 12px 4px;
-  font-size: 14px;
-  line-height: 12px;
-  font-weight: 600;
+export const TableWrapper = styled.div`
+  width: 100%;
+  overflow-x: auto;
+`;
+
+export const Table = styled.table`
+  width: 100%;
+  ${breakpoint.mobile`
+    width: 600px;
+  `};
+`;
+
+export const TableHeaderCell = styled.th<{width?: number}>`
+  padding: 12px 6px;
+  font-size: 12px;
+  line-height: 10px;
+  font-weight: 700;
   color: #1A1A1A;
   text-align: center;
+  ${({ width }) =>
+    width &&
+    `
+    width: ${width}%
+  `};
 `;
 
 export const TableDataCell = styled.td`
@@ -261,4 +297,7 @@ export const TableDataCell = styled.td`
   font-weight: 450;
   color: #000;
   text-align: center;
+  ${breakpoint.mobile`
+    min-width: 150px;
+  `};
 `;
