@@ -16,7 +16,7 @@ export const HeaderTitle = styled.p`
   font-size: 48px;
   font-weight: 500;
   line-height: 56px;
-  color: #1A1A1A;
+  color: #1a1a1a;
   ${breakpoint.mobile`
     font-size: 40px;
   `};
@@ -36,7 +36,7 @@ export const SubTitle = styled.p`
 `;
 
 export const ContentHeader = styled.p`
-  color: #1A1A1A;
+  color: #1a1a1a;
   margin: 10px auto;
   font-size: 28px;
   line-height: 35px;
@@ -47,7 +47,7 @@ export const Content = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #FEFEFE;
+  background-color: #fefefe;
   margin: 0 auto 20px;
 `;
 
@@ -57,7 +57,7 @@ export const Switch = styled.div`
   align-items: center;
   width: 100%;
   padding: 20px 0;
-  color: #6B717F;
+  color: #6b717f;
   font-size: 16px;
   ${breakpoint.mobile`
     & > span {
@@ -75,13 +75,13 @@ export const SwitchIcon = styled.div`
   font-weight: 100;
   font-size: 36px;
   border-radius: 50%;
-  color: #752EEB;
-  background: #F0E8FD;
+  color: #752eeb;
+  background: #f0e8fd;
   padding-left: 4px;
   cursor: pointer;
 `;
 
-export const ChainBtn = styled.div<{isFrom: boolean}>`
+export const ChainBtn = styled.div<{ isFrom: boolean }>`
   order: 2;
   display: flex;
   align-items: center;
@@ -89,14 +89,14 @@ export const ChainBtn = styled.div<{isFrom: boolean}>`
   width: 120px;
   border-radius: 8px;
   font-size: 16px;
-  color: #1A1A1A;
+  color: #1a1a1a;
   padding: 4px 10px;
-  background: #F2F2F2;
+  background: #f2f2f2;
   margin: 0 20px;
 
   ${({ isFrom }) =>
-  !isFrom &&
-  `
+    !isFrom &&
+    `
   order: 5
   `};
 `;
@@ -146,7 +146,7 @@ export const NftBox = styled.div`
   `};
 `;
 
-export const NftItem = styled.div<{selected: boolean}>`
+export const NftItem = styled.div<{ selected: boolean }>`
   width: 100%;
   display: flex;
   align-items: center;
@@ -174,7 +174,7 @@ export const TabContainer = styled.div`
   position: relative;
   width: 100%;
   padding: 20px 0 0;
-  background-color: #FEFEFE;
+  background-color: #fefefe;
 `;
 
 export const Tabs = styled.div`
@@ -183,13 +183,13 @@ export const Tabs = styled.div`
   border-bottom: 1px solid #808080;
 `;
 
-export const Tab = styled.div<{selected: boolean, align?: string}>`
+export const Tab = styled.div<{ selected: boolean; align?: string }>`
   width: 100%;
   max-width: 200px;
   text-align: center;
   font-size: 18px;
   font-weight: 500;
-  color: #6B717F;
+  color: #6b717f;
   padding: 5px 0;
   border-bottom: 3px solid transparent;
   cursor: pointer;
@@ -223,14 +223,14 @@ export const PlusIcon = styled.div`
   font-size: 22px;
   border-radius: 50%;
   color: #fff;
-  background: #752EEB;
+  background: #752eeb;
 `;
 
 export const AddNFTBtn = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #752EEB;
+  color: #752eeb;
   font-size: 16px;
   cursor: pointer;
   margin-top: 30px;
@@ -276,12 +276,12 @@ export const Table = styled.table`
   `};
 `;
 
-export const TableHeaderCell = styled.th<{width?: number}>`
+export const TableHeaderCell = styled.th<{ width?: number }>`
   padding: 12px 6px;
   font-size: 12px;
   line-height: 10px;
   font-weight: 700;
-  color: #1A1A1A;
+  color: #1a1a1a;
   text-align: center;
   ${({ width }) =>
     width &&

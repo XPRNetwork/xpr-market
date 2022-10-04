@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
-import { useWeb3React } from "@web3-react/core";
-import { connectors } from "../../services/ethereum";
+import { useState, useEffect } from 'react';
+import { useWeb3React } from '@web3-react/core';
+import { connectors } from '../../services/ethereum';
 import { useModalContext } from '../Provider';
 import {
   Background,
@@ -9,16 +9,14 @@ import {
   CloseIconContainer,
   Title,
   BtnLabel,
-  ModalButton
+  ModalButton,
 } from './Modal.styled';
-import { useWindowSize } from '../../hooks';
 import { Image } from '../../styles/index.styled';
 import { ReactComponent as CloseIcon } from '../../public/close.svg';
 
 export const SelectWalletModal = (): JSX.Element => {
   const { closeModal } = useModalContext();
   const [error, setError] = useState<string>('');
-  const { isMobile } = useWindowSize();
   const { activate } = useWeb3React();
 
   useEffect(() => {
@@ -26,18 +24,12 @@ export const SelectWalletModal = (): JSX.Element => {
   }, []);
 
   const setProvider = (type: string) => {
-    window.localStorage.setItem("provider", type);
-  };
-
-  const handleBackgroundClick = (e: MouseEvent) => {
-    if (e.target === e.currentTarget) {
-      closeModal();
-    }
+    window.localStorage.setItem('provider', type);
   };
 
   return (
-    <Background onClick={handleBackgroundClick}>
-      <ModalBox >
+    <Background>
+      <ModalBox>
         <Section>
           <Title>Select Wallet</Title>
           <CloseIconContainer role="button" onClick={closeModal}>
@@ -47,59 +39,41 @@ export const SelectWalletModal = (): JSX.Element => {
 
         <ModalButton
           onClick={() => {
-            activate(connectors.coinbaseWallet);
-            setProvider("coinbaseWallet");
+            activate(connectors.injected);
+            setProvider('injected');
             closeModal();
-          }}
-        >
+          }}>
           <Section alignItems="center" justifyContent="center">
-            <Image
-              width="25px"
-              height="25px"
-              alt="logo"
-              src="/cbw.png"
-            />
+            <Image width="25px" height="25px" alt="logo" src="/mm.png" />
+            <BtnLabel>Metamask</BtnLabel>
+          </Section>
+        </ModalButton>
+        <hr />
+
+        <ModalButton
+          onClick={() => {
+            activate(connectors.coinbaseWallet);
+            setProvider('coinbaseWallet');
+            closeModal();
+          }}>
+          <Section alignItems="center" justifyContent="center">
+            <Image width="25px" height="25px" alt="logo" src="/cbw.png" />
             <BtnLabel>Coinbase Wallet</BtnLabel>
           </Section>
         </ModalButton>
         <hr />
 
-        <ModalButton
+        {/* <ModalButton
           onClick={() => {
             activate(connectors.walletConnect);
-            setProvider("walletConnect");
+            setProvider('walletConnect');
             closeModal();
-          }}
-        >
+          }}>
           <Section alignItems="center" justifyContent="center">
-            <Image
-              width="25px"
-              height="25px"
-              alt="logo"
-              src="/wc.png"
-            />
+            <Image width="25px" height="25px" alt="logo" src="/wc.png" />
             <BtnLabel>Wallet Connect</BtnLabel>
           </Section>
-        </ModalButton>
-        <hr />
-
-        <ModalButton
-          onClick={() => {
-            activate(connectors.injected);
-            setProvider("injected");
-            closeModal();
-          }}
-        >
-          <Section alignItems="center" justifyContent="center">
-            <Image
-              width="25px"
-              height="25px"
-              alt="logo"
-              src="/mm.png"
-            />
-            <BtnLabel>Metamask</BtnLabel>
-          </Section>
-        </ModalButton>
+        </ModalButton> */}
       </ModalBox>
     </Background>
   );

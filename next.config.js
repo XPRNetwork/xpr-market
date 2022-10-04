@@ -11,12 +11,18 @@ module.exports = withTM({
     ],
   },
   target: 'serverless',
-  webpack(config) {
+  webpack(config, { webpack }) {
     config.module.rules.push({
       test: /\.svg$/,
       issuer: /\.(js|ts)x?$/,
       use: ['@svgr/webpack', 'url-loader'],
     });
+
+    config.plugins.push(
+			new webpack.IgnorePlugin({
+				resourceRegExp: /^electron$/,
+			})
+		);
 
     return config;
   },

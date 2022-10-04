@@ -8,12 +8,15 @@ import Button from '../Button';
 import Spinner from '../Spinner';
 import TableHeaderRow from '../TableHeaderRow';
 import TableRow from '../TableRow';
-import { TableWrapper, Table, TableHeaderCell, TableDataCell } from './NftBridge.styled';
+import {
+  TableWrapper,
+  Table,
+  TableHeaderCell,
+  TableDataCell,
+} from './NftBridge.styled';
 import TableContentWrapper from '../TableContentWraper';
 
-// interface TrackingProps {};
-
-export const TrackingTables = () => {
+export const TrackingTables = (): JSX.Element => {
   const { library, account } = useWeb3React();
   const { addToast } = useToasts();
 
@@ -30,73 +33,92 @@ export const TrackingTables = () => {
     setIsLoading(true);
     setDepositList([]);
     const res = await getDepositList(account, library.getSigner());
-    const filtered = res?.filter(el => !el.locked);
+    const filtered = res?.filter((el) => !el.locked);
     setDepositList(filtered);
     setIsLoading(false);
-  }
+  };
 
   const claimEth = async (contract: string, tokenId: string) => {
     if (!library) {
-      addToast('Please connect your Ethereum wallet', { appearance: 'error', autoDismiss: true });
+      addToast('Please connect your Ethereum wallet', {
+        appearance: 'error',
+        autoDismiss: true,
+      });
       return;
     }
 
     try {
       setIsLoading(true);
-      const txPreHash = await claimNfts(contract, [tokenId], library.getSigner());
+      const txPreHash = await claimNfts(
+        contract,
+        [tokenId],
+        library.getSigner()
+      );
       await txPreHash.wait();
-      addToast('Claimed successfully!', { appearance: 'success', autoDismiss: true });
+      addToast('Claimed successfully!', {
+        appearance: 'success',
+        autoDismiss: true,
+      });
       // Refresh deposit list
       await fetchDepositList();
     } catch (err) {
       addToast('Claim failed.', { appearance: 'error', autoDismiss: true });
       setIsLoading(false);
-      console.log("claim error", err);
+      console.log('claim error', err);
     }
-  }
+  };
 
   return (
     <>
       {isLoading && <Spinner></Spinner>}
 
-      {!isLoading && <TableWrapper>
-        <Table>
-          <thead>
-            <TableHeaderRow>
-              <TableHeaderCell width={5}>#</TableHeaderCell>
-              <TableHeaderCell width={25}>OWNER</TableHeaderCell>
-              <TableHeaderCell width={25}>COLLECTION</TableHeaderCell>
-              <TableHeaderCell width={25}>TOKEN ID</TableHeaderCell>
-              <TableHeaderCell width={20}>ACTIONS</TableHeaderCell>
-            </TableHeaderRow>
-          </thead>
-          <tbody>
-            <TableContentWrapper
-              loading={isLoading}
-              noData={!depositList.length}
-              columns={5}
-            >
-              {depositList.length > 0 && depositList.map((el, idx) => (
-                <TableRow key={idx}>
-                  <TableDataCell >{idx + 1}</TableDataCell>
-                  <TableDataCell >{shortenAddress(el.owner)}</TableDataCell>
-                  <TableDataCell >{shortenAddress(el.collection)}</TableDataCell>
-                  <TableDataCell >{el.tokenId.toHexString().length > 15 ? shortenAddress(el.tokenId.toHexString()) : el.tokenId.toHexString()}</TableDataCell>
-                  <TableDataCell>
-                    <Button
-                      smallSize={true}
-                      disabled={el.locked}
-                      onClick={() => claimEth(el.collection, el.tokenId.toHexString())}
-                    >
-                      Claim
-                    </Button>
-                  </TableDataCell>
-                </TableRow>
-              ))}
-            </TableContentWrapper>
-          </tbody>
-        </Table>
-      </TableWrapper>}
+      {!isLoading && (
+        <TableWrapper>
+          <Table>
+            <thead>
+              <TableHeaderRow>
+                <TableHeaderCell width={5}>#</TableHeaderCell>
+                <TableHeaderCell width={25}>OWNER</TableHeaderCell>
+                <TableHeaderCell width={25}>COLLECTION</TableHeaderCell>
+                <TableHeaderCell width={25}>TOKEN ID</TableHeaderCell>
+                <TableHeaderCell width={20}>ACTIONS</TableHeaderCell>
+              </TableHeaderRow>
+            </thead>
+            <tbody>
+              <TableContentWrapper
+                loading={isLoading}
+                noData={!depositList.length}
+                columns={5}>
+                {depositList.length > 0 &&
+                  depositList.map((el, idx) => (
+                    <TableRow key={idx}>
+                      <TableDataCell>{idx + 1}</TableDataCell>
+                      <TableDataCell>{shortenAddress(el.owner)}</TableDataCell>
+                      <TableDataCell>
+                        {shortenAddress(el.collection)}
+                      </TableDataCell>
+                      <TableDataCell>
+                        {el.tokenId.toHexString().length > 15
+                          ? shortenAddress(el.tokenId.toHexString())
+                          : el.tokenId.toHexString()}
+                      </TableDataCell>
+                      <TableDataCell>
+                        <Button
+                          smallSize={true}
+                          disabled={el.locked}
+                          onClick={() =>
+                            claimEth(el.collection, el.tokenId.toHexString())
+                          }>
+                          Claim
+                        </Button>
+                      </TableDataCell>
+                    </TableRow>
+                  ))}
+              </TableContentWrapper>
+            </tbody>
+          </Table>
+        </TableWrapper>
+      )}
     </>
-  )
-}
+  );
+};

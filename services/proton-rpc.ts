@@ -18,13 +18,13 @@ export type TeleportFees = {
   chain_id: number;
   port_in_fee: number;
   port_out_fee: number;
-}
+};
 
 export type TeleportFeesBalance = {
   owner: string;
   balance: number;
   reserved: number;
-}
+};
 
 export type TeleportOutReqs = {
   asset_id: string;
@@ -33,7 +33,7 @@ export type TeleportOutReqs = {
   created_on: string;
   to_address: string;
   token_id: string;
-}
+};
 
 class ProtonJs {
   rpc: JsonRpc = null;
@@ -232,15 +232,15 @@ class ProtonJs {
     });
 
     return rows && rows.length
-      ? rows.map(el => {
-        const port_in_fee = Number(el.port_in_fee?.split(" ")[0]);
-        const port_out_fee = Number(el.port_out_fee?.split(" ")[0]);
-        return {
-          chain_id: Number(el.chain_id),
-          port_in_fee,
-          port_out_fee
-        };
-      })
+      ? rows.map((el) => {
+          const port_in_fee = Number(el.port_in_fee?.split(' ')[0]);
+          const port_out_fee = Number(el.port_out_fee?.split(' ')[0]);
+          return {
+            chain_id: Number(el.chain_id),
+            port_in_fee,
+            port_out_fee,
+          };
+        })
       : [];
   }
 
@@ -259,14 +259,15 @@ class ProtonJs {
 
     return rows && rows.length && rows[0].owner === chainAccount
       ? {
-        balance: Number(rows[0].balance?.split(" ")[0]),
-        owner: rows[0].owner,
-        reserved: Number(rows[0].reserved?.split(" ")[0]),
-      } : {
-        balance: 0,
-        owner: chainAccount,
-        reserved: 0
-      };
+          balance: Number(rows[0].balance?.split(' ')[0]),
+          owner: rows[0].owner,
+          reserved: Number(rows[0].reserved?.split(' ')[0]),
+        }
+      : {
+          balance: 0,
+          owner: chainAccount,
+          reserved: 0,
+        };
   }
 
   async getOutReqsForTeleport(): Promise<TeleportOutReqs[]> {
