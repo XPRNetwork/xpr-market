@@ -12,6 +12,9 @@
     "check:all": "yarn lint && yarn format && yarn typecheck"
   },
   "dependencies": {
+    "@3rdweb/hooks": "^1.9.2",
+    "@alch/alchemy-web3": "^1.4.6",
+    "@bloks/numbers": "^26.1.69",
     "@bloks/utils": "^25.0.0",
     "@google/model-viewer": "^1.6.0",
     "@netlify/plugin-nextjs": "4.4.3",
@@ -19,9 +22,12 @@
     "@proton/web-sdk": "^4.1.10",
     "@sentry/react": "^6.13.2",
     "@sentry/tracing": "^6.13.2",
+    "@web3-react/core": "^6.1.9",
+    "@web3-react/injected-connector": "^6.0.7",
     "bufferutil": "^4.0.3",
     "dayjs": "^1.10.4",
     "encoding": "^0.1.13",
+    "ethers": "^5.6.9",
     "firebase": "^8.4.3",
     "form-data": "^4.0.0",
     "next": "^12.1.5",
@@ -34,6 +40,7 @@
     "react-grid-system": "^7.2.0",
     "react-intersection-observer": "^8.31.1",
     "react-lazyload": "^3.2.0",
+    "react-toast-notifications": "^2.5.1",
     "simple-react-lightbox": "^3.6.6",
     "styled-components": "^5.2.1",
     "utf-8-validate": "^5.0.5"

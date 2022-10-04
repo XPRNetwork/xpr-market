@@ -15,6 +15,9 @@ import {
   MintAssetModal,
   BurnAssetModal,
   ReportModal,
+  ConfirmTeleportModal,
+  SelectWalletModal,
+  SelectAssetsModal
 } from '../Modal';
 import { useEscapeKeyClose } from '../../hooks';
 import { META } from '../../utils/constants';
@@ -56,6 +59,12 @@ const PageLayout = ({ title, children }: Props): JSX.Element => {
         return <BurnAssetModal />;
       case MODAL_TYPES.REPORT:
         return <ReportModal />;
+      case MODAL_TYPES.CONFIRM_TELEPORT:
+        return <ConfirmTeleportModal />
+      case MODAL_TYPES.SELECT_WALLET:
+        return <SelectWalletModal />
+      case MODAL_TYPES.SELECT_ASSETS:
+        return <SelectAssetsModal />
       default:
         return null;
     }
