@@ -8,12 +8,7 @@ import {
   SearchCollection,
 } from '../../services/search';
 import { Template } from '../../services/templates';
-import {
-  TAB_TYPES,
-  CARD_RENDER_TYPES,
-  FILTER_TYPES,
-  Filter,
-} from '../../utils/constants';
+import { TAB_TYPES, CARD_RENDER_TYPES, Filter } from '../../utils/constants';
 import { getFromApi } from '../../utils/browser-fetch';
 
 const emptyFilterObject = { label: '', queryParam: '' };

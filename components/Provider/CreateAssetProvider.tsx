@@ -44,9 +44,9 @@ const MintFeeInitial = {
   totalFee: Number('0').toFixed(SHORTENED_TOKEN_PRECISION).toString(),
 };
 
-interface CachedAssets {
-  [ipfsHash: string]: string;
-}
+// interface CachedAssets {
+//   [ipfsHash: string]: string;
+// }
 
 interface CreateAssetContext {
   setSelectedCollection: Dispatch<SetStateAction<CarouselCollection>>;

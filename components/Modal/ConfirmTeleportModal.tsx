@@ -14,7 +14,6 @@ import {
 } from './Modal.styled';
 import { ReactComponent as CloseIcon } from '../../public/close.svg';
 import { teleportToProton, claimNfts } from '../../services/ethereum';
-import { delay } from '../../utils';
 import LoadingPage from '../LoadingPage';
 
 export const ConfirmTeleportModal = (): JSX.Element => {
@@ -31,7 +30,7 @@ export const ConfirmTeleportModal = (): JSX.Element => {
     tokenContract,
     tokenId,
     assetId,
-    fetchPageData
+    fetchPageData,
   } = modalProps as ConfirmTeleportModalProps;
 
   useEffect(() => {
@@ -45,89 +44,117 @@ export const ConfirmTeleportModal = (): JSX.Element => {
         tokenContract: tokenContract,
         tokenIds: [tokenId],
         provider: library.getSigner(),
-        to: receiver
+        to: receiver,
       });
 
       try {
         await txPreHash.wait();
-        addToast(`Teleported successfully.`, { appearance: 'success', autoDismiss: true });
-        addToast('It will take 1 ~ 2 minutes to have teleported NFT in your WebAuth.com wallet.', { appearance: 'info', autoDismiss: false });
+        addToast('Teleported successfully.', {
+          appearance: 'success',
+          autoDismiss: true,
+        });
+        addToast(
+          'It will take 1 ~ 2 minutes to have teleported NFT in your WebAuth.com wallet.',
+          { appearance: 'info', autoDismiss: false }
+        );
       } catch (err) {
-        addToast('Teleport failed.', { appearance: 'error', autoDismiss: true });
+        addToast('Teleport failed.', {
+          appearance: 'error',
+          autoDismiss: true,
+        });
       }
     } else {
       const teleportRes = await protonSDK.teleportToEth({
         asset_id: assetId,
-        to_address: receiver?.substring(2)
+        to_address: receiver?.substring(2),
       });
-      
+
       if (!teleportRes.success) {
-        addToast('Teleport failed.', { appearance: 'error', autoDismiss: true });
+        addToast('Teleport failed.', {
+          appearance: 'error',
+          autoDismiss: true,
+        });
       } else {
-        addToast(`Teleported successfully.`, { appearance: 'success', autoDismiss: true });
-        addToast("To claim NFT, please connect recipient's wallet and check the deposit list.", { appearance: 'info', autoDismiss: false });
+        addToast('Teleported successfully.', {
+          appearance: 'success',
+          autoDismiss: true,
+        });
+        addToast(
+          `To claim NFT, please connect recipient's wallet and check the deposit list.`,
+          { appearance: 'info', autoDismiss: false }
+        );
       }
     }
-    
+
     await fetchPageData();
     setIsLoading(false);
     closeModal();
-  }
+  };
 
   const claimNFT = async () => {
     setIsLoading(true);
     if (ethToProton) {
-      const txPreHash = await claimNfts(tokenContract, [tokenId], library.getSigner());
+      const txPreHash = await claimNfts(
+        tokenContract,
+        [tokenId],
+        library.getSigner()
+      );
       try {
         await txPreHash.wait();
-        addToast('Claimed successfully!', { appearance: 'success', autoDismiss: true });
+        addToast('Claimed successfully!', {
+          appearance: 'success',
+          autoDismiss: true,
+        });
       } catch (err) {
         addToast('Claim failed.', { appearance: 'error', autoDismiss: true });
-        console.log("claim error", err);
+        console.log('claim error', err);
         setIsLoading(false);
         return;
       }
     } else {
       const claimbackRes = await protonSDK.claimbackTeleport({
-        asset_id: assetId
+        asset_id: assetId,
       });
 
       if (!claimbackRes.success) {
-        addToast('Claim back failed.', { appearance: 'error', autoDismiss: true });
+        addToast('Claim back failed.', {
+          appearance: 'error',
+          autoDismiss: true,
+        });
         setIsLoading(false);
         return;
       } else {
-        addToast('Claimed successfully!', { appearance: 'success', autoDismiss: true });
+        addToast('Claimed successfully!', {
+          appearance: 'success',
+          autoDismiss: true,
+        });
       }
     }
 
     await fetchPageData();
     setIsLoading(false);
     closeModal();
-  }
+  };
 
   return (
     <Background>
-      {!isLoading ? <ModalBox>
-        <Section>
-          <Title>Teleport NFT</Title>
-          <CloseIconContainer role="button" onClick={closeModal}>
-            <CloseIcon />
-          </CloseIconContainer>
-        </Section>
-        <Description>
-          Are you sure you will teleport this NFT?
-        </Description>
-        <Section>
-          <HalfButton onClick={claimNFT}>
-            Claim
-          </HalfButton>
-          <HalfButton onClick={teleportNFT}>
-            Teleport
-          </HalfButton>
-        </Section>
-      </ModalBox> :
-      <LoadingPage></LoadingPage>}
+      {!isLoading ? (
+        <ModalBox>
+          <Section>
+            <Title>Teleport NFT</Title>
+            <CloseIconContainer role="button" onClick={closeModal}>
+              <CloseIcon />
+            </CloseIconContainer>
+          </Section>
+          <Description>Are you sure you will teleport this NFT?</Description>
+          <Section>
+            <HalfButton onClick={claimNFT}>Claim</HalfButton>
+            <HalfButton onClick={teleportNFT}>Teleport</HalfButton>
+          </Section>
+        </ModalBox>
+      ) : (
+        <LoadingPage></LoadingPage>
+      )}
     </Background>
   );
 };

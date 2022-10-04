@@ -23,13 +23,13 @@ import { Integrations } from '@sentry/tracing';
 import { ToastProvider } from 'react-toast-notifications';
 
 const Web3ProviderNetwork =
-  typeof window !== "undefined" && createWeb3ReactRoot('NETWORK');
+  typeof window !== 'undefined' && createWeb3ReactRoot('NETWORK');
 
 const getLibrary = (provider: ExternalProvider) => {
   const library = new Web3Provider(provider);
   library.pollingInterval = 8000;
   return library;
-}
+};
 
 NProgress.configure({
   minimum: 0.3,
@@ -77,9 +77,22 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
   return (
     <SimpleReactLightbox>
       <ToastProvider>
-      <Web3ReactProvider getLibrary={getLibrary}>
-        {typeof window !== "undefined" ? (
-          <Web3ProviderNetwork getLibrary={getLibrary}>
+        <Web3ReactProvider getLibrary={getLibrary}>
+          {typeof window !== 'undefined' ? (
+            <Web3ProviderNetwork getLibrary={getLibrary}>
+              <ModalProvider>
+                <AuthProvider>
+                  <BlacklistProvider>
+                    <CreateAssetProvider>
+                      <NavBar />
+                      <Component {...pageProps} />
+                      <Footer />
+                    </CreateAssetProvider>
+                  </BlacklistProvider>
+                </AuthProvider>
+              </ModalProvider>
+            </Web3ProviderNetwork>
+          ) : (
             <ModalProvider>
               <AuthProvider>
                 <BlacklistProvider>
@@ -91,21 +104,8 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
                 </BlacklistProvider>
               </AuthProvider>
             </ModalProvider>
-          </Web3ProviderNetwork>
-        ) : (
-          <ModalProvider>
-            <AuthProvider>
-              <BlacklistProvider>
-                <CreateAssetProvider>
-                  <NavBar />
-                  <Component {...pageProps} />
-                  <Footer />
-                </CreateAssetProvider>
-              </BlacklistProvider>
-            </AuthProvider>
-          </ModalProvider>
-        )}
-      </Web3ReactProvider>
+          )}
+        </Web3ReactProvider>
       </ToastProvider>
     </SimpleReactLightbox>
   );

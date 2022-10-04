@@ -8,6 +8,8 @@ import {
   SetStateAction,
 } from 'react';
 import { useScrollLock } from '../../hooks';
+import { ETH_ASSET } from '../../services/ethereum';
+import { Asset } from '../../services/assets';
 import { CarouselCollection, NewCollection } from '../CollectionsCarousel';
 
 export const MODAL_TYPES = {
@@ -25,7 +27,7 @@ export const MODAL_TYPES = {
   REPORT: 'REPORT',
   CONFIRM_TELEPORT: 'CONFIRM_TELEPORT',
   SELECT_WALLET: 'SELECT_WALLET',
-  SELECT_ASSETS: 'SELECT_ASSETS'
+  SELECT_ASSETS: 'SELECT_ASSETS',
 };
 
 type Props = {
@@ -103,7 +105,7 @@ export interface SelectAssetsModalProps extends GeneralModalProps {
   ethToProton: boolean;
   owner: string;
   nftType: string;
-  setSelectedNft: (nfts: any) => Promise<void>;
+  setSelectedNfts: (nfts: (Asset | ETH_ASSET)[]) => Promise<void>;
 }
 
 type ModalProps =

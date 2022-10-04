@@ -301,7 +301,7 @@ class ProtonSDK {
         transactionId: result.processed.id,
       };
     } catch (e) {
-      console.log("---", e)
+      console.log('---', e);
       return {
         success: false,
         error:
@@ -1790,15 +1790,15 @@ class ProtonSDK {
   };
 
   claimbackTeleport = async ({
-    asset_id
+    asset_id,
   }: {
-    asset_id: string
+    asset_id: string;
   }): Promise<Response> => {
     try {
       if (!this.session || !this.auth) {
         throw new Error('Unable to teleport NFTs without logging in.');
       }
-  
+
       const actions = [
         {
           account: process.env.NEXT_PUBLIC_PRT_NFT_BRIDGE,
@@ -1810,16 +1810,13 @@ class ProtonSDK {
             },
           ],
           data: {
-            asset_id
+            asset_id,
           },
         },
       ];
-  
-      await this.session.transact(
-        { actions },
-        { broadcast: true }
-      );
-  
+
+      await this.session.transact({ actions }, { broadcast: true });
+
       return { success: true };
     } catch (e) {
       return {
@@ -1827,14 +1824,14 @@ class ProtonSDK {
         error: 'An error has occurred while trying to claim.',
       };
     }
-  }
+  };
 
   topUpTeleportFee = async (amount: number): Promise<Response> => {
     try {
       if (!this.session || !this.auth) {
         throw new Error('Unable to top up without logging in.');
       }
-  
+
       const actions = [
         {
           account: 'eosio.token',
@@ -1849,16 +1846,13 @@ class ProtonSDK {
             from: this.auth.actor,
             to: process.env.NEXT_PUBLIC_PRT_NFT_BRIDGE,
             quantity: `${amount.toFixed(4)} XPR`,
-            memo: 'Top up teleport fee.'
+            memo: 'Top up teleport fee.',
           },
         },
       ];
-  
-      await this.session.transact(
-        { actions },
-        { broadcast: true }
-      );
-  
+
+      await this.session.transact({ actions }, { broadcast: true });
+
       return { success: true };
     } catch (e) {
       return {
@@ -1866,20 +1860,20 @@ class ProtonSDK {
         error: 'An error has occurred while trying to top up teleport fee.',
       };
     }
-  }
+  };
 
   teleportToEth = async ({
     asset_id,
-    to_address
+    to_address,
   }: {
-    asset_id: string,
-    to_address: string
+    asset_id: string;
+    to_address: string;
   }): Promise<Response> => {
     try {
       if (!this.session || !this.auth) {
         throw new Error('Unable to teleport NFTs without logging in.');
       }
-  
+
       const actions = [
         {
           account: process.env.NEXT_PUBLIC_PRT_NFT_BRIDGE,
@@ -1892,16 +1886,13 @@ class ProtonSDK {
           ],
           data: {
             asset_id,
-            to_address
+            to_address,
           },
         },
       ];
-  
-      await this.session.transact(
-        { actions },
-        { broadcast: true }
-      );
-  
+
+      await this.session.transact({ actions }, { broadcast: true });
+
       return { success: true };
     } catch (e) {
       return {
@@ -1909,7 +1900,7 @@ class ProtonSDK {
         error: 'An error has occurred while trying to cancel an auction.',
       };
     }
-  }
+  };
 }
 
 export default new ProtonSDK();
