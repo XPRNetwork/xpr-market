@@ -60,21 +60,22 @@ export enum NftType {
 
 export const getNfts = async (owner: string): Promise<ETH_ASSET[]> => {
   let ownedNfts = [];
-  let pageKey = null;
+  let page = null;
 
   try {
     do {
       const response = await web3.alchemy.getNfts({
         owner,
         withMetadata: true,
-        ...(pageKey ? { pageKey } : {}),
+        ...(page ? { pageKey: page } : {}),
       });
 
       if (response.ownedNfts?.length) {
         ownedNfts = ownedNfts.concat(response.ownedNfts);
       }
-      pageKey = response.pageKey;
-    } while (pageKey);
+      const { pageKey } = response;
+      page = pageKey;
+    } while (page);
 
     return ownedNfts.map((nft) => {
       return {
