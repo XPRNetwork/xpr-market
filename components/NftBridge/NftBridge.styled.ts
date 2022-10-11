@@ -167,7 +167,6 @@ export const NftName = styled.p`
   flex: 1;
   text-overflow: ellipsis;
   overflow: hidden;
-  white-space: nowrap;
 `;
 
 export const TabContainer = styled.div`

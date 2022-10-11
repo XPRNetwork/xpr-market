@@ -7,6 +7,7 @@ import { Image } from '../../styles/index.styled';
 interface EthNftProps {
   data: ETH_ASSET;
   selectedNft?: ETH_ASSET;
+  close?: boolean;
   setSelectedNft?: (nft: ETH_ASSET) => void;
   removeSelectedNft?: (nft: ETH_ASSET) => void;
 }
@@ -30,15 +31,19 @@ export const EthNft = (props: EthNftProps): JSX.Element => {
         props.selectedNft?.contractAddress == props.data.contractAddress &&
         props.selectedNft?.tokenId == props.data.tokenId
       }>
-      <Image
-        src={attributes?.image}
-        width="48"
-        height="48"
-        style={{ marginRight: 20, borderRadius: 4, cursor: 'pointer' }}
+      <div
         onClick={() => props.setSelectedNft && props.setSelectedNft(props.data)}
-      />
-      <NftName>{attributes?.name}</NftName>
-      <Image
+        style={{display: 'flex', alignItems: 'center', flex: 1, cursor: 'pointer'}}
+      >
+        <Image
+          src={attributes?.image}
+          width="48"
+          height="48"
+          style={{ marginRight: 20, borderRadius: 4 }}
+        />
+        <NftName>{attributes?.name}</NftName>
+      </div>
+      {props.close && <Image
         style={{
           width: '24px',
           height: '24px',
@@ -50,7 +55,7 @@ export const EthNft = (props: EthNftProps): JSX.Element => {
         onClick={() =>
           props.removeSelectedNft && props.removeSelectedNft(props.data)
         }
-      />
+      />}
     </NftItem>
   );
 };
@@ -58,6 +63,7 @@ export const EthNft = (props: EthNftProps): JSX.Element => {
 interface ProtonNftProps {
   data: Asset;
   selectedNft?: Asset;
+  close?: boolean;
   setSelectedNft?: (nft: Asset) => void;
   removeSelectedNft?: (nft: Asset) => void;
 }
@@ -75,15 +81,19 @@ export const ProtonNft = (props: ProtonNftProps): JSX.Element => {
 
   return (
     <NftItem selected={props.selectedNft?.asset_id == props.data.asset_id}>
-      <Image
-        src={attributes?.image}
-        width="50"
-        height="50"
-        style={{ marginRight: 20, borderRadius: 4, cursor: 'pointer' }}
+      <div
         onClick={() => props.setSelectedNft && props.setSelectedNft(props.data)}
-      />
-      <NftName>{attributes?.name}</NftName>
-      <Image
+        style={{display: 'flex', alignItems: 'center', flex: 1, cursor: 'pointer'}}
+      >
+        <Image
+            src={attributes?.image}
+            width="50"
+            height="50"
+            style={{ marginRight: 20, borderRadius: 4 }}
+          />
+          <NftName>{attributes?.name}</NftName>
+      </div>
+      {props.close && <Image
         style={{
           width: '24px',
           height: '24px',
@@ -95,7 +105,7 @@ export const ProtonNft = (props: ProtonNftProps): JSX.Element => {
         onClick={() =>
           props.removeSelectedNft && props.removeSelectedNft(props.data)
         }
-      />
+      />}
     </NftItem>
   );
 };
