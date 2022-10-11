@@ -31,31 +31,38 @@ export const EthNft = (props: EthNftProps): JSX.Element => {
         props.selectedNft?.contractAddress == props.data.contractAddress &&
         props.selectedNft?.tokenId == props.data.tokenId
       }>
-      <div
+      <NftName
+        role="button"
         onClick={() => props.setSelectedNft && props.setSelectedNft(props.data)}
-        style={{display: 'flex', alignItems: 'center', flex: 1, cursor: 'pointer'}}
-      >
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          flex: 1,
+          cursor: 'pointer',
+        }}>
         <Image
           src={attributes?.image}
           width="48"
           height="48"
           style={{ marginRight: 20, borderRadius: 4 }}
         />
-        <NftName>{attributes?.name}</NftName>
-      </div>
-      {props.close && <Image
-        style={{
-          width: '24px',
-          height: '24px',
-          margin: '0 10px',
-          cursor: 'pointer',
-        }}
-        src="/close.svg"
-        color="#752EEB"
-        onClick={() =>
-          props.removeSelectedNft && props.removeSelectedNft(props.data)
-        }
-      />}
+        <span>{attributes?.name}</span>
+      </NftName>
+      {props.close && (
+        <Image
+          style={{
+            width: '24px',
+            height: '24px',
+            margin: '0 10px',
+            cursor: 'pointer',
+          }}
+          src="/close.svg"
+          color="#752EEB"
+          onClick={() =>
+            props.removeSelectedNft && props.removeSelectedNft(props.data)
+          }
+        />
+      )}
     </NftItem>
   );
 };
@@ -81,31 +88,34 @@ export const ProtonNft = (props: ProtonNftProps): JSX.Element => {
 
   return (
     <NftItem selected={props.selectedNft?.asset_id == props.data.asset_id}>
-      <div
-        onClick={() => props.setSelectedNft && props.setSelectedNft(props.data)}
-        style={{display: 'flex', alignItems: 'center', flex: 1, cursor: 'pointer'}}
-      >
-        <Image
-            src={attributes?.image}
-            width="50"
-            height="50"
-            style={{ marginRight: 20, borderRadius: 4 }}
-          />
-          <NftName>{attributes?.name}</NftName>
-      </div>
-      {props.close && <Image
-        style={{
-          width: '24px',
-          height: '24px',
-          margin: '0 10px',
-          cursor: 'pointer',
-        }}
-        src="/close.svg"
-        color="#752EEB"
+      <NftName
+        role="button"
         onClick={() =>
-          props.removeSelectedNft && props.removeSelectedNft(props.data)
-        }
-      />}
+          props.setSelectedNft && props.setSelectedNft(props.data)
+        }>
+        <Image
+          src={attributes?.image}
+          width="50"
+          height="50"
+          style={{ marginRight: 20, borderRadius: 4 }}
+        />
+        <span>{attributes?.name}</span>
+      </NftName>
+      {props.close && (
+        <Image
+          style={{
+            width: '24px',
+            height: '24px',
+            margin: '0 10px',
+            cursor: 'pointer',
+          }}
+          src="/close.svg"
+          color="#752EEB"
+          onClick={() =>
+            props.removeSelectedNft && props.removeSelectedNft(props.data)
+          }
+        />
+      )}
     </NftItem>
   );
 };

@@ -148,4 +148,3 @@ export type Filter = {
   label: string;
   queryParam: string;
 };
-
