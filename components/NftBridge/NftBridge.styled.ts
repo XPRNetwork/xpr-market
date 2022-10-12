@@ -165,9 +165,9 @@ export const NftItem = styled.div<{ selected: boolean }>`
 
 export const NftName = styled.p`
   flex: 1;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
 `;
 
 export const TabContainer = styled.div`

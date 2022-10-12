@@ -42,8 +42,6 @@ import { useAuthContext } from '../Provider';
 import { EthNft, ProtonNft } from './Nft';
 import { useModalContext, MODAL_TYPES } from '../Provider';
 import { TrackingTables } from './TrackingTables';
-import { nftBridgeOracle } from '../../utils/constants';
-import { getFromApi } from '../../utils/browser-fetch';
 import { displayNumberAsAmount } from '@bloks/numbers';
 
 const TRANSFER_DIR = {
@@ -141,15 +139,6 @@ const NftBridge = (): JSX.Element => {
     }
   };
 
-  const checkOracle = async () => {
-    try {
-      await getFromApi(nftBridgeOracle);
-      return true;
-    } catch (err) {
-      return false;
-    }
-  };
-
   const setSelectedNfts = (nfts: (Asset | ETH_ASSET)[]) => {
     if (!nfts?.length) return;
 
@@ -226,8 +215,8 @@ const NftBridge = (): JSX.Element => {
   };
 
   const topUpFeesBalance = async () => {
-    // Top up 5 XPR as default
-    const res = await protonSDK.topUpTeleportFee(5);
+    // Top up 1 XPR as default
+    const res = await protonSDK.topUpTeleportFee(1);
     if (res.success) {
       if (currentUser?.actor) {
         proton.getFeesBalanceForTeleport(currentUser.actor).then((balance) => {
@@ -250,15 +239,6 @@ const NftBridge = (): JSX.Element => {
 
     if (!checkFeesBalance()) {
       await topUpFeesBalance();
-      return;
-    }
-
-    const oracleStatus = await checkOracle();
-    if (!oracleStatus) {
-      addToast('Oracle is down. please contact with developer.', {
-        appearance: 'warning',
-        autoDismiss: true,
-      });
       return;
     }
 
@@ -529,12 +509,18 @@ const NftBridge = (): JSX.Element => {
                     <>
                       <Tab
                         selected={nftType === NftType.ERC_721}
-                        onClick={() => setNftType(NftType.ERC_721)}>
+                        onClick={() => {
+                          setEthAssetsToSend([]);
+                          setNftType(NftType.ERC_721);
+                        }}>
                         ERC721
                       </Tab>
                       <Tab
                         selected={nftType === NftType.ERC_1155}
-                        onClick={() => setNftType(NftType.ERC_1155)}>
+                        onClick={() => {
+                          setEthAssetsToSend([]);
+                          setNftType(NftType.ERC_1155);
+                        }}>
                         ERC1155
                       </Tab>
                       {account && (
@@ -575,6 +561,7 @@ const NftBridge = (): JSX.Element => {
                     {filteredEthAssets.map((ethAsset: ETH_ASSET, idx) => (
                       <EthNft
                         data={ethAsset}
+                        close={true}
                         key={idx}
                         removeSelectedNft={removeSelectedNft}
                       />
@@ -594,6 +581,7 @@ const NftBridge = (): JSX.Element => {
                     {protonAssetsToSend.map((asset: Asset, idx) => (
                       <ProtonNft
                         data={asset}
+                        close={true}
                         key={idx}
                         removeSelectedNft={removeSelectedNft}
                       />
@@ -670,7 +658,7 @@ const NftBridge = (): JSX.Element => {
                     <Button fullWidth onClick={handleTransfer}>
                       <>
                         {!checkFeesBalance() && (
-                          <span>Top Up &nbsp; 5 XPR</span>
+                          <span>Top Up &nbsp; 1 XPR</span>
                         )}
                         {checkFeesBalance() && <span>Transfer</span>}
                       </>

@@ -148,5 +148,3 @@ export type Filter = {
   label: string;
   queryParam: string;
 };
-
-export const nftBridgeOracle = 'http://207.154.195.217:8080';
