@@ -56,6 +56,7 @@ export enum NftType {
   // Extra
   ATOMIC = 'ATOMIC',
   DEPOSIT_LIST = 'DEPOSIT_LIST',
+  MINTED_LIST = 'MINTED_LIST',
 }
 
 export const getNfts = async (owner: string): Promise<ETH_ASSET[]> => {

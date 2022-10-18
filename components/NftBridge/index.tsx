@@ -85,7 +85,7 @@ const NftBridge = (): JSX.Element => {
 
   useEffect(() => {
     if (account) {
-      setAdvancedAddr(account);
+      // setAdvancedAddr(account);
     } else {
       setAdvancedAddr('');
     }
@@ -387,20 +387,24 @@ const NftBridge = (): JSX.Element => {
         <Content>
           <ContentHeader>Transfer NFTs</ContentHeader>
           <MessageBox>
-            <>
+            <div style={{ margin: '0 0 24px' }}>
               {account ? (
                 <Row>
-                  <div
-                    style={{ whiteSpace: 'nowrap', margin: '16px 10px 0 0' }}>
-                    Eth Wallet
+                  <div style={{ whiteSpace: 'nowrap', marginRight: 10 }}>
+                    Connected Wallet
                   </div>
                   <div
                     style={{
                       display: 'flex',
                       justifyContent: 'center',
-                      marginTop: 16,
+                      alignItems: 'center',
                     }}>
-                    <div style={{ marginRight: 20, wordBreak: 'break-all' }}>
+                    <div
+                      style={{
+                        marginRight: 20,
+                        wordBreak: 'break-all',
+                        textAlign: 'left',
+                      }}>
                       {account}
                     </div>
                     <Image
@@ -413,15 +417,16 @@ const NftBridge = (): JSX.Element => {
                   </div>
                 </Row>
               ) : (
-                <p>
+                <div>
                   Click on the button below to connect to your Ethereum wallet.
-                </p>
+                </div>
               )}
-            </>
+            </div>
 
             {!account && (
               <Button
                 smallSize={true}
+                margin="0 0 16px"
                 onClick={() => openModal(MODAL_TYPES.SELECT_WALLET)}>
                 Connect Wallet
               </Button>
@@ -429,15 +434,19 @@ const NftBridge = (): JSX.Element => {
 
             {transDir == TRANSFER_DIR.PROTON_TO_ETH && (
               <Row>
-                <div style={{ whiteSpace: 'nowrap', margin: '16px 10px 0 0' }}>
-                  Receiver
+                <div style={{ whiteSpace: 'nowrap', margin: '-6px 10px 0 0' }}>
+                  Receive Address
                 </div>
-                <InputField
-                  mt="16px"
-                  value={advancedAddr}
-                  setValue={setAdvancedAddr}
-                  placeholder="0xd0E4019dB20aE473190f1c2a64b522e3b7A8d5B0"
-                />
+                <div style={{ marginTop: 5, flex: 1 }}>
+                  <InputField
+                    value={advancedAddr}
+                    setValue={setAdvancedAddr}
+                    placeholder="Enter Address (optional)"
+                  />
+                  <p style={{ fontSize: 12, textAlign: 'left' }}>
+                    Note: leave empty for transferring NFTs between your wallets{' '}
+                  </p>
+                </div>
               </Row>
             )}
           </MessageBox>
@@ -469,7 +478,7 @@ const NftBridge = (): JSX.Element => {
               }}
               style={{ order: 3 }}
               role="img">
-              &#8250;
+              <img src="swap-vert-blue.svg" alt="swapIcon" />
             </SwitchIcon>
 
             <span style={{ order: 4, marginLeft: 20 }}>To</span>
@@ -523,14 +532,12 @@ const NftBridge = (): JSX.Element => {
                         }}>
                         ERC1155
                       </Tab>
-                      {account && (
-                        <Tab
-                          onClick={() => setNftType(NftType.DEPOSIT_LIST)}
-                          selected={nftType === NftType.DEPOSIT_LIST}
-                          align="right">
-                          DEPOSIT LIST
-                        </Tab>
-                      )}
+                      <Tab
+                        selected={nftType === NftType.MINTED_LIST}
+                        onClick={() => setNftType(NftType.MINTED_LIST)}
+                        align="right">
+                        Minted List
+                      </Tab>
                     </>
                   )}
 
@@ -541,21 +548,19 @@ const NftBridge = (): JSX.Element => {
                         onClick={() => setNftType(NftType.ATOMIC)}>
                         Atomic Assets
                       </Tab>
-                      {account && (
-                        <Tab
-                          onClick={() => setNftType(NftType.DEPOSIT_LIST)}
-                          selected={nftType === NftType.DEPOSIT_LIST}
-                          align="right">
-                          DEPOSIT LIST
-                        </Tab>
-                      )}
+                      <Tab
+                        onClick={() => setNftType(NftType.DEPOSIT_LIST)}
+                        selected={nftType === NftType.DEPOSIT_LIST}
+                        align="right">
+                        Deposit List
+                      </Tab>
                     </>
                   )}
                 </Tabs>
               </TabContainer>
 
               {transDir == TRANSFER_DIR.ETH_TO_PROTON &&
-                nftType !== NftType.DEPOSIT_LIST &&
+                nftType !== NftType.MINTED_LIST &&
                 (filteredEthAssets.length ? (
                   <NftBox>
                     {filteredEthAssets.map((ethAsset: ETH_ASSET, idx) => (
@@ -597,75 +602,84 @@ const NftBridge = (): JSX.Element => {
                   </NoNFTBox>
                 ))}
 
-              {nftType === NftType.DEPOSIT_LIST && <TrackingTables />}
-
-              {nftType !== NftType.DEPOSIT_LIST && (
-                <>
-                  <AddNFTBtn onClick={openAssetsModal}>
-                    <PlusIcon>+</PlusIcon>
-                    <span style={{ marginLeft: 10 }}>Add NFT</span>
-                  </AddNFTBtn>
-
-                  <InfoBox>
-                    <div
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        margin: '10px 0',
-                      }}>
-                      <span>Fee Balance: &nbsp;</span>
-                      <span
-                        style={checkFeesBalance() ? {} : { color: '#F94E6C' }}>
-                        {displayNumberAsAmount(
-                          feesBalance?.balance - feesBalance?.reserved,
-                          4,
-                          true
-                        )}{' '}
-                        XPR
-                      </span>
-                    </div>
-                    <div
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        margin: '10px 0',
-                      }}>
-                      <span>Fee: &nbsp;</span>
-                      {transDir == TRANSFER_DIR.ETH_TO_PROTON && (
-                        <span>
-                          {displayNumberAsAmount(
-                            filteredFees?.port_in_fee,
-                            4,
-                            true
-                          )}{' '}
-                          XPR
-                        </span>
-                      )}
-                      {transDir == TRANSFER_DIR.PROTON_TO_ETH && (
-                        <span>
-                          {displayNumberAsAmount(
-                            filteredFees?.port_out_fee,
-                            4,
-                            true
-                          )}{' '}
-                          XPR
-                        </span>
-                      )}
-                    </div>
-                  </InfoBox>
-
-                  <div style={{ width: 200, marginTop: 10 }}>
-                    <Button fullWidth onClick={handleTransfer}>
-                      <>
-                        {!checkFeesBalance() && (
-                          <span>Top Up &nbsp; 1 XPR</span>
-                        )}
-                        {checkFeesBalance() && <span>Transfer</span>}
-                      </>
-                    </Button>
-                  </div>
-                </>
+              {nftType === NftType.DEPOSIT_LIST && (
+                <TrackingTables selectedTab={NftType.DEPOSIT_LIST} />
               )}
+
+              {nftType === NftType.MINTED_LIST && (
+                <TrackingTables selectedTab={NftType.MINTED_LIST} />
+              )}
+
+              {nftType !== NftType.DEPOSIT_LIST &&
+                nftType !== NftType.MINTED_LIST && (
+                  <>
+                    <AddNFTBtn onClick={openAssetsModal}>
+                      <PlusIcon>+</PlusIcon>
+                      <span style={{ marginLeft: 10 }}>Add NFT</span>
+                    </AddNFTBtn>
+
+                    <InfoBox>
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          margin: '10px 0',
+                        }}>
+                        <span>Fee Balance: &nbsp;</span>
+                        <span
+                          style={
+                            checkFeesBalance() ? {} : { color: '#F94E6C' }
+                          }>
+                          {displayNumberAsAmount(
+                            feesBalance?.balance - feesBalance?.reserved,
+                            4,
+                            true
+                          )}{' '}
+                          XPR
+                        </span>
+                      </div>
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          margin: '10px 0',
+                        }}>
+                        <span>Fee: &nbsp;</span>
+                        {transDir == TRANSFER_DIR.ETH_TO_PROTON && (
+                          <span>
+                            {displayNumberAsAmount(
+                              filteredFees?.port_in_fee,
+                              4,
+                              true
+                            )}{' '}
+                            XPR
+                          </span>
+                        )}
+                        {transDir == TRANSFER_DIR.PROTON_TO_ETH && (
+                          <span>
+                            {displayNumberAsAmount(
+                              filteredFees?.port_out_fee,
+                              4,
+                              true
+                            )}{' '}
+                            XPR
+                          </span>
+                        )}
+                      </div>
+                    </InfoBox>
+
+                    <div style={{ width: 200, marginTop: 10 }}>
+                      <Button fullWidth onClick={handleTransfer}>
+                        <>
+                          {!checkFeesBalance() && (
+                            <span>Top Up &nbsp; 1 XPR</span>
+                          )}
+                          {checkFeesBalance() && <span>Transfer</span>}
+                        </>
+                      </Button>
+                    </div>
+                  </>
+                )}
             </>
           )}
         </Content>

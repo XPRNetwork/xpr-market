@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import { useToasts } from 'react-toast-notifications';
-import { getDepositList } from '../../services/ethereum';
-import { claimNfts } from '../../services/ethereum';
+import { getDepositList, claimNfts, NftType } from '../../services/ethereum';
+import proton from '../../services/proton-rpc';
 import { shortenAddress } from '../../utils';
 import Button from '../Button';
 import Spinner from '../Spinner';
@@ -16,16 +16,26 @@ import {
 } from './NftBridge.styled';
 import TableContentWrapper from '../TableContentWraper';
 
-export const TrackingTables = (): JSX.Element => {
+interface Props {
+  selectedTab: NftType;
+}
+
+export const TrackingTables = (props: Props): JSX.Element => {
+  const { selectedTab } = props;
   const { library, account } = useWeb3React();
   const { addToast } = useToasts();
 
   const [depositList, setDepositList] = useState([]);
+  const [mintedList, setMintedList] = useState([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    fetchDepositList();
-  }, [account]);
+    if (selectedTab == NftType.DEPOSIT_LIST) {
+      fetchDepositList();
+    } else {
+      fetchMintedList();
+    }
+  }, [account, selectedTab]);
 
   const fetchDepositList = async () => {
     if (!library) return;
@@ -35,6 +45,14 @@ export const TrackingTables = (): JSX.Element => {
     const res = await getDepositList(account, library.getSigner());
     const filtered = res?.filter((el) => !el.locked);
     setDepositList(filtered);
+    setIsLoading(false);
+  };
+
+  const fetchMintedList = async () => {
+    setIsLoading(true);
+    setMintedList([]);
+    const res = await proton.getMintedForTeleport();
+    setMintedList(res);
     setIsLoading(false);
   };
 
@@ -72,7 +90,7 @@ export const TrackingTables = (): JSX.Element => {
     <>
       {isLoading && <Spinner></Spinner>}
 
-      {!isLoading && (
+      {!isLoading && selectedTab == NftType.DEPOSIT_LIST && (
         <TableWrapper>
           <Table>
             <thead>
@@ -112,6 +130,35 @@ export const TrackingTables = (): JSX.Element => {
                           Claim
                         </Button>
                       </TableDataCell>
+                    </TableRow>
+                  ))}
+              </TableContentWrapper>
+            </tbody>
+          </Table>
+        </TableWrapper>
+      )}
+
+      {!isLoading && selectedTab == NftType.MINTED_LIST && (
+        <TableWrapper>
+          <Table>
+            <thead>
+              <TableHeaderRow>
+                <TableHeaderCell width={5}>#</TableHeaderCell>
+                <TableHeaderCell width={25}>Asset ID</TableHeaderCell>
+                <TableHeaderCell width={25}>Owner</TableHeaderCell>
+              </TableHeaderRow>
+            </thead>
+            <tbody>
+              <TableContentWrapper
+                loading={isLoading}
+                noData={!mintedList.length}
+                columns={5}>
+                {mintedList.length > 0 &&
+                  mintedList.map((el, idx) => (
+                    <TableRow key={idx}>
+                      <TableDataCell>{idx + 1}</TableDataCell>
+                      <TableDataCell>{el.asset_id}</TableDataCell>
+                      <TableDataCell>{el.owner}</TableDataCell>
                     </TableRow>
                   ))}
               </TableContentWrapper>

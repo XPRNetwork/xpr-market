@@ -19,6 +19,7 @@ export const HeaderTitle = styled.p`
   color: #1a1a1a;
   ${breakpoint.mobile`
     font-size: 40px;
+    line-height: 50px;
   `};
 `;
 
@@ -26,18 +27,19 @@ export const SubTitle = styled.p`
   width: 100%;
   max-width: 500px;
   color: #808080;
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 450;
-  line-height: 28px;
-  margin: 30px auto 0;
+  line-height: 20px;
+  margin: 24px auto 0;
   ${breakpoint.mobile`
     font-size: 16px;
+    line-height: 24px;
   `};
 `;
 
 export const ContentHeader = styled.p`
   color: #1a1a1a;
-  margin: 10px auto;
+  margin: 18px auto 14px;
   font-size: 28px;
   line-height: 35px;
   font-weight: 500;
@@ -79,6 +81,10 @@ export const SwitchIcon = styled.div`
   background: #f0e8fd;
   padding-left: 4px;
   cursor: pointer;
+
+  img {
+    transform: rotate(90deg);
+  }
 `;
 
 export const ChainBtn = styled.div<{ isFrom: boolean }>`
@@ -123,11 +129,11 @@ export const MessageBox = styled.div`
   padding: 10px 0px;
   color: #808080;
   text-align: center;
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 450;
-  line-height: 28px;
+  line-height: 20px;
   ${breakpoint.mobile`
-    font-size: 16px;
+    line-height: 24px;
   `};
 `;
 
@@ -187,7 +193,7 @@ export const Tab = styled.div<{ selected: boolean; align?: string }>`
   width: 100%;
   max-width: 200px;
   text-align: center;
-  font-size: 18px;
+  font-size: 14px;
   font-weight: 500;
   color: #6b717f;
   padding: 5px 0;
@@ -272,7 +278,7 @@ export const TableWrapper = styled.div`
 export const Table = styled.table`
   width: 100%;
   ${breakpoint.mobile`
-    width: 600px;
+    // width: 600px;
   `};
 `;
 
