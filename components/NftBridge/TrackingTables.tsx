@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import { useToasts } from 'react-toast-notifications';
+import { useAuthContext } from '../Provider';
 import { getDepositList, claimNfts, NftType } from '../../services/ethereum';
 import proton from '../../services/proton-rpc';
 import { shortenAddress } from '../../utils';
@@ -24,6 +25,7 @@ export const TrackingTables = (props: Props): JSX.Element => {
   const { selectedTab } = props;
   const { library, account } = useWeb3React();
   const { addToast } = useToasts();
+  const { currentUser } = useAuthContext();
 
   const [depositList, setDepositList] = useState([]);
   const [mintedList, setMintedList] = useState([]);
@@ -51,7 +53,7 @@ export const TrackingTables = (props: Props): JSX.Element => {
   const fetchMintedList = async () => {
     setIsLoading(true);
     setMintedList([]);
-    const res = await proton.getMintedForTeleport();
+    const res = await proton.getMintedForTeleport(currentUser.actor);
     setMintedList(res);
     setIsLoading(false);
   };
@@ -73,12 +75,15 @@ export const TrackingTables = (props: Props): JSX.Element => {
         library.getSigner()
       );
       await txPreHash.wait();
+      const temp = depositList.filter(el => el.contract != contract && el.tokenId.toHexString() != tokenId);
+      setDepositList(temp);
       addToast('Claimed successfully!', {
         appearance: 'success',
         autoDismiss: true,
       });
       // Refresh deposit list
-      await fetchDepositList();
+      // await fetchDepositList();
+      setIsLoading(false);
     } catch (err) {
       addToast('Claim failed.', { appearance: 'error', autoDismiss: true });
       setIsLoading(false);
@@ -156,7 +161,7 @@ export const TrackingTables = (props: Props): JSX.Element => {
                 {mintedList.length > 0 &&
                   mintedList.map((el, idx) => (
                     <TableRow key={idx}>
-                      <TableDataCell>{idx + 1}</TableDataCell>
+                      <TableDataCell>{mintedList.length - idx}</TableDataCell>
                       <TableDataCell>{el.asset_id}</TableDataCell>
                       <TableDataCell>{el.owner}</TableDataCell>
                     </TableRow>

@@ -78,20 +78,28 @@ export const getNfts = async (owner: string): Promise<ETH_ASSET[]> => {
       page = pageKey;
     } while (page);
 
-    return ownedNfts.map((nft) => {
+    const reqs = ownedNfts.map(async(nft) => {
+      let attributes = {
+        name: nft.metadata.name,
+        description: nft.metadata.description,
+        image: nft.metadata.image,
+      };
+
+      if (!attributes.name) {
+        attributes = await getNftMetadata(nft.tokenUri?.raw);
+      }
+
       return {
         contractAddress: nft.contract.address,
         tokenId: nft.id.tokenId,
         tokenType: nft.id.tokenMetadata?.tokenType,
         tokenUri: nft.tokenUri?.raw,
         balance: nft.balance,
-        attributes: {
-          name: nft.metadata.name,
-          description: nft.metadata.description,
-          image: nft.metadata.image,
-        },
+        attributes,
       };
     });
+
+    return await Promise.all(reqs);
   } catch (e) {
     throw new Error(e);
   }

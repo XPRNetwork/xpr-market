@@ -282,6 +282,9 @@ const NftBridge = (): JSX.Element => {
           await txPreHash.wait();
         }
 
+        // Clear
+        setEthAssetsToSend([]);
+
         addToast('Transfered to Ethereum NFT Bridge successfully.', {
           appearance: 'success',
           autoDismiss: true,
@@ -297,7 +300,7 @@ const NftBridge = (): JSX.Element => {
             fetchPageData: clearSelectedNfts,
           }));
           openModal(MODAL_TYPES.CONFIRM_TELEPORT);
-        }, 2000);
+        }, 1000);
 
         setIsLoading(false);
       } else {
@@ -335,6 +338,10 @@ const NftBridge = (): JSX.Element => {
           setIsLoading(false);
           return;
         }
+
+        // Clear
+        setProtonAssetsToSend([]);
+
         addToast('Transfered NFTs to PRTBRIDGE', {
           appearance: 'success',
           autoDismiss: true,
@@ -363,7 +370,7 @@ const NftBridge = (): JSX.Element => {
             fetchPageData: clearSelectedNfts,
           }));
           openModal(MODAL_TYPES.CONFIRM_TELEPORT);
-        }, 2000);
+        }, 1000);
 
         setIsLoading(false);
       }
@@ -433,21 +440,21 @@ const NftBridge = (): JSX.Element => {
             )}
 
             {transDir == TRANSFER_DIR.PROTON_TO_ETH && (
-              <Row>
-                <div style={{ whiteSpace: 'nowrap', margin: '-6px 10px 0 0' }}>
-                  Receive Address
-                </div>
-                <div style={{ marginTop: 5, flex: 1 }}>
-                  <InputField
-                    value={advancedAddr}
-                    setValue={setAdvancedAddr}
-                    placeholder="Enter Address (optional)"
-                  />
-                  <p style={{ fontSize: 12, textAlign: 'left' }}>
-                    Note: leave empty for transferring NFTs between your wallets{' '}
-                  </p>
-                </div>
-              </Row>
+            <Row>
+              <div style={{ whiteSpace: 'nowrap', margin: '-6px 10px 0 0' }}>
+                Receive Address
+              </div>
+              <div style={{ marginTop: 5, flex: 1 }}>
+                <InputField
+                  value={advancedAddr}
+                  setValue={setAdvancedAddr}
+                  placeholder="Enter Address (optional)"
+                />
+                <p style={{ fontSize: 12, textAlign: 'left' }}>
+                  Note: leave empty for transferring NFTs between your wallets{' '}
+                </p>
+              </div>
+            </Row>
             )}
           </MessageBox>
 
@@ -613,7 +620,13 @@ const NftBridge = (): JSX.Element => {
               {nftType !== NftType.DEPOSIT_LIST &&
                 nftType !== NftType.MINTED_LIST && (
                   <>
-                    <AddNFTBtn onClick={openAssetsModal}>
+                    <AddNFTBtn
+                      onClick={openAssetsModal}
+                      disabled={
+                        (transDir == TRANSFER_DIR.ETH_TO_PROTON && ethAssetsToSend.length > 0) ||
+                        (transDir == TRANSFER_DIR.PROTON_TO_ETH && protonAssetsToSend.length > 0)
+                      }
+                    >
                       <PlusIcon>+</PlusIcon>
                       <span style={{ marginLeft: 10 }}>Add NFT</span>
                     </AddNFTBtn>

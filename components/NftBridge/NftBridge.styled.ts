@@ -157,10 +157,14 @@ export const NftItem = styled.div<{ selected: boolean }>`
   display: flex;
   align-items: center;
   padding: 4px;
-  // border: 1px solid #752EEB;
+  border: 1px solid #f2f3f6;
   border-radius: 4px;
   margin: 4px 0;
   overflow: hidden;
+  :hover {
+    background: #752EEB;
+    color: #fff;
+  }
   ${({ selected }) =>
     selected &&
     `
@@ -241,7 +245,9 @@ export const AddNFTBtn = styled.button`
   cursor: pointer;
   margin-top: 30px;
   border: none;
-  background: transparent;
+  padding: 8px 20px;
+  border-radius: 6px;
+  // background: transparent;
 `;
 
 export const NoNFTBox = styled.div`

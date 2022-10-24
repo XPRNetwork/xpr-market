@@ -60,7 +60,13 @@ export const SelectAssetsModal = (): JSX.Element => {
   };
 
   const filteredEthAssets = useMemo(() => {
-    return ethAssets.filter((el) => el.tokenType?.toLowerCase() == nftType);
+    const filter = searchText.trim().toLowerCase();
+
+    return ethAssets.filter((el) => {
+      const matchesName = el.attributes.name?.trim()?.toLowerCase()?.indexOf(filter) > -1;
+      const matchesType = el.tokenType?.toLowerCase() == nftType;
+      return matchesName && matchesType;
+    });
   }, [searchText, ethAssets.length]);
 
   const filteredAtomicAssets = useMemo(() => {
@@ -139,7 +145,7 @@ export const SelectAssetsModal = (): JSX.Element => {
                 />
               ))
             ) : (
-              <div style={{ textAlign: 'center', fontSize: 20 }}>No NFT</div>
+              <div style={{ textAlign: 'center', fontSize: 20 }}>No NFTs found</div>
             ))}
 
           {!ethToProton &&
@@ -153,7 +159,7 @@ export const SelectAssetsModal = (): JSX.Element => {
                 />
               ))
             ) : (
-              <div style={{ textAlign: 'center', fontSize: 20 }}>No NFT</div>
+              <div style={{ textAlign: 'center', fontSize: 20 }}>No NFTs found</div>
             ))}
           <br />
 
