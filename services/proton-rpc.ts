@@ -7,6 +7,7 @@ import {
 } from '../utils/constants';
 import { encodeName } from '@bloks/utils';
 import { RpcInterfaces } from '@proton/js';
+import * as ethers from 'ethers';
 
 type User = {
   actor: string;
@@ -281,12 +282,22 @@ class ProtonJs {
     return rows;
   }
 
-  async getMintedForTeleport() {
+  async getMintedForTeleport(chainAccount: string) {
+    const encodedName = encodeName(chainAccount, false);
+    const lowerBound = ethers.BigNumber.from(encodedName).toHexString();
+    const upperBound = ethers.BigNumber.from(encodedName).add(1).toHexString();
+
     const { rows } = await this.rpc.get_table_rows({
       json: true,
       code: process.env.NEXT_PUBLIC_PRT_NFT_BRIDGE,
       scope: 0,
       table: 'minted',
+      limit: 10,
+      reverse: true,
+      key_type: 'i128',
+      index_position: 2,
+      lower_bound: lowerBound + '0000000000000000',
+      upper_bound: upperBound + '0000000000000000',
     });
 
     return rows;

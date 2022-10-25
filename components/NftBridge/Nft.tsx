@@ -16,14 +16,8 @@ export const EthNft = (props: EthNftProps): JSX.Element => {
   const [attributes, setAttributes] = useState<NFT_ATTR>();
 
   useEffect(() => {
-    if (props?.data.attributes.name) {
-      setAttributes(props.data.attributes);
-    } else if (props.data.tokenUri) {
-      getNftMetadata(props.data.tokenUri).then((attr) => {
-        setAttributes(attr);
-      });
-    }
-  }, [props?.data.tokenUri]);
+    setAttributes(props.data.attributes);
+  }, []);
 
   return (
     <NftItem
@@ -79,12 +73,13 @@ export const ProtonNft = (props: ProtonNftProps): JSX.Element => {
   const [attributes, setAttributes] = useState<NFT_ATTR>();
 
   useEffect(() => {
-    if (props.data.data.token_uri) {
-      getNftMetadata(props.data.data.token_uri as string).then((attr) => {
-        setAttributes(attr);
-      });
-    }
-  }, [props?.data.data.token_uri]);
+    // if (props.data.data.token_uri) {
+    //   getNftMetadata(props.data.data.token_uri as string).then((attr) => {
+    //     setAttributes(attr);
+    //   });
+    // }
+    setAttributes(props.data.data as NFT_ATTR);
+  }, []);
 
   return (
     <NftItem selected={props.selectedNft?.asset_id == props.data.asset_id}>
