@@ -63,7 +63,8 @@ export const SelectAssetsModal = (): JSX.Element => {
     const filter = searchText.trim().toLowerCase();
 
     return ethAssets.filter((el) => {
-      const matchesName = el.attributes.name?.trim()?.toLowerCase()?.indexOf(filter) > -1;
+      const matchesName =
+        el.attributes.name?.trim()?.toLowerCase()?.indexOf(filter) > -1;
       const matchesType = el.tokenType?.toLowerCase() == nftType;
       return matchesName && matchesType;
     });
@@ -145,7 +146,9 @@ export const SelectAssetsModal = (): JSX.Element => {
                 />
               ))
             ) : (
-              <div style={{ textAlign: 'center', fontSize: 20 }}>No NFTs found</div>
+              <div style={{ textAlign: 'center', fontSize: 20 }}>
+                No NFTs found
+              </div>
             ))}
 
           {!ethToProton &&
@@ -159,7 +162,9 @@ export const SelectAssetsModal = (): JSX.Element => {
                 />
               ))
             ) : (
-              <div style={{ textAlign: 'center', fontSize: 20 }}>No NFTs found</div>
+              <div style={{ textAlign: 'center', fontSize: 20 }}>
+                No NFTs found
+              </div>
             ))}
           <br />
 
