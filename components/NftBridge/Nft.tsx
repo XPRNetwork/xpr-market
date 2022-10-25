@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ETH_ASSET, NFT_ATTR, getNftMetadata } from '../../services/ethereum';
+import { ETH_ASSET, NFT_ATTR } from '../../services/ethereum';
 import { Asset } from '../../services/assets';
 import { NftName, NftItem } from './NftBridge.styled';
 import { Image } from '../../styles/index.styled';
