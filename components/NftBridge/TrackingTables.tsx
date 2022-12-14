@@ -75,7 +75,9 @@ export const TrackingTables = (props: Props): JSX.Element => {
         library.getSigner()
       );
       await txPreHash.wait();
-      const temp = depositList.filter(el => el.contract != contract && el.tokenId.toHexString() != tokenId);
+      const temp = depositList.filter(
+        (el) => el.contract != contract && el.tokenId.toHexString() != tokenId
+      );
       setDepositList(temp);
       addToast('Claimed successfully!', {
         appearance: 'success',

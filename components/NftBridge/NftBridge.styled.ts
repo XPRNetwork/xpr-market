@@ -162,7 +162,7 @@ export const NftItem = styled.div<{ selected: boolean }>`
   margin: 4px 0;
   overflow: hidden;
   :hover {
-    background: #752EEB;
+    background: #752eeb;
     color: #fff;
   }
   ${({ selected }) =>
