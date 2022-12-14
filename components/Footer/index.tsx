@@ -17,11 +17,11 @@ const links = [
   },
   {
     name: 'Terms of Service',
-    url: 'https://www.protonchain.com/terms',
+    url: 'https://protondex.com/terms',
   },
   {
     name: 'Privacy',
-    url: 'https://www.protonchain.com/terms#privacy-policy',
+    url: 'https://protondex.com/terms#privacy-policy',
   },
   {
     name: 'Help',

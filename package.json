@@ -1,6 +1,6 @@
 {
   "name": "proton-market",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "private": true,
   "scripts": {
     "dev": "node server.js",
@@ -17,7 +17,7 @@
     "@bloks/numbers": "^26.1.69",
     "@bloks/utils": "^25.0.0",
     "@google/model-viewer": "^1.6.0",
-    "@netlify/plugin-nextjs": "4.4.3",
+    "@netlify/plugin-nextjs": "4.29.3",
     "@proton/js": "^22.0.64",
     "@proton/web-sdk": "^4.1.10",
     "@sentry/react": "^6.13.2",
