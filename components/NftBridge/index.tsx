@@ -84,9 +84,7 @@ const NftBridge = (): JSX.Element => {
   }, [currentUser?.actor]);
 
   useEffect(() => {
-    if (account) {
-      // setAdvancedAddr(account);
-    } else {
+    if (!account) {
       setAdvancedAddr('');
     }
   }, [account]);
@@ -686,7 +684,7 @@ const NftBridge = (): JSX.Element => {
                       <Button fullWidth onClick={handleTransfer}>
                         <>
                           {!checkFeesBalance() && (
-                            <span>Top Up &nbsp; 1 XPR</span>
+                            <span>Top Up</span>
                           )}
                           {checkFeesBalance() && <span>Transfer</span>}
                         </>
