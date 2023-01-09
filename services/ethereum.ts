@@ -78,7 +78,7 @@ export const getNfts = async (owner: string): Promise<ETH_ASSET[]> => {
       page = pageKey;
     } while (page);
 
-    const reqs = ownedNfts.map(async(nft) => {
+    const reqs = ownedNfts.map(async (nft) => {
       let attributes = {
         name: nft.metadata.name,
         description: nft.metadata.description,

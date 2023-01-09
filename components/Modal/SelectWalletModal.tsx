@@ -27,6 +27,41 @@ export const SelectWalletModal = (): JSX.Element => {
     window.localStorage.setItem('provider', type);
   };
 
+  const changeNetwork = async () => {
+    if (!(window as any).ethereum) return;
+    await (window as any).ethereum.request({
+      method: 'wallet_addEthereumChain',
+      params: [
+        {
+          chainId: `0x${Number(137).toString(16)}`,
+          chainName: 'Polygon Mainnet',
+          nativeCurrency: {
+            name: 'MATIC',
+            symbol: 'MATIC',
+            decimals: 18,
+          },
+          rpcUrls: ['https://polygon-rpc.com/'],
+          blockExplorerUrls: ['https://polygonscan.com/'],
+        },
+      ],
+    });
+  };
+
+  const connectWallet = (type: string) => {
+    changeNetwork();
+    if (type === 'metamask') {
+      activate(connectors.injected);
+      setProvider('injected');
+    } else if (type === 'coinbase') {
+      activate(connectors.coinbaseWallet);
+      setProvider('coinbaseWallet');
+    } else {
+      activate(connectors.walletConnect);
+      setProvider('walletConnect');
+    }
+    closeModal();
+  };
+
   return (
     <Background>
       <ModalBox>
@@ -37,12 +72,7 @@ export const SelectWalletModal = (): JSX.Element => {
           </CloseIconContainer>
         </Section>
 
-        <ModalButton
-          onClick={() => {
-            activate(connectors.injected);
-            setProvider('injected');
-            closeModal();
-          }}>
+        <ModalButton onClick={() => connectWallet('metamask')}>
           <Section alignItems="center" justifyContent="center">
             <Image width="25px" height="25px" alt="logo" src="/mm.png" />
             <BtnLabel>Metamask</BtnLabel>
@@ -50,12 +80,7 @@ export const SelectWalletModal = (): JSX.Element => {
         </ModalButton>
         <hr />
 
-        <ModalButton
-          onClick={() => {
-            activate(connectors.coinbaseWallet);
-            setProvider('coinbaseWallet');
-            closeModal();
-          }}>
+        <ModalButton onClick={() => connectWallet('coinbase')}>
           <Section alignItems="center" justifyContent="center">
             <Image width="25px" height="25px" alt="logo" src="/cbw.png" />
             <BtnLabel>Coinbase Wallet</BtnLabel>
@@ -63,12 +88,7 @@ export const SelectWalletModal = (): JSX.Element => {
         </ModalButton>
         <hr />
 
-        {/* <ModalButton
-          onClick={() => {
-            activate(connectors.walletConnect);
-            setProvider('walletConnect');
-            closeModal();
-          }}>
+        {/* <ModalButton onClick={() => connectWallet('walletConnect')}>
           <Section alignItems="center" justifyContent="center">
             <Image width="25px" height="25px" alt="logo" src="/wc.png" />
             <BtnLabel>Wallet Connect</BtnLabel>
