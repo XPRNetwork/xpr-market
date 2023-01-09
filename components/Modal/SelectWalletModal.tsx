@@ -27,9 +27,9 @@ export const SelectWalletModal = (): JSX.Element => {
     window.localStorage.setItem('provider', type);
   };
 
-  const changeNetwork = async() => {
-    if (!window.ethereum) throw new Error("No crypto wallet found");
-    await window.ethereum.request({
+  const changeNetwork = async () => {
+    if (!(window as any).ethereum) return;
+    await (window as any).ethereum.request({
       method: 'wallet_addEthereumChain',
       params: [
         {
@@ -43,12 +43,12 @@ export const SelectWalletModal = (): JSX.Element => {
           rpcUrls: ['https://polygon-rpc.com/'],
           blockExplorerUrls: ['https://polygonscan.com/'],
         },
-      ]
-    })
-  }
+      ],
+    });
+  };
 
   const connectWallet = (type: string) => {
-    changeNetwork()
+    changeNetwork();
     if (type === 'metamask') {
       activate(connectors.injected);
       setProvider('injected');
@@ -60,7 +60,7 @@ export const SelectWalletModal = (): JSX.Element => {
       setProvider('walletConnect');
     }
     closeModal();
-  }
+  };
 
   return (
     <Background>

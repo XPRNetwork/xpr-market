@@ -683,9 +683,7 @@ const NftBridge = (): JSX.Element => {
                     <div style={{ width: 200, marginTop: 10 }}>
                       <Button fullWidth onClick={handleTransfer}>
                         <>
-                          {!checkFeesBalance() && (
-                            <span>Top Up</span>
-                          )}
+                          {!checkFeesBalance() && <span>Top Up 1 XPR</span>}
                           {checkFeesBalance() && <span>Transfer</span>}
                         </>
                       </Button>
