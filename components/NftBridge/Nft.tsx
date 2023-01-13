@@ -13,12 +13,6 @@ interface EthNftProps {
 }
 
 export const EthNft = (props: EthNftProps): JSX.Element => {
-  const [attributes, setAttributes] = useState<NFT_ATTR>();
-
-  useEffect(() => {
-    setAttributes(props.data.attributes);
-  }, []);
-
   return (
     <NftItem
       selected={
@@ -35,12 +29,12 @@ export const EthNft = (props: EthNftProps): JSX.Element => {
           cursor: 'pointer',
         }}>
         <Image
-          src={attributes?.image}
+          src={props.data.attributes?.image}
           width="48"
           height="48"
           style={{ marginRight: 20, borderRadius: 4 }}
         />
-        <span>{attributes?.name}</span>
+        <span>{props.data.attributes?.name}</span>
       </NftName>
       {props.close && (
         <Image
@@ -53,7 +47,7 @@ export const EthNft = (props: EthNftProps): JSX.Element => {
           src="/close.svg"
           color="#752EEB"
           onClick={() =>
-            props.removeSelectedNft && props.removeSelectedNft(props.data)
+            props.removeSelectedNft(props.data)
           }
         />
       )}
@@ -70,17 +64,6 @@ interface ProtonNftProps {
 }
 
 export const ProtonNft = (props: ProtonNftProps): JSX.Element => {
-  const [attributes, setAttributes] = useState<NFT_ATTR>();
-
-  useEffect(() => {
-    // if (props.data.data.token_uri) {
-    //   getNftMetadata(props.data.data.token_uri as string).then((attr) => {
-    //     setAttributes(attr);
-    //   });
-    // }
-    setAttributes(props.data.data as NFT_ATTR);
-  }, []);
-
   return (
     <NftItem selected={props.selectedNft?.asset_id == props.data.asset_id}>
       <NftName
@@ -89,12 +72,12 @@ export const ProtonNft = (props: ProtonNftProps): JSX.Element => {
           props.setSelectedNft && props.setSelectedNft(props.data)
         }>
         <Image
-          src={attributes?.image}
+          src={props.data.data ? (props.data.data as NFT_ATTR).image : ''}
           width="50"
           height="50"
           style={{ marginRight: 20, borderRadius: 4 }}
         />
-        <span>{attributes?.name}</span>
+        <span>{props.data.data?.name}</span>
       </NftName>
       {props.close && (
         <Image

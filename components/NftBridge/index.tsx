@@ -89,12 +89,6 @@ const NftBridge = (): JSX.Element => {
     }
   }, [account]);
 
-  const filteredEthAssets = useMemo(() => {
-    return ethAssetsToSend.filter(
-      (el) => el.tokenType?.toLowerCase() == nftType
-    );
-  }, [nftType, ethAssetsToSend.length]);
-
   const filteredFees = useMemo(() => {
     if (!teleportFees.length) {
       return {
@@ -137,13 +131,17 @@ const NftBridge = (): JSX.Element => {
     }
   };
 
-  const setSelectedNfts = (nfts: (Asset | ETH_ASSET)[]) => {
-    if (!nfts?.length) return;
+  const setSelectedNfts = (nft: Asset | ETH_ASSET) => {
+    if (!nft) return;
 
     if (transDir === TRANSFER_DIR.ETH_TO_PROTON) {
-      setEthAssetsToSend(nfts as ETH_ASSET[]);
+      const assets = ethAssetsToSend;
+      assets.push(nft as ETH_ASSET);
+      setEthAssetsToSend(assets);
     } else {
-      setProtonAssetsToSend(nfts as Asset[]);
+      const assets = protonAssetsToSend;
+      assets.push(nft as Asset);
+      setProtonAssetsToSend(assets);
     }
   };
 
@@ -151,9 +149,11 @@ const NftBridge = (): JSX.Element => {
     if (!nft) return;
 
     if (nftType == NftType.ERC_721 || nftType == NftType.ERC_1155) {
-      setEthAssetsToSend([]);
+      const assets = ethAssetsToSend.filter(_ => _.tokenId != (nft as ETH_ASSET).tokenId);
+      setEthAssetsToSend(assets);
     } else if (nftType == NftType.ATOMIC) {
-      setProtonAssetsToSend([]);
+      const assets = protonAssetsToSend.filter(_ => _.asset_id != (nft as Asset).asset_id);
+      setProtonAssetsToSend(assets);
     }
   };
 
@@ -177,9 +177,9 @@ const NftBridge = (): JSX.Element => {
     setModalProps((previousModalProps) => ({
       ...previousModalProps,
       ethToProton: transDir === TRANSFER_DIR.ETH_TO_PROTON,
-      owner:
-        transDir === TRANSFER_DIR.ETH_TO_PROTON ? account : currentUser.actor,
+      owner: transDir === TRANSFER_DIR.ETH_TO_PROTON ? account : currentUser.actor,
       nftType: nftType,
+      selectedNfts: ethAssetsToSend,
       setSelectedNfts: setSelectedNfts,
     }));
     openModal(MODAL_TYPES.SELECT_ASSETS);
@@ -272,9 +272,9 @@ const NftBridge = (): JSX.Element => {
         } else {
           const txPreHash = await transferERC1155ToBridge(
             tokenContract,
-            tokenIds[0],
+            tokenIds,
             account,
-            1,
+            ethAssetsToSend.map(_ => 1),
             library.getSigner()
           );
           await txPreHash.wait();
@@ -292,9 +292,9 @@ const NftBridge = (): JSX.Element => {
           setModalProps((previousModalProps) => ({
             ...previousModalProps,
             ethToProton: true,
-            receiver: currentUser.actor,
+            receiver: advancedAddr == '' ? currentUser.actor : advancedAddr,
             tokenContract,
-            tokenId: tokenIds[0],
+            tokenIds: tokenIds,
             fetchPageData: clearSelectedNfts,
           }));
           openModal(MODAL_TYPES.CONFIRM_TELEPORT);
@@ -364,7 +364,7 @@ const NftBridge = (): JSX.Element => {
             receiver: advancedAddr == '' ? account : advancedAddr,
             tokenContract,
             tokenId,
-            assetId: protonAssetsToSend[0].asset_id,
+            assetIds: protonAssetsToSend.map(_ => _.asset_id),
             fetchPageData: clearSelectedNfts,
           }));
           openModal(MODAL_TYPES.CONFIRM_TELEPORT);
@@ -437,23 +437,21 @@ const NftBridge = (): JSX.Element => {
               </Button>
             )}
 
-            {transDir == TRANSFER_DIR.PROTON_TO_ETH && (
-              <Row>
-                <div style={{ whiteSpace: 'nowrap', margin: '-6px 10px 0 0' }}>
-                  Receive Address
-                </div>
-                <div style={{ marginTop: 5, flex: 1 }}>
-                  <InputField
-                    value={advancedAddr}
-                    setValue={setAdvancedAddr}
-                    placeholder="Enter Address (optional)"
-                  />
-                  <p style={{ fontSize: 12, textAlign: 'left' }}>
-                    Note: leave empty for transferring NFTs between your wallets{' '}
-                  </p>
-                </div>
-              </Row>
-            )}
+            <Row>
+              <div style={{ whiteSpace: 'nowrap', margin: '-6px 10px 0 0' }}>
+                Receive Address
+              </div>
+              <div style={{ marginTop: 5, flex: 1 }}>
+                <InputField
+                  value={advancedAddr}
+                  setValue={setAdvancedAddr}
+                  placeholder="Enter Address (optional)"
+                />
+                <p style={{ fontSize: 12, textAlign: 'left' }}>
+                  Note: leave empty for transferring NFTs between your wallets{' '}
+                </p>
+              </div>
+            </Row>
           </MessageBox>
 
           <Switch>
@@ -566,13 +564,13 @@ const NftBridge = (): JSX.Element => {
 
               {transDir == TRANSFER_DIR.ETH_TO_PROTON &&
                 nftType !== NftType.MINTED_LIST &&
-                (filteredEthAssets.length ? (
+                (ethAssetsToSend.length ? (
                   <NftBox>
-                    {filteredEthAssets.map((ethAsset: ETH_ASSET, idx) => (
+                    {ethAssetsToSend.map((ethAsset: ETH_ASSET) => (
                       <EthNft
                         data={ethAsset}
                         close={true}
-                        key={idx}
+                        key={ethAsset.tokenId}
                         removeSelectedNft={removeSelectedNft}
                       />
                     ))}
@@ -588,11 +586,11 @@ const NftBridge = (): JSX.Element => {
                 nftType !== NftType.DEPOSIT_LIST &&
                 (protonAssetsToSend.length ? (
                   <NftBox>
-                    {protonAssetsToSend.map((asset: Asset, idx) => (
+                    {protonAssetsToSend.map((asset: Asset) => (
                       <ProtonNft
                         data={asset}
                         close={true}
-                        key={idx}
+                        key={asset.asset_id}
                         removeSelectedNft={removeSelectedNft}
                       />
                     ))}
@@ -621,11 +619,10 @@ const NftBridge = (): JSX.Element => {
                     <AddNFTBtn
                       onClick={openAssetsModal}
                       disabled={
-                        (transDir == TRANSFER_DIR.ETH_TO_PROTON &&
-                          ethAssetsToSend.length > 0) ||
-                        (transDir == TRANSFER_DIR.PROTON_TO_ETH &&
-                          protonAssetsToSend.length > 0)
-                      }>
+                        (transDir == TRANSFER_DIR.ETH_TO_PROTON && nftType === NftType.ERC_721 && ethAssetsToSend.length > 0)
+                        || (transDir == TRANSFER_DIR.PROTON_TO_ETH && protonAssetsToSend.length > 0)
+                      }
+                    >
                       <PlusIcon>+</PlusIcon>
                       <span style={{ marginLeft: 10 }}>Add NFT</span>
                     </AddNFTBtn>

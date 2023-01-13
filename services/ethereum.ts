@@ -136,19 +136,19 @@ export const transferERC721ToBridge = async (
 
 export const transferERC1155ToBridge = async (
   tokenContract: string,
-  tokenId: string,
+  tokenIds: string[],
   from: string,
-  amount: number,
+  amounts: number[],
   signer: Web3Provider
 ) => {
   const nftContract = new ethers.Contract(tokenContract, ERC1155Abi, signer);
   const res = await nftContract[
-    'safeTransferFrom(address,address,uint256,uint256,bytes)'
+    'safeBatchTransferFrom(address,address,uint256[],uint256[],bytes)'
   ](
     from,
     process.env.NEXT_PUBLIC_NFT_BRIDGE_ADDRESS,
-    ethers.BigNumber.from(tokenId),
-    amount,
+    tokenIds.map(_ => ethers.BigNumber.from(_)),
+    amounts,
     '0x'
   );
   return res;

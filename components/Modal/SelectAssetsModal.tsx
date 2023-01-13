@@ -35,6 +35,7 @@ export const SelectAssetsModal = (): JSX.Element => {
     ethToProton,
     owner,
     nftType,
+    selectedNfts,
     setSelectedNfts,
   } = modalProps as SelectAssetsModalProps;
 
@@ -66,7 +67,15 @@ export const SelectAssetsModal = (): JSX.Element => {
       const matchesName =
         el.attributes.name?.trim()?.toLowerCase()?.indexOf(filter) > -1;
       const matchesType = el.tokenType?.toLowerCase() == nftType;
-      return matchesName && matchesType;
+      let matchesContract = true;
+      if (selectedNfts.length) {
+        if (el.contractAddress.toLowerCase() != selectedNfts[0].contractAddress.toLowerCase()) {
+          matchesContract = false;
+        } else if (selectedNfts.find(_ => _.tokenId.toLowerCase() == el.tokenId.toLowerCase())) {
+          matchesContract = false;
+        }
+      }
+      return matchesName && matchesType && matchesContract;
     });
   }, [searchText, ethAssets.length]);
 
@@ -176,7 +185,7 @@ export const SelectAssetsModal = (): JSX.Element => {
             }
             onClick={() => {
               setSelectedNfts(
-                ethToProton ? [selectedEthNft] : [selectedProtonNft]
+                ethToProton ? selectedEthNft : selectedProtonNft
               );
               closeModal();
             }}>

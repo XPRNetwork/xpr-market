@@ -97,15 +97,16 @@ export interface ConfirmTeleportModalProps extends GeneralModalProps {
   ethToProton: boolean;
   receiver: string;
   tokenContract?: string;
-  tokenId?: string;
-  assetId?: string;
+  tokenIds?: string[];
+  assetIds?: string[];
 }
 
 export interface SelectAssetsModalProps extends GeneralModalProps {
   ethToProton: boolean;
   owner: string;
   nftType: string;
-  setSelectedNfts: (nfts: (Asset | ETH_ASSET)[]) => Promise<void>;
+  selectedNfts: ETH_ASSET[];
+  setSelectedNfts: (nft: Asset | ETH_ASSET) => Promise<void>;
 }
 
 type ModalProps =
