@@ -232,22 +232,28 @@ export const PlusIcon = styled.div`
   font-weight: 100;
   font-size: 22px;
   border-radius: 50%;
-  color: #fff;
-  background: #752eeb;
+  color: #752eeb;
+  background: #fff;
 `;
 
-export const AddNFTBtn = styled.button`
+export const AddNFTBtn = styled.button<{ disabled: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #752eeb;
+  color: #fff;
   font-size: 16px;
   cursor: pointer;
   margin-top: 30px;
   border: none;
   padding: 8px 20px;
   border-radius: 6px;
-  // background: transparent;
+  background: #752eeb;
+
+  ${({ disabled }) =>
+    disabled &&
+    `
+    background: #e2e2e2;
+  `};
 `;
 
 export const NoNFTBox = styled.div`

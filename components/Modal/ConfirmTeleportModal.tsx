@@ -28,8 +28,8 @@ export const ConfirmTeleportModal = (): JSX.Element => {
     ethToProton,
     receiver,
     tokenContract,
-    tokenId,
-    assetId,
+    tokenIds,
+    assetIds,
     fetchPageData,
   } = modalProps as ConfirmTeleportModalProps;
 
@@ -42,7 +42,7 @@ export const ConfirmTeleportModal = (): JSX.Element => {
     if (ethToProton) {
       const txPreHash = await teleportToProton({
         tokenContract: tokenContract,
-        tokenIds: [tokenId],
+        tokenIds: tokenIds,
         provider: library.getSigner(),
         to: receiver,
       });
@@ -65,7 +65,7 @@ export const ConfirmTeleportModal = (): JSX.Element => {
       }
     } else {
       const teleportRes = await protonSDK.teleportToEth({
-        asset_id: assetId,
+        asset_id: assetIds[0],
         to_address: receiver?.substring(2),
       });
 
@@ -96,7 +96,7 @@ export const ConfirmTeleportModal = (): JSX.Element => {
     if (ethToProton) {
       const txPreHash = await claimNfts(
         tokenContract,
-        [tokenId],
+        tokenIds,
         library.getSigner()
       );
       try {
@@ -113,7 +113,7 @@ export const ConfirmTeleportModal = (): JSX.Element => {
       }
     } else {
       const claimbackRes = await protonSDK.claimbackTeleport({
-        asset_id: assetId,
+        asset_id: assetIds[0],
       });
 
       if (!claimbackRes.success) {
@@ -146,7 +146,7 @@ export const ConfirmTeleportModal = (): JSX.Element => {
               <CloseIcon />
             </CloseIconContainer>
           </Section>
-          <Description>Are you sure you will teleport this NFT?</Description>
+          <Description>Are you sure you will teleport NFTs?</Description>
           <Section>
             <HalfButton onClick={claimNFT}>Claim</HalfButton>
             <HalfButton onClick={teleportNFT}>Teleport</HalfButton>
