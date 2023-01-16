@@ -46,9 +46,7 @@ export const EthNft = (props: EthNftProps): JSX.Element => {
           }}
           src="/close.svg"
           color="#752EEB"
-          onClick={() =>
-            props.removeSelectedNft(props.data)
-          }
+          onClick={() => props.removeSelectedNft(props.data)}
         />
       )}
     </NftItem>

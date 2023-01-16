@@ -147,7 +147,7 @@ export const transferERC1155ToBridge = async (
   ](
     from,
     process.env.NEXT_PUBLIC_NFT_BRIDGE_ADDRESS,
-    tokenIds.map(_ => ethers.BigNumber.from(_)),
+    tokenIds.map((_) => ethers.BigNumber.from(_)),
     amounts,
     '0x'
   );

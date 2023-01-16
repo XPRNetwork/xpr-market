@@ -149,10 +149,14 @@ const NftBridge = (): JSX.Element => {
     if (!nft) return;
 
     if (nftType == NftType.ERC_721 || nftType == NftType.ERC_1155) {
-      const assets = ethAssetsToSend.filter(_ => _.tokenId != (nft as ETH_ASSET).tokenId);
+      const assets = ethAssetsToSend.filter(
+        (_) => _.tokenId != (nft as ETH_ASSET).tokenId
+      );
       setEthAssetsToSend(assets);
     } else if (nftType == NftType.ATOMIC) {
-      const assets = protonAssetsToSend.filter(_ => _.asset_id != (nft as Asset).asset_id);
+      const assets = protonAssetsToSend.filter(
+        (_) => _.asset_id != (nft as Asset).asset_id
+      );
       setProtonAssetsToSend(assets);
     }
   };
@@ -177,7 +181,8 @@ const NftBridge = (): JSX.Element => {
     setModalProps((previousModalProps) => ({
       ...previousModalProps,
       ethToProton: transDir === TRANSFER_DIR.ETH_TO_PROTON,
-      owner: transDir === TRANSFER_DIR.ETH_TO_PROTON ? account : currentUser.actor,
+      owner:
+        transDir === TRANSFER_DIR.ETH_TO_PROTON ? account : currentUser.actor,
       nftType: nftType,
       selectedNfts: ethAssetsToSend,
       setSelectedNfts: setSelectedNfts,
@@ -274,7 +279,7 @@ const NftBridge = (): JSX.Element => {
             tokenContract,
             tokenIds,
             account,
-            ethAssetsToSend.map(_ => 1),
+            ethAssetsToSend.map((_) => 1),
             library.getSigner()
           );
           await txPreHash.wait();
@@ -364,7 +369,7 @@ const NftBridge = (): JSX.Element => {
             receiver: advancedAddr == '' ? account : advancedAddr,
             tokenContract,
             tokenId,
-            assetIds: protonAssetsToSend.map(_ => _.asset_id),
+            assetIds: protonAssetsToSend.map((_) => _.asset_id),
             fetchPageData: clearSelectedNfts,
           }));
           openModal(MODAL_TYPES.CONFIRM_TELEPORT);
@@ -619,10 +624,12 @@ const NftBridge = (): JSX.Element => {
                     <AddNFTBtn
                       onClick={openAssetsModal}
                       disabled={
-                        (transDir == TRANSFER_DIR.ETH_TO_PROTON && nftType === NftType.ERC_721 && ethAssetsToSend.length > 0)
-                        || (transDir == TRANSFER_DIR.PROTON_TO_ETH && protonAssetsToSend.length > 0)
-                      }
-                    >
+                        (transDir == TRANSFER_DIR.ETH_TO_PROTON &&
+                          nftType === NftType.ERC_721 &&
+                          ethAssetsToSend.length > 0) ||
+                        (transDir == TRANSFER_DIR.PROTON_TO_ETH &&
+                          protonAssetsToSend.length > 0)
+                      }>
                       <PlusIcon>+</PlusIcon>
                       <span style={{ marginLeft: 10 }}>Add NFT</span>
                     </AddNFTBtn>

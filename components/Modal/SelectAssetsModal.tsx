@@ -69,9 +69,16 @@ export const SelectAssetsModal = (): JSX.Element => {
       const matchesType = el.tokenType?.toLowerCase() == nftType;
       let matchesContract = true;
       if (selectedNfts.length) {
-        if (el.contractAddress.toLowerCase() != selectedNfts[0].contractAddress.toLowerCase()) {
+        if (
+          el.contractAddress.toLowerCase() !=
+          selectedNfts[0].contractAddress.toLowerCase()
+        ) {
           matchesContract = false;
-        } else if (selectedNfts.find(_ => _.tokenId.toLowerCase() == el.tokenId.toLowerCase())) {
+        } else if (
+          selectedNfts.find(
+            (_) => _.tokenId.toLowerCase() == el.tokenId.toLowerCase()
+          )
+        ) {
           matchesContract = false;
         }
       }
@@ -184,9 +191,7 @@ export const SelectAssetsModal = (): JSX.Element => {
               (!ethToProton && !selectedProtonNft)
             }
             onClick={() => {
-              setSelectedNfts(
-                ethToProton ? selectedEthNft : selectedProtonNft
-              );
+              setSelectedNfts(ethToProton ? selectedEthNft : selectedProtonNft);
               closeModal();
             }}>
             Add
