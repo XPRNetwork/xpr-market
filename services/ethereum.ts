@@ -220,3 +220,21 @@ export const getDepositList = async (owner: string, provider: Web3Provider) => {
     };
   }
 };
+
+export const approvedNFT = async (contract: string, provider: Web3Provider) => {
+  try {
+    const nftBridgeContract = new ethers.Contract(
+      process.env.NEXT_PUBLIC_NFT_BRIDGE_ADDRESS,
+      NftBridgeAbi,
+      provider
+    );
+    const res = await nftBridgeContract.approvedNFT(contract);
+    return res;
+  } catch (e) {
+    const message = e.message[0].toUpperCase() + e.message.slice(1);
+    return {
+      success: false,
+      error: message || 'An error has occurred while calling approvedNFT.',
+    };
+  }
+};

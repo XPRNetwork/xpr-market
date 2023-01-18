@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useModalContext, SelectAssetsModalProps } from '../Provider';
 import { ETH_ASSET, getNfts, NftType } from '../../services/ethereum';
 import { Asset, getAllUserAssetsByTemplate } from '../../services/assets';
+import proton from '../../services/proton-rpc';
 import {
   Background,
   ModalBox,
@@ -107,12 +108,14 @@ export const SelectAssetsModal = (): JSX.Element => {
       setIsLoading(true);
 
       try {
-        const assets = await getAllUserAssetsByTemplate(owner, undefined);
-        // support assets that created by bridge.
-        const filtered = assets.filter(
-          (el) => el.collection.author == process.env.NEXT_PUBLIC_PRT_NFT_BRIDGE
+        const templates = await proton.getTemplatesRegisteredInBridge();
+        const assetsArray = await Promise.all<Asset[][]>(
+          templates.map(_ => getAllUserAssetsByTemplate(owner, _.template_id))
         );
-        setProtonAssets(filtered);
+        // support assets that created by bridge.
+        let assets: Asset[] = [];
+        assets = assets.concat(...assetsArray);
+        setProtonAssets(assets);
 
         setIsLoading(false);
       } catch (e) {
