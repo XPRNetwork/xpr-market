@@ -110,7 +110,7 @@ export const SelectAssetsModal = (): JSX.Element => {
       try {
         const templates = await proton.getTemplatesRegisteredInBridge();
         const assetsArray = await Promise.all<Asset[][]>(
-          templates.map(_ => getAllUserAssetsByTemplate(owner, _.template_id))
+          templates.map((_) => getAllUserAssetsByTemplate(owner, _.template_id))
         );
         // support assets that created by bridge.
         let assets: Asset[] = [];

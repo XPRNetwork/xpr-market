@@ -271,14 +271,21 @@ const NftBridge = (): JSX.Element => {
         // check if selected NFT is approved
         const [isApproved, templates] = await Promise.all([
           approvedNFT(tokenContract, library.getSigner()),
-          proton.getTemplatesRegisteredInBridge()
+          proton.getTemplatesRegisteredInBridge(),
         ]);
-        const index = templates.findIndex(_ => _.contract_address?.toLowerCase() == tokenContract.substring(2).toLowerCase());
+        const index = templates.findIndex(
+          (_) =>
+            _.contract_address?.toLowerCase() ==
+            tokenContract.substring(2).toLowerCase()
+        );
         if (!isApproved || index < 0) {
-          addToast(`Selected NFTs are not approved. Please contact developers (${tokenContract})`, {
-            appearance: 'info',
-            autoDismiss: true,
-          });
+          addToast(
+            `Selected NFTs are not approved. Please contact developers (${tokenContract})`,
+            {
+              appearance: 'info',
+              autoDismiss: true,
+            }
+          );
           setIsLoading(false);
           return;
         }
