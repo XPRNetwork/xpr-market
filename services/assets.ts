@@ -239,3 +239,12 @@ export const getAssetDetails = async (assetId: string): Promise<Asset> => {
     saleId,
   };
 };
+
+export const getImageUrl = (url: string): string => {
+  const subStr = url.substring(0, 4);
+  if (subStr.toLowerCase() === 'ipfs') {
+    return url.replace('ipfs://', 'https://ipfs.io/ipfs/');
+  } else {
+    return url;
+  }
+};
