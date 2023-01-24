@@ -26,6 +26,8 @@ export const SelectAssetsModal = (): JSX.Element => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [ethAssets, setEthAssets] = useState<ETH_ASSET[]>([]);
   const [protonAssets, setProtonAssets] = useState<Asset[]>([]);
+  const [filteredEthAssets, setFilteredEthAssets] = useState<ETH_ASSET[]>([]);
+  const [filteredProtonAssets, setFilteredProtonAssets] = useState<Asset[]>([]);
   const [selectedEthNft, setSelectedEthNft] = useState<ETH_ASSET | null>(null);
   const [selectedProtonNft, setSelectedProtonNft] = useState<Asset | null>(
     null
@@ -58,13 +60,36 @@ export const SelectAssetsModal = (): JSX.Element => {
     setIsLoading(true);
     const nfts = await getNfts(owner);
     setEthAssets(nfts);
+    filterEthNFTs(nfts);
     setIsLoading(false);
   };
 
-  const filteredEthAssets = useMemo(() => {
-    const filter = searchText.trim().toLowerCase();
+  const fetchProtonAssets = async () => {
+    if (owner) {
+      setProtonAssets([]);
+      setIsLoading(true);
 
-    return ethAssets.filter((el) => {
+      try {
+        const templates = await proton.getTemplatesRegisteredInBridge();
+        const assetsArray = await Promise.all<Asset[][]>(
+          templates.map((_) => getAllUserAssetsByTemplate(owner, _.template_id))
+        );
+        // support assets that created by bridge.
+        let assets: Asset[] = [];
+        assets = assets.concat(...assetsArray);
+        setProtonAssets(assets);
+        setFilteredProtonAssets(assets);
+        setIsLoading(false);
+      } catch (e) {
+        console.warn(e.message);
+        setIsLoading(false);
+      }
+    }
+  };
+
+  const filterEthNFTs = (nfts: null | ETH_ASSET[]) => {
+    const filter = searchText.trim().toLowerCase();
+    const _ethAssets = (nfts ?? ethAssets).filter((el) => {
       const matchesName =
         el.attributes.name?.trim()?.toLowerCase()?.indexOf(filter) > -1;
       const matchesType = el.tokenType?.toLowerCase() == nftType;
@@ -85,44 +110,18 @@ export const SelectAssetsModal = (): JSX.Element => {
       }
       return matchesName && matchesType && matchesContract;
     });
-  }, [searchText, ethAssets.length]);
+    setFilteredEthAssets(_ethAssets);
+  };
 
-  const filteredAtomicAssets = useMemo(() => {
+  const filterProtonNFTs = () => {
     const filter = searchText.trim().toLowerCase();
-    if (filter == '') {
-      return protonAssets;
-    }
-
-    return protonAssets.filter((el) => {
+    const _protonAssets = protonAssets.filter((el) => {
       const matchesName = el.name?.trim()?.toLowerCase()?.indexOf(filter) > -1;
       const matchesCollection =
         el.collection?.name?.trim()?.toLowerCase()?.indexOf(filter) > -1;
       return matchesName || matchesCollection;
     });
-  }, [searchText, protonAssets.length]);
-
-  const fetchProtonAssets = async () => {
-    if (owner) {
-      setProtonAssets([]);
-
-      setIsLoading(true);
-
-      try {
-        const templates = await proton.getTemplatesRegisteredInBridge();
-        const assetsArray = await Promise.all<Asset[][]>(
-          templates.map((_) => getAllUserAssetsByTemplate(owner, _.template_id))
-        );
-        // support assets that created by bridge.
-        let assets: Asset[] = [];
-        assets = assets.concat(...assetsArray);
-        setProtonAssets(assets);
-
-        setIsLoading(false);
-      } catch (e) {
-        console.warn(e.message);
-        setIsLoading(false);
-      }
-    }
+    setFilteredProtonAssets(_protonAssets);
   };
 
   return (
@@ -142,9 +141,6 @@ export const SelectAssetsModal = (): JSX.Element => {
           </Section>
 
           <InputContainer>
-            <MagnifyingIconButton>
-              <MagnifyingIcon />
-            </MagnifyingIconButton>
             <Input
               required
               type="text"
@@ -152,6 +148,19 @@ export const SelectAssetsModal = (): JSX.Element => {
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
             />
+            <MagnifyingIconButton
+              style={{
+                paddingLeft: 15,
+                paddingRight: 15,
+                background: '#752eeb',
+                height: '100%',
+                borderRadius: '0 7px 7px 0',
+              }}
+              onClick={() => {
+                ethToProton ? filterEthNFTs(null) : filterProtonNFTs();
+              }}>
+              <MagnifyingIcon />
+            </MagnifyingIconButton>
           </InputContainer>
 
           {ethToProton &&
@@ -171,8 +180,8 @@ export const SelectAssetsModal = (): JSX.Element => {
             ))}
 
           {!ethToProton &&
-            (filteredAtomicAssets.length ? (
-              filteredAtomicAssets.map((asset: Asset, idx) => (
+            (filteredProtonAssets.length ? (
+              filteredProtonAssets.map((asset: Asset, idx) => (
                 <ProtonNft
                   data={asset}
                   selectedNft={selectedProtonNft}
