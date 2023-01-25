@@ -30,6 +30,7 @@ import {
   transferERC721ToBridge,
   transferERC1155ToBridge,
   NftType,
+  approvedNFT,
 } from '../../services/ethereum';
 import protonSDK from '../../services/proton';
 import proton, {
@@ -266,6 +267,29 @@ const NftBridge = (): JSX.Element => {
         const tokenIds = ethAssetsToSend.map((nft: ETH_ASSET) => nft.tokenId);
         const tokenContract = ethAssetsToSend[0].contractAddress;
         setIsLoading(true);
+
+        // check if selected NFT is approved
+        const [isApproved, templates] = await Promise.all([
+          approvedNFT(tokenContract, library.getSigner()),
+          proton.getTemplatesRegisteredInBridge(),
+        ]);
+        const index = templates.findIndex(
+          (_) =>
+            _.contract_address?.toLowerCase() ==
+            tokenContract.substring(2).toLowerCase()
+        );
+        if (!isApproved || index < 0) {
+          addToast(
+            `Selected NFTs are not approved. Please contact developers (${tokenContract})`,
+            {
+              appearance: 'info',
+              autoDismiss: true,
+            }
+          );
+          setIsLoading(false);
+          return;
+        }
+
         if (nftType == NftType.ERC_721) {
           const txPreHash = await transferERC721ToBridge(
             tokenContract,
@@ -541,10 +565,10 @@ const NftBridge = (): JSX.Element => {
                         ERC1155
                       </Tab>
                       <Tab
-                        selected={nftType === NftType.MINTED_LIST}
-                        onClick={() => setNftType(NftType.MINTED_LIST)}
+                        onClick={() => setNftType(NftType.DEPOSIT_LIST)}
+                        selected={nftType === NftType.DEPOSIT_LIST}
                         align="right">
-                        Minted List
+                        Deposit List
                       </Tab>
                     </>
                   )}
@@ -557,10 +581,10 @@ const NftBridge = (): JSX.Element => {
                         Atomic Assets
                       </Tab>
                       <Tab
-                        onClick={() => setNftType(NftType.DEPOSIT_LIST)}
-                        selected={nftType === NftType.DEPOSIT_LIST}
+                        selected={nftType === NftType.MINTED_LIST}
+                        onClick={() => setNftType(NftType.MINTED_LIST)}
                         align="right">
-                        Deposit List
+                        Minted List
                       </Tab>
                     </>
                   )}
@@ -568,7 +592,7 @@ const NftBridge = (): JSX.Element => {
               </TabContainer>
 
               {transDir == TRANSFER_DIR.ETH_TO_PROTON &&
-                nftType !== NftType.MINTED_LIST &&
+                nftType !== NftType.DEPOSIT_LIST &&
                 (ethAssetsToSend.length ? (
                   <NftBox>
                     {ethAssetsToSend.map((ethAsset: ETH_ASSET) => (
@@ -588,7 +612,7 @@ const NftBridge = (): JSX.Element => {
                 ))}
 
               {transDir == TRANSFER_DIR.PROTON_TO_ETH &&
-                nftType !== NftType.DEPOSIT_LIST &&
+                nftType !== NftType.MINTED_LIST &&
                 (protonAssetsToSend.length ? (
                   <NftBox>
                     {protonAssetsToSend.map((asset: Asset) => (

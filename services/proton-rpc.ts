@@ -302,6 +302,19 @@ class ProtonJs {
 
     return rows;
   }
+
+  async getTemplatesRegisteredInBridge() {
+    const { rows } = await this.rpc.get_table_rows({
+      json: true,
+      code: process.env.NEXT_PUBLIC_PRT_NFT_BRIDGE,
+      scope: 0,
+      table: 'aatmpl',
+      limit: -1,
+      key_type: 'i64',
+    });
+
+    return rows;
+  }
 }
 
 const proton = new ProtonJs();

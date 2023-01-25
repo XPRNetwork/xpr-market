@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react';
 import { ETH_ASSET, NFT_ATTR } from '../../services/ethereum';
-import { Asset } from '../../services/assets';
+import { Asset, getImageUrl } from '../../services/assets';
 import { NftName, NftItem } from './NftBridge.styled';
 import { Image } from '../../styles/index.styled';
 
@@ -29,7 +28,7 @@ export const EthNft = (props: EthNftProps): JSX.Element => {
           cursor: 'pointer',
         }}>
         <Image
-          src={props.data.attributes?.image}
+          src={getImageUrl(props.data.attributes?.image)}
           width="48"
           height="48"
           style={{ marginRight: 20, borderRadius: 4 }}
@@ -70,7 +69,9 @@ export const ProtonNft = (props: ProtonNftProps): JSX.Element => {
           props.setSelectedNft && props.setSelectedNft(props.data)
         }>
         <Image
-          src={props.data.data ? (props.data.data as NFT_ATTR).image : ''}
+          src={getImageUrl(
+            props.data.data ? (props.data.data as NFT_ATTR).image : ''
+          )}
           width="50"
           height="50"
           style={{ marginRight: 20, borderRadius: 4 }}
