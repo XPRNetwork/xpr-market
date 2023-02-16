@@ -6,6 +6,7 @@ declare module '*.svg' {
 }
 declare namespace JSX {
   interface IntrinsicElements {
+    /* eslint-disable  @typescript-eslint/no-explicit-any */
     ['model-viewer']: any;
   }
 }

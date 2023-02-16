@@ -68,6 +68,16 @@ export const Switch = styled.div`
   `};
 `;
 
+export const TransferFee = styled.div`
+  width: 250px;
+  text-align: center;
+  // color: #808080;
+  border-radius: 8px;
+  background: #f2f2f2;
+  margin-bottom: 10px;
+  padding: 6px;
+`;
+
 export const SwitchIcon = styled.div`
   display: flex;
   justify-content: center;
@@ -104,21 +114,6 @@ export const ChainBtn = styled.div<{ isFrom: boolean }>`
     !isFrom &&
     `
   order: 5
-  `};
-`;
-
-export const InfoBox = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-itmes: center;
-  width: 100%;
-  max-width: 400px;
-  padding: 30px 0 0;
-  color: #4710a3;
-  font-size: 16px;
-  ${breakpoint.mobile`
-    flex-direction: column;
-    align-items: center;
   `};
 `;
 
@@ -237,6 +232,7 @@ export const PlusIcon = styled.div`
 `;
 
 export const AddNFTBtn = styled.button<{ disabled: boolean }>`
+  width: 250px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -249,10 +245,31 @@ export const AddNFTBtn = styled.button<{ disabled: boolean }>`
   border-radius: 6px;
   background: #752eeb;
 
+  ${breakpoint.mobile`
+    width: 100%;
+  `};
+
   ${({ disabled }) =>
     disabled &&
     `
     background: #e2e2e2;
+  `};
+`;
+
+export const TransferBtn = styled.button`
+  width: 250px;
+  height: 40px;
+  border-radius: 6px;
+  background: #752eeb;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 15px;
+  border: none;
+  padding: 8px 20px;
+
+  ${breakpoint.mobile`
+    width: 100%;
   `};
 `;
 

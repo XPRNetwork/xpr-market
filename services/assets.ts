@@ -86,6 +86,7 @@ export const getAllUserAssetsByTemplate = async (
     let page = 1;
 
     while (hasResults) {
+      /* eslint-disable  @typescript-eslint/no-explicit-any */
       let queryObject: any = {
         owner,
         page,
