@@ -12,15 +12,16 @@ import {
   ChainBtn,
   MessageBox,
   NftBox,
-  InfoBox,
   TabContainer,
   Tabs,
   Tab,
   AddNFTBtn,
+  TransferBtn,
   NoNFTBox,
   Row,
   PlusIcon,
   SwitchIcon,
+  TransferFee,
 } from './NftBridge.styled';
 import { Image } from '../../styles/index.styled';
 import InputField from '../InputField';
@@ -118,6 +119,16 @@ const NftBridge = (): JSX.Element => {
       };
     }
   }, [chainId, teleportFees]);
+
+  const transferFee = useMemo(() => {
+    let feeAmount = 0;
+    if (transDir == TRANSFER_DIR.PROTON_TO_ETH) {
+      feeAmount = filteredFees.port_out_fee;
+    } else {
+      feeAmount = filteredFees.port_in_fee;
+    }
+    return feeAmount;
+  }, [transDir, filteredFees]);
 
   const disconnectWallet = () => {
     if (active) {
@@ -218,9 +229,8 @@ const NftBridge = (): JSX.Element => {
     }
   };
 
-  const topUpFeesBalance = async () => {
-    // Top up 1 XPR as default
-    const res = await protonSDK.topUpTeleportFee(1);
+  const topUpTransferFee = async () => {
+    const res = await protonSDK.topUpTeleportFee(transferFee);
     if (res.success) {
       if (currentUser?.actor) {
         proton.getFeesBalanceForTeleport(currentUser.actor).then((balance) => {
@@ -242,7 +252,12 @@ const NftBridge = (): JSX.Element => {
     }
 
     if (!checkFeesBalance()) {
-      await topUpFeesBalance();
+      setModalProps((previousModalProps) => ({
+        ...previousModalProps,
+        fee: transferFee,
+        fetchPageData: topUpTransferFee,
+      }));
+      openModal(MODAL_TYPES.TOP_UP);
       return;
     }
 
@@ -536,6 +551,11 @@ const NftBridge = (): JSX.Element => {
             </ChainBtn>
           </Switch>
 
+          <TransferFee>
+            <span>Fee: &nbsp;</span>
+            <span>{displayNumberAsAmount(transferFee, 4, true)} XPR</span>
+          </TransferFee>
+
           {isLoading && (
             <div style={{ display: 'flex', justifyContent: 'center' }}>
               <Spinner />
@@ -658,7 +678,7 @@ const NftBridge = (): JSX.Element => {
                       <span style={{ marginLeft: 10 }}>Add NFT</span>
                     </AddNFTBtn>
 
-                    <InfoBox>
+                    {/* <InfoBox>
                       <div
                         style={{
                           display: 'flex',
@@ -706,16 +726,11 @@ const NftBridge = (): JSX.Element => {
                           </span>
                         )}
                       </div>
-                    </InfoBox>
+                    </InfoBox> */}
 
-                    <div style={{ width: 200, marginTop: 10 }}>
-                      <Button fullWidth onClick={handleTransfer}>
-                        <>
-                          {!checkFeesBalance() && <span>Top Up 1 XPR</span>}
-                          {checkFeesBalance() && <span>Transfer</span>}
-                        </>
-                      </Button>
-                    </div>
+                    <TransferBtn onClick={handleTransfer}>
+                      <span>Transfer</span>
+                    </TransferBtn>
                   </>
                 )}
             </>

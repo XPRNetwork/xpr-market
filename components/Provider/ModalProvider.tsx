@@ -28,6 +28,7 @@ export const MODAL_TYPES = {
   CONFIRM_TELEPORT: 'CONFIRM_TELEPORT',
   SELECT_WALLET: 'SELECT_WALLET',
   SELECT_ASSETS: 'SELECT_ASSETS',
+  TOP_UP: 'TOP_UP',
 };
 
 type Props = {
@@ -109,6 +110,10 @@ export interface SelectAssetsModalProps extends GeneralModalProps {
   setSelectedNfts: (nft: Asset | ETH_ASSET) => Promise<void>;
 }
 
+export interface TopupModalProps extends GeneralModalProps {
+  fee: number;
+}
+
 type ModalProps =
   | GeneralModalProps
   | CancelSaleModalProps
@@ -121,7 +126,8 @@ type ModalProps =
   | MintAssetModalProps
   | ReportProps
   | ConfirmTeleportModalProps
-  | SelectAssetsModalProps;
+  | SelectAssetsModalProps
+  | TopupModalProps;
 
 type ModalContextValue = {
   modalType: string;

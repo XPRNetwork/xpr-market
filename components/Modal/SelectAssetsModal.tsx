@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { useModalContext, SelectAssetsModalProps } from '../Provider';
 import { ETH_ASSET, getNfts, NftType } from '../../services/ethereum';
 import { Asset, getAllUserAssetsByTemplate } from '../../services/assets';

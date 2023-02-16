@@ -18,6 +18,7 @@ import {
   ConfirmTeleportModal,
   SelectWalletModal,
   SelectAssetsModal,
+  TopupModal,
 } from '../Modal';
 import { useEscapeKeyClose } from '../../hooks';
 import { META } from '../../utils/constants';
@@ -65,6 +66,8 @@ const PageLayout = ({ title, children }: Props): JSX.Element => {
         return <SelectWalletModal />;
       case MODAL_TYPES.SELECT_ASSETS:
         return <SelectAssetsModal />;
+      case MODAL_TYPES.TOP_UP:
+        return <TopupModal />;
       default:
         return null;
     }

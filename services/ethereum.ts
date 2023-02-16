@@ -124,7 +124,8 @@ export const transferERC721ToBridge = async (
   tokenId: string,
   from: string,
   signer: Web3Provider
-) => {
+  /* eslint-disable  @typescript-eslint/no-explicit-any */
+): Promise<any> => {
   const nftContract = new ethers.Contract(tokenContract, ERC721Abi, signer);
   const res = await nftContract['safeTransferFrom(address,address,uint256)'](
     from,
@@ -140,7 +141,8 @@ export const transferERC1155ToBridge = async (
   from: string,
   amounts: number[],
   signer: Web3Provider
-) => {
+  /* eslint-disable  @typescript-eslint/no-explicit-any */
+): Promise<any> => {
   const nftContract = new ethers.Contract(tokenContract, ERC1155Abi, signer);
   const res = await nftContract[
     'safeBatchTransferFrom(address,address,uint256[],uint256[],bytes)'
@@ -158,7 +160,8 @@ export const claimNfts = async (
   tokenContract: string,
   tokenIds: string[],
   signer: Web3Provider
-) => {
+  /* eslint-disable  @typescript-eslint/no-explicit-any */
+): Promise<any> => {
   const nftBridgeContract = new ethers.Contract(
     process.env.NEXT_PUBLIC_NFT_BRIDGE_ADDRESS,
     NftBridgeAbi,
@@ -181,7 +184,8 @@ export const teleportToProton = async ({
   tokenIds: string[];
   provider: Web3Provider;
   to: string;
-}) => {
+}): /* eslint-disable  @typescript-eslint/no-explicit-any */
+Promise<any> => {
   try {
     const nftBridgeContract = new ethers.Contract(
       process.env.NEXT_PUBLIC_NFT_BRIDGE_ADDRESS,
@@ -203,7 +207,11 @@ export const teleportToProton = async ({
   }
 };
 
-export const getDepositList = async (owner: string, provider: Web3Provider) => {
+export const getDepositList = async (
+  owner: string,
+  provider: Web3Provider
+  /* eslint-disable  @typescript-eslint/no-explicit-any */
+): Promise<any> => {
   try {
     const nftBridgeContract = new ethers.Contract(
       process.env.NEXT_PUBLIC_NFT_BRIDGE_ADDRESS,
@@ -221,7 +229,11 @@ export const getDepositList = async (owner: string, provider: Web3Provider) => {
   }
 };
 
-export const approvedNFT = async (contract: string, provider: Web3Provider) => {
+export const approvedNFT = async (
+  contract: string,
+  provider: Web3Provider
+  /* eslint-disable  @typescript-eslint/no-explicit-any */
+): Promise<any> => {
   try {
     const nftBridgeContract = new ethers.Contract(
       process.env.NEXT_PUBLIC_NFT_BRIDGE_ADDRESS,

@@ -28,7 +28,10 @@ export const SelectWalletModal = (): JSX.Element => {
   };
 
   const changeNetwork = async () => {
+    /* eslint-disable  @typescript-eslint/no-explicit-any */
     if (!(window as any).ethereum) return;
+
+    /* eslint-disable  @typescript-eslint/no-explicit-any */
     await (window as any).ethereum.request({
       method: 'wallet_addEthereumChain',
       params: [
