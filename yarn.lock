@@ -2282,10 +2282,10 @@
     ufo "^1.0.0"
     unstorage "^0.6.0"
 
-"@netlify/plugin-nextjs@4.29.3":
-  version "4.29.3"
-  resolved "https://registry.yarnpkg.com/@netlify/plugin-nextjs/-/plugin-nextjs-4.29.3.tgz#56dedce863440a2ca9f11679bfe3865a42abab8a"
-  integrity sha512-zsv8NZ6OF4oFJM1NTtn1FSyE2GT/Qa3HqrcUxMWeLpA4IwNesQ21h3/7u0C69LlHCoNlGFSFWADya4B3Mv8D2A==
+"@netlify/plugin-nextjs@4.26.0":
+  version "4.26.0"
+  resolved "https://registry.yarnpkg.com/@netlify/plugin-nextjs/-/plugin-nextjs-4.26.0.tgz#3be3c5fe5773a67cdf18de5a489ce67385445730"
+  integrity sha512-K7XL+kUgOJoQ4eFtX6D+KrNBkZA+CFWyRQ9dPH/goq28neHK3JIfxAea5esQuRqYaoQYzcfNvJDF3UN4VMSexg==
   dependencies:
     "@netlify/esbuild" "0.14.39"
     "@netlify/functions" "^1.3.0"
@@ -2294,7 +2294,6 @@
     chalk "^4.1.2"
     destr "^1.1.1"
     execa "^5.1.1"
-    follow-redirects "^1.15.2"
     fs-extra "^10.0.0"
     globby "^11.0.4"
     merge-stream "^2.0.0"
@@ -2305,7 +2304,6 @@
     p-limit "^3.1.0"
     pathe "^0.2.0"
     pretty-bytes "^5.6.0"
-    regexp-tree "^0.1.24"
     semver "^7.3.5"
     slash "^3.0.0"
     tiny-glob "^0.2.9"
@@ -6021,11 +6019,6 @@ follow-redirects@^1.14.0:
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.1.tgz#0ca6a452306c9b276e4d3127483e29575e207ad5"
   integrity sha512-yLAMQs+k0b2m7cVxpS1VKJVvoz7SS9Td1zss3XRwXj+ZDH00RJgnuLx7E44wx02kQLrdM3aOOy+FpzS7+8OizA==
 
-follow-redirects@^1.15.2:
-  version "1.15.2"
-  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.2.tgz#b460864144ba63f2681096f274c4e57026da2c13"
-  integrity sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA==
-
 for-each@^0.3.3:
   version "0.3.3"
   resolved "https://registry.yarnpkg.com/for-each/-/for-each-0.3.3.tgz#69b447e88a0a5d32c3e7084f3f1710034b21376e"
@@ -9025,11 +9018,6 @@ regex-not@^1.0.0, regex-not@^1.0.2:
   dependencies:
     extend-shallow "^3.0.2"
     safe-regex "^1.1.0"
-
-regexp-tree@^0.1.24:
-  version "0.1.24"
-  resolved "https://registry.yarnpkg.com/regexp-tree/-/regexp-tree-0.1.24.tgz#3d6fa238450a4d66e5bc9c4c14bb720e2196829d"
-  integrity sha512-s2aEVuLhvnVJW6s/iPgEGK6R+/xngd2jNQ+xy4bXNDKxZKJH6jpPHY6kVeVv1IeLCHgswRj+Kl3ELaDjG6V1iw==
 
 regexp.prototype.flags@^1.3.1:
   version "1.3.1"

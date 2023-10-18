@@ -1,0 +1,19 @@
+[build.environment]
+  NODE_VERSION = "16"
+
+[build]
+  base = ""
+  publish = ".next"
+  command = "next build"
+
+[[redirects]]
+  from = "https://protonmarket.como/*"
+  to = "https://nft.xprnetwork.org/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://testnet.protonmarket.como/*"
+  to = "https://testnet.nft.xprnetwork.org/:splat"
+  status = 301
+  force = true
