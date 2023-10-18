@@ -7,13 +7,13 @@
   command = "next build"
 
 [[redirects]]
-  from = "https://protonmarket.como/*"
+  from = "https://protonmarket.com/*"
   to = "https://nft.xprnetwork.org/:splat"
   status = 301
   force = true
 
 [[redirects]]
-  from = "https://testnet.protonmarket.como/*"
+  from = "https://testnet.protonmarket.com/*"
   to = "https://testnet.nft.xprnetwork.org/:splat"
   status = 301
   force = true
