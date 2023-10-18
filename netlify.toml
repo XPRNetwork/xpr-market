@@ -13,7 +13,19 @@
   force = true
 
 [[redirects]]
+  from = "https://www.protonmarket.com/*"
+  to = "https://nft.xprnetwork.org/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
   from = "https://testnet.protonmarket.com/*"
+  to = "https://testnet.nft.xprnetwork.org/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://www.testnet.protonmarket.com/*"
   to = "https://testnet.nft.xprnetwork.org/:splat"
   status = 301
   force = true
