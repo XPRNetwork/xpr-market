@@ -16,7 +16,7 @@ export interface User {
 interface TransferOptions {
   sender: string;
   recipient: string;
-  asset_id: string;
+  asset_ids: string[];
   memo?: string;
 }
 
@@ -265,7 +265,7 @@ class ProtonSDK {
   transfer = async ({
     sender,
     recipient,
-    asset_id,
+    asset_ids,
     memo,
   }: TransferOptions): Promise<Response> => {
     const action = [
@@ -281,7 +281,7 @@ class ProtonSDK {
         data: {
           from: sender,
           to: recipient,
-          asset_ids: [asset_id],
+          asset_ids: asset_ids,
           memo: memo || '',
         },
       },
@@ -301,6 +301,7 @@ class ProtonSDK {
         transactionId: result.processed.id,
       };
     } catch (e) {
+      console.log('---', e);
       return {
         success: false,
         error:
@@ -1784,6 +1785,119 @@ class ProtonSDK {
         success: false,
         error:
           message || 'An error has occurred while trying to cancel an auction.',
+      };
+    }
+  };
+
+  claimbackTeleport = async ({
+    asset_id,
+  }: {
+    asset_id: string;
+  }): Promise<Response> => {
+    try {
+      if (!this.session || !this.auth) {
+        throw new Error('Unable to teleport NFTs without logging in.');
+      }
+
+      const actions = [
+        {
+          account: process.env.NEXT_PUBLIC_PRT_NFT_BRIDGE,
+          name: 'claimback',
+          authorization: [
+            {
+              actor: this.auth.actor,
+              permission: 'active',
+            },
+          ],
+          data: {
+            asset_id,
+          },
+        },
+      ];
+
+      await this.session.transact({ actions }, { broadcast: true });
+
+      return { success: true };
+    } catch (e) {
+      return {
+        success: false,
+        error: 'An error has occurred while trying to claim.',
+      };
+    }
+  };
+
+  topUpTeleportFee = async (amount: number): Promise<Response> => {
+    try {
+      if (!this.session || !this.auth) {
+        throw new Error('Unable to top up without logging in.');
+      }
+
+      const actions = [
+        {
+          account: 'eosio.token',
+          name: 'transfer',
+          authorization: [
+            {
+              actor: this.auth.actor,
+              permission: 'active',
+            },
+          ],
+          data: {
+            from: this.auth.actor,
+            to: process.env.NEXT_PUBLIC_PRT_NFT_BRIDGE,
+            quantity: `${amount.toFixed(4)} XPR`,
+            memo: 'Top up teleport fee.',
+          },
+        },
+      ];
+
+      await this.session.transact({ actions }, { broadcast: true });
+
+      return { success: true };
+    } catch (e) {
+      return {
+        success: false,
+        error: 'An error has occurred while trying to top up teleport fee.',
+      };
+    }
+  };
+
+  teleportToEth = async ({
+    asset_id,
+    to_address,
+  }: {
+    asset_id: string;
+    to_address: string;
+  }): Promise<Response> => {
+    try {
+      if (!this.session || !this.auth) {
+        throw new Error('Unable to teleport NFTs without logging in.');
+      }
+
+      const actions = [
+        {
+          account: process.env.NEXT_PUBLIC_PRT_NFT_BRIDGE,
+          name: 'teleport',
+          authorization: [
+            {
+              actor: this.auth.actor,
+              permission: 'active',
+            },
+          ],
+          data: {
+            asset_id,
+            to_address,
+          },
+        },
+      ];
+
+      await this.session.transact({ actions }, { broadcast: true });
+
+      return { success: true };
+    } catch (e) {
+      return {
+        success: false,
+        error: 'An error has occurred while trying to cancel an auction.',
       };
     }
   };

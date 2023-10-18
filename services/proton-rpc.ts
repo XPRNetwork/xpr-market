@@ -7,11 +7,33 @@ import {
 } from '../utils/constants';
 import { encodeName } from '@bloks/utils';
 import { RpcInterfaces } from '@proton/js';
+import * as ethers from 'ethers';
 
 type User = {
   actor: string;
   avatar: string;
   name: string;
+};
+
+export type TeleportFees = {
+  chain_id: number;
+  port_in_fee: number;
+  port_out_fee: number;
+};
+
+export type TeleportFeesBalance = {
+  owner: string;
+  balance: number;
+  reserved: number;
+};
+
+export type TeleportOutReqs = {
+  asset_id: string;
+  chain_id: string;
+  contract_address: string;
+  created_on: string;
+  to_address: string;
+  token_id: string;
 };
 
 class ProtonJs {
@@ -201,6 +223,98 @@ class ProtonJs {
       return false;
     }
   };
+
+  async getTeleportFees(): Promise<TeleportFees[]> {
+    const { rows } = await this.rpc.get_table_rows({
+      json: true,
+      code: process.env.NEXT_PUBLIC_PRT_NFT_BRIDGE,
+      scope: 0,
+      table: 'fees',
+    });
+
+    return rows && rows.length
+      ? rows.map((el) => {
+          const port_in_fee = Number(el.port_in_fee?.split(' ')[0]);
+          const port_out_fee = Number(el.port_out_fee?.split(' ')[0]);
+          return {
+            chain_id: Number(el.chain_id),
+            port_in_fee,
+            port_out_fee,
+          };
+        })
+      : [];
+  }
+
+  async getFeesBalanceForTeleport(
+    chainAccount: string
+  ): Promise<TeleportFeesBalance> {
+    const { rows } = await this.rpc.get_table_rows({
+      json: true,
+      code: process.env.NEXT_PUBLIC_PRT_NFT_BRIDGE,
+      scope: 0,
+      table: 'feesbalance',
+      lower_bound: chainAccount,
+      upper_bound: chainAccount,
+      limit: 1,
+    });
+
+    return rows && rows.length && rows[0].owner === chainAccount
+      ? {
+          balance: Number(rows[0].balance?.split(' ')[0]),
+          owner: rows[0].owner,
+          reserved: Number(rows[0].reserved?.split(' ')[0]),
+        }
+      : {
+          balance: 0,
+          owner: chainAccount,
+          reserved: 0,
+        };
+  }
+
+  async getOutReqsForTeleport(): Promise<TeleportOutReqs[]> {
+    const { rows } = await this.rpc.get_table_rows({
+      json: true,
+      code: process.env.NEXT_PUBLIC_PRT_NFT_BRIDGE,
+      scope: 0,
+      table: 'outreqs',
+    });
+
+    return rows;
+  }
+
+  async getMintedForTeleport(chainAccount: string) {
+    const encodedName = encodeName(chainAccount, false);
+    const lowerBound = ethers.BigNumber.from(encodedName).toHexString();
+    const upperBound = ethers.BigNumber.from(encodedName).add(1).toHexString();
+
+    const { rows } = await this.rpc.get_table_rows({
+      json: true,
+      code: process.env.NEXT_PUBLIC_PRT_NFT_BRIDGE,
+      scope: 0,
+      table: 'minted',
+      limit: 10,
+      reverse: true,
+      key_type: 'i128',
+      index_position: 2,
+      lower_bound: lowerBound + '0000000000000000',
+      upper_bound: upperBound + '0000000000000000',
+    });
+
+    return rows;
+  }
+
+  async getTemplatesRegisteredInBridge() {
+    const { rows } = await this.rpc.get_table_rows({
+      json: true,
+      code: process.env.NEXT_PUBLIC_PRT_NFT_BRIDGE,
+      scope: 0,
+      table: 'aatmpl',
+      limit: -1,
+      key_type: 'i64',
+    });
+
+    return rows;
+  }
 }
 
 const proton = new ProtonJs();

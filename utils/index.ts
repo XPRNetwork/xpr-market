@@ -103,3 +103,9 @@ export const delay = (ms: number): Promise<void> =>
 export const getRandomNumberInRange = (min: number, max: number): number => {
   return Math.floor(Math.random() * (max - min) + min);
 };
+
+export const shortenAddress = (address: string): string => {
+  if (!address) return '';
+  const { length } = address;
+  return address.substr(0, 6) + '...' + address.substr(length - 4, length);
+};

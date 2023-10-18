@@ -3,7 +3,6 @@ import { useRouter } from 'next/router';
 import Button from '../Button';
 import { Image } from '../../styles/index.styled';
 import { useNavigatorUserAgent, useWindowSize } from '../../hooks';
-import { useAuthContext } from '../Provider';
 import {
   Container,
   Content,
@@ -15,7 +14,6 @@ import {
 
 const ExploreCard = (): JSX.Element => {
   const router = useRouter();
-  const { currentUser, login } = useAuthContext();
   const [imgSrc, setImgSrc] = useState<string>('');
   const { isDesktop } = useNavigatorUserAgent();
   const { isMobile } = useWindowSize();

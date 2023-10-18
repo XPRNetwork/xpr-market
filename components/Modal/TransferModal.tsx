@@ -18,7 +18,6 @@ import {
 import InputField from '../InputField';
 import { useWindowSize } from '../../hooks';
 import ProtonSDK from '../../services/proton';
-import proton from '../../services/proton-rpc';
 import { ReactComponent as CloseIcon } from '../../public/close.svg';
 
 export const TransferModal = (): JSX.Element => {
@@ -51,7 +50,7 @@ export const TransferModal = (): JSX.Element => {
       const res = await ProtonSDK.transfer({
         sender: currentUser ? currentUser.actor : '',
         recipient,
-        asset_id: assetId,
+        asset_ids: [assetId],
         memo,
       });
 

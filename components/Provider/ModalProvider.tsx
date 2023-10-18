@@ -8,6 +8,8 @@ import {
   SetStateAction,
 } from 'react';
 import { useScrollLock } from '../../hooks';
+import { ETH_ASSET } from '../../services/ethereum';
+import { Asset } from '../../services/assets';
 import { CarouselCollection, NewCollection } from '../CollectionsCarousel';
 
 export const MODAL_TYPES = {
@@ -23,6 +25,10 @@ export const MODAL_TYPES = {
   MINT_ASSET: 'MINT_ASSET',
   BURN_ASSET: 'BURN_ASSET',
   REPORT: 'REPORT',
+  CONFIRM_TELEPORT: 'CONFIRM_TELEPORT',
+  SELECT_WALLET: 'SELECT_WALLET',
+  SELECT_ASSETS: 'SELECT_ASSETS',
+  TOP_UP: 'TOP_UP',
 };
 
 type Props = {
@@ -88,6 +94,26 @@ export interface MintAssetModalProps extends GeneralModalProps {
   issuedSupply: number;
 }
 
+export interface ConfirmTeleportModalProps extends GeneralModalProps {
+  ethToProton: boolean;
+  receiver: string;
+  tokenContract?: string;
+  tokenIds?: string[];
+  assetIds?: string[];
+}
+
+export interface SelectAssetsModalProps extends GeneralModalProps {
+  ethToProton: boolean;
+  owner: string;
+  nftType: string;
+  selectedNfts: ETH_ASSET[];
+  setSelectedNfts: (nft: Asset | ETH_ASSET) => Promise<void>;
+}
+
+export interface TopupModalProps extends GeneralModalProps {
+  fee: number;
+}
+
 type ModalProps =
   | GeneralModalProps
   | CancelSaleModalProps
@@ -98,7 +124,10 @@ type ModalProps =
   | CreateCollectionProps
   | UpdateCollectionProps
   | MintAssetModalProps
-  | ReportProps;
+  | ReportProps
+  | ConfirmTeleportModalProps
+  | SelectAssetsModalProps
+  | TopupModalProps;
 
 type ModalContextValue = {
   modalType: string;
