@@ -67,17 +67,17 @@ const LearnMoreCard = (): JSX.Element => {
     <>
       <Container>
         <Content>
-          <Title>Welcome to Proton Market</Title>
+          <Title>NFT Market</Title>
           <SubTitle>
             The easiest, most affordable, and most straight-forward way to
             create, sell, buy, and trade NFTs is ready for you.
           </SubTitle>
-          <Title2>Why launch your NFTs on Proton Market?</Title2>
+          <Title2>Why launch your NFTs on XPR Network?</Title2>
 
           <TickList>
             <BulletPoint>
               No gas fees! There are no gas fees for users to purchase NFTs on
-              the Proton blockchain.
+              the XPR Network.
             </BulletPoint>
             <BulletPoint>
               Low fees to mint NFTs, with mint prices hovering around just a few
@@ -89,7 +89,7 @@ const LearnMoreCard = (): JSX.Element => {
             </BulletPoint>
             <BulletPoint>
               Low barriers to entry. Buyers shouldn’t have to pay $40-$200 in
-              fees just to own an NFT. With Proton Market, your buyers pay fewer
+              fees just to own an NFT. With XPR Network, your buyers pay fewer
               fees than anywhere else, meaning you take home more profit.
             </BulletPoint>
             <BulletPoint style={{ marginBottom: 38 }}>
@@ -99,7 +99,7 @@ const LearnMoreCard = (): JSX.Element => {
           </TickList>
 
           <BannerText>
-            To learn more about Proton Market, check out our quick guide below.
+            To learn more about XPR Network NFT Market, check out our quick guide below.
           </BannerText>
         </Content>
         <ImageContainer>
@@ -120,7 +120,7 @@ const LearnMoreCard = (): JSX.Element => {
           onClick={() => {
             collapseToggle(1);
           }}>
-          How to get started on Proton Market
+          How to get started on the XPR Network NFT Market
         </CardTitle>
         <Collapse
           style={{
@@ -132,10 +132,9 @@ const LearnMoreCard = (): JSX.Element => {
               display: collapsible.sectionOne ? 'block' : 'none',
             }}>
             <CardParagraph>
-              Our ground-breaking NFT marketplace has been one of the
-              community’s favorite projects to come from the Proton team in
-              recent months. Proton Market, the world’s easiest to use NFT
-              platform, has allowed people to upload an NFT with just a few
+              The ground-breaking NFT marketplace has been one of the XPR Network
+              community’s favorite projects to come from the Metallicus team.
+              This NFT Market, is one of the world’s easiest to use NFT platforms and has allowed people to upload an NFT with just a few
               clicks, buy and sell NFTs for just a few cents in fees, and earn
               royalties on resales of their creations passively and stress-free.
             </CardParagraph>
@@ -145,7 +144,7 @@ const LearnMoreCard = (): JSX.Element => {
               <StandardLink
                 target="_BLANK"
                 rel="noreferrer"
-                href="https://www.protonchain.com/wallet">
+                href="https://wauth.co">
                 Webauth.com account
               </StandardLink>{' '}
               for free.
@@ -155,8 +154,8 @@ const LearnMoreCard = (): JSX.Element => {
               <StandardLink
                 target="_BLANK"
                 rel="noreferrer"
-                href="https://protonMarket.com">
-                ProtonMarket.com
+                href="https://nft.xprnetwork.org">
+                nft.xprnetwork.org
               </StandardLink>
               , connect your wallet in just a few clicks.
             </CardParagraph>
@@ -178,7 +177,7 @@ const LearnMoreCard = (): JSX.Element => {
           onClick={() => {
             collapseToggle(2);
           }}>
-          How to create your own NFT marketplace powered by Proton
+          How to create your own NFT marketplace powered by XPR Network
         </CardTitle>
         <Collapse
           style={{
@@ -200,19 +199,19 @@ const LearnMoreCard = (): JSX.Element => {
               <StandardLink
                 target="_BLANK"
                 rel="noreferrer"
-                href="https://blog.protonchain.com/proton-market-goes-open-source-unlocking-nfts-for-billions-around-the-world/">
-                we made the code behind Proton Market open source
+                href="https://github.com/XPRNetwork/proton-market-template">
+                we made the code behind the XPR Network NFT Market open source
               </StandardLink>{' '}
-              – meaning anyone can integrate Proton Market into their own
+              – meaning anyone can integrate XPR Network NFT's into their own
               website without needing to ask permission.
             </CardParagraph>
             <CardParagraph>
               To build on this momentum, we have also released an interactive
-              version of Proton Market. With this, creators can not only
-              integrate the Proton Market platform into their own website, but
+              version of the XPR Network NFT Market. With this, creators can not only
+              integrate the XPR Network NFT platform into their own website, but
               they can also change the way that it looks and feels so that it
               matches their overall style. By making our marketplace template
-              interactive, creators can now change how Proton Market looks when
+              interactive, creators can now change how this NFT Market looks when
               it’s on their website - from the font on the headings down to the
               text on the buttons.
             </CardParagraph>
@@ -309,8 +308,8 @@ const LearnMoreCard = (): JSX.Element => {
               <StandardLink
                 target="_BLANK"
                 rel="noreferrer"
-                href="https://github.com/ProtonProtocol/proton-market-template">
-                https://github.com/ProtonProtocol/proton-market-template
+                href="https://github.com/XPRNetwork/proton-market-template">
+                https://github.com/XPRNetwork/proton-market-template
               </StandardLink>
             </CardParagraph>
             <CardParagraph>
@@ -319,8 +318,8 @@ const LearnMoreCard = (): JSX.Element => {
               <StandardLink
                 target="_BLANK"
                 rel="noreferrer"
-                href="https://github.com/ProtonProtocol/proton-market-template/blob/master/custom/customization.ts">
-                https://github.com/ProtonProtocol/proton-market-template/blob/master/custom/customization.ts
+                href="https://github.com/XPRNetwork/proton-market-template/blob/master/custom/customization.ts">
+                https://github.com/XPRNetwork/proton-market-template/blob/master/custom/customization.ts
               </StandardLink>
               ). Once updated, running the server locally will show the correct
               customizations.
@@ -331,8 +330,8 @@ const LearnMoreCard = (): JSX.Element => {
               <StandardLink
                 target="_BLANK"
                 rel="noreferrer"
-                href="https://github.com/ProtonProtocol/proton-market-template/blob/master/custom/localization.ts">
-                https://github.com/ProtonProtocol/proton-market-template/blob/master/custom/localization.ts
+                href="https://github.com/XPRNetwork/proton-market-template/blob/master/custom/localization.ts">
+                https://github.com/XPRNetwork/proton-market-template/blob/master/custom/localization.ts
               </StandardLink>
               ). This gives you the flexibility of changing languages and
               customizing all written text.
@@ -356,7 +355,7 @@ const LearnMoreCard = (): JSX.Element => {
           onClick={() => {
             collapseToggle(3);
           }}>
-          Frequently Asked Questions about Proton Market
+          Frequently Asked Questions about XPR Network NFT Market
         </CardTitle>
         <Collapse
           style={{
@@ -368,7 +367,7 @@ const LearnMoreCard = (): JSX.Element => {
               display: collapsible.sectionThree ? 'block' : 'none',
             }}>
             <Question>
-              What type of files are supported on Proton Market?
+              What type of files are supported on XPR Network NFT Market?
             </Question>
             <Answer>PNG, GIF, JPG, WEBP, and MP4</Answer>
             <Question>How does key management work?</Question>
@@ -378,14 +377,14 @@ const LearnMoreCard = (): JSX.Element => {
               them.
             </Answer>
             <Question>
-              Can users purchase NFTs on the Proton Market using a credit card?
+              Can users purchase NFTs on the XPR Network NFT Market using a credit card?
             </Question>
             <Answer>
               No, we currently do not allow direct purchasing of NFTs using a
               credit card on our platform.
             </Answer>
             <Question>
-              Do users need a token/coin to purchase NFTs on Proton Market?
+              Do users need a token/coin to purchase NFTs on XPR Network NFT Market?
             </Question>
             <Answer>
               Yes, users will need XUSDC, which is USDC wrapped on the Proton
@@ -393,7 +392,7 @@ const LearnMoreCard = (): JSX.Element => {
             </Answer>
             <Question>Are there integration points with Ethereum?</Question>
             <Answer>
-              Proton has easy to use cross-chain bridges with Ethereum, for all
+              XPR Network has easy to use cross-chain bridges with Ethereum, for all
               major ERC-20 tokens and soon ERC-721 NFTs.
             </Answer>
           </div>
