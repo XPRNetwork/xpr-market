@@ -99,7 +99,8 @@ const LearnMoreCard = (): JSX.Element => {
           </TickList>
 
           <BannerText>
-            To learn more about XPR Network NFT Market, check out our quick guide below.
+            To learn more about XPR Network NFT Market, check out our quick
+            guide below.
           </BannerText>
         </Content>
         <ImageContainer>
@@ -132,9 +133,10 @@ const LearnMoreCard = (): JSX.Element => {
               display: collapsible.sectionOne ? 'block' : 'none',
             }}>
             <CardParagraph>
-              The ground-breaking NFT marketplace has been one of the XPR Network
-              community’s favorite projects to come from the Metallicus team.
-              This NFT Market, is one of the world’s easiest to use NFT platforms and has allowed people to upload an NFT with just a few
+              The ground-breaking NFT marketplace has been one of the XPR
+              Network community’s favorite projects to come from the Metallicus
+              team. This NFT Market, is one of the world’s easiest to use NFT
+              platforms and has allowed people to upload an NFT with just a few
               clicks, buy and sell NFTs for just a few cents in fees, and earn
               royalties on resales of their creations passively and stress-free.
             </CardParagraph>
@@ -202,18 +204,18 @@ const LearnMoreCard = (): JSX.Element => {
                 href="https://github.com/XPRNetwork/proton-market-template">
                 we made the code behind the XPR Network NFT Market open source
               </StandardLink>{' '}
-              – meaning anyone can integrate XPR Network NFT's into their own
+              – meaning anyone can integrate XPR Network NFTs into their own
               website without needing to ask permission.
             </CardParagraph>
             <CardParagraph>
               To build on this momentum, we have also released an interactive
-              version of the XPR Network NFT Market. With this, creators can not only
-              integrate the XPR Network NFT platform into their own website, but
-              they can also change the way that it looks and feels so that it
-              matches their overall style. By making our marketplace template
-              interactive, creators can now change how this NFT Market looks when
-              it’s on their website - from the font on the headings down to the
-              text on the buttons.
+              version of the XPR Network NFT Market. With this, creators can not
+              only integrate the XPR Network NFT platform into their own
+              website, but they can also change the way that it looks and feels
+              so that it matches their overall style. By making our marketplace
+              template interactive, creators can now change how this NFT Market
+              looks when it’s on their website - from the font on the headings
+              down to the text on the buttons.
             </CardParagraph>
             <CardParagraph>
               Below is a list of features that you can customize based on your
@@ -377,14 +379,16 @@ const LearnMoreCard = (): JSX.Element => {
               them.
             </Answer>
             <Question>
-              Can users purchase NFTs on the XPR Network NFT Market using a credit card?
+              Can users purchase NFTs on the XPR Network NFT Market using a
+              credit card?
             </Question>
             <Answer>
               No, we currently do not allow direct purchasing of NFTs using a
               credit card on our platform.
             </Answer>
             <Question>
-              Do users need a token/coin to purchase NFTs on XPR Network NFT Market?
+              Do users need a token/coin to purchase NFTs on XPR Network NFT
+              Market?
             </Question>
             <Answer>
               Yes, users will need XUSDC, which is USDC wrapped on the Proton
@@ -392,8 +396,8 @@ const LearnMoreCard = (): JSX.Element => {
             </Answer>
             <Question>Are there integration points with Ethereum?</Question>
             <Answer>
-              XPR Network has easy to use cross-chain bridges with Ethereum, for all
-              major ERC-20 tokens and soon ERC-721 NFTs.
+              XPR Network has easy to use cross-chain bridges with Ethereum, for
+              all major ERC-20 tokens and soon ERC-721 NFTs.
             </Answer>
           </div>
         </Collapse>

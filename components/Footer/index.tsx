@@ -33,7 +33,12 @@ const Footer = (): JSX.Element => {
   return (
     <StyledFooter>
       <ImageContainer>
-        <Image width="168px" height="32px" alt="logo" src="/xprnetwork_nft_gray.svg" />
+        <Image
+          width="168px"
+          height="32px"
+          alt="logo"
+          src="/xprnetwork_nft_gray.svg"
+        />
       </ImageContainer>
       <Section>
         {links.map(({ name, url }) => (
