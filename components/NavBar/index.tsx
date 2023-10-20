@@ -174,10 +174,10 @@ const DesktopNavRoutes = () => {
       name: 'Create',
       path: `/create`,
     },
-    {
-      name: 'Bridge',
-      path: `/bridge`,
-    },
+    // {
+    //   name: 'Bridge',
+    //   path: `/bridge`,
+    // },
   ];
 
   return (
