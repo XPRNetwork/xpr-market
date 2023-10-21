@@ -8,24 +8,24 @@ import {
 
 const links = [
   {
-    name: 'Open Source',
-    url: 'https://github.com/ProtonProtocol/proton-market-template',
+    name: 'Get Wallet',
+    url: 'https://wauth.co',
   },
   {
-    name: 'Give Us Feedback',
-    url: 'https://t.me/protonnft',
+    name: 'XPR Network',
+    url: 'https://xprnetwork.org',
+  },
+  {
+    name: 'Community',
+    url: 'https://t.me/XPRNetwork',
   },
   {
     name: 'Terms of Service',
-    url: 'https://protondex.com/terms',
-  },
-  {
-    name: 'Privacy',
-    url: 'https://protondex.com/terms#privacy-policy',
+    url: 'https://xprnetwork.org/webauth-terms',
   },
   {
     name: 'Help',
-    url: 'https://help.protonchain.com',
+    url: 'https://help.xprnetwork.org',
   },
 ];
 
@@ -33,7 +33,12 @@ const Footer = (): JSX.Element => {
   return (
     <StyledFooter>
       <ImageContainer>
-        <Image width="143px" height="32px" alt="logo" src="/logo@3x.png" />
+        <Image
+          width="168px"
+          height="32px"
+          alt="logo"
+          src="/xprnetwork_nft_gray.svg"
+        />
       </ImageContainer>
       <Section>
         {links.map(({ name, url }) => (

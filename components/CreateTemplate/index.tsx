@@ -248,7 +248,7 @@ const CreateTemplate: FC<{
       <span>
         <Terms>
           - You agree to our{' '}
-          <TermsLink target="_blank" href="https://protondex.com/terms">
+          <TermsLink target="_blank" href="https://xprnetwork.org/terms">
             Terms of Service &amp; Privacy Policy.
           </TermsLink>
         </Terms>

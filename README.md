@@ -1,7 +1,7 @@
 
-# Proton Marketplace
+# XPR Network NFT Marketplace
 
-This application shows the basic functionality of NFTs on the Proton chain through the use of the [Proton Web SDK](https://www.npmjs.com/package/@proton/web-sdk).
+This application shows the basic functionality of NFTs on the XPR Network blockchain through the use of the [WebAuth Web SDK](https://www.npmjs.com/package/@proton/web-sdk).
 
 This is built off of atomicassets NFT framework.
 
@@ -27,7 +27,7 @@ docker run -p 3000:3000 -i -d [image id]
 ### npm
 
 ```
-git clone https://github.com/ProtonProtocol/nft-demo.git
+git clone https://github.com/XPRNetwork/nft-demo.git
 
 npm install
 

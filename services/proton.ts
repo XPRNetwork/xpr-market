@@ -146,7 +146,7 @@ class ProtonSDK {
   chainId: ChainId | null;
 
   constructor() {
-    this.appName = 'Proton Market';
+    this.appName = 'NFT Market';
     this.requestAccount = 'nftmarket';
     this.session = null;
     this.auth = null;

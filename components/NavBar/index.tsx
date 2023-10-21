@@ -46,7 +46,7 @@ const Logo = (): JSX.Element => {
             width="194px"
             height="41px"
             alt="logo"
-            src="/beta-logo.svg" // TODO: Swap back to non-beta logo: logo-colored@3x.png
+            src="/xprnetwork_nft.svg" // TODO: Swap back to non-beta logo: logo-colored@3x.png
           />
         </DesktopIcon>
         <MobileIcon>

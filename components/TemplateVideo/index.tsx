@@ -21,7 +21,7 @@ const IncompatibleVideoError = () => (
   <VideoError>
     Firefox does not support
     <br />
-    Proton Market videos.
+    XPR Network NFT Market videos.
     <br />
     Please use another browser.
   </VideoError>
