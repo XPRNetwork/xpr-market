@@ -201,7 +201,7 @@ const LearnMoreCard = (): JSX.Element => {
               <StandardLink
                 target="_BLANK"
                 rel="noreferrer"
-                href="https://github.com/XPRNetwork/proton-market-template">
+                href="https://github.com/XPRNetwork/xpr-market-template">
                 we made the code behind the XPR Network NFT Market open source
               </StandardLink>{' '}
               – meaning anyone can integrate XPR Network NFTs into their own
@@ -310,8 +310,8 @@ const LearnMoreCard = (): JSX.Element => {
               <StandardLink
                 target="_BLANK"
                 rel="noreferrer"
-                href="https://github.com/XPRNetwork/proton-market-template">
-                https://github.com/XPRNetwork/proton-market-template
+                href="https://github.com/XPRNetwork/xpr-market-template">
+                https://github.com/XPRNetwork/xpr-market-template
               </StandardLink>
             </CardParagraph>
             <CardParagraph>
@@ -320,8 +320,8 @@ const LearnMoreCard = (): JSX.Element => {
               <StandardLink
                 target="_BLANK"
                 rel="noreferrer"
-                href="https://github.com/XPRNetwork/proton-market-template/blob/master/custom/customization.ts">
-                https://github.com/XPRNetwork/proton-market-template/blob/master/custom/customization.ts
+                href="https://github.com/XPRNetwork/xpr-market-template/blob/master/custom/customization.ts">
+                https://github.com/XPRNetwork/xpr-market-template/blob/master/custom/customization.ts
               </StandardLink>
               ). Once updated, running the server locally will show the correct
               customizations.
@@ -332,8 +332,8 @@ const LearnMoreCard = (): JSX.Element => {
               <StandardLink
                 target="_BLANK"
                 rel="noreferrer"
-                href="https://github.com/XPRNetwork/proton-market-template/blob/master/custom/localization.ts">
-                https://github.com/XPRNetwork/proton-market-template/blob/master/custom/localization.ts
+                href="https://github.com/XPRNetwork/xpr-market-template/blob/master/custom/localization.ts">
+                https://github.com/XPRNetwork/xpr-market-template/blob/master/custom/localization.ts
               </StandardLink>
               ). This gives you the flexibility of changing languages and
               customizing all written text.
