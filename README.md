@@ -40,7 +40,7 @@ Create a copy of `.env.dev.template` and name it `.env.local`:
 
 For mainnet:
 ```
-NEXT_PUBLIC_CHAIN_ENDPOINTS='https://xpr-mainnet-rpc.bloxprod.io'
+NEXT_PUBLIC_CHAIN_ENDPOINTS='https://proton.eosusa.io'
 NEXT_PUBLIC_BLOCK_EXPLORER='https://proton.bloks.io/block/'
 NEXT_PUBLIC_NFT_ENDPOINT='https://xpr-mainnet-atm-api.bloxprod.io'
 NEXT_PUBLIC_CHAIN_ID='384da888112027f0321850a169f737c33e53b388aad48b5adace4bab97f437e0'
@@ -51,7 +51,7 @@ PROTON_MARKET_JWT_SECRET = string;
 
 For testnet:
 ```
-NEXT_PUBLIC_CHAIN_ENDPOINTS='https://xpr-testnet-rpc.bloxprod.io'
+NEXT_PUBLIC_CHAIN_ENDPOINTS='https://testnet.protonchain.com'
 NEXT_PUBLIC_BLOCK_EXPLORER='https://proton-test.bloks.io/block/'
 NEXT_PUBLIC_NFT_ENDPOINT='https://xpr-testnet-atm-api.bloxprod.io'
 NEXT_PUBLIC_CHAIN_ID='71ee83bcf52142d61019d95f9cc5427ba6a0d7ff8accd9e2088ae2abeaf3d3dd'
