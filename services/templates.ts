@@ -19,6 +19,7 @@ export type Schema = {
 type ImmutableData = {
   name: string;
   image?: string;
+  img?: string;
   series: number;
   desc: string;
   video?: string;
@@ -83,6 +84,17 @@ type formatTemplatesWithLowPriceAndAssetCountProps = {
  * @return {Template[]}              Returns array of templates, most likely will only return one item in the array
  */
 
+/**
+ * Normalize immutable_data: fall back to 'img' if 'image' is missing.
+ * Some collections use 'img' instead of the standard 'image' attribute.
+ */
+const normalizeTemplate = (template: Template): Template => {
+  if (template.immutable_data && !template.immutable_data.image && template.immutable_data.img) {
+    template.immutable_data.image = template.immutable_data.img;
+  }
+  return template;
+};
+
 export const getTemplateDetails = async (
   collectionName: string,
   templateId: string
@@ -117,10 +129,10 @@ export const getTemplateDetails = async (
           )} ${lowestPriceSale.listing_symbol}`
         : '';
 
-    return {
+    return normalizeTemplate({
       ...templatesResponse.data[0],
       lowestPrice,
-    };
+    });
   } catch (e) {
     throw new Error(e);
   }
@@ -159,7 +171,7 @@ export const getTemplatesByCollection = async ({
       throw new Error(errorMessage as string);
     }
 
-    return templatesResponse.data;
+    return templatesResponse.data.map(normalizeTemplate);
   } catch (e) {
     throw new Error(e);
   }
@@ -206,7 +218,7 @@ export const getAllTemplatesByCollection = async ({
         hasResults = false;
       }
 
-      templates = templates.concat(templatesResponse.data);
+      templates = templates.concat(templatesResponse.data.map(normalizeTemplate));
       page += 1;
     }
 
@@ -496,7 +508,7 @@ export const getTemplatesFromTemplateIds = async (
       }
 
       page += 1;
-      templates = templates.concat(templatesResponse.data);
+      templates = templates.concat(templatesResponse.data.map(normalizeTemplate));
     } catch (e) {
       throw new Error(e);
     }
@@ -534,7 +546,7 @@ export const getPaginatedCreationsByCreator = async ({
       throw new Error((templatesResponse.message as unknown) as string);
     }
 
-    return templatesResponse.data;
+    return templatesResponse.data.map(normalizeTemplate);
   } catch (e) {
     throw new Error(e);
   }
@@ -576,7 +588,7 @@ export const getAllCreationsByCreator = async ({
         hasResults = false;
       }
 
-      templates = templates.concat(templatesResponse.data);
+      templates = templates.concat(templatesResponse.data.map(normalizeTemplate));
       page += 1;
     }
 

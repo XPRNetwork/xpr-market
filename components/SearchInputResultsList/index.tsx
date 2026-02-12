@@ -137,7 +137,7 @@ const SearchInputResultsList = ({
             name,
             template_id,
             collection: { collection_name },
-            immutable_data: { image, video },
+            immutable_data: { image, img, video },
           },
           i
         ) => {
@@ -154,7 +154,7 @@ const SearchInputResultsList = ({
               key={name}>
               <TemplateIcon
                 name={name}
-                image={image}
+                image={image || img}
                 video={video}
                 margin="0 12px 0 0"
               />
