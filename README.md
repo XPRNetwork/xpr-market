@@ -5,10 +5,10 @@ This application shows the basic functionality of NFTs on the XPR Network blockc
 
 This is built off of atomicassets NFT framework.
 
-- [API Documentation for atomicassets (mainnet)](https://proton.api.atomicassets.io/atomicassets/docs/swagger/)
-- [API Documentation for atomicmarket (mainnet)](https://proton.api.atomicassets.io/atomicmarket/docs/swagger/)
-- [API Documentation for atomicassets (testnet)](https://test.proton.api.atomicassets.io/atomicassets/docs/swagger/)
-- [API Documentation for atomicmarket (testnet)](https://test.proton.api.atomicassets.io/atomicmarket/docs/swagger/)
+- [API Documentation for atomicassets (mainnet)](https://xpr-mainnet-atm-api.bloxprod.io/atomicassets/docs/swagger/)
+- [API Documentation for atomicmarket (mainnet)](https://xpr-mainnet-atm-api.bloxprod.io/atomicmarket/docs/swagger/)
+- [API Documentation for atomicassets (testnet)](https://xpr-testnet-atm-api.bloxprod.io/atomicassets/docs/swagger/)
+- [API Documentation for atomicmarket (testnet)](https://xpr-testnet-atm-api.bloxprod.io/atomicmarket/docs/swagger/)
 
 ## To build and run locally
 
@@ -36,13 +36,14 @@ npm run dev
 
 ## Environment
 
-Create a copy of `.env.template` and name it `.env.local`:
+Create a copy of `.env.dev.template` and name it `.env.local`:
 
 For mainnet:
 ```
-NEXT_PUBLIC_CHAIN_ENDPOINTS='https://proton.eoscafeblock.com, https://proton.greymass.com'
+NEXT_PUBLIC_CHAIN_ENDPOINTS='https://proton.eosusa.io, https://api.protonnz.com'
 NEXT_PUBLIC_BLOCK_EXPLORER='https://proton.bloks.io/block/'
-NEXT_PUBLIC_NFT_ENDPOINT='https://proton.api.atomicassets.io'
+NEXT_PUBLIC_NFT_ENDPOINT='https://xpr-mainnet-atm-api.bloxprod.io'
+NEXT_PUBLIC_CHAIN_ID='384da888112027f0321850a169f737c33e53b388aad48b5adace4bab97f437e0'
 BACKEND_ENDPOINT = string;
 PROTON_MARKET_JWT_SECRET = string;
 
@@ -50,9 +51,10 @@ PROTON_MARKET_JWT_SECRET = string;
 
 For testnet:
 ```
-NEXT_PUBLIC_CHAIN_ENDPOINTS='https://testnet.protonchain.com'
+NEXT_PUBLIC_CHAIN_ENDPOINTS='https://testnet.protonchain.com, https://tn1.protonnz.com'
 NEXT_PUBLIC_BLOCK_EXPLORER='https://proton-test.bloks.io/block/'
-NEXT_PUBLIC_NFT_ENDPOINT='https://test.proton.api.atomicassets.io'
+NEXT_PUBLIC_NFT_ENDPOINT='https://xpr-testnet-atm-api.bloxprod.io'
+NEXT_PUBLIC_CHAIN_ID='71ee83bcf52142d61019d95f9cc5427ba6a0d7ff8accd9e2088ae2abeaf3d3dd'
 BACKEND_ENDPOINT = string;
 PROTON_MARKET_JWT_SECRET = string;
 
