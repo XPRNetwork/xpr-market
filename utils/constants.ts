@@ -32,8 +32,10 @@ export const SM_FILE_SIZE_UPLOAD_LIMIT = 5 * 1000000; // 5 MB
 export const RESIZER_IMAGE = 'https://bloks.io/cdn-cgi/image/width=500/';
 export const RESIZER_IMAGE_SM = 'https://bloks.io/cdn-cgi/image/width=250/';
 export const RESIZER_IMAGE_XSM = 'https://bloks.io/cdn-cgi/image/width=64/';
-export const IPFS_RESOLVER_IMAGE = 'https://proton.mypinata.cloud/ipfs/';
-export const IPFS_RESOLVER_VIDEO = 'https://proton.mypinata.cloud/ipfs/';
+export const IPFS_RESOLVER_IMAGE =
+  process.env.NEXT_PUBLIC_IPFS_GATEWAY || 'https://gateway.pinata.cloud/ipfs/';
+export const IPFS_RESOLVER_VIDEO =
+  process.env.NEXT_PUBLIC_IPFS_GATEWAY || 'https://gateway.pinata.cloud/ipfs/';
 export const DEFAULT_SCHEMA = {
   series: 'uint16',
   name: 'string',
